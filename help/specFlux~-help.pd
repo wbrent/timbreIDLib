@@ -1,0 +1,167 @@
+#N canvas 153 105 1091 592 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 177 173 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 88 90 *~;
+#X obj 117 90 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 140 90 *~;
+#X obj 169 90 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X floatatom 88 461 10 0 0 0 - - specFlux;
+#N canvas 584 81 517 376 attack-detection 0;
+#X obj 33 289 select 1;
+#X obj 33 330 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 65 244 5 0 0 0 - - -;
+#X obj 33 69 adc~;
+#X obj 66 118 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 88 118 Turn on for continuous analysis;
+#X obj 66 148 metro 5.80499;
+#X text 25 8 Spectral flux can be used for basic attack detection.
+Turn on the toggle below to check it out.;
+#X obj 33 268 > 0.6;
+#X text 108 241 If 0.6 is too low or high \, try a different threshhold.
+;
+#X obj 33 187 specFlux~ 1024 256;
+#X connect 0 0 1 0;
+#X connect 2 0 8 1;
+#X connect 3 0 10 0;
+#X connect 4 0 6 0;
+#X connect 6 0 10 0;
+#X connect 8 0 0 0;
+#X connect 10 0 8 0;
+#X restore 435 240 pd attack-detection;
+#X text 208 144 Activate a signal above and bang to output its flux.
+, f 21;
+#X obj 4 5 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 5 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 278 81 890 662 other-settings 0;
+#X text 191 249 Change window size.;
+#X obj 144 189 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 144 207 normalize \$1;
+#X obj 300 368 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 338 367 Squared difference vs. Absolute value of difference.
+;
+#X obj 95 123 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 95 143 power_spectrum \$1;
+#X text 126 123 Use power instead of magnitude;
+#X obj 33 606 outlet;
+#X text 355 322 Change distance between analysis windows in samples.
+;
+#X obj 33 57 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 0;
+#X msg 33 77 window_function \$1;
+#X msg 300 386 squared_diff \$1;
+#X msg 358 435 overlap 2;
+#X text 439 423 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X msg 193 270 window 2000;
+#X text 31 20 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X msg 245 323 separation 400;
+#X msg 401 497 print;
+#X text 182 188 Normalize spectrum. Default: OFF.;
+#X connect 1 0 2 0;
+#X connect 2 0 8 0;
+#X connect 3 0 12 0;
+#X connect 5 0 6 0;
+#X connect 6 0 8 0;
+#X connect 10 0 11 0;
+#X connect 11 0 8 0;
+#X connect 12 0 8 0;
+#X connect 13 0 8 0;
+#X connect 15 0 8 0;
+#X connect 17 0 8 0;
+#X connect 18 0 8 0;
+#X restore 240 263 pd other-settings;
+#X text 223 413 Creation arguments are window size and separation in
+samples between analysis windows., f 48;
+#N canvas 0 50 450 278 (subpatch) 0;
+#X array \$0-bin-diffs 513 float 0;
+#X coords 0 10 512 -10 200 140 1 0 0;
+#X restore 393 63 graph;
+#X obj 140 59 osc~ 440;
+#X obj 208 200 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 88 421 specFlux~ 1024 256;
+#X obj 88 59 noise~;
+#X obj 208 220 metro 100;
+#X text 645 182 specFlux~ reports the full list of differences (i.e.
+\, (N/2)+1 bins) at the right outlet \, and the sum of the absolute
+values of numbers in that list at the left outlet. You get a lot more
+detailed information about how a spectrum is changing with the right
+outlet if you have a reason to use it.;
+#X text 645 342 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two. The second creation argument specifies the separation between
+the two analysis windows in samples \, and also does not need to be
+a power of two. It can be changed on the fly with the "separation"
+message.;
+#X obj 812 532 timbreID;
+#X text 645 467 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 645 272 In the [attack-detection] sub-patch \, the left outlet
+is used in an attack detector. bonk~ and timbreID's bark~ objects are
+much better designed for this purpose - the sub-patch here is only
+a proof of concept.;
+#N canvas 0 81 450 300 do-plotting 0;
+#X obj 84 51 inlet;
+#X obj 84 150 list prepend 0;
+#X obj 84 90 t l l;
+#X obj 205 149 change;
+#X obj 205 171 pack f \$0;
+#X obj 84 171 s \$0-bin-diffs;
+#X msg 205 193 \; \$2-bin-diffs resize \$1 \;;
+#X obj 205 129 list length;
+#X connect 0 0 2 0;
+#X connect 1 0 5 0;
+#X connect 2 0 1 0;
+#X connect 2 1 7 0;
+#X connect 3 0 4 0;
+#X connect 4 0 6 0;
+#X connect 7 0 3 0;
+#X restore 227 466 pd do-plotting;
+#X text 645 49 Typically \, spectral flux is the sum of squared difference
+between two successive magnitude spectra. specFlux~ gives you the option
+of either squaring or taking the absolute value of differences. The
+range of values for flux depends on which of these methods you choose
+\, as well as frame separation and window size. In the example at left
+\, the flux of noise~ is much higher than that of a sinusoid. This
+is because the spectrum of a sinusoid at a fixed frequency hardly changes
+at all from moment to moment.;
+#X text 41 513 Updated for timbreID version 0.7.6;
+#X text 41 533 August 2018;
+#X msg 270 309 mode flux;
+#X msg 290 349 mode decay;
+#X msg 280 329 mode growth;
+#X text 385 308 Change modes to report flux \, spectral growth only
+\, or spectral decay only. This affects the output of both outlets
+, f 34;
+#X obj 42 555 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 15 0;
+#X connect 1 0 15 0;
+#X connect 2 0 1 1;
+#X connect 3 0 15 0;
+#X connect 4 0 3 1;
+#X connect 10 0 15 0;
+#X connect 13 0 3 0;
+#X connect 14 0 17 0;
+#X connect 15 0 5 0;
+#X connect 15 1 23 0;
+#X connect 16 0 1 0;
+#X connect 17 0 15 0;
+#X connect 27 0 15 0;
+#X connect 28 0 15 0;
+#X connect 29 0 15 0;

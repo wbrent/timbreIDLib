@@ -1,0 +1,78 @@
+#N canvas 308 136 907 481 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 143 127 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X floatatom 107 403 10 0 0 0 - - -;
+#X text 178 172 Change window size.;
+#X obj 55 78 *~;
+#X obj 84 78 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+;
+#X obj 107 78 *~;
+#X obj 136 78 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 55 47 noise~;
+#X text 206 216 Set boundary freq.;
+#X text 140 109 Bang to output brightness.;
+#X obj 107 47 osc~ 440;
+#X obj 107 357 specBrightness~ 1024 1200;
+#X text 434 53 Spectral Brightness is the ratio of the sum of magnitudes
+above a given boundary frequency to the sum of all magnitudes in a
+spectrum. Signals with a significant amount of high frequency content
+will have higher brightness. At left \, noise will have much higher
+brightness than a sinusoid at 440 Hz.;
+#X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 673 234 711 488 other-settings 0;
+#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 3;
+#X msg 54 106 window_function \$1;
+#X msg 145 187 power_spectrum \$1;
+#X obj 145 169 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 54 415 outlet;
+#X text 286 187 Use power spectrum. (default: magnitude);
+#X msg 264 311 print;
+#X text 52 49 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X msg 181 249 overlap 2;
+#X text 262 237 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 6 0 4 0;
+#X connect 8 0 4 0;
+#X restore 216 299 pd other-settings;
+#X msg 207 234 boundary 9000;
+#X text 645 403 Updated for timbreID version 0.7;
+#X obj 601 304 timbreID;
+#X text 434 239 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 434 149 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two.;
+#X msg 180 190 window 2000;
+#X text 312 344 Creation arguments are window size in samples \, and
+a boundary frequency to determine the ratio of high spectral content.
+, f 47;
+#X text 645 423 July 2017;
+#X obj 647 445 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 11 0;
+#X connect 3 0 11 0;
+#X connect 4 0 3 1;
+#X connect 5 0 11 0;
+#X connect 6 0 5 1;
+#X connect 7 0 3 0;
+#X connect 10 0 5 0;
+#X connect 11 0 1 0;
+#X connect 15 0 11 0;
+#X connect 16 0 11 0;
+#X connect 21 0 11 0;

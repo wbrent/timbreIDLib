@@ -1,0 +1,79 @@
+#N canvas 233 93 762 662 10;
+#X declare -lib timbreID/timbreIDLib;
+#X msg 124 266 clear;
+#X msg 150 322 length 7;
+#X text 304 556 To clear memory \, send the "clear" message. Note that
+changing the expected list length with the "length" message automatically
+clears memory.;
+#X obj 52 173 bfcc~;
+#X obj 127 74 tgl 15 0 empty empty Analyze 17 7 0 12 -262144 -1 -1
+0 1;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array \$0-bw-graph 250 float 0;
+#X coords 0 1 249 -1 400 140 1 0 0;
+#X restore 306 75 graph;
+#X text 50 493 Also see:;
+#X obj 52 510 featureAccum;
+#X msg 140 292 num_frames 6;
+#X obj 52 427 list prepend 0;
+#X obj 81 215 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 81 235 spew \$1;
+#X obj 52 50 adc~;
+#X obj 127 125 t b b;
+#X obj 171 152 f;
+#X obj 201 152 + 1;
+#X msg 229 57 0;
+#X obj 229 37 select 4;
+#X text 304 511 Creation arguments are the number of frames to expect
+\, the length of the feature \, and a flag for "spew" mode.;
+#X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X msg 166 353 print;
+#X obj 52 394 binWrangler 5 50 0;
+#X obj 52 450 s \$0-bw-graph;
+#X text 304 243 [binWrangler] accumulates a database of lists sent
+to its inlet. Its purpose in the timbreID library is to take in several
+frames of a feature vector (like BFCCs) \, then output the time varying
+information ordered by bin number. The features in all frames must
+be of a common length N \, specified at creation time \, or with the
+"length" message. It's ok for length to be 1 \, but [featureAccum]
+would be the better object for that case.;
+#X text 304 442 If the optional "spew" mode is activated \, featureAccum
+outputs the total concatenated list each time it receives a new analysis
+frame. It acts as a sliding buffer for time-based feature capture \,
+organized by bin number.;
+#X text 24 587 Updated for timbreID version 0.7;
+#X obj 127 104 metro 20;
+#X text 304 355 After the specified number of frames have been accumulated
+\, [binWrangler] outputs a concatenated list containing the columns
+of the database from top to bottom \, left to right \, and clears internal
+memory. To see this behavior \, click the "Analyze" toggle at left
+(DSP must be on). It automatically shuts off after 5 frames of analysis
+are taken.;
+#X text 24 607 July 2017;
+#X obj 26 629 declare -lib timbreID/timbreIDLib;
+#X obj 52 550 featureNorm;
+#X obj 52 530 featureDelta;
+#X connect 0 0 22 0;
+#X connect 1 0 22 0;
+#X connect 3 0 22 0;
+#X connect 4 0 27 0;
+#X connect 8 0 22 0;
+#X connect 9 0 23 0;
+#X connect 10 0 11 0;
+#X connect 11 0 22 0;
+#X connect 12 0 3 0;
+#X connect 13 0 3 0;
+#X connect 13 1 14 0;
+#X connect 14 0 15 0;
+#X connect 14 0 17 0;
+#X connect 15 0 14 1;
+#X connect 16 0 14 1;
+#X connect 16 0 4 0;
+#X connect 17 0 16 0;
+#X connect 21 0 22 0;
+#X connect 22 0 9 0;
+#X connect 27 0 13 0;

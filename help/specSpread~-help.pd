@@ -1,0 +1,242 @@
+#N canvas 213 116 895 483 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 119 201 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X floatatom 50 433 10 0 0 0 - - -;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 635 97 641 497 other-settings 0;
+#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 0;
+#X msg 54 106 window_function \$1;
+#X msg 155 247 power_spectrum \$1;
+#X obj 155 229 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 54 415 outlet;
+#X text 296 247 Use power spectrum. (default: magnitude);
+#X msg 215 305 print;
+#X msg 104 168 overlap 2;
+#X text 185 156 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X text 52 49 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 6 0 4 0;
+#X connect 7 0 4 0;
+#X restore 221 338 pd other-settings;
+#X text 626 403 Updated for timbreID version 0.7;
+#X obj 592 348 timbreID;
+#X text 425 283 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 425 193 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two.;
+#X text 190 400 Creation argument is window size in samples;
+#X msg 185 296 window 2000;
+#X text 171 224 Bang continuously;
+#X obj 150 225 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 183 278 Change window size;
+#X obj 150 247 metro 100;
+#X text 116 182 Bang to output spread;
+#X floatatom 50 53 5 0 127 1 Bandwidth - -;
+#N canvas 0 50 890 505 phase-aligned-formant 0;
+#X obj 109 341 cos~;
+#X obj 109 318 *~;
+#X obj 152 341 cos~;
+#X obj 207 286 wrap~;
+#X obj 171 286 -~;
+#X obj 152 318 +~;
+#X obj 145 371 -~;
+#X obj 165 403 *~;
+#X obj 127 403 +~;
+#X obj 171 254 samphold~;
+#X obj 171 121 line~;
+#X obj 171 98 pack 0 50;
+#X obj 62 197 phasor~;
+#X floatatom 62 103 4 0 127 0 - - -;
+#X text 53 64 fundamental;
+#X obj 369 188 line~;
+#X obj 280 317 *~;
+#X obj 369 165 pack 0 50;
+#N canvas 94 264 600 388 make-table 0;
+#X msg 81 44 bang;
+#X obj 81 73 t b b;
+#X obj 159 142 f;
+#X obj 197 142 + 1;
+#X msg 175 112 0;
+#X obj 81 102 until;
+#X obj 161 177 t f f;
+#X obj 52 270 expr exp(-$f1*$f1);
+#X obj 63 168 sel 199;
+#X obj 51 241 expr ($f1-100)/25;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-bell-curve 200 float 1;
+#A 0 1.12535e-07 1.54727e-07 2.12059e-07 2.89706e-07 3.94519e-07 5.35535e-07
+7.24633e-07 9.77371e-07 1.31404e-06 1.76105e-06 2.35258e-06 3.13275e-06
+4.15832e-06 5.50199e-06 7.25659e-06 9.54016e-06 1.25023e-05 1.63317e-05
+2.1266e-05 2.76026e-05 3.57128e-05 4.60584e-05 5.92113e-05 7.58768e-05
+9.69224e-05 0.00012341 0.000156634 0.000198167 0.000249912 0.000314163
+0.000393669 0.000491721 0.000612231 0.000759842 0.000940028 0.00115923
+0.00142498 0.00174605 0.00213263 0.00259648 0.00315111 0.00381201 0.00459678
+0.0055254 0.0066204 0.00790705 0.0094136 0.0111714 0.013215 0.0155826
+0.0183156 0.0214592 0.0250621 0.0291763 0.0338573 0.0391639 0.0451575
+0.0519019 0.0594631 0.0679081 0.0773047 0.0877205 0.0992216 0.111872
+0.125732 0.140858 0.1573 0.1751 0.194291 0.214896 0.236928 0.260383
+0.285247 0.311486 0.339053 0.367879 0.397882 0.428956 0.46098 0.493812
+0.527292 0.561244 0.595473 0.62977 0.663916 0.697676 0.730811 0.763074
+0.794216 0.823987 0.852144 0.878447 0.902668 0.924595 0.944027 0.960789
+0.974725 0.985703 0.99362 0.998401 1 0.998401 0.99362 0.985703 0.974725
+0.960789 0.944027 0.924595 0.902668 0.878447 0.852144 0.823987 0.794216
+0.763074 0.730811 0.697676 0.663916 0.62977 0.595473 0.561244 0.527292
+0.493812 0.46098 0.428956 0.397882 0.367879 0.339053 0.311486 0.285247
+0.260383 0.236928 0.214896 0.194291 0.1751 0.1573 0.140858 0.125732
+0.111872 0.0992216 0.0877205 0.0773047 0.0679081 0.0594631 0.0519019
+0.0451575 0.0391639 0.0338573 0.0291763 0.0250621 0.0214592 0.0183156
+0.0155826 0.013215 0.0111714 0.0094136 0.00790705 0.0066204 0.0055254
+0.00459678 0.00381201 0.00315111 0.00259648 0.00213263 0.00174605 0.00142498
+0.00115923 0.000940028 0.000759842 0.000612231 0.000491721 0.000393669
+0.000314163 0.000249912 0.000198167 0.000156634 0.00012341 9.69224e-05
+7.58768e-05 5.92113e-05 4.60584e-05 3.57128e-05 2.76026e-05 2.1266e-05
+1.63317e-05 1.25023e-05 9.54016e-06 7.25659e-06 5.50199e-06 4.15832e-06
+3.13275e-06 2.35258e-06 1.76105e-06 1.31404e-06 9.77371e-07 7.24633e-07
+5.35535e-07 3.94519e-07 2.89706e-07 2.12059e-07 1.54727e-07;
+#X coords 0 1 199 0 200 140 1 0 0;
+#X restore 342 85 graph;
+#X obj 76 306 tabwrite \$0-bell-curve;
+#X connect 0 0 1 0;
+#X connect 1 0 5 0;
+#X connect 1 1 4 0;
+#X connect 2 0 3 0;
+#X connect 2 0 6 0;
+#X connect 2 0 8 0;
+#X connect 3 0 2 1;
+#X connect 4 0 2 1;
+#X connect 5 0 2 0;
+#X connect 6 0 9 0;
+#X connect 6 1 11 1;
+#X connect 7 0 11 0;
+#X connect 8 0 5 1;
+#X connect 9 0 7 0;
+#X restore 518 380 pd make-table;
+#X obj 280 291 cos~;
+#X obj 280 266 -~ 0.25;
+#X obj 280 343 +~ 100;
+#X obj 166 432 *~;
+#X text 312 391 waveshaper;
+#X obj 62 127 mtof;
+#X obj 193 146 expr 1/$f1;
+#X obj 171 64 mtof;
+#X obj 171 170 *~;
+#X obj 369 139 mtof;
+#X obj 369 224 *~;
+#X obj 369 248 *~ 25;
+#X text 409 223 divide by fundamental;
+#X text 427 247 range for table;
+#X text 346 342 offset to middle of table;
+#X text 178 192 C.F. relative;
+#X text 179 208 to fundamental;
+#X text 51 79 (MIDI units);
+#X text 202 430 ring mod;
+#X obj 280 241 *~ 0.5;
+#X obj 280 366 tabread4~ \$0-bell-curve;
+#X text 494 53 This is taken straight from Pd's built-in documentation
+\, F13.paf.control.pd;
+#X obj 166 454 outlet~;
+#X obj 369 112 inlet;
+#X obj 50 21 loadbang;
+#X msg 50 43 36;
+#X obj 171 17 loadbang;
+#X msg 171 39 60;
+#X connect 0 0 6 1;
+#X connect 0 0 8 0;
+#X connect 1 0 5 0;
+#X connect 1 0 0 0;
+#X connect 2 0 6 0;
+#X connect 3 0 4 1;
+#X connect 3 0 7 1;
+#X connect 4 0 1 1;
+#X connect 5 0 2 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 1;
+#X connect 8 0 22 0;
+#X connect 9 0 4 0;
+#X connect 9 0 3 0;
+#X connect 10 0 27 0;
+#X connect 11 0 10 0;
+#X connect 12 0 9 1;
+#X connect 12 0 1 0;
+#X connect 12 0 5 1;
+#X connect 12 0 38 0;
+#X connect 13 0 24 0;
+#X connect 15 0 29 0;
+#X connect 16 0 21 0;
+#X connect 17 0 15 0;
+#X connect 19 0 16 0;
+#X connect 20 0 19 0;
+#X connect 21 0 39 0;
+#X connect 22 0 41 0;
+#X connect 24 0 25 0;
+#X connect 24 0 12 0;
+#X connect 25 0 27 1;
+#X connect 25 0 29 1;
+#X connect 26 0 11 0;
+#X connect 27 0 9 0;
+#X connect 28 0 17 0;
+#X connect 29 0 30 0;
+#X connect 30 0 16 1;
+#X connect 38 0 20 0;
+#X connect 39 0 22 1;
+#X connect 42 0 28 0;
+#X connect 43 0 44 0;
+#X connect 44 0 13 0;
+#X connect 45 0 46 0;
+#X connect 46 0 26 0;
+#X restore 50 77 pd phase-aligned-formant;
+#N canvas 190 207 227 296 volume 0;
+#X obj 46 24 inlet~;
+#X obj 46 159 *~;
+#X obj 64 93 dbtorms;
+#X obj 64 135 line~;
+#X obj 46 234 dac~;
+#X obj 64 72 inlet;
+#X obj 64 115 pack f 40;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 1 0 4 1;
+#X connect 2 0 6 0;
+#X connect 3 0 1 1;
+#X connect 5 0 2 0;
+#X connect 6 0 3 0;
+#X restore 70 131 pd volume;
+#X floatatom 121 112 5 0 100 1 dB - -;
+#X text 425 71 Spectral spread is a measure of the concentration of
+a spectrum's energy around its centroid. It is reported in units of
+Hz. A sinusoid will have a very low spread value because all of the
+energy in its spectrum is in one place. Noise will have a high spread.
+Try changing the bandwidth of the phase-aligned-formant at left \,
+listening as you change it. The reported spread will be greater with
+a higher bandwidth.;
+#X obj 50 400 specSpread~ 4096;
+#X text 626 423 July 2017;
+#X obj 628 445 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 21 0;
+#X connect 4 0 21 0;
+#X connect 10 0 21 0;
+#X connect 12 0 14 0;
+#X connect 14 0 21 0;
+#X connect 16 0 17 0;
+#X connect 17 0 18 0;
+#X connect 17 0 21 0;
+#X connect 19 0 18 1;
+#X connect 21 0 1 0;

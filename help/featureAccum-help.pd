@@ -1,0 +1,118 @@
+#N canvas 208 172 842 705 10;
+#X declare -lib timbreID/timbreIDLib;
+#X msg 149 288 clear;
+#X text 382 482 To clear memory \, send the "clear" message. Note that
+changing the expected list length with the "length" message automatically
+clears memory.;
+#X obj 60 65 adc~;
+#X obj 125 88 tgl 15 0 empty empty Analyze 17 7 0 12 -262144 -1 -1
+0 1;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array \$0-facc-graph 50 float 0;
+#X coords 0 0.25 49 0 400 140 1 0 0;
+#X restore 384 78 graph;
+#X obj 130 643 binWrangler;
+#X text 58 623 Also see:;
+#X obj 60 538 list prepend 0;
+#X msg 189 328 length 7;
+#X obj 89 208 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 89 228 spew \$1;
+#X obj 125 107 metro 100;
+#X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 60 561 s \$0-facc-graph;
+#X msg 209 348 print;
+#X text 596 635 Updated for timbreID version 0.7.6;
+#X text 596 655 August 2018;
+#X obj 183 459 list length;
+#X obj 183 480 change;
+#X obj 183 501 pack f \$0;
+#X obj 60 421 t l l;
+#X msg 183 523 \; \$2-facc-graph resize \$1 \;;
+#X obj 60 176 barkSpec~;
+#X msg 169 308 num_frames 6;
+#X obj 60 400 featureAccum 5 50 1 concat;
+#N canvas 769 348 830 445 change-modes 0;
+#X obj 53 383 outlet;
+#X msg 53 37 mode concat;
+#X msg 103 97 mode sum;
+#X msg 193 197 mode mean;
+#X msg 283 297 mode sma;
+#X text 145 10 In "concat" mode \, feature frames are accumulated until
+the desired number (num_frames) have been taken in \, and then output
+as a single concatenated list. If the "spew" feature is active \, the
+concatenated list is output after each new input frame.;
+#X msg 123 117 sum;
+#X msg 213 217 mean;
+#X text 185 80 In "sum" mode \, incoming feature frames are accumulated
+into a single buffer that continues to grow. The "num_frames" parameter
+is irrelevant in this mode \, and the current accumulated sum is only
+output when a "sum" message is received \, or upon each new input frame
+if the "spew" feature is active.;
+#X msg 223 237 clear;
+#X text 285 180 The "mean" mode behaves similarly to "sum" mode \,
+except that the running mean is output when a "mean" message is received.
+A "clear" message will fill the summing buffer to zeros and reset the
+running count of frames that is used to compute the mean.;
+#X text 423 286 A simple moving average can be computed using "sma"
+mode. In this mode \, the "spew" feature is irrelevant \, and the mean
+of the most recent "num_frames" feature frames is output upon each
+new input frame. To get a more reactive simple moving average output
+\, reduce the num_frames setting. Use a higher num_frames setting if
+you want less reactive output.;
+#X msg 303 317 num_frames 3;
+#X msg 313 337 num_frames 15;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X connect 9 0 0 0;
+#X connect 12 0 0 0;
+#X connect 13 0 0 0;
+#X restore 119 258 pd change-modes;
+#X text 382 368 See more details about the behavior of the "concat"
+\, "sum" \, "mean" \, and "sma" modes in the [pd change-modes] subpatch
+at left.;
+#X text 382 422 If the optional "spew" feature is activated in the
+default "concat" mode \, featureAccum outputs the total concatenated
+list each time it receives a new analysis frame. It acts as a sliding
+buffer for time-based feature capture.;
+#X text 227 257 << see inside;
+#X text 382 532 Creation arguments are the number of frames to expect
+\, the length of the feature \, a flag for "spew" \, and a symbolic
+mode argument ("concat" \, "sum" \, "mean" \, or "sma"). For backwards
+compatibility \, the default mode is "concat" \, as [featureAccum]
+did not have other modes before timbreID version 0.7.6.;
+#X obj 597 677 declare -lib timbreID/timbreIDLib;
+#X obj 130 623 featureNorm;
+#X text 382 274 [featureAccum] accumulates a database of lists sent
+to its inlet. Its purpose in the timbreID library is to take in several
+frames of a feature \, then output them as a single concatenated list
+\, a running sum \, a running mean \, or a simple moving average. The
+features in all frames must be of a common length N \, specified at
+creation time \, or with the "length" message. A length of 1 is allowed.
+;
+#X obj 131 603 featureDelta;
+#X connect 0 0 25 0;
+#X connect 2 0 23 0;
+#X connect 3 0 11 0;
+#X connect 7 0 14 0;
+#X connect 8 0 25 0;
+#X connect 9 0 10 0;
+#X connect 10 0 25 0;
+#X connect 11 0 23 0;
+#X connect 15 0 25 0;
+#X connect 18 0 19 0;
+#X connect 19 0 20 0;
+#X connect 20 0 22 0;
+#X connect 21 0 7 0;
+#X connect 21 1 18 0;
+#X connect 23 0 25 0;
+#X connect 24 0 25 0;
+#X connect 25 0 21 0;
+#X connect 26 0 25 0;

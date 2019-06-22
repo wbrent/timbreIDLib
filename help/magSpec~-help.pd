@@ -1,0 +1,98 @@
+#N canvas 333 81 957 589 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-magSpec-graph 513 float 0;
+#X coords 0 0.25 512 0 200 140 1 0 0;
+#X restore 483 310 graph;
+#X obj 137 171 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 439 85 762 479 other-settings 0;
+#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 4;
+#X msg 54 106 window_function \$1;
+#X obj 110 148 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 110 166 normalize \$1;
+#X msg 153 226 power_spectrum \$1;
+#X obj 153 208 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 54 415 outlet;
+#X text 216 166 Normalize spectrum (default: ON);
+#X text 294 226 Use power spectrum. (default: magnitude);
+#X msg 275 329 print;
+#X text 325 331 Print current settings in the post window;
+#X text 52 49 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X msg 221 277 overlap 2;
+#X text 302 265 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X connect 0 0 1 0;
+#X connect 1 0 6 0;
+#X connect 2 0 3 0;
+#X connect 3 0 6 0;
+#X connect 4 0 6 0;
+#X connect 5 0 4 0;
+#X connect 9 0 6 0;
+#X connect 12 0 6 0;
+#X restore 217 300 pd other-settings;
+#X obj 57 72 adc~;
+#X text 32 507 Updated for timbreID version 0.7;
+#X msg 173 243 window 2000;
+#X text 268 236 Change analysis window size, f 17;
+#X obj 648 536 timbreID;
+#X text 161 170 Bang repeatedly to keep refreshing...;
+#X text 481 471 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X obj 137 190 metro 100;
+#X text 180 382 Creation argument is window size in samples, f 23
+;
+#X obj 57 387 magSpec~ 1024;
+#X text 105 115 Bang to output magnitude spectrum as a list;
+#N canvas 202 174 463 267 do-plotting 0;
+#X obj 79 37 inlet;
+#X obj 79 173 list prepend 0;
+#X obj 233 116 list length;
+#X obj 233 138 change;
+#X obj 233 160 pack f \$0;
+#X obj 79 59 t l l;
+#X obj 79 194 s \$0-magSpec-graph;
+#X msg 233 181 \; \$2-magSpec-graph resize \$1 \;;
+#X connect 0 0 5 0;
+#X connect 1 0 6 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 7 0;
+#X connect 5 0 1 0;
+#X connect 5 1 2 0;
+#X restore 57 437 pd do-plotting;
+#X text 32 527 July 2017;
+#X text 481 191 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two.;
+#X text 481 54 Magnitude spectrum can be measured with a combination
+of basic Pd objects like fft~ \, *~ \, and sqrt~. However \, those
+objects compute continuously \, and the final output is a signal vector.
+magSpec~ does nothing until it receives a bang \, then it spits out
+the magnitude spectrum for the most recent analysis window as a list.
+The length of the magnitude spectrum list will be one half of the specified
+window size plus one (N/2+1). magSpec~'s output is normalized to be
+between 0 and 1 by default.;
+#X obj 33 549 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 15 0;
+#X connect 2 0 13 0;
+#X connect 5 0 15 0;
+#X connect 6 0 15 0;
+#X connect 8 0 15 0;
+#X connect 13 0 15 0;
+#X connect 15 0 17 0;

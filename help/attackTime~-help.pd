@@ -1,0 +1,222 @@
+#N canvas 165 145 1058 671 10;
+#X declare -lib timbreID/timbreIDLib;
+#X floatatom 71 484 10 0 0 1 ms - -;
+#X obj 5 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 5 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 290 222 1062 539 other-settings 0;
+#X obj 54 465 outlet;
+#X msg 325 337 print;
+#X msg 54 38 overlap 2;
+#X text 135 26 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X msg 125 107 window 2000;
+#X msg 175 156 max_search_range 1000;
+#X text 457 220 Specify the sample magnitude threshold that the signal
+must fall below to locate the initial onset. (default: 0.005);
+#X msg 275 276 onset_num_samps_thresh 20;
+#X text 396 337 Print the internal settings to the post window;
+#X obj 363 374 loadbang;
+#X msg 363 394 onset_samp_mag_thresh 0;
+#X msg 373 414 onset_samp_mag_thresh 0.005;
+#X text 486 264 Specify the number of consecutive samples for which
+the signal must stay below the magnitude threshold in order to find
+the initial onset. (default: 10);
+#X text 583 384 Here \, the mag thresh is set to zero since the default
+input is a synthesized noise burst. If you use the mic input \, set
+the mag thresh to around 0.005 \, or whatever suits your microphone.
+;
+#X text 343 138 Specify the maximum time in milliseconds before the
+peak sample of an attack to search for the initial onset. This determines
+the size of the internal buffer and is separate from the analysis window
+size (default: 2000ms);
+#X text 236 106 Change analysis window size.;
+#X msg 225 226 onset_samp_mag_thresh 0.0025;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 7 0 0 0;
+#X connect 9 0 10 0;
+#X connect 10 0 0 0;
+#X connect 11 0 0 0;
+#X connect 16 0 0 0;
+#X restore 182 289 pd other-settings;
+#X text 787 596 Updated for timbreID version 0.7;
+#X obj 763 538 timbreID;
+#X text 596 480 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 787 616 July 2017;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-attackSegment 150 float 0;
+#X coords 0 1 149 -1 200 140 1 0 0;
+#X restore 326 170 graph;
+#X text 151 157 When an onset is found \, bang to output attack time
+in milliseconds, f 18;
+#X floatatom 144 410 10 0 0 0 - - -;
+#X floatatom 234 410 10 0 0 0 - - -;
+#N canvas 887 358 636 416 plot-attack-segment 0;
+#X obj 115 35 inlet;
+#X obj 244 35 inlet;
+#X obj 134 175 pack f f \$0;
+#X obj 134 262 tabletool \$0-attackSegment;
+#X obj 426 197 + 1;
+#X obj 426 219 pack f \$0;
+#X msg 426 241 \; \$2-attackSegment resize \$1;
+#X obj 426 153 -;
+#X obj 426 175 abs;
+#X obj 115 77 t b f f;
+#X obj 48 307 f \$0;
+#X msg 48 329 \; \$1-attackSegment normalize 0.8 \;;
+#X msg 134 221 copy_range 0 \$3-sampleBuffer-graph \$1 \$2;
+#X connect 0 0 9 0;
+#X connect 1 0 7 1;
+#X connect 1 0 2 1;
+#X connect 2 0 12 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 7 0 8 0;
+#X connect 8 0 4 0;
+#X connect 9 0 10 0;
+#X connect 9 1 2 0;
+#X connect 9 2 7 0;
+#X connect 10 0 11 0;
+#X connect 12 0 3 0;
+#X restore 144 447 pd plot-attack-segment;
+#X text 186 491 Outlet 1: attack time in milliseconds;
+#X text 186 511 Outlet 2: attack onset starting sample index;
+#X text 186 531 Outlet 3: attack onset peak sample index;
+#N canvas 713 346 570 417 onsets 0;
+#X obj 56 53 inlet~;
+#X obj 176 347 outlet;
+#X obj 3 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 208 193 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 259 96 loadbang;
+#X obj 56 335 outlet~;
+#X obj 176 155 bark~ 4096 1024 0.5;
+#X msg 259 119 minvel 50 \, debounce 200 \, thresh -1 20;
+#X connect 0 0 6 0;
+#X connect 0 0 7 0;
+#X connect 5 0 8 0;
+#X connect 7 0 4 0;
+#X connect 7 0 1 0;
+#X connect 8 0 7 0;
+#X restore 71 185 pd onsets;
+#N canvas 579 85 606 431 sample-buffer 0;
+#X obj 78 38 inlet~;
+#X obj 78 230 outlet~;
+#X obj 298 38 inlet;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-sampleBuffer-graph 88264 float 0;
+#X coords 0 1 88263 -1 200 140 1 0 0;
+#X restore 319 116 graph;
+#N canvas 205 170 462 302 do-plotting 0;
+#X obj 79 37 inlet;
+#X obj 79 203 list prepend 0;
+#X obj 203 116 list length;
+#X obj 203 138 change;
+#X obj 203 160 pack f \$0;
+#X obj 79 59 t l l;
+#X obj 79 224 s \$0-sampleBuffer-graph;
+#X msg 203 181 \; \$2-sampleBuffer-graph resize \$1 \;;
+#X connect 0 0 5 0;
+#X connect 1 0 6 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 7 0;
+#X connect 5 0 1 0;
+#X connect 5 1 2 0;
+#X restore 146 169 pd do-plotting;
+#X obj 146 125 sampleBuffer~ 88264;
+#X text 110 298 This uses [sampleBuffer~] to grab the same audio contained
+by [attackTime~]'s internal buffer \, based on max_search_range. max_search_range
+is 2000ms by default \, so the buffer is two full seconds of samples
+\, plus a block of samples = 88264;
+#X connect 0 0 1 0;
+#X connect 0 0 5 0;
+#X connect 2 0 5 0;
+#X connect 5 0 4 0;
+#X restore 71 234 pd sample-buffer;
+#X obj 71 361 attackTime~ 4096;
+#N canvas 0 81 378 323 synth-burst 0;
+#X obj 176 19 inlet;
+#X obj 106 249 outlet~;
+#X obj 106 99 *~;
+#X obj 106 69 noise~;
+#X msg 176 70 0 \, 0.6 \$1 \, 0 100 \$1;
+#X obj 176 92 vline~;
+#X obj 149 185 *~ 0.15;
+#X obj 149 207 dac~;
+#X obj 176 114 *~;
+#X connect 0 0 4 0;
+#X connect 2 0 1 0;
+#X connect 2 0 6 0;
+#X connect 3 0 2 0;
+#X connect 4 0 5 0;
+#X connect 5 0 8 0;
+#X connect 5 0 8 1;
+#X connect 6 0 7 0;
+#X connect 6 0 7 1;
+#X connect 8 0 2 1;
+#X restore 71 87 pd synth-burst;
+#X msg 71 27 5;
+#X msg 111 27 20;
+#X msg 151 27 37;
+#X floatatom 71 69 5 0 0 1 ms - -;
+#X msg 37 27 2;
+#X text 596 370 Look inside [pd other-settings] for more information
+regarding analysis parameters.;
+#X msg 191 27 70;
+#X text 596 24 When [attackTime~] receives a bang \, it locates the
+peak sample in the current analysis window \, and searches back through
+its internal buffer to find the point where sample magnitude remains
+near zero for several consecutive samples. The number of samples between
+the attack onset and attack peak is used to calculate the attack time
+in milliseconds. Attack time is an important timbre feature.;
+#X text 212 361 Creation argument sets analysis window size in samples
+;
+#X text 596 124 [attackTime~] does not contain an onset detector \,
+so you must use either [bonk~] \, [bark~] \, or even [maxSampleDelta~]
+to identify onsets. Use onset identification to determine the precise
+moment to analyze for attack time. It makes sense to keep the window
+size of your onset detection object the same as that of [attackTime~].
+Here \, [bark~] is used in a series-connected subpatch so that attack
+detection processing is done prior to attack time analysis. When the
+attack time algorithm runs successfully (not necessarily accurately!)
+\, it returns the attack time in milliseconds \, and the attack onset
+and peak locations (in samples) within its buffer. Here \, this information
+is used to graph just the attack segment of each new sound event. When
+[attackTime~]'s algorithm runs unsuccessfully (perhaps because it never
+finds enough consecutive samples below the magnitude threshold) \,
+it returns an attack time of -1 to signal failure. This method is only
+appropriate for measuring sound events that are separated by near silence.
+;
+#X text 596 410 Audio buffering is taken care of by the external \,
+so there is no need for [block~]. You can set the window size with
+a creation argument \, or change it with the "window" message. Window
+size is not required to be a power of two.;
+#X obj 21 635 declare -lib timbreID/timbreIDLib;
+#X connect 3 0 18 0;
+#X connect 10 0 12 0;
+#X connect 11 0 12 1;
+#X connect 16 0 17 0;
+#X connect 16 1 17 1;
+#X connect 16 1 18 0;
+#X connect 17 0 18 0;
+#X connect 18 0 0 0;
+#X connect 18 1 10 0;
+#X connect 18 2 11 0;
+#X connect 19 0 16 0;
+#X connect 20 0 23 0;
+#X connect 21 0 23 0;
+#X connect 22 0 23 0;
+#X connect 23 0 19 0;
+#X connect 24 0 23 0;
+#X connect 26 0 23 0;

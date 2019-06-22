@@ -1,0 +1,97 @@
+#N canvas 191 77 842 681 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 60 65 adc~;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array \$0-fnorm-graph 3 float 2;
+#X coords 0 1.1 3 -1.1 200 140 1 0 0;
+#X restore 422 231 graph;
+#X text 58 623 Also see:;
+#X msg 128 294 length 7;
+#X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X msg 148 314 print;
+#X obj 597 637 declare -lib timbreID/timbreIDLib;
+#X text 596 595 Updated for timbreID version 0.7.9;
+#X text 596 615 June 2019;
+#X obj 130 643 binWrangler;
+#X obj 130 603 featureAccum;
+#X obj 60 116 bfcc~;
+#X obj 60 137 list split 3;
+#X obj 121 61 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X msg 108 244 mode \$1;
+#X obj 108 224 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 155 423 0 0 0;
+#X msg 255 423 0.9 0.7 0.2;
+#X obj 60 480 featureNorm 3 0;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array \$0-raw-graph 3 float 2;
+#X coords 0 1.1 3 -1.1 200 140 1 0 0;
+#X restore 422 61 graph;
+#N canvas 414 281 450 300 plot-raw 0;
+#X obj 37 37 inlet;
+#X obj 37 194 list prepend 0;
+#X obj 160 115 list length;
+#X obj 160 136 change;
+#X obj 160 157 pack f \$0;
+#X obj 37 77 t l l;
+#X obj 37 217 s \$0-raw-graph;
+#X msg 160 179 \; \$2-raw-graph resize \$1 \;;
+#X connect 0 0 5 0;
+#X connect 1 0 6 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 7 0;
+#X connect 5 0 1 0;
+#X connect 5 1 2 0;
+#X restore 80 168 pd plot-raw;
+#N canvas 648 548 450 300 plot-normalized 0;
+#X obj 37 37 inlet;
+#X obj 37 194 list prepend 0;
+#X obj 160 115 list length;
+#X obj 160 136 change;
+#X obj 160 157 pack f \$0;
+#X obj 37 77 t l l;
+#X msg 160 179 \; \$2-fnorm-graph resize \$1 \;;
+#X obj 37 217 s \$0-fnorm-graph;
+#X connect 0 0 5 0;
+#X connect 1 0 7 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 6 0;
+#X connect 5 0 1 0;
+#X connect 5 1 2 0;
+#X restore 60 531 pd plot-normalized;
+#X text 420 514 Creation arguments are the length of the feature and
+a flag for -1 to 1 normalization rather than the default 0 to 1 normalization.
+;
+#X obj 155 396 loadbang;
+#X text 140 217 mode 1: -1 to 1 normalization;
+#X text 140 197 mode 0: 0 to 1 normalization;
+#X text 420 466 Provide minimum value and maximum value lists in the
+2nd and 3rd inlets. These lists can be obtained from [timbreID] using
+the "min_values" and "max_values" methods.;
+#X text 152 363 Provide feature minimum and maximum attribute lists.
+, f 29;
+#X text 420 396 [featureNorm] takes in raw feature lists and normalizes
+each attribute to be between 0 and 1 (or optionally \, -1 and 1). Incoming
+features must be of a common length N \, specified at creation time
+\, or with the "length" message. A length of 1 is allowed.;
+#X obj 130 623 featureDelta;
+#X connect 0 0 12 0;
+#X connect 3 0 19 0;
+#X connect 6 0 19 0;
+#X connect 12 0 13 0;
+#X connect 13 0 19 0;
+#X connect 13 0 21 0;
+#X connect 14 0 12 0;
+#X connect 15 0 19 0;
+#X connect 16 0 15 0;
+#X connect 17 0 19 1;
+#X connect 18 0 19 2;
+#X connect 19 0 22 0;
+#X connect 24 0 17 0;
+#X connect 24 0 18 0;

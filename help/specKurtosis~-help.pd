@@ -1,0 +1,90 @@
+#N canvas 280 81 898 483 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 119 201 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X floatatom 50 433 10 0 0 0 - - -;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 635 97 609 497 other-settings 0;
+#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 0;
+#X msg 54 106 window_function \$1;
+#X msg 155 247 power_spectrum \$1;
+#X obj 155 229 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 54 415 outlet;
+#X text 296 247 Use power spectrum. (default: magnitude);
+#X msg 215 305 print;
+#X msg 104 168 overlap 2;
+#X text 185 156 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X text 52 49 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 6 0 4 0;
+#X connect 7 0 4 0;
+#X restore 221 338 pd other-settings;
+#X text 626 407 Updated for timbreID version 0.7;
+#X obj 592 305 timbreID;
+#X text 425 240 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 425 150 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two.;
+#X text 190 400 Creation argument is window size in samples;
+#X msg 185 296 window 2000;
+#X obj 50 400 specKurtosis~ 1024;
+#X text 171 224 Bang continuously;
+#X obj 150 225 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 50 44 noise~;
+#X obj 151 135 *~;
+#X obj 187 135 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 151 86 osc~ 880;
+#X obj 50 178 +~;
+#X floatatom 107 41 5 0 0 1 Q - -;
+#X obj 107 60 * 10;
+#X obj 50 135 *~;
+#X obj 86 135 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 425 60 Spectral kurtosis measures the peakedness of a spectrum.
+The kurtosis of a single sinusoid will be extremely high \, while that
+of noise will be extremely low. Raise the Q on the band-passed noise
+to make its spectrum more and more peaked and see how kurtosis reflects
+the changes.;
+#X text 183 278 Change window size;
+#X text 116 183 Bang to output kurtosis;
+#X obj 150 247 metro 100;
+#X text 626 427 July 2017;
+#X obj 50 108 bp~ 1000 1;
+#X obj 50 86 bp~ 1000 1;
+#X obj 627 451 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 11 0;
+#X connect 4 0 11 0;
+#X connect 10 0 11 0;
+#X connect 11 0 1 0;
+#X connect 13 0 26 0;
+#X connect 14 0 29 0;
+#X connect 15 0 18 1;
+#X connect 16 0 15 1;
+#X connect 17 0 15 0;
+#X connect 18 0 11 0;
+#X connect 19 0 20 0;
+#X connect 20 0 28 2;
+#X connect 20 0 29 2;
+#X connect 21 0 18 0;
+#X connect 22 0 21 1;
+#X connect 26 0 11 0;
+#X connect 28 0 21 0;
+#X connect 29 0 28 0;

@@ -1,0 +1,148 @@
+#N canvas 344 153 957 589 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-chroma-graph 12 float 2;
+#X coords 0 10 12 0 200 140 1 0 0;
+#X restore 483 310 graph;
+#X obj 137 171 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 439 85 859 721 other-settings 0;
+#X obj 54 76 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 4;
+#X msg 54 96 window_function \$1;
+#X obj 110 138 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 110 156 normalize \$1;
+#X msg 153 216 power_spectrum \$1;
+#X obj 153 198 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 54 665 outlet;
+#X msg 465 559 print;
+#X text 515 561 Print current settings in the post window;
+#X text 52 39 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X msg 221 267 overlap 2;
+#X text 302 255 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X text 216 156 Normalize pitch energy profile (default: OFF);
+#X text 294 216 Use power spectrum. (default: ON);
+#X msg 311 363 pitch_tolerance 0.5;
+#X text 460 365 pitch tolerance in MIDI units;
+#X msg 341 396 thresh 50;
+#X text 436 387 spectral energy threshold. energy below this thresh
+will not be accumulated into pitch energy profiles;
+#X msg 377 433 microtune -50;
+#X text 476 427 Microtonal offset in cents for adapting to tuning systems
+not centered on A-440, f 45;
+#X text 516 507 Use semitone \, half-semitone \, or third-semitone
+resolution for the pitch class profile output., f 49;
+#X msg 417 473 symbol full;
+#X msg 517 473 symbol half;
+#X msg 617 473 symbol third;
+#X msg 417 513 resolution \$1;
+#X text 431 326 analysis frequency range in Hz;
+#X msg 281 327 freq_range 100 2000;
+#X connect 0 0 1 0;
+#X connect 1 0 6 0;
+#X connect 2 0 3 0;
+#X connect 3 0 6 0;
+#X connect 4 0 6 0;
+#X connect 5 0 4 0;
+#X connect 7 0 6 0;
+#X connect 10 0 6 0;
+#X connect 14 0 6 0;
+#X connect 16 0 6 0;
+#X connect 18 0 6 0;
+#X connect 21 0 24 0;
+#X connect 22 0 24 0;
+#X connect 23 0 24 0;
+#X connect 24 0 6 0;
+#X connect 26 0 6 0;
+#X restore 217 300 pd other-settings;
+#X msg 173 243 window 2000;
+#X text 268 236 Change analysis window size, f 17;
+#X obj 648 556 timbreID;
+#X text 161 170 Bang repeatedly to keep refreshing...;
+#X text 481 491 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X obj 137 190 metro 100;
+#X text 105 115 Bang to output magnitude spectrum as a list;
+#X text 481 191 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two.;
+#X obj 33 549 declare -lib timbreID/timbreIDLib;
+#X text 32 507 Updated for timbreID version 0.7.9;
+#X text 32 527 June 2019;
+#X text 481 64 Pitch chroma indicates how much spectral energy is associated
+with each of the 12 pitch classes \, regardless of octave. By default
+\, [chroma~] produces a 12-element pitch class profile list indicating
+the amount of energy for pitches C through B. It can be used for chromagrams
+\, chord recognition \, and key estimation. For more information on
+pitch chroma \, check the literature on pitch class profiles.;
+#X text 481 154 Various aspects of the process can be adjusted with
+methods listed in [pd other-settings] at left.;
+#N canvas 948 307 726 541 get-most-present-pitch-class 0;
+#X obj 37 37 inlet;
+#X obj 103 312 list prepend 0;
+#X obj 103 333 s \$0-chroma-graph;
+#X msg 37 369 max;
+#X obj 37 390 tabletool \$0-chroma-graph;
+#X obj 266 447 list store;
+#X obj 333 386 loadbang;
+#X msg 266 421 get \$1 1;
+#X msg 333 407 C C-sharp D D-sharp E F F-sharp G G-sharp A A-sharp
+B;
+#X obj 266 468 outlet;
+#X obj 37 58 t b l l;
+#X obj 153 102 list length;
+#X obj 183 143 pack f \$0;
+#X msg 183 164 \; \$2-chroma-graph resize \$1 \;;
+#X obj 153 213 / 12;
+#X obj 266 377 /;
+#X obj 266 398 i;
+#X text 201 211 In "half" or "third" mode \, there are 24 or 36 elements
+in the HPCP \, so to locate the right pitch class symbol in the list
+below \, we need to divide the index by 2 or 3;
+#X connect 0 0 10 0;
+#X connect 1 0 2 0;
+#X connect 3 0 4 0;
+#X connect 4 1 15 0;
+#X connect 5 0 9 0;
+#X connect 6 0 8 0;
+#X connect 7 0 5 0;
+#X connect 8 0 5 1;
+#X connect 10 0 3 0;
+#X connect 10 1 1 0;
+#X connect 10 2 11 0;
+#X connect 11 0 12 0;
+#X connect 11 0 14 0;
+#X connect 12 0 13 0;
+#X connect 14 0 15 1;
+#X connect 15 0 16 0;
+#X connect 16 0 7 0;
+#X restore 57 447 pd get-most-present-pitch-class;
+#X symbolatom 57 468 10 0 0 0 - - -;
+#X obj 57 72 adc~;
+#X text 246 369 Creation arguments are: window size in samples \, low
+and high frequency bounds in MIDI units \, and a pitch tolerance in
+MIDI units., f 30;
+#X obj 57 387 chroma~ 4096 50 5000 0.1;
+#X connect 0 0 23 0;
+#X connect 2 0 11 0;
+#X connect 5 0 23 0;
+#X connect 6 0 23 0;
+#X connect 11 0 23 0;
+#X connect 19 0 20 0;
+#X connect 21 0 23 0;
+#X connect 23 0 19 0;

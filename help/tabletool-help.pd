@@ -1,0 +1,1092 @@
+#N canvas 238 232 810 471 10;
+#X declare -lib timbreID/timbreIDLib;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-table-1 32 float 1;
+#A 0 -0.900007 -0.207146 -0.0857167 -0.00476378 0.0761891 -0.4 -0.385714
+0.371429 0.442858 0.514287 0.685717 0.757146 0.828575 0.428572 0.085713
+0.628571 -0.457148 -0.58572 -0.68572 -0.200003 0.242857 0.400001 0.657145
+0.357143 -0.0857167 -0.600006 -0.742864 -0.385719 0.0571414 0.271428
+0.514287 0.642859;
+#X coords 0 1 31 -1 200 140 1 0 0;
+#X restore 55 57 graph;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-table-2 32 float 1;
+#A 0 0.757143 0.764286 0.771429 0.771429 0.771429 0.771429 0.771429
+0.771429 0.771429 0.771429 0.75 0.728572 0.628571 0.0285673 -0.600008
+-0.685723 -0.700009 -0.700009 -0.700009 -0.700009 -0.700009 -0.700009
+-0.700009 -0.700009 -0.700009 -0.700009 -0.700009 -0.700009 -0.700009
+-0.700009 -0.72858 -0.885724;
+#X coords 0 1 31 -1 200 140 1 0 0;
+#X restore 265 57 graph;
+#N canvas 546 124 851 704 multi-table-math 0;
+#X text 22 65 Dot product;
+#X text 22 85 Euclidean distance;
+#X text 22 105 Taxicab distance;
+#X text 22 125 Pearson correlation;
+#X text 67 354 Add value pairs by index., f 16;
+#X text 378 405 Multiply value pairs by index.;
+#X text 396 475 Divide value pairs by index.;
+#X text 23 17 These four functions operate between the active table
+and the table passed with the message.;
+#X text 58 278 These functions perform arithmetic on the active table
+and a table passed with the message. Results are sent out the right
+outlet as a list.;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-multi-math 32 float 0;
+#X coords 0 1 31 -1 200 140 1 0 0;
+#X restore 605 399 graph;
+#X obj 366 612 list prepend 0;
+#X obj 366 633 s \$0-multi-math;
+#X obj 231 577 tabletool \$0-table-1;
+#X msg 535 88 taxi \$1-table-2;
+#X msg 595 158 corr \$1-table-2;
+#X obj 535 48 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 535 68 f \$0;
+#X obj 595 118 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 595 138 f \$0;
+#X obj 265 48 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 265 68 f \$0;
+#X obj 325 118 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 325 138 f \$0;
+#X msg 265 88 dot \$1-table-2;
+#X msg 325 158 euclid \$1-table-2;
+#X obj 265 199 tabletool \$0-table-1;
+#X obj 535 199 tabletool \$0-table-1;
+#X floatatom 535 221 5 0 0 0 - - -;
+#X floatatom 265 221 5 0 0 0 - - -;
+#X obj 21 356 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 21 376 f \$0;
+#X msg 231 406 multiply \$1-table-2;
+#X msg 260 476 divide \$1-table-2;
+#X obj 153 614 list prepend 0;
+#X obj 153 635 s \$0-multi-math;
+#X obj 21 577 tabletool \$0-table-1;
+#X msg 21 396 add \$1-table-2;
+#X msg 40 466 subtract \$1-table-2;
+#X obj 40 426 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 40 446 f \$0;
+#X obj 231 366 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 231 386 f \$0;
+#X obj 260 436 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 260 456 f \$0;
+#X text 90 426 Subtract value pairs by index., f 15;
+#X text 61 500 NOTE: data from the table specified in the message is
+subtracted from the active table's data., f 22;
+#X text 290 500 NOTE: the active table's data is divided by data from
+the table specified in the message., f 24;
+#X connect 10 0 11 0;
+#X connect 12 1 10 0;
+#X connect 13 0 26 0;
+#X connect 14 0 26 0;
+#X connect 15 0 16 0;
+#X connect 16 0 13 0;
+#X connect 17 0 18 0;
+#X connect 18 0 14 0;
+#X connect 19 0 20 0;
+#X connect 20 0 23 0;
+#X connect 21 0 22 0;
+#X connect 22 0 24 0;
+#X connect 23 0 25 0;
+#X connect 24 0 25 0;
+#X connect 25 0 28 0;
+#X connect 26 0 27 0;
+#X connect 29 0 30 0;
+#X connect 30 0 36 0;
+#X connect 31 0 12 0;
+#X connect 32 0 12 0;
+#X connect 33 0 34 0;
+#X connect 35 1 33 0;
+#X connect 36 0 35 0;
+#X connect 37 0 35 0;
+#X connect 38 0 39 0;
+#X connect 39 0 37 0;
+#X connect 40 0 41 0;
+#X connect 41 0 31 0;
+#X connect 42 0 43 0;
+#X connect 43 0 32 0;
+#X restore 332 363 pd multi-table-math;
+#N canvas 140 390 1164 528 manipulations-1 0;
+#X msg 18 37 offset 1;
+#X msg 112 177 shift -5;
+#X msg 98 157 shift 5;
+#X msg 31 57 offset -0.1;
+#X text 88 36 Add a positive or negative offset to all values.;
+#X text 187 161 Shift elements by index forward or back. The overflow
+wraps around to the beginning or end appropriately.;
+#X msg 58 97 scale 0.5;
+#X msg 71 117 scale 2;
+#X text 136 97 Multiply all values by a scalar;
+#X text 136 339 Copy another table to the currently set table.;
+#X text 159 440 Copy part of another table to the currently set table.
+First argument is the starting index for writing to the target table.
+The remaining arguments are the table to copy from \, and the start
+and end indices of the desired range.;
+#X msg 672 344 normalize_sum;
+#X msg 632 284 normalize -1 1;
+#X msg 632 59 const 0.77 7 17;
+#X msg 682 170 insert 7 0.77;
+#X msg 122 211 shift0 5;
+#X text 195 211 Like shift \, but fill excess with zeros.;
+#X msg 662 119 remove 7;
+#X text 732 103 Remove the value at a certain index \, and send it
+out the left outlet. This shifts remaining elements left and writes
+a zero to the end.;
+#X text 791 166 Starting at a certain index \, insert a value. Remaining
+values are shifted right \, and the last value is shifted off of the
+table and sent out the left outlet.;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-table-3 64 float 1;
+#A 0 -0.485715 -0.457144 -0.400001 -0.400001 -0.400001 -0.428572 -0.542859
+-0.57143 -0.57143 -0.600002 -0.600002 -0.600002 -0.342857 -0.285714
+-0.114284 -0.0285697 0.0857168 0.0857168 0.0857168 0.0571452 0.0285736
+-0.0571413 -0.114284 -0.199999 -0.228571 -0.228571 -0.257142 -0.285714
+-0.285714 -0.285714 -0.285714 -0.285714 -0.257142 1.95205e-06 0.228575
+0.31429 0.428576 0.457148 0.457148 0.457148 0.457148 0.342861 0.285718
+0.228575 0.200003 0.200003 0.200003 0.200003 0.200003 0.200003 0.200003
+0.200003 0.200003 0.257146 0.285718 0.371433 0.514291 0.600006 0.628577
+0.628577 0.628577 0.628577 0.628577 0.514291;
+#X coords 0 1 63 -1 100 70 1 0 0;
+#X restore 400 72 graph;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-copy 32 float 0;
+#X coords 0 1 31 -1 100 70 1 0 0;
+#X restore 490 342 graph;
+#X obj 18 262 tabletool \$0-table-3;
+#X obj 18 458 tabletool \$0-copy;
+#X msg 18 340 copy \$1-table-2;
+#X obj 18 300 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 18 320 f \$0;
+#X obj 49 370 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 49 390 f \$0;
+#X msg 49 410 copy_range 25 \$1-table-1 0 3;
+#X obj 632 202 tabletool \$0-copy;
+#X obj 632 385 tabletool \$0-copy;
+#X text 631 26 Write a constant (\$1) to a range of the table from
+indices \$2 to \$3 \, inclusive.;
+#X text 744 283 Normalize to a range with a specified minimum (\$1)
+and maximum (\$2).;
+#X text 778 337 Normalize so that all values are between 0 and 1 \,
+and the sum equals 1;
+#X connect 0 0 22 0;
+#X connect 1 0 22 0;
+#X connect 2 0 22 0;
+#X connect 3 0 22 0;
+#X connect 6 0 22 0;
+#X connect 7 0 22 0;
+#X connect 11 0 31 0;
+#X connect 12 0 31 0;
+#X connect 13 0 30 0;
+#X connect 14 0 30 0;
+#X connect 15 0 22 0;
+#X connect 17 0 30 0;
+#X connect 24 0 23 0;
+#X connect 25 0 26 0;
+#X connect 26 0 24 0;
+#X connect 27 0 28 0;
+#X connect 28 0 29 0;
+#X connect 29 0 23 0;
+#X restore 55 323 pd manipulations-1;
+#N canvas 112 292 981 473 manipulations-2 0;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-manip 64 float 1;
+#A 0 -0.414301 0.414289 0.457147 -0.12858 -0.0952462 -0.495255 -0.614306
+-5.90086e-06 0.114282 -5.90086e-06 -0.142866 0.457147 -0.185724 0.0285662
+-0.514303 0.371431 -0.371443 -5.90086e-06 -0.0571501 -0.533351 0.514292
+-0.578591 -0.552399 -0.628592 -0.171438 0.457147 -0.314299 0.142855
+0.685724 0.128568 0.257143 0.314287 -0.0761981 -5.90086e-06 0.400003
+-0.60002 -0.585734 -0.592877 -5.90086e-06 -0.385729 -0.342871 -0.428587
+-0.485731 0.48572 -0.457159 0.285715 -0.300013 -0.504779 0.385717 -0.114294
+-0.257155 -0.20001 0.228571 0.357145 -0.214297 0.185713 0.342859 -0.228583
+-0.400015 -0.0571501 0.0714243 -0.285727 -0.571447 0.48572 ;
+#X coords 0 1 63 -1 200 140 1 0 0;
+#X restore 591 51 graph;
+#X msg 127 171 reverse;
+#X msg 77 91 sort;
+#X msg 55 53 scramble;
+#X text 125 52 Shuffle table elements in a random order.;
+#X text 193 170 Reverse the order of all elements.;
+#X text 122 86 Sort values from low to high and reorder. For high to
+low ordering \, use "sort" \, then "reverse".;
+#X msg 97 131 sort_range 7 15;
+#X msg 180 250 swap 0 31;
+#X text 258 249 Swap a pair of values at certain indices.;
+#X text 249 205 Replace all occurrences of the first value with the
+second, f 31;
+#X msg 150 210 replace 0 1;
+#X obj 55 393 tabletool \$0-manip;
+#X msg 240 320 smooth;
+#X msg 210 290 invert;
+#X text 267 289 Flip all values. Low becomes high and vice versa.;
+#X text 296 320 Smooth out data by averaging with neighboring values.
+, f 29;
+#X obj 645 353 tabletool \$0-manip;
+#X msg 645 285 abs;
+#X msg 675 315 pow 2;
+#X text 216 125 Sort only a specific range between indices \$1 and
+\$2, f 28;
+#X text 689 285 Take the absolute value of the table data;
+#X text 729 315 Raise table data to a given power;
+#X connect 1 0 12 0;
+#X connect 2 0 12 0;
+#X connect 3 0 12 0;
+#X connect 7 0 12 0;
+#X connect 8 0 12 0;
+#X connect 11 0 12 0;
+#X connect 13 0 12 0;
+#X connect 14 0 12 0;
+#X connect 18 0 17 0;
+#X connect 19 0 17 0;
+#X restore 55 343 pd manipulations-2;
+#N canvas 162 81 913 727 filling 0;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-fill 1024 float 0;
+#X coords 0 1 1023 0 200 140 1 0 0;
+#X restore 609 90 graph;
+#X msg 57 51 blackman;
+#X msg 67 71 cosine;
+#X msg 77 91 hamming;
+#X msg 87 111 hann;
+#X text 155 60 Write common windowing functions to an array. Windows
+are calculated based on the current array size \, so resize beforehand
+if you want a certain resolution.;
+#X text 208 223 Fill an array with random numbers in a certain range.
+;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-series 64 float 0;
+#X coords 0 1 63 -1 200 140 1 0 0;
+#X restore 609 340 graph;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-walk 64 float 0;
+#X coords 0 1 63 -1 200 140 1 0 0;
+#X restore 609 540 graph;
+#X msg 57 372 series -1 1 1;
+#X msg 97 433 series -0.75 1 \$1;
+#X floatatom 97 410 5 0 0 0 - - -;
+#X text 138 409 Shift drag to try different exponents.;
+#X msg 57 582 random_walk -0.4 0.1 -1 1;
+#X text 55 546 Generate a random walk. Arguments: starting value \,
+step value \, lower limit \, upper limit.;
+#X obj 57 152 tabletool \$0-fill;
+#X obj 57 474 tabletool \$0-series;
+#X obj 57 614 tabletool \$0-walk;
+#X obj 57 262 tabletool \$0-series;
+#X text 55 323 Generate a series of values between two points (\$1
+and \$2). \$3 is the exponent of the curve. An exponent of 1 will give
+a straight line.;
+#X msg 57 222 rand_fill -0.75 0.7;
+#X connect 1 0 15 0;
+#X connect 2 0 15 0;
+#X connect 3 0 15 0;
+#X connect 4 0 15 0;
+#X connect 9 0 16 0;
+#X connect 10 0 16 0;
+#X connect 11 0 10 0;
+#X connect 13 0 17 0;
+#X connect 20 0 18 0;
+#X restore 332 323 pd filling;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 308 126 803 390 manipulations-3 0;
+#X msg 119 127 ceil;
+#X msg 150 169 floor;
+#X msg 35 43 clip -2 3;
+#X msg 270 289 reciprocal;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-table-4 64 float 1;
+#A 0 -0.714283 1.57142 4.2857 5.42855 6.14283 6.42855 6.5714 6.5714
+6.5714 6.71426 6.71426 6.71426 6.64283 6.5714 5.42855 4.14284 2.99999
+-1.28571 -3.14285 -6.14283 -6.28569 -8.5714 -8.5714 -7.14283 -5.85712
+-4.57141 -3.71427 -3.14285 -2.99999 -2.99999 -3.14285 -3.85713 -4.99998
+-5.28569 -5.57141 -5.57141 -4.57141 -3.2857 -1.71428 0.571426 1.42857
+2.57142 3.42856 3.85713 4.71427 5.42855 5.85712 5.99998 6.28569 6.28569
+6.71426 6.71426 6.71426 6.71426 6.71426 6.28569 5.57141 4.71427 4.71427
+4.99998 5.71426 6.99997 8.14283 8.42854;
+#X coords 0 10 63 -10 200 140 1 0 0;
+#X restore 542 30 graph;
+#X text 112 42 Clip all values in table to lower and upper limits;
+#X text 169 126 Set all values to the next highest integer;
+#X text 209 168 Set all values to the next lowest integer;
+#X obj 35 325 tabletool \$0-table-4;
+#X msg 69 86 round 0.5;
+#X text 354 289 Take the reciprocal of all values;
+#X msg 190 209 bash_above 3 0;
+#X msg 230 249 bash_below -3 -10;
+#X text 305 203 Bash any values above a threshold (\$1) to the given
+value (\$2), f 39;
+#X text 363 244 Bash any values below a threshold (\$1) to the given
+value (\$2), f 39;
+#X text 150 85 Round all values in table to a given resolution (\$1)
+;
+#X connect 0 0 8 0;
+#X connect 1 0 8 0;
+#X connect 2 0 8 0;
+#X connect 3 0 8 0;
+#X connect 9 0 8 0;
+#X connect 11 0 8 0;
+#X connect 12 0 8 0;
+#X restore 55 363 pd manipulations-3;
+#N canvas 308 126 1046 503 conversion 0;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-conversion 64 float 0;
+#X coords 0 107.22 63 21.0007 200 140 1 0 0;
+#X restore 738 57 graph;
+#X msg 43 39 mtof;
+#X text 120 38 Convert all values from MIDI to frequency in Hz;
+#X msg 77 82 ftom;
+#X msg 127 123 dbtorms;
+#X msg 158 165 rmstodb;
+#X obj 43 431 tabletool \$0-conversion;
+#X msg 178 205 bin2freq 2048 44100;
+#X msg 198 255 freq2bin 2048 44100;
+#X msg 228 305 bark2freq;
+#X msg 258 335 freq2bark;
+#X text 307 304 Convert from Bark to frequency in Hz;
+#X text 337 334 Convert from frequency in Hz to Bark;
+#X text 143 81 Convert all values from frequency in Hz to MIDI;
+#X text 198 122 Convert all values from decibels to RMS amplitude;
+#X text 237 164 Convert all values from RMS amplitude decibels;
+#X obj 680 435 tabletool \$0-conversion;
+#X msg 680 343 fit_bounds;
+#X obj 680 291 loadbang;
+#X obj 680 313 t b b;
+#X text 842 402 << MIDI range of a piano;
+#X text 327 199 Convert from bin number to frequency based on a given
+window size (\$1) and sampling rate (\$2), f 43;
+#X text 347 250 Convert from frequency to bin number based on a given
+window size (\$1) and sampling rate (\$2), f 44;
+#X text 774 304 Between commands \, you should re-fit the boundaries
+of the table since the unit ranges used at left vary wildly..., f
+24;
+#X msg 720 403 rand_fill 21 108;
+#X connect 1 0 6 0;
+#X connect 3 0 6 0;
+#X connect 4 0 6 0;
+#X connect 5 0 6 0;
+#X connect 7 0 6 0;
+#X connect 8 0 6 0;
+#X connect 9 0 6 0;
+#X connect 10 0 6 0;
+#X connect 17 0 16 0;
+#X connect 18 0 19 0;
+#X connect 19 0 17 0;
+#X connect 19 1 24 0;
+#X connect 24 0 16 0;
+#X restore 202 383 pd conversion;
+#N canvas 836 346 463 407 properties 0;
+#X msg 65 183 fit_bounds;
+#N canvas 0 50 450 278 (subpatch) 0;
+#X array \$0-fitBoundsTest 64 float 0;
+#X coords 0 1 63 -1 200 140 1 0 0;
+#X restore 231 123 graph;
+#X text 29 15 The fit_bounds method finds the maximum and minimum values
+in a table and changes the table display properties so that the Y range
+fits the data perfectly. Try it below by generating some random numbers
+to fill this table \, and then hit the fit_bounds message;
+#X obj 92 331 f \$0;
+#X obj 92 301 loadbang;
+#X obj 25 235 tabletool \$0-fitBoundsTest;
+#X msg 92 353 \; \$1-fitBoundsTest bounds 0 1 63 -1 \;;
+#X obj 72 331 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X msg 25 146 rand_fill -2 2;
+#X connect 0 0 5 0;
+#X connect 3 0 6 0;
+#X connect 4 0 3 0;
+#X connect 7 0 3 0;
+#X connect 8 0 5 0;
+#X restore 332 403 pd properties;
+#N canvas 281 295 1223 500 searching-2 0;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array valleys 64 float 1;
+#A 0 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.714286 -0.05
+-0.05 -0.05 -0.05 -0.185714 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05
+-0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.928571 -0.05 -0.05 -0.05
+-0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05
+-0.05 -0.05 -0.05 -0.05 -0.857143 -0.05 -0.05 -0.05 -0.05 -0.471429
+-0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05 -0.05;
+#X coords 0 1 63 -1 200 140 1 0 0;
+#X restore 361 46 graph;
+#X obj 322 396 tabletool peaks;
+#X obj 322 418 pack f f;
+#X obj 322 439 print;
+#X obj 24 350 tabletool peaks;
+#X msg 322 355 peaks_thresh 0.05 0.05;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array peaks 64 float 1;
+#A 0 0 0 0 0 0.957143 0 0 0 0 0 0 0 0 0 0.607143 0 0 0 0 0 0.0428572
+0 0 0 0 0 0 0 0.0857143 0 0 0 0 0.635714 0 0 0 0 0 0 0.3 0 0 0 0 0
+0 0.842857 0 0 0 0 0 0 0 0 0 0 0 0 0.507143 0 0 0;
+#X coords 0 1 63 0 200 140 1 0 0;
+#X restore 51 46 graph;
+#X obj 794 227 tabletool valleys;
+#X obj 829 177 t b a b;
+#X msg 829 146 valleys \$1;
+#X floatatom 829 115 5 0 100 0 - - -;
+#X obj 49 296 t b a b;
+#X msg 49 265 peaks \$1;
+#X floatatom 49 244 5 0 100 0 - - -;
+#N canvas 1228 305 450 300 send-label 0;
+#X obj 77 27 inlet;
+#X obj 197 27 inlet;
+#X obj 327 27 inlet;
+#X obj 197 96 list prepend;
+#X obj 295 101 t l;
+#X obj 156 121 list;
+#X obj 156 165 list prepend xlabel;
+#X obj 156 187 list trim;
+#X obj 156 209 s valleys;
+#X obj 156 143 list prepend -1;
+#X connect 0 0 5 0;
+#X connect 1 0 3 0;
+#X connect 2 0 3 1;
+#X connect 3 0 4 0;
+#X connect 3 0 5 1;
+#X connect 4 0 3 1;
+#X connect 5 0 9 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 9 0 6 0;
+#X restore 883 267 pd send-label;
+#N canvas 1228 305 450 300 send-label 0;
+#X obj 77 27 inlet;
+#X obj 197 27 inlet;
+#X obj 327 27 inlet;
+#X obj 197 96 list prepend;
+#X obj 295 101 t l;
+#X obj 156 121 list;
+#X obj 156 165 list prepend xlabel;
+#X obj 156 187 list trim;
+#X obj 156 209 s peaks;
+#X obj 156 143 list prepend 0;
+#X connect 0 0 5 0;
+#X connect 1 0 3 0;
+#X connect 2 0 3 1;
+#X connect 3 0 4 0;
+#X connect 3 0 5 1;
+#X connect 4 0 3 1;
+#X connect 5 0 9 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 9 0 6 0;
+#X restore 101 395 pd send-label;
+#X text 442 394 Finally \, you can also search for peaks based on min
+and max thresholds. A peak is reported when values cross the max threshold
+\, then fall below the min threshold. For each peak \, the peak value
+within those boundaries appears at the left outlet \, and its index
+at the right.;
+#X text 884 75 You can search for valleys in a similar fashion based
+on a percent threshold. All valleys below the threshold percent of
+the minimum valley will be reported., f 42;
+#X text 140 218 Search for peaks based on changes in slope from positive
+to negative. A threshold in percent allows you to show only the maximum
+peak \, all peaks \, or anything in-between. With the threshold at
+100 \, only the maximum peak data will be output. At 50% \, all peaks
+that are at least 50% of the height of the maximum peak will be reported.
+Left outlet gives the peak value \, and right outlet gives the peak
+index in the table. Here \, the indices are accumulated into a list
+in order to label peak indices directly on the table., f 89;
+#X connect 1 0 2 0;
+#X connect 1 1 2 1;
+#X connect 2 0 3 0;
+#X connect 4 1 15 1;
+#X connect 5 0 1 0;
+#X connect 7 1 14 1;
+#X connect 8 0 14 0;
+#X connect 8 1 7 0;
+#X connect 8 2 14 2;
+#X connect 9 0 8 0;
+#X connect 10 0 9 0;
+#X connect 11 0 15 0;
+#X connect 11 1 4 0;
+#X connect 11 2 15 2;
+#X connect 12 0 11 0;
+#X connect 13 0 12 0;
+#X restore 202 343 pd searching-2;
+#X obj 641 237 print t1-right;
+#X obj 515 281 print t1-left;
+#X obj 515 161 r \$0-tool-1;
+#X obj 515 209 tabletool \$0-table-1;
+#N canvas 347 194 1155 661 searching-1 0;
+#X msg 76 45 equals 0;
+#X msg 117 452 max;
+#X msg 87 421 min;
+#X msg 157 531 nearest 0.5;
+#X msg 127 125 greater 0.3;
+#X msg 166 215 less -0.1;
+#X msg 176 285 between -0.5 0.5;
+#X msg 137 488 max_mag;
+#X msg 676 70 change;
+#X text 777 51 Search for any changes in the table. If any value has
+changed since the last time this method was called \, it is sent out
+the left outlet \, and its index out the right outlet. Bang repeatedly
+with a metro to update constantly., f 41;
+#X msg 649 345 find_zero_crossings;
+#X obj 76 355 s \$0-tool-1;
+#X obj 87 582 s \$0-tool-1;
+#X obj 649 437 s \$0-tool-1;
+#X text 670 375 Search for zero crossings. Left outlet reports the
+number of zero crossings \, and right outlet supplies a list of the
+crossing indices.;
+#X obj 676 111 s \$0-tool-1;
+#X text 173 23 Search for occurrences of a particular value \, and
+get their indices. If the requested value is not present in the table
+\, -1 shows up at the left outlet. Otherwise \, the number of occurrences
+shows up at the left outlet \, and a list of their indices is spat
+out the right.;
+#X text 223 103 Search for values that are greater than a particular
+value \, and get their indices. If no values in the table are greater
+\, -1 shows up at the left outlet. Otherwise \, the number of greater
+values shows up at the left outlet \, and a list of their indices is
+spat out the right.;
+#X text 264 193 Search for values that are less than a particular value
+\, and get their indices. If no values in the table are lesser \, -1
+shows up at the left outlet. Otherwise \, the number of lesser values
+shows up at the left outlet \, and a list of their indices is spat
+out the right.;
+#X text 305 284 Look for values between two bounds (non-inclusive)
+;
+#X text 125 420 Minimum value in table.;
+#X text 155 451 Maximum value in table.;
+#X text 204 481 Value in table with the maximum magnitude (regardless
+of sign).;
+#X text 254 531 Nearest value in table.;
+#X text 214 579 For these methods \, the value itself appears at the
+left outlet \, and its index at the right.;
+#X connect 0 0 11 0;
+#X connect 1 0 12 0;
+#X connect 2 0 12 0;
+#X connect 3 0 12 0;
+#X connect 4 0 11 0;
+#X connect 5 0 11 0;
+#X connect 6 0 11 0;
+#X connect 7 0 12 0;
+#X connect 8 0 15 0;
+#X connect 10 0 13 0;
+#X restore 202 323 pd searching-1;
+#X text 53 219 [tabletool] manipulates \, searches \, and provides
+information about tables and their data. Generally \, when the output
+of a command is a single number \, it shows up at the left outlet.
+When the output is a list \, it is sent out the right outlet. Some
+methods produce output at both outlets as value/index pairs \, and
+others operate directly on the table data in place.;
+#N canvas 572 286 770 509 overlap-add 0;
+#N canvas 0 50 450 278 (subpatch) 0;
+#X array \$0-ola-result 88200 float 0;
+#X coords 0 1 88199 -1 200 140 1 0 0;
+#X restore 406 309 graph;
+#X obj 25 265 tabletool \$0-ola-result;
+#X obj 459 227 table \$0-sample;
+#X text 22 21 For non-real-time assembling of audio \, the overlap_add
+method takes a range of samples from a table \, applies a specified
+window \, and adds the windowed audio to the target table at the given
+starting sample.;
+#X obj 90 421 tabplay~ \$0-ola-result;
+#X obj 90 452 dac~;
+#X obj 25 115 f \$0;
+#X obj 25 95 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 65 185 f \$0;
+#X obj 65 165 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#N canvas 276 34 561 469 example-process 0;
+#X obj 25 405 tabletool \$0-ola-result;
+#X obj 25 355 pack f f \$0;
+#X obj 25 89 t f b;
+#X obj 5 140 until;
+#X obj 25 201 f;
+#X msg 45 178 0;
+#X obj 25 262 t f b;
+#X obj 85 312 random;
+#X obj 55 202 + 2048;
+#X msg 25 68 40;
+#X obj 118 268 r \$0-overlap-add-source-len;
+#X obj 118 289 - 8192;
+#X obj 25 29 inlet;
+#X text 137 54 Here's a toy example where we grab random 8192-point
+grains from the source audio array (a recording of Satie) \, and overlap
+them spaced 2048 samples apart using a Hann window. We do it 40 times
+to fill up the \$0-ola-result array.;
+#X msg 25 376 overlap_add \$2 8192 hann \$3-sample \$1;
+#X connect 1 0 14 0;
+#X connect 2 0 3 0;
+#X connect 2 1 5 0;
+#X connect 3 0 4 0;
+#X connect 4 0 6 0;
+#X connect 4 0 8 0;
+#X connect 5 0 4 1;
+#X connect 6 0 1 0;
+#X connect 6 1 7 0;
+#X connect 7 0 1 1;
+#X connect 8 0 4 1;
+#X connect 9 0 2 0;
+#X connect 10 0 11 0;
+#X connect 11 0 7 1;
+#X connect 12 0 9 0;
+#X connect 14 0 0 0;
+#X restore 130 370 pd example-process;
+#X obj 90 310 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#N canvas 719 470 450 300 load-sample 0;
+#X obj 85 121 soundfiler;
+#X obj 85 56 loadbang;
+#X obj 85 77 f \$0;
+#X msg 85 100 read -resize ./audio/satie.wav \$1-sample;
+#X obj 125 162 s \$0-overlap-add-source-len;
+#X obj 85 142 t b f;
+#X obj 85 182 f \$0;
+#X msg 85 203 \; \$1-sample normalize \;;
+#X connect 0 0 5 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 0 0;
+#X connect 5 0 6 0;
+#X connect 5 1 4 0;
+#X connect 6 0 7 0;
+#X restore 459 247 pd load-sample;
+#X obj 203 302 f \$0;
+#X msg 203 323 \; \$1-ola-result const 0 \;;
+#X obj 203 282 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 90 330 t b b b;
+#X text 314 98 Arguments \; \$1: starting sample in source array \;
+\$2: number of samples (range) \; \$3: window function name \; \$4:
+source array symbol \; \$5: starting sample in target array \;;
+#X text 574 128 Window function names \; rectangular \; blackman \;
+cosine \; hamming \; hann \;;
+#X msg 65 207 overlap_add 44100 32768 hann \$1-sample 17384;
+#X msg 25 136 overlap_add 1000 32768 hann \$1-sample 1000;
+#X connect 4 0 5 0;
+#X connect 4 0 5 1;
+#X connect 6 0 20 0;
+#X connect 7 0 6 0;
+#X connect 8 0 19 0;
+#X connect 9 0 8 0;
+#X connect 11 0 16 0;
+#X connect 13 0 14 0;
+#X connect 15 0 13 0;
+#X connect 16 0 4 0;
+#X connect 16 1 10 0;
+#X connect 16 2 13 0;
+#X connect 19 0 1 0;
+#X connect 20 0 1 0;
+#X restore 332 383 pd overlap-add;
+#N canvas 727 422 652 250 permutations 0;
+#X obj 66 114 tabletool \$0-perms;
+#X obj 289 184 tabletool \$0-perms;
+#X obj 289 137 loadbang;
+#X msg 66 23 permute 2;
+#X msg 86 53 permute 3;
+#X obj 447 158 table \$0-perms 5;
+#X floatatom 66 165 5 0 0 0 - - -;
+#X obj 176 165 print;
+#X msg 289 163 series 0 4 1;
+#X text 227 29 The permute method lists all permutations (with repetition)
+of the data in the target table. The number of elements in the permutation
+results can be controlled with an argument. Here \, a table is filled
+with 0 \, 1 \, 2 \, 3 \, 4 (via tabletool's series method) \, and we
+get all 2-element or 3-element permutations of that set as a sequence
+of lists out the right outlet. The left outlet reports the number of
+resulting permutations.;
+#X connect 0 0 6 0;
+#X connect 0 1 7 0;
+#X connect 2 0 8 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 8 0 1 0;
+#X restore 202 403 pd permutations;
+#N canvas 509 116 664 335 multi-table-stuff 0;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-tables-1-2 64 float 0;
+#X coords 0 1 63 -1 100 70 1 0 0;
+#X restore 394 171 graph;
+#X obj 182 183 list prepend 0;
+#X text 264 124 Or concatenate the active table with another table.
+;
+#X text 167 48 Lace the active table with another table \, sending
+the results out the right outlet as a list.;
+#X obj 182 204 s \$0-tables-1-2;
+#X obj 54 156 tabletool \$0-table-1;
+#X msg 54 55 lace \$1-table-2;
+#X msg 94 125 concatenate \$1-table-2;
+#X obj 54 15 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 54 35 f \$0;
+#X obj 94 85 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 94 105 f \$0;
+#X connect 1 0 4 0;
+#X connect 5 1 1 0;
+#X connect 6 0 5 0;
+#X connect 7 0 5 0;
+#X connect 8 0 9 0;
+#X connect 9 0 6 0;
+#X connect 10 0 11 0;
+#X connect 11 0 7 0;
+#X restore 332 343 pd multi-table-stuff;
+#X text 550 392 Updated for timbreID version 0.7.6;
+#X text 550 412 June 2018;
+#N canvas 484 89 751 696 request-info-2 0;
+#X msg 324 497 differentiate;
+#X text 53 417 If table size == N \, this creates a list of N values
+where term_i = tablevalue_i + tablevalue_i-1 ... tablevalue_0. This
+is useful when you have a table full of inter onset values and want
+the total duration at any given point.;
+#X text 436 482 This creates a list of N values where term_i = tablevalue_i
+- tablevalue_i-1., f 40;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-int-diff 32 float 0;
+#X coords 0 1 31 -1 100 70 1 0 0;
+#X restore 54 579 graph;
+#X obj 473 547 list prepend 0;
+#X obj 203 547 list prepend 0;
+#X msg 54 497 integrate;
+#X obj 54 518 tabletool \$0-table-1;
+#X obj 203 568 s \$0-int-diff;
+#X obj 473 568 s \$0-int-diff;
+#X obj 324 518 tabletool \$0-table-1;
+#X msg 234 245 std;
+#X msg 114 85 mean;
+#X msg 144 115 geomean;
+#X msg 54 25 sum;
+#X text 153 84 Take the arithmetic mean.;
+#X text 270 245 Calculate standard deviation.;
+#X text 208 114 Take the geometric mean. You will get NANs on negative
+data.;
+#X msg 84 55 range;
+#X msg 204 205 mode;
+#X msg 174 155 median;
+#X msg 264 285 as_set;
+#X text 331 281 Return a copy of the table data as a set with no duplicate
+values. The set appears as a list at the right outlet \, and the number
+of unique elements in the set appears at the left., f 48;
+#X obj 54 348 s \$0-tool-1;
+#X text 238 144 Find the median value. The median will be output from
+the left outlet \, and its index in the table will be output from the
+right (if the table size is odd).;
+#X text 248 194 Find the mode. The mode will be output from the left
+outlet \, and the number of occurrences in the table will be output
+from the right.;
+#X text 88 24 Sum all values.;
+#X text 138 55 Find the range of the table data.;
+#X connect 0 0 10 0;
+#X connect 4 0 9 0;
+#X connect 5 0 8 0;
+#X connect 6 0 7 0;
+#X connect 7 1 5 0;
+#X connect 10 1 4 0;
+#X connect 11 0 23 0;
+#X connect 12 0 23 0;
+#X connect 13 0 23 0;
+#X connect 14 0 23 0;
+#X connect 18 0 23 0;
+#X connect 19 0 23 0;
+#X connect 20 0 23 0;
+#X connect 21 0 23 0;
+#X restore 55 403 pd request-info-2;
+#N canvas 218 174 951 483 request-info-1 0;
+#X msg 253 40 dump;
+#X msg 403 270 restore;
+#X msg 373 240 store;
+#X msg 433 300 wipe;
+#X text 297 39 Dump all values to a list at the right outlet.;
+#X text 385 129 Ask for the length of the table.;
+#X text 62 21 Specify the active table.;
+#X text 464 269 Restore the stored values after you've messsed them
+up.;
+#X text 476 300 Wipe all memory.;
+#X text 370 165 Store the table values to internal memory. Note that
+if you store a table \, then set to a different active table \, the
+internal memory will still contain the former table's values. Hit store
+again to update memory after setting to the new table.;
+#X msg 343 130 size;
+#X msg 283 70 dump_range 17 29;
+#X msg 463 330 choose;
+#X text 520 325 Randomly select a value from the table. The index of
+the chosen value is reported at the right outlet.;
+#X msg 33 65 set \$1-table-1;
+#X obj 33 25 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 33 45 f \$0;
+#X obj 113 96 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 113 116 f \$0;
+#X msg 113 136 set \$1-table-2;
+#X obj 253 411 s \$0-tool-1;
+#X text 356 100 Iterate through the table and send each value out the
+left outlet as quickly as possible., f 90;
+#X msg 313 100 drip;
+#X text 406 69 Dump values from index \$1 through index \$2 to a list
+at the right outlet., f 75;
+#X connect 0 0 20 0;
+#X connect 1 0 20 0;
+#X connect 2 0 20 0;
+#X connect 3 0 20 0;
+#X connect 10 0 20 0;
+#X connect 11 0 20 0;
+#X connect 12 0 20 0;
+#X connect 14 0 20 0;
+#X connect 15 0 16 0;
+#X connect 16 0 14 0;
+#X connect 17 0 18 0;
+#X connect 18 0 19 0;
+#X connect 19 0 20 0;
+#X connect 22 0 20 0;
+#X restore 55 383 pd request-info-1;
+#N canvas 455 227 915 603 analysis 0;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array \$0-table-analysis 513 float 1;
+#A 0 0.00400066 0.00235748 0.000394239 1.59483e-05 1.79706e-05 1.73275e-05
+2.87872e-05 2.07088e-05 2.60978e-05 2.57493e-05 2.95253e-05 2.85064e-05
+3.40236e-05 3.35333e-05 3.99385e-05 4.44158e-05 3.81985e-05 5.27934e-05
+5.35985e-05 3.1706 19.8161 33.2911 19.8161 3.17061 8.35364e-05 8.77052e-05
+0.000103553 0.000102092 0.000114163 0.000130692 0.000133861 0.000153992
+0.00016152 0.000184427 0.000197868 0.000221897 0.000246625 0.000276358
+0.000310668 0.000352327 13.7024 85.6421 143.878 85.6422 13.7022 0.000851812
+0.00108739 0.00123679 0.00160198 0.00201209 0.00261341 0.00347688 0.00478084
+0.00680061 0.0101084 0.0156314 0.0241434 0.0198562 0.91367 10.5747
+24.7819 28.4123 61.3759 95.6154 56.8838 9.08044 0.0125172 0.00800254
+0.00527583 0.00354498 0.00240677 0.00160542 0.00102395 0.000573421
+0.000222578 0.000153301 0.00041529 0.000693107 0.000978243 0.00126972
+0.00161671 0.00200421 6.22322 38.8912 65.3391 38.8909 6.22396 0.00732667
+0.00943547 0.012397 0.0166781 0.0230906 0.0331023 0.0493277 0.076565
+0.119209 0.114412 3.09976 42.8809 109.056 95.2814 26.7861 0.766861
+15.9057 99.0285 166.464 99.0529 15.863 0.021255 0.0155258 0.0116519
+0.00897867 0.00704691 0.00563404 0.00457671 0.00376447 0.00313328 0.0026401
+0.00223598 0.00191619 0.00166573 0.0014319 0.00126318 0.00110863 9.92268
+62.013 104.183 62.0131 9.92249 0.000556829 0.000529067 0.000453847
+0.000433637 0.00038762 0.000357815 0.000327413 0.000303785 0.000281852
+0.000259988 0.000239668 0.000221681 0.000207249 0.000197756 0.000178663
+0.000167505 0.000161166 0.000149198 0.00013874 0.000133484 0.000125615
+0.000115831 0.000129826 6.29714e-05 0.000138611 8.47157e-05 8.77594e-05
+8.66165e-05 7.54549e-05 7.88989e-05 7.17129e-05 7.08088e-05 6.69072e-05
+6.09928e-05 5.9197e-05 5.45529e-05 5.77612e-05 4.79843e-05 8.82208e-05
+5.34785e-05 8.61648e-05 3.24803e-05 6.33243e-05 3.21715e-05 4.38327e-05
+3.67988e-05 3.69413e-05 3.46261e-05 3.5372e-05 3.0873e-05 2.862e-05
+4.14553e-05 2.0503e-05 3.80334e-05 2.98424e-05 2.78845e-05 2.59641e-05
+2.49642e-05 2.71932e-05 3.31064e-05 8.77798e-05 3.21866e-05 2.52009e-05
+1.93104e-05 2.13248e-05 1.99133e-05 1.70498e-05 1.71603e-05 3.76868e-05
+0.000180693 0.000216371 0.000108694 1.39786e-05 1.67486e-05 1.53205e-05
+8.95711e-06 2.56886e-05 8.97245e-06 1.57266e-05 1.95239e-05 0.000198789
+0.000305174 0.000206037 6.96182e-05 0.000101161 6.03157e-05 2.47955e-05
+1.08768e-05 1.00992e-05 7.89907e-06 9.64312e-06 1.08604e-05 1.01665e-05
+8.7639e-06 0.000182861 0.000414113 0.000356263 8.26727e-05 1.24799e-05
+8.18489e-06 7.12592e-06 9.269e-06 6.90297e-06 7.40152e-06 6.49144e-06
+8.19342e-06 1.01377e-05 8.3276e-06 1.16875e-05 6.88581e-06 5.98465e-06
+3.15515e-06 1.37699e-05 5.75577e-06 5.67787e-06 1.43776e-05 1.79138e-05
+2.5768e-05 2.56577e-06 5.40376e-06 5.93851e-06 1.01682e-05 9.78964e-05
+0.000151749 9.5907e-05 6.2457e-06 4.10191e-06 5.43678e-06 8.12024e-06
+4.03379e-06 7.37004e-06 4.04785e-06 4.64782e-06 3.8147e-06 7.49635e-06
+5.43841e-07 6.55028e-06 4.1528e-06 4.58961e-06 4.77585e-06 2.50853e-06
+1.99825e-06 4.508e-06 1.02021e-06 1.78382e-06 4.78398e-06 6.85453e-06
+4.54298e-05 0.000110889 8.14446e-05 1.83835e-05 4.28736e-06 3.39944e-06
+2.82577e-06 4.56084e-06 3.18462e-06 7.7078e-06 4.97962e-06 6.28039e-07
+1.00388e-05 8.92161e-06 6.7132e-06 5.2933e-06 3.34967e-06 7.05075e-06
+8.18355e-06 6.18857e-06 1.86592e-06 4.78361e-05 8.2348e-05 5.85093e-05
+1.15332e-05 1.71944e-06 3.44116e-06 1.72935e-06 3.73196e-06 9.59262e-07
+2.47391e-06 2.8069e-06 6.19307e-07 3.09474e-06 2.98177e-06 7.62931e-06
+4.09929e-06 1.56755e-05 8.79248e-05 0.000141817 8.8579e-05 1.72091e-05
+5.3948e-06 7.8642e-06 3.01578e-06 5.12739e-06 1.9946e-06 4.38348e-06
+1.20131e-06 3.33235e-06 2.40918e-06 2.13201e-06 5.71729e-06 1.13569e-05
+1.61755e-05 1.30618e-05 9.20323e-07 1.97355e-06 7.92033e-07 1.92263e-05
+3.06921e-05 2.16356e-05 3.37596e-06 2.4314e-06 1.3487e-06 6.1065e-06
+4.46836e-06 1.54939e-06 4.49112e-06 2.11674e-06 1.59133e-06 2.90975e-06
+6.68072e-07 2.90611e-06 1.70354e-06 1.8863e-06 2.06346e-06 2.06073e-06
+2.4314e-06 4.26496e-06 9.53674e-07 2.45467e-06 4.66257e-07 2.90049e-06
+2.6974e-06 7.8642e-06 8.52992e-06 2.78041e-06 3.00827e-06 1.42891e-05
+2.23699e-05 1.80116e-05 6.71193e-06 1.79095e-05 2.89722e-05 1.94882e-05
+4.33153e-06 1.62809e-06 4.86884e-06 1.73212e-06 1.02249e-05 5.66608e-05
+9.34417e-05 5.7646e-05 1.02249e-05 2.09684e-06 5.52509e-06 6.15384e-06
+3.1086e-06 4.26496e-06 3.8147e-06 1.90735e-06 3.38856e-06 3.4771e-06
+2.66224e-06 4.01706e-06 4.72574e-06 2.13982e-05 2.89498e-05 2.04054e-05
+1.54401e-05 4.22293e-05 4.49311e-05 2.02484e-05 1.90712e-06 2.34837e-06
+2.19669e-06 2.76093e-06 3.06026e-06 0.000147869 0.00093771 0.0015675
+0.00093771 0.000147869 2.28843e-06 2.13248e-06 9.53674e-07 3.8147e-06
+1.96605e-06 2.07528e-06 4.12019e-06 2.15167e-06 4.8816e-06 3.18654e-05
+5.34935e-05 1.01922e-05 0.000248506 0.000449011 0.000282397 5.0546e-05
+4.06012e-06 6.94285e-06 1.02714e-05 8.09219e-06 2.5034e-06 1.32227e-06
+1.33241e-06 1.20439e-06 3.62563e-06 4.71062e-06 1.07868e-05 5.86996e-06
+2.37936e-06 1.63901e-06 1.28459e-06 4.39944e-06 4.30225e-06 3.45538e-06
+2.76844e-06 4.70841e-06 5.23296e-06 8.08633e-05 0.000534521 0.000904309
+0.000537114 8.64115e-05 3.43852e-06 1.50789e-06 1.97551e-06 3.10648e-06
+4.069e-06 4.29894e-06 2.23311e-06 1.56801e-06 6.74261e-07 2.72765e-06
+6.32231e-06 2.01376e-06 8.27016e-07 3.81155e-06 3.74021e-06 3.50863e-06
+3.41363e-06 1.90735e-06 0 3.8147e-06 7.1724e-06 6.78908e-06 1.24307e-05
+6.54727e-05 0.000111251 6.54283e-05 1.21684e-05 1.91365e-06 2.02243e-06
+6.01636e-07 1.56387e-06 5.49782e-06 1.55031e-06 4.5651e-07 2.22324e-06
+4.41958e-07 8.38508e-06 2.73725e-05 0.00018549 0.000312924 0.000186164
+2.90284e-05 9.47219e-06 2.21481e-05 2.4387e-05 2.13996e-05 1.84981e-05
+2.80531e-05 1.57922e-05 3.40778e-06 1.49041e-06 2.075e-05 3.35643e-05
+1.58099e-05 3.26143e-06 8.0079e-07 1.98404e-06 2.29381e-06 7.63312e-07
+0 0;
+#X coords 0 256 512 0 513 140 1 0 0;
+#X restore 269 198 graph;
+#X obj 38 336 tabletool \$0-table-analysis;
+#X floatatom 327 99 10 0 0 1 fundamental - -;
+#X obj 38 399 bin2freq 1024 44100;
+#X floatatom 38 420 5 0 0 1 frequency - -;
+#X floatatom 58 366 5 0 0 1 bin - -;
+#X msg 38 203 hps 5 50 5;
+#X obj 208 381 pack f \$0;
+#X msg 208 402 \; \$2-table-analysis xlabel 0 \$1 \;;
+#X text 35 99 Arguments are: lower and upper indices to search between
+(inclusive) \, and number of harmonics to search for., f 32;
+#X floatatom 297 49 5 5 50 1 fundamental-bin - -;
+#X obj 297 69 bin2freq 1024 44100;
+#N canvas 157 255 762 552 generate-mostly-harmonic-tone-and-analyze-it
+0;
+#X obj 69 19 inlet;
+#X obj 69 461 list prepend 0;
+#X obj 69 482 s \$0-table-analysis;
+#X obj 169 157 * 3;
+#X obj 269 157 * 5;
+#X msg 142 377 normalize 0;
+#X obj 69 440 magSpec~ 1024;
+#X obj 69 329 +~;
+#X obj 308 326 delay 100;
+#X obj 142 354 loadbang;
+#X obj 308 357 t b b;
+#X obj 308 447 outlet;
+#X obj 295 77 tabletool \$0-random-amplitudes;
+#X obj 450 31 table \$0-random-amplitudes 8;
+#X obj 69 208 *~;
+#X obj 119 208 *~;
+#X obj 169 208 *~;
+#X obj 219 208 *~;
+#X obj 269 208 *~;
+#X obj 319 208 *~;
+#X obj 456 240 *~;
+#X obj 526 240 *~;
+#X obj 69 70 t f f f f f f f f b b b;
+#X msg 305 36 dump;
+#X obj 477 109 unpack f f f f f f f f;
+#X obj 526 219 osc~;
+#X obj 456 219 osc~;
+#X obj 319 187 osc~;
+#X obj 269 187 osc~;
+#X obj 219 187 osc~;
+#X obj 169 187 osc~;
+#X obj 119 187 osc~;
+#X obj 69 187 osc~;
+#X obj 69 40 change;
+#X text 468 283 Add some INHARMONIC partials to try and screw up the
+HPS result, f 26;
+#X obj 456 189 * 2.87136;
+#X text 531 65 Randomize the amplitudes;
+#X text 368 358 Wait 100ms for the pitch transition to settle \, then
+analyze for magnitude spectrum and bang the HPS method;
+#X msg 295 16 rand_fill 0.1 1;
+#X obj 319 157 * 6;
+#X obj 119 157 * 2;
+#X obj 219 157 * 4;
+#X obj 526 189 * 4.7318;
+#X connect 0 0 33 0;
+#X connect 1 0 2 0;
+#X connect 3 0 30 0;
+#X connect 4 0 28 0;
+#X connect 5 0 6 0;
+#X connect 6 0 1 0;
+#X connect 7 0 6 0;
+#X connect 8 0 10 0;
+#X connect 9 0 5 0;
+#X connect 10 0 11 0;
+#X connect 10 1 6 0;
+#X connect 12 1 24 0;
+#X connect 14 0 7 0;
+#X connect 15 0 7 1;
+#X connect 16 0 7 1;
+#X connect 17 0 7 1;
+#X connect 18 0 7 1;
+#X connect 19 0 7 1;
+#X connect 20 0 7 1;
+#X connect 21 0 7 1;
+#X connect 22 0 32 0;
+#X connect 22 1 40 0;
+#X connect 22 2 3 0;
+#X connect 22 3 41 0;
+#X connect 22 4 4 0;
+#X connect 22 5 39 0;
+#X connect 22 6 35 0;
+#X connect 22 7 42 0;
+#X connect 22 8 8 0;
+#X connect 22 9 23 0;
+#X connect 22 10 38 0;
+#X connect 23 0 12 0;
+#X connect 24 0 14 1;
+#X connect 24 1 15 1;
+#X connect 24 2 16 1;
+#X connect 24 3 17 1;
+#X connect 24 4 18 1;
+#X connect 24 5 19 1;
+#X connect 24 6 20 1;
+#X connect 24 7 21 1;
+#X connect 25 0 21 0;
+#X connect 26 0 20 0;
+#X connect 27 0 19 0;
+#X connect 28 0 18 0;
+#X connect 29 0 17 0;
+#X connect 30 0 16 0;
+#X connect 31 0 15 0;
+#X connect 32 0 14 0;
+#X connect 33 0 22 0;
+#X connect 35 0 26 0;
+#X connect 38 0 12 0;
+#X connect 39 0 27 0;
+#X connect 40 0 31 0;
+#X connect 41 0 29 0;
+#X connect 42 0 25 0;
+#X restore 297 139 pd generate-mostly-harmonic-tone-and-analyze-it
+;
+#X text 501 39 If DSP is on \, you can re-tune the fundamental of a
+mostly harmonic additive synthesis tone here. Its spectrum will be
+analyzed by [magSpec~] and sent to the table below before running the
+HPS algorithm. Note that even though there are inharmonic elements
+and random partial amplitudes \, HPS will generally find the right
+overall fundamental.;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array \$0-table-HPS-yValues 46 float 0;
+#X coords 0 119717 45 1.75445e-20 200 100 1 0 0;
+#X restore 478 395 graph;
+#X obj 201 468 list prepend 0;
+#X obj 201 489 s \$0-table-HPS-yValues;
+#X obj 154 546 tabletool \$0-table-HPS-yValues;
+#X msg 154 516 fit_bounds;
+#X obj 154 441 t b l;
+#X text 374 516 The index of the most likely fundamental peak is sent
+out the left outlet \, and the list of y-values from the algorithm
+is sent out the right. This could be useful to look out for octave
+errors where there is more than one strong y-value peak.;
+#X text 35 19 Run the Harmonic Product Spectrum algorithm \, which
+attempts to find the common spacing of peak data (i.e. \, the fundamental
+peak in a frequency spectrum context)., f 39;
+#X connect 1 0 3 0;
+#X connect 1 0 5 0;
+#X connect 1 1 19 0;
+#X connect 3 0 4 0;
+#X connect 5 0 7 0;
+#X connect 6 0 1 0;
+#X connect 7 0 8 0;
+#X connect 10 0 11 0;
+#X connect 11 0 2 0;
+#X connect 11 0 12 0;
+#X connect 12 0 6 0;
+#X connect 15 0 16 0;
+#X connect 18 0 17 0;
+#X connect 19 0 18 0;
+#X connect 19 1 15 0;
+#X restore 202 363 pd analysis;
+#X obj 551 435 declare -lib timbreID/timbreIDLib;
+#X connect 14 0 15 0;
+#X connect 15 0 13 0;
+#X connect 15 1 12 0;

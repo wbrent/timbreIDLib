@@ -1,0 +1,113 @@
+#N canvas 292 117 958 543 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 190 204 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X text 252 235 Bang repeatedly...;
+#X obj 228 236 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 640 299 timbreID;
+#X obj 3 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 626 81 776 632 other-settings 0;
+#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 0;
+#X msg 54 106 window_function \$1;
+#X msg 112 176 power_spectrum \$1;
+#X obj 112 158 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 54 575 outlet;
+#X text 271 243 Construct a new filterbank with a specific spacing.
+;
+#X text 253 176 Use power spectrum. (default: magnitude);
+#X text 52 49 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X msg 350 504 print;
+#X obj 268 384 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 268 404 spec_band_avg \$1;
+#X obj 298 444 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 298 464 filter_avg \$1;
+#X text 400 506 Print current settings in the post window;
+#X text 324 432 If using the triangular Bark spaced filters \, you
+can either sum or average the energy in each filter (default: sum)
+;
+#X text 294 352 Rather than sum energy in the triangular Bark spaced
+filters to get the amount of energy in each Bark band \, you can average
+energy in the unfiltered bins (default: OFF);
+#X msg 213 302 overlap 2;
+#X text 294 290 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X msg 171 243 filterbank 1;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 8 0 4 0;
+#X connect 9 0 10 0;
+#X connect 10 0 4 0;
+#X connect 11 0 12 0;
+#X connect 12 0 4 0;
+#X connect 16 0 4 0;
+#X connect 18 0 4 0;
+#X restore 308 365 pd other-settings;
+#X msg 264 308 window 2000;
+#X text 263 290 Change analysis window size;
+#X text 281 427 Creation arguments are window size in samples \, and
+filterbank spacing in Barks;
+#X text 705 460 Updated for timbreID version 0.7;
+#X text 472 239 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 473 127 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two. The second creation argument specifies the Bark-spacing of the
+filterbank. This can also be changed later with the "filterbank" message.
+;
+#X obj 56 475 nbx 7 32 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 32
+-262144 -1 -1 0 256;
+#X obj 56 40 noise~;
+#X obj 157 141 *~;
+#X obj 193 141 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 157 82 osc~ 880;
+#X obj 56 174 +~;
+#X floatatom 113 53 5 0 0 1 Q - -;
+#X obj 56 141 *~;
+#X obj 92 141 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 56 82 bp~ 1000 1;
+#X obj 56 104 bp~ 1000 1;
+#X obj 228 255 metro 100;
+#X text 473 34 Bark spectrum kurtosis measures the peakedness of a
+Bark spectrum. The kurtosis of a single sinusoid will be extremely
+high \, while that of noise will be extremely low. Raise the Q on the
+band-passed noise to make its Bark spectrum more and more peaked \,
+and see how kurtosis reflects the changes.;
+#X obj 56 437 barkSpecKurtosis~ 1024 0.5;
+#X text 187 187 Bang to output kurtosis;
+#X text 705 480 July 2017;
+#X obj 705 502 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 26 0;
+#X connect 2 0 24 0;
+#X connect 6 0 26 0;
+#X connect 7 0 26 0;
+#X connect 14 0 22 0;
+#X connect 15 0 18 1;
+#X connect 16 0 15 1;
+#X connect 17 0 15 0;
+#X connect 18 0 26 0;
+#X connect 19 0 22 2;
+#X connect 19 0 23 2;
+#X connect 20 0 18 0;
+#X connect 21 0 20 1;
+#X connect 22 0 23 0;
+#X connect 23 0 20 0;
+#X connect 24 0 26 0;
+#X connect 26 0 13 0;

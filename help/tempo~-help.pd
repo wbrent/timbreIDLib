@@ -1,0 +1,386 @@
+#N canvas 216 122 864 688 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 4 5 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 5 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X floatatom 54 575 10 0 0 1 BPM-mode - -;
+#N canvas 697 125 734 581 synth-beat 0;
+#X obj 107 361 vline~;
+#X obj 52 395 *~;
+#X obj 345 54 t b f;
+#X obj 345 96 /;
+#X obj 345 205 / 1024;
+#X floatatom 345 226 10 0 0 1 frames - -;
+#X floatatom 365 178 10 0 0 1 samples - -;
+#X msg 345 75 60;
+#X obj 345 137 * 44100;
+#X obj 52 227 noise~;
+#X obj 202 72 * 1000;
+#X obj 172 428 *~;
+#X obj 212 399 vline~;
+#X obj 151 195 f;
+#X obj 226 188 + 1;
+#X obj 151 216 select 0;
+#X obj 212 309 t b;
+#X obj 212 330 random 100;
+#X msg 107 340 0.5 2 \, 0 2 10;
+#X obj 52 472 +~;
+#X obj 107 291 random 100;
+#X obj 107 312 moses 90;
+#X obj 202 112 / 4;
+#X obj 226 209 % 4;
+#X obj 52 513 outlet~;
+#X msg 212 378 0.35 2 \, 0 2 10;
+#X obj 212 351 moses 35;
+#X obj 106 119 tgl 15 0 empty empty on/off 17 7 0 10 -262144 -1 -1
+0 1;
+#X floatatom 106 139 5 80 120 1 BPM - -;
+#X msg 55 64 90;
+#X obj 55 43 loadbang;
+#X floatatom 365 117 10 0 0 1 seconds - -;
+#X obj 151 167 metro;
+#X obj 138 524 dac~;
+#X obj 138 503 *~ 0.3;
+#X obj 289 517 s \$0-tempo-msg;
+#X obj 289 457 select 1;
+#X msg 289 485 tempo_range 75 125 \, freq_range 0 22050 \, thresh 50
+\, harmonics 6 \, reset_max_onset_peak;
+#X obj 289 437 change;
+#X connect 0 0 1 1;
+#X connect 1 0 19 0;
+#X connect 2 0 7 0;
+#X connect 2 1 3 1;
+#X connect 3 0 10 0;
+#X connect 3 0 31 0;
+#X connect 3 0 8 0;
+#X connect 4 0 5 0;
+#X connect 7 0 3 0;
+#X connect 8 0 4 0;
+#X connect 8 0 6 0;
+#X connect 9 0 1 0;
+#X connect 9 0 11 0;
+#X connect 10 0 22 0;
+#X connect 11 0 19 1;
+#X connect 12 0 11 1;
+#X connect 13 0 14 0;
+#X connect 13 0 15 0;
+#X connect 14 0 23 0;
+#X connect 15 0 20 0;
+#X connect 15 1 16 0;
+#X connect 16 0 17 0;
+#X connect 17 0 26 0;
+#X connect 18 0 0 0;
+#X connect 19 0 24 0;
+#X connect 19 0 34 0;
+#X connect 20 0 21 0;
+#X connect 21 0 18 0;
+#X connect 22 0 32 1;
+#X connect 23 0 13 1;
+#X connect 25 0 12 0;
+#X connect 26 0 25 0;
+#X connect 27 0 32 0;
+#X connect 27 0 38 0;
+#X connect 28 0 2 0;
+#X connect 29 0 28 0;
+#X connect 30 0 29 0;
+#X connect 32 0 13 0;
+#X connect 34 0 33 0;
+#X connect 34 0 33 1;
+#X connect 36 0 37 0;
+#X connect 37 0 35 0;
+#X connect 38 0 36 0;
+#X coords 0 -1 1 1 85 60 1 100 100;
+#X restore 54 61 pd synth-beat;
+#N canvas 578 60 789 379 drum-loop-file 0;
+#X obj 61 175 readsf~;
+#X msg 111 139 stop;
+#X obj 61 226 outlet~;
+#X msg 61 108 open ./audio/drum-loop-\$1.wav \, start;
+#X obj 61 46 hradio 15 1 0 2 empty empty empty 0 -8 0 10 -262144 -1
+-1 0;
+#X obj 111 46 bng 15 250 50 0 empty empty stop 17 7 0 10 -262144 -1
+-1;
+#X obj 61 76 + 1;
+#X obj 130 233 dac~;
+#X obj 130 212 *~ 0.2;
+#X obj 258 302 s \$0-tempo-msg;
+#X obj 258 172 select 0 1;
+#X msg 308 240 tempo_range 60 170 \, freq_range 0 22050 \, thresh 35
+\, harmonics 8 \, reset_max_onset_peak;
+#X msg 258 200 tempo_range 60 120 \, freq_range 30 500 \, thresh 35
+\, harmonics 6 \, reset_max_onset_peak;
+#X obj 258 142 change;
+#X obj 330 78 loadbang;
+#X msg 330 99 -1;
+#X connect 0 0 2 0;
+#X connect 0 0 8 0;
+#X connect 0 1 4 0;
+#X connect 1 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 6 0;
+#X connect 4 0 13 0;
+#X connect 5 0 1 0;
+#X connect 6 0 3 0;
+#X connect 8 0 7 0;
+#X connect 8 0 7 1;
+#X connect 10 0 12 0;
+#X connect 10 1 11 0;
+#X connect 11 0 9 0;
+#X connect 12 0 9 0;
+#X connect 13 0 10 0;
+#X connect 14 0 15 0;
+#X connect 15 0 13 0;
+#X coords 0 -1 1 1 120 50 1 50 20;
+#X restore 176 62 pd drum-loop-file;
+#X floatatom 134 495 10 0 0 1 BPM-raw - -;
+#N canvas 663 23 770 488 general-settings 0;
+#X obj 173 238 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 53 118 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 73 118 power_spectrum \$1;
+#X obj 33 58 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 1;
+#X msg 33 78 window_function \$1;
+#X msg 193 238 squared_diff \$1;
+#X msg 233 278 overlap 2;
+#X text 324 275 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X text 31 21 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X text 201 158 Change window size;
+#X text 208 111 Use power instead of magnitude spectrum for the spectral
+growth analysis stage;
+#X text 221 198 Change analysis hop and frame separation;
+#X msg 113 158 window 2048;
+#X msg 153 198 hop 256;
+#X text 319 231 Use squared spectral difference vs. absolute value
+of spectral difference for onset data;
+#X obj 33 437 s \$0-tempo-msg;
+#X connect 0 0 5 0;
+#X connect 1 0 2 0;
+#X connect 2 0 15 0;
+#X connect 3 0 4 0;
+#X connect 4 0 15 0;
+#X connect 5 0 15 0;
+#X connect 6 0 15 0;
+#X connect 12 0 15 0;
+#X connect 13 0 15 0;
+#X restore 194 232 pd general-settings;
+#N canvas 780 62 900 558 tempo-algorithm-settings 0;
+#X floatatom 153 184 5 0 0 1 % - -;
+#X msg 153 204 thresh \$1;
+#X floatatom 33 43 10 0 0 0 - - -;
+#X msg 33 64 onset_buf_duration \$1;
+#X obj 213 284 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 233 284 max_onset_peak_update \$1;
+#X msg 73 104 tempo_range 90 170;
+#X text 212 103 Tempo range to search for (BPM);
+#X text 222 153 Number of harmonics to search for in HPS algorithm
+;
+#X text 359 243 Reset the current maximum peak value and search for
+a new one, f 63;
+#X text 420 283 Enable/disable updating of the maximum onset peak value
+(default: ON), f 72;
+#X text 244 186 Onset peak threshold as percentage of the current maximum
+peak value (default: 20%), f 46;
+#X text 434 317 Specify a limited frequency band in Hz to use in spectral
+differencing onset algorithm (default: 0Hz to Nyquist);
+#X msg 193 244 reset_max_onset_peak;
+#X obj 33 496 s \$0-tempo-msg;
+#X msg 313 364 below_thresh_default 0.01;
+#X text 310 392 Specify a value that all onset data to be bashed to
+if it falls below the current thresh (default: 1.0). This affects the
+HPS algorithm results \, which involves a running product. The default
+of 1 means that when searching in areas of the spectral growth onset
+data where there were no peaks \, the running product is unaffected.
+A value lower than 1 will reduce the running product when non-peak
+areas of the data are encountered.;
+#X text 201 29 Onset buffer size (ms). This duration is also resized
+automatically when "tempo_range" and "harmonics" values are changed
+so that there is enough of a spectral growth data buffer for the HPS
+algorithm with respect to those settings.;
+#X msg 273 324 freq_range 30 1000;
+#X msg 113 154 harmonics 6;
+#X connect 0 0 1 0;
+#X connect 1 0 14 0;
+#X connect 2 0 3 0;
+#X connect 3 0 14 0;
+#X connect 4 0 5 0;
+#X connect 5 0 14 0;
+#X connect 6 0 14 0;
+#X connect 13 0 14 0;
+#X connect 15 0 14 0;
+#X connect 18 0 14 0;
+#X connect 19 0 14 0;
+#X restore 194 252 pd tempo-algorithm-settings;
+#N canvas 49 507 852 407 plot-onsets-data 0;
+#X obj 84 51 inlet;
+#X obj 84 150 list prepend 0;
+#X obj 84 90 t l l;
+#X obj 205 149 change;
+#X obj 205 171 pack f \$0;
+#X obj 205 129 list length;
+#X msg 205 193 \; \$2-onsets-buffer resize \$1 \;;
+#X obj 84 171 s \$0-onsets-buffer;
+#X msg 353 83 fit_bounds;
+#X obj 353 53 table \$0-onsets-buffer;
+#X obj 353 134 tabletool \$0-onsets-buffer;
+#X text 442 82 << since spectral difference onset data has an unpredictable
+range \, use [tabletool]'s automatic y-bounds fitting once some onset
+data comes into the table;
+#X floatatom 459 198 5 0 0 2 x-low - -;
+#X msg 459 309 \; \$5-onsets-buffer bounds \$1 \$2 \$3 \$4 \;;
+#X floatatom 549 198 5 0 0 2 x-hi - -;
+#X obj 549 238 t b b f;
+#X obj 459 288 pack f f f 0 \$0;
+#X msg 656 218 max;
+#X obj 656 239 tabletool \$0-onsets-buffer;
+#X obj 459 218 t f b;
+#X connect 0 0 2 0;
+#X connect 1 0 7 0;
+#X connect 2 0 1 0;
+#X connect 2 1 5 0;
+#X connect 3 0 4 0;
+#X connect 4 0 6 0;
+#X connect 5 0 3 0;
+#X connect 8 0 10 0;
+#X connect 12 0 19 0;
+#X connect 14 0 15 0;
+#X connect 15 0 16 0;
+#X connect 15 1 17 0;
+#X connect 15 2 16 2;
+#X connect 16 0 13 0;
+#X connect 17 0 18 0;
+#X connect 18 0 16 1;
+#X connect 19 0 16 0;
+#X connect 19 1 17 0;
+#X restore 174 465 pd plot-onsets-data;
+#X floatatom 94 525 10 0 0 1 confidence-% - -;
+#X text 620 609 Updated for timbreID version 0.7.6;
+#X text 437 344 While you can use the raw tempo results appearing at
+the 3rd outlet \, a safer bet is the tempo reported at the 1st outlet.
+This tempo is the mode of the most recent N raw tempo results rounded
+to the nearest BPM. The confidence rating given at the 2nd outlet is
+simply the number of appearances of the mode scaled according to the
+tempo buffer size N in order to be given in percent. Thus \, if you
+set the tempo buffer size to N=100 \, the confidence rating is directly
+the number of occurrences of the tempo mode. Tempo mode adds yet more
+latency \, as the tempo buffer is filled gradually as new raw tempo
+results appear.;
+#N canvas 948 460 631 442 more-settings 0;
+#X floatatom 33 33 5 0 0 0 - - -;
+#X msg 33 54 tempo_buffer_const \$1;
+#X text 122 31 Fill the tempo buffer with a particular BPM value;
+#X msg 73 94 tempo_buffer_clear;
+#X text 212 93 Initialize the tempo buffer \, filling it with -1's
+;
+#X msg 113 134 tempo_buffer_size 50;
+#X msg 193 214 print;
+#X obj 133 174 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 153 174 debug \$1;
+#X text 274 122 Size of the buffer holding the latest tempo measurements
+(default: 20). The mode of this buffer is the tempo sent out of outlet
+1, f 45;
+#X text 254 173 Activate debug mode;
+#X text 274 212 Print internal settings and info to the Pd console
+;
+#X obj 33 386 s \$0-tempo-msg;
+#X connect 0 0 1 0;
+#X connect 1 0 12 0;
+#X connect 3 0 12 0;
+#X connect 5 0 12 0;
+#X connect 6 0 12 0;
+#X connect 7 0 8 0;
+#X connect 8 0 12 0;
+#X restore 194 272 pd more-settings;
+#N canvas 558 208 954 469 generally-useful-info-and-tips 0;
+#X text 55 37 Some generally useful info:;
+#X text 515 267 The slower your tempo \, the longer your onset buffer
+size will have to be \, which will affect latency.;
+#X text 55 277 Don't set the "harmonics" setting too low (2) or too
+high (10) unless you feel like you understand the HPS algorithm and
+know what you're doing. Generally \, settings of 4-7 harmonics are
+about right.;
+#X text 515 307 If you can live with very high latency \, try making
+the onset buffer duration longer than the minimum required. This will
+allow you to search for more harmonics. You can also increase the tempo
+buffer size from the default of 20 up to something like 100 It increases
+the lag \, but makes more use of the mode analysis of tempo data to
+get a solid result.;
+#X text 55 67 Tempo tracking works best on signals with a stable tempo
+(e.g. \, drum loops) \, so have realistic expectations. It relies on
+onset detection data \, which is best for signals with sharp transients.
+Therefore \, [tempo~] will probably not do a great job of estimating
+the tempo of your free improv piece for french horn.;
+#X text 55 207 Tempo tracking is prone to "octave errors" (i.e. \,
+reporting a tempo that is twice or half of the actual tempo). But if
+you zero in on a relatively limited tempo range \, you can use the
+"tempo_range" method to restrict the estimation algorithm to a range
+that rules out octave errors.;
+#X text 55 337 Onset peak data thresholding works based on a percent
+of the current maximum peak value. It's important to understand how
+this works \, so you should look at the onset peak data coming out
+of the 4th outlet to see how a change in "thresh" affects the results.
+;
+#X text 515 157 Before running the HPS algorithm on the onset peak
+data \, [tempo~] shifts the onset data so that the first peak is perfectly
+aligned at the beginning of the onset peak data buffer. The HPS algorithm
+is only run when a new peak is shifted to the head of the buffer. Tempo
+results come out of the 3rd outlet and are added to the internal tempo
+buffer only after the HPS algorithm runs (i.e. \, when a new peak is
+shifted to the head of the onset buffer).;
+#X text 55 147 Unlike pitch and onset tracking \, tempo estimation
+involves high latency (seconds \, not milliseconds). The algorithm
+needs several repetitions of sound onset patterns in order to make
+sense of a signal's beat structure.;
+#X text 515 67 Use the "reset_max_onset_peak" method any time your
+signal changes dramatically. Once you're sure you have a good \, representative
+max onset peak value for a given signal \, turn off max peak updating
+via the "max_onset_peak_update" method to avoid having a single wild
+onset peak throw off your thresholding.;
+#X restore 440 486 pd generally-useful-info-and-tips;
+#X text 436 44 [tempo~] estimates the tempo (BPM) of an input signal.
+Its analysis process involves three main stages: spectral growth analysis
+of the input to harvest sound onset peaks \, a Harmonic Product Spectrum
+(HPS) algorithm that analyzes the onset peak data \, and finally a
+mode analysis of the most recent tempo estimate results in order to
+provide a more steady result.;
+#X text 437 144 There are many settings that affect the accuracy and
+latency of results reported by [tempo~] \, and some familiarity with
+spectral growth analysis and the HPS algorithm will be helpful. Prior
+knowledge about the signal you're analyzing is very helpful as well.
+For instance \, if you're expecting a tempo somewhere in the range
+of 90-120 BPM \, you can let [tempo~] know this via the "tempo_range"
+message to improve accuracy. If you know your signal contains a steady
+kick drum beat \, you can use the "freq_range" message to limit the
+frequency range to 30-500Hz or so \, and only look for onsets there.
+Depending on your needs \, high latency might be acceptable \, which
+can also improve results. Control this with the "onset_buf_duration"
+message. See inside [pd tempo-algorithm-settings] and [pd generally-useful-info-and-tips]
+for more information on these and other important settings.;
+#X text 266 532 Outlets:;
+#X text 266 612 4) Spectral growth onset data list;
+#X text 183 374 Creation arguments:, f 20;
+#X text 183 394 1) Window size in samples;
+#X text 183 414 2) Analysis hop in samples;
+#X text 266 572 2) Confidence in mode tempo (percent);
+#X text 265 592 3) Raw tempo estimate (BPM);
+#X text 266 552 1) Mode of most recent tempo estimates (rounded BPM)
+;
+#X obj 126 326 r \$0-tempo-msg;
+#X obj 54 381 tempo~ 1024 128;
+#X text 620 629 August 2018;
+#X obj 621 652 declare -lib timbreID/timbreIDLib;
+#X connect 3 0 25 0;
+#X connect 4 0 25 0;
+#X connect 24 0 25 0;
+#X connect 25 0 2 0;
+#X connect 25 1 9 0;
+#X connect 25 2 5 0;
+#X connect 25 3 8 0;

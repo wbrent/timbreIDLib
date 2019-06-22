@@ -1,0 +1,101 @@
+#N canvas 290 99 982 581 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 143 197 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X floatatom 56 523 10 0 0 0 - - -;
+#X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 608 129 737 475 other-settings 0;
+#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 3;
+#X msg 54 106 window_function \$1;
+#X msg 155 217 power_spectrum \$1;
+#X obj 155 199 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 54 415 outlet;
+#X text 296 217 Use power spectrum. (default: magnitude);
+#X msg 234 335 print;
+#X text 52 49 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X msg 191 279 overlap 2;
+#X text 272 267 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X obj 111 146 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 111 164 normalize \$1;
+#X text 239 155 Normalize spectrum. This only affects results when
+using the Krimphoff algorithm. (default: ON);
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 6 0 4 0;
+#X connect 8 0 4 0;
+#X connect 10 0 11 0;
+#X connect 11 0 4 0;
+#X restore 216 409 pd other-settings;
+#X text 705 503 Updated for timbreID version 0.7;
+#X obj 671 340 timbreID;
+#X text 504 275 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X msg 180 260 window 2000;
+#X obj 214 315 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 214 335 algorithm \$1;
+#X text 229 354 Choose either Jensen (0) or Krimphoff (1) algorithm.
+(default: Jensen), f 38;
+#X text 504 179 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two. The second creation argument sets the algorithm to either Jensen
+(0) or Krimphoff (1).;
+#X obj 56 49 phasor~ 440;
+#X obj 116 71 noise~;
+#X obj 56 131 *~;
+#X obj 86 131 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 116 131 *~;
+#X obj 146 131 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 116 92 lop~ 1000;
+#X obj 56 71 *~ 2;
+#X obj 56 93 -~ 1;
+#X obj 56 183 +~;
+#X text 263 481 Creation arguments are window size in samples \, and
+choice of algorithm: either Jensen (0) or Krimphoff (1)., f 56;
+#X text 140 179 Bang to output irregularity;
+#X text 178 242 Change window size;
+#X obj 56 487 specIrregularity~ 1024 0;
+#X text 705 523 July 2017;
+#X text 504 33 Spectral Irregularity has two common definitions: one
+by Jensen \, the other by Krimphoff. The calculation differs \, but
+the general idea of both is to inspect a spectrum from low to high
+and see how each frequency bin compares to its immediate neighbors.
+For jagged spectra \, irregularity will be high \, and and for smooth
+contoured spectra \, it will be low. In 2005 \, McAdams et. al identified
+this measure as important to timbre perception. At left \, the irregularity
+of a sawtooth wave (with a spiky spectrum) is much more than low-pass
+filtered noise.;
+#X obj 706 547 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 26 0;
+#X connect 4 0 26 0;
+#X connect 8 0 26 0;
+#X connect 9 0 10 0;
+#X connect 10 0 26 0;
+#X connect 13 0 20 0;
+#X connect 14 0 19 0;
+#X connect 15 0 22 0;
+#X connect 16 0 15 1;
+#X connect 17 0 22 1;
+#X connect 18 0 17 1;
+#X connect 19 0 17 0;
+#X connect 20 0 21 0;
+#X connect 21 0 15 0;
+#X connect 22 0 26 0;
+#X connect 26 0 1 0;

@@ -1,0 +1,131 @@
+#N canvas 230 122 848 674 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 550 354 timbreID;
+#X obj 207 404 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 207 424 algorithm \$1;
+#X obj 138 40 noise~;
+#X obj 48 160 *~;
+#X obj 78 160 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 138 160 *~;
+#X obj 168 160 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#N canvas 528 227 856 680 other-settings 0;
+#X obj 34 56 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 4;
+#X msg 34 76 window_function \$1;
+#X msg 128 185 power_spectrum \$1;
+#X obj 128 167 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 34 630 outlet;
+#X text 269 185 Use power spectrum. (default: magnitude);
+#X obj 172 233 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 172 253 normalize \$1;
+#X text 84 109 Change window size.;
+#X msg 423 527 print;
+#X text 200 217 Turn spectrum normalization on/off. This only matters
+when using the Krimphoff algorithm. (default: ON);
+#X msg 86 127 window 2000;
+#X text 32 19 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X obj 341 407 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 341 427 spec_band_avg \$1;
+#X obj 371 467 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 371 487 filter_avg \$1;
+#X text 398 455 If using the triangular Bark spaced filters \, you
+can either sum or average the energy in each filter (default: sum)
+;
+#X text 367 375 Rather than sum energy in the triangular Bark spaced
+filters to get the amount of energy in each Bark band \, you can average
+energy in the unfiltered bins (default: OFF);
+#X msg 265 337 overlap 2;
+#X text 346 325 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X text 305 294 Construct a new filterbank with a specific spacing.
+;
+#X msg 205 294 filterbank 1;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 6 0 7 0;
+#X connect 7 0 4 0;
+#X connect 9 0 4 0;
+#X connect 11 0 4 0;
+#X connect 13 0 14 0;
+#X connect 14 0 4 0;
+#X connect 15 0 16 0;
+#X connect 16 0 4 0;
+#X connect 19 0 4 0;
+#X connect 22 0 4 0;
+#X restore 259 479 pd other-settings;
+#X obj 111 307 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 3 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 48 62 *~ 2;
+#X obj 48 84 -~ 1;
+#X obj 160 327 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 47 561 barkSpecIrregularity~ 1024 0.5 0;
+#X text 318 415 Choose between Jensen (0) and Krimphoff (1) algorithms
+, f 30;
+#X text 108 289 Bang to output irregularity;
+#X obj 48 210 +~;
+#X text 585 605 Updated for timbreID version 0.7;
+#X obj 47 598 nbx 7 32 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 32
+-262144 -1 -1 0 256;
+#X text 306 533 Creation arguments are window size in samples \, filterbank
+spacing in Barks \, and algorithm: Jensen (0) \, or Krimphoff (1),
+f 70;
+#X text 377 297 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 378 170 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two. The second creation argument specifies the Bark-spacing of the
+filterbank. This can also be changed later with the "filterbank" message.
+The third creation argument sets the algorithm to either Jensen (0)
+or Krimphoff (1).;
+#X obj 48 40 phasor~ 440;
+#X obj 138 61 lop~ 5000;
+#X obj 138 81 lop~ 5000;
+#X obj 160 347 metro 100;
+#X text 585 625 July 2017;
+#X text 378 40 Spectral Irregularity has two common definitions: one
+by Jensen \, the other by Krimphoff. The calculation differs \, but
+the general idea of both is to inspect a spectrum from low to high
+and see how the energy in each band compares to its immediate neighbors.
+For jagged Bark spectra \, irregularity will be high \, and and for
+smooth contoured spectra \, it will be low. At left \, the irregularity
+of a sawtooth wave (with a spiky Bark spectrum) is much higher than
+low-pass filtered noise.;
+#X obj 586 646 declare -lib timbreID/timbreIDLib;
+#X connect 1 0 2 0;
+#X connect 2 0 15 0;
+#X connect 3 0 25 0;
+#X connect 4 0 18 0;
+#X connect 5 0 4 1;
+#X connect 6 0 18 1;
+#X connect 7 0 6 1;
+#X connect 8 0 15 0;
+#X connect 9 0 15 0;
+#X connect 12 0 13 0;
+#X connect 13 0 4 0;
+#X connect 14 0 27 0;
+#X connect 15 0 20 0;
+#X connect 18 0 15 0;
+#X connect 24 0 12 0;
+#X connect 25 0 26 0;
+#X connect 26 0 6 0;
+#X connect 27 0 15 0;

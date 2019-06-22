@@ -1,0 +1,79 @@
+#N canvas 196 163 978 604 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 59 74 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X text 80 74 Bang to analyze the entire array.;
+#X obj 59 522 nbx 5 32 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 32
+-262144 -1 -1 0 256;
+#X obj 158 249 hsl 400 15 0 128000 0 0 empty empty Scrub -2 -8 0 12
+-191407 -1 -1 0 1;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 724 184 641 315 other-settings 0;
+#X msg 54 48 set another-sample-array;
+#X msg 93 104 samplerate 48000;
+#X text 242 47 Read from a different array;
+#X obj 54 255 outlet;
+#X text 227 103 Specify your sample's sampling rate. (default: 44100)
+;
+#X msg 150 162 print;
+#X connect 0 0 3 0;
+#X connect 1 0 3 0;
+#X connect 5 0 3 0;
+#X restore 207 343 pd other-settings;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-waveform 128 float 0;
+#X coords 0 1 127 -1 200 140 1 0 0;
+#X restore 653 247 graph;
+#N canvas 666 270 552 163 soundfile 0;
+#X obj 50 93 soundfiler;
+#X msg 50 68 read -skip 120000 ./audio/testing.wav \$1-sample;
+#X obj 185 100 table \$0-sample 130000;
+#X obj 50 24 loadbang;
+#X obj 50 46 f \$0;
+#X connect 1 0 0 0;
+#X connect 3 0 4 0;
+#X connect 4 0 1 0;
+#X restore 653 397 pd soundfile;
+#N canvas 722 238 369 330 waveform 0;
+#X obj 46 61 inlet;
+#X obj 46 82 t f f;
+#X obj 46 284 outlet;
+#X obj 86 241 tabletool \$0-waveform;
+#X msg 86 200 copy_range 0 \$3-sample \$1 \$2;
+#X obj 86 164 pack f f \$0;
+#X obj 131 132 + 127;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 0 5 0;
+#X connect 1 1 6 0;
+#X connect 4 0 3 0;
+#X connect 5 0 4 0;
+#X connect 6 0 5 1;
+#X restore 155 269 pd waveform;
+#X text 259 477 Creation argument is the name of the sample array to
+read from., f 33;
+#X text 107 143 Analyze a window starting at sample 44100 that is 2000
+samples long (samples 44100 - 46099), f 48;
+#X msg 98 123 analyze 44100 2000;
+#X obj 59 483 waveDirChange \$0-sample;
+#X text 720 527 Updated for timbreID version 0.7.6;
+#X text 720 547 August 2018;
+#X obj 704 85 waveDirChange~;
+#X text 514 59 See the real-time version for more information on waveform
+direction change in general.;
+#X text 514 148 Note that with a real signal \, low level noise will
+produce lots of direction changes. Use a basic amplitude threshold
+before measuring to filter out this information out if it's not needed.
+;
+#X msg 155 291 analyze \$1 128;
+#X obj 721 571 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 13 0;
+#X connect 3 0 9 0;
+#X connect 6 0 13 0;
+#X connect 9 0 19 0;
+#X connect 12 0 13 0;
+#X connect 13 0 2 0;
+#X connect 19 0 13 0;

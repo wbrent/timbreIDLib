@@ -1,0 +1,112 @@
+#N canvas 252 172 988 678 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 137 171 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 365 384 842 591 other-settings 0;
+#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 1;
+#X msg 54 106 window_function \$1;
+#X msg 173 257 power_spectrum \$1;
+#X obj 173 239 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 54 525 outlet;
+#X msg 357 459 print;
+#X text 407 461 Print current settings in the post window;
+#X text 52 49 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X msg 303 407 overlap 2;
+#X text 384 395 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X obj 213 289 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 213 307 power_cepstrum \$1;
+#X text 314 257 Use power spectrum. (default: power);
+#X text 243 151 Set the expected pitch range (MIDI) to determine where
+to look for peaks in the cepstrum.;
+#X msg 103 157 pitch_range 35 60;
+#X obj 253 339 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 253 357 spectrum_offset \$1;
+#X text 354 307 Use power cepstrum (default: magnitude);
+#X msg 143 207 threshold 3;
+#X text 250 202 Set threshold for detecting cepstral peak. In standard
+deviations above the mean (default: 0);
+#X text 394 351 Add 1 to magnitude or power spectrum before cepstrum
+calculation (default: ON);
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 5 0 4 0;
+#X connect 8 0 4 0;
+#X connect 10 0 11 0;
+#X connect 11 0 4 0;
+#X connect 14 0 4 0;
+#X connect 15 0 16 0;
+#X connect 16 0 4 0;
+#X connect 18 0 4 0;
+#X restore 237 300 pd other-settings;
+#X text 677 599 Updated for timbreID version 0.7;
+#X msg 193 243 window 2000;
+#X text 275 243 Change analysis window size;
+#X text 172 153 Bang repeatedly to keep refreshing..., f 21;
+#X obj 57 387 cepstrumPitch~ 2048 43 64;
+#N canvas 0 50 450 278 (subpatch) 0;
+#X array cepsPitch 100 float 0;
+#X coords 0 64 99 40 200 140 1 0 0;
+#X restore 523 305 graph;
+#X obj 57 501 tabwrite cepsPitch;
+#X obj 241 466 f;
+#X obj 271 458 + 1;
+#X obj 271 480 % 100;
+#X obj 137 212 t b b;
+#X obj 57 72 adc~;
+#X text 677 619 July 2017;
+#X text 105 115 Bang to output pitch;
+#X obj 137 190 metro 20;
+#X floatatom 84 460 10 0 0 0 - - -;
+#X text 260 357 Creation arguments are window size in samples and the
+lower and upper bounds of the expected pitch range to track in MIDI
+units., f 32;
+#X obj 688 536 timbreID;
+#X text 521 471 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 521 201 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two.;
+#X text 521 24 Cepstrum analysis can be used for pitch tracking by
+searching for a cepstral peak within a given quefrency range. Although
+it is possible to search for pitch peaks using the output of [cepstrum~]
+\, [cepstrumPitch~] is specially designed for the task. You can easily
+set the quefrency bin range to search by supplying an upper and lower
+pitch range in MIDI units via the "pitch_range" message. You can also
+choose to set a threshold for recognizing pitch peaks via the "thresh"
+message. If no peaks exceed the threshold \, [cepstrumPitch~] outputs
+-1500 like [sigmund~]'s "pitch" function. The only output is pitch
+in MIDI units.;
+#X obj 678 641 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 9 0;
+#X connect 1 0 19 0;
+#X connect 4 0 9 0;
+#X connect 6 0 9 0;
+#X connect 9 0 11 0;
+#X connect 9 0 20 0;
+#X connect 12 0 13 0;
+#X connect 12 0 11 1;
+#X connect 13 0 14 0;
+#X connect 14 0 12 1;
+#X connect 15 0 9 0;
+#X connect 15 1 12 0;
+#X connect 16 0 9 0;
+#X connect 19 0 15 0;

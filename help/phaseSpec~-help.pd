@@ -1,0 +1,99 @@
+#N canvas 280 111 957 589 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 108 142 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-phaseSpec-graph 33 float 2;
+#X coords 0 3.14159 33 -3.12381 200 140 1 0 0;
+#X restore 483 310 graph;
+#X obj 137 181 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 740 301 615 476 other-settings 0;
+#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 1;
+#X msg 54 106 window_function \$1;
+#X obj 54 415 outlet;
+#X msg 158 208 print;
+#X text 208 210 Print current settings in the post window;
+#X text 52 49 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X msg 104 156 overlap 2;
+#X text 185 144 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 3 0 2 0;
+#X connect 6 0 2 0;
+#X restore 217 310 pd other-settings;
+#X msg 173 253 window 2000;
+#X text 268 246 Change analysis window size, f 17;
+#X obj 648 536 timbreID;
+#X text 161 180 Bang repeatedly to keep refreshing...;
+#X text 481 471 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 180 382 Creation argument is window size in samples, f 23
+;
+#N canvas 202 174 463 267 do-plotting 0;
+#X obj 79 37 inlet;
+#X obj 79 173 list prepend 0;
+#X obj 233 116 list length;
+#X obj 233 138 change;
+#X obj 233 160 pack f \$0;
+#X obj 79 59 t l l;
+#X msg 233 181 \; \$2-phaseSpec-graph resize \$1 \;;
+#X obj 79 194 s \$0-phaseSpec-graph;
+#X connect 0 0 5 0;
+#X connect 1 0 7 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 6 0;
+#X connect 5 0 1 0;
+#X connect 5 1 2 0;
+#X restore 57 437 pd do-plotting;
+#X text 481 221 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two.;
+#X text 712 299 pi;
+#X text 709 442 -pi;
+#X text 40 511 Updated for timbreID version 0.7.6;
+#X text 40 531 August 2018;
+#X text 105 125 Bang to output spectrum phases as a list;
+#X obj 137 200 metro 30;
+#X floatatom 57 29 5 0 63 1 bin - -;
+#X obj 57 49 bin2freq 64 44100;
+#X floatatom 57 70 10 0 0 1 Hz - -;
+#X obj 57 92 osc~ 2232.56;
+#X obj 57 387 phaseSpec~ 64;
+#X text 481 34 The phase spectrum is calculated by taking the arctangent
+of each complex number resulting from a Fourier transform. While the
+distance of a complex number from zero (magnitude) represents the amount
+of energy in a given frequency bin \, the angle (argument) of that
+same number represents the phase information for the bin. [phaseSpec~]
+does nothing until it receives a bang \, then it spits out the spectrum
+phases for the most recent analysis window as a list. The length of
+the phase list will be one half of the specified window size plus one
+(N/2+1). [phaseSpec~]'s output is between -pi and +pi radians. Try
+changing the frequency of the oscillator at left by bin number. Note
+the unique phase spectrum that occurs at the Nyquist bin. Also note
+that the choice of window (Blackman \, Hann \, etc) has a big impact
+on phase information.;
+#X obj 41 555 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 24 0;
+#X connect 2 0 19 0;
+#X connect 5 0 24 0;
+#X connect 6 0 24 0;
+#X connect 19 0 24 0;
+#X connect 20 0 21 0;
+#X connect 21 0 22 0;
+#X connect 22 0 23 0;
+#X connect 23 0 24 0;
+#X connect 24 0 12 0;

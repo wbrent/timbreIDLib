@@ -1,0 +1,182 @@
+#N canvas 234 81 881 682 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 50 310 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-waveform 1024 float 0;
+#X coords 0 1 1023 -1 200 140 1 0 0;
+#X restore 47 47 graph;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-cepstrum-graph 513 float 0;
+#X coords 0 0.5 512 -0.25 200 140 1 0 0;
+#X restore 313 47 graph;
+#X text 72 307 Bang to analyze the entire array.;
+#N canvas 666 270 482 216 soundfile 0;
+#X obj 50 103 soundfiler;
+#X obj 50 24 loadbang;
+#X obj 185 120 table \$0-sample 130000;
+#X msg 50 78 read -skip 120000 ./audio/testing.wav \$1-sample;
+#X obj 50 46 f \$0;
+#X connect 1 0 4 0;
+#X connect 3 0 0 0;
+#X connect 4 0 3 0;
+#X restore 655 86 pd soundfile;
+#X msg 107 455 analyze \$1 1024;
+#N canvas 722 238 304 333 waveform 0;
+#X obj 46 61 inlet;
+#X obj 46 82 t f f;
+#X obj 91 131 + 1023;
+#X msg 46 200 copy_range 0 \$3-sample \$1 \$2;
+#X obj 46 164 pack f f \$0;
+#X obj 46 241 tabletool \$0-waveform;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 1 1 2 0;
+#X connect 2 0 4 1;
+#X connect 3 0 5 0;
+#X connect 4 0 3 0;
+#X restore 655 138 pd waveform;
+#X obj 50 243 hsl 800 25 0 128000 0 0 \$0-scrub-bar empty Scrub-bar
+-2 -8 0 12 -191407 -1 -1 0 1;
+#X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 701 331 849 528 other-settings 0;
+#X obj 44 56 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 4;
+#X msg 44 76 window_function \$1;
+#X msg 100 138 set another-sample-array;
+#X msg 139 194 samplerate 48000;
+#X text 288 137 Read from a different array;
+#X msg 165 247 power_spectrum \$1;
+#X obj 165 229 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 44 455 outlet;
+#X text 273 193 Specify your sample's sampling rate. (default: 44100)
+;
+#X text 306 247 Use power spectrum. (default: magnitude);
+#X msg 265 393 print;
+#X text 42 19 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X text 315 395 Print current settings in the post window;
+#X obj 195 279 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 195 297 power_cepstrum \$1;
+#X text 336 297 Report power cepstrum (default: magnitude);
+#X obj 235 329 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 235 347 spectrum_offset \$1;
+#X text 376 340 Add 1 to the power or magnitude spectrum before the
+cepstrum is computed.;
+#X text 176 106 Change internal window size setting;
+#X msg 74 106 window 2000;
+#X connect 0 0 1 0;
+#X connect 1 0 7 0;
+#X connect 2 0 7 0;
+#X connect 3 0 7 0;
+#X connect 5 0 7 0;
+#X connect 6 0 5 0;
+#X connect 10 0 7 0;
+#X connect 13 0 14 0;
+#X connect 14 0 7 0;
+#X connect 16 0 17 0;
+#X connect 17 0 7 0;
+#X connect 20 0 7 0;
+#X restore 152 498 pd other-settings;
+#X obj 107 433 r \$0-scrub-bar;
+#X obj 655 116 r \$0-scrub-bar;
+#X text 209 432 Move through the soundfile with the slider above;
+#X text 596 389 See the real-time version for more information on cepstrum
+in general., f 33;
+#X obj 598 438 cepstrum~;
+#X obj 50 596 cepstrum \$0-sample;
+#N canvas 0 50 585 344 do-plotting 0;
+#X obj 53 39 inlet;
+#X obj 53 61 t b l l;
+#X obj 104 175 list prepend 0;
+#X obj 228 118 list length;
+#X obj 228 140 change;
+#X obj 228 162 pack f \$0;
+#X msg 228 183 \; \$2-cepstrum-graph resize \$1 \;;
+#X obj 104 196 s \$0-cepstrum-graph;
+#X obj 53 275 tabletool \$0-cepstrum-graph;
+#X msg 53 253 clip -0.25 0.5;
+#X text 165 233 clip to graph bounds because first value in cepstrum
+is often extremely low \, and it goes out of bounds. This is for aesthetic
+reasons only.;
+#X connect 0 0 1 0;
+#X connect 1 0 9 0;
+#X connect 1 1 2 0;
+#X connect 1 2 3 0;
+#X connect 2 0 7 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 9 0 8 0;
+#X restore 50 632 pd do-plotting;
+#X text 213 590 Creation argument is the name of the sample array to
+read from., f 33;
+#X msg 94 379 analyze 44100 2000;
+#X text 103 339 Analyze a window starting at sample 44100 that is 2000
+samples long (samples 44100 - 46099).;
+#X text 636 614 Updated for timbreID version 0.7.6;
+#X text 636 634 August 2018;
+#N canvas 397 274 1043 508 chain_messages 0;
+#X msg 563 139 chain_fftData <data>;
+#X msg 643 229 chain_magSpec <data>;
+#X obj 427 463 outlet;
+#X obj 34 159 adc~;
+#X obj 34 213 tID_fft~;
+#X obj 34 251 list append;
+#X obj 34 310 list prepend chain_fftData;
+#X obj 34 328 list trim;
+#X obj 64 183 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X text 219 287 Prepend the "chain_fftData" message in front of the
+analysis data \, then trim off the list selector to make it a message
+to timbreID analysis objects., f 33;
+#X text 132 192 [tID_fft~] outputs (N/2)+1 real values from the left
+outlet \, and (N/2)+1 imaginary values from the right. The imaginary
+values are appended to the real ones to form one long list (N+2 values
+total) of complex frequency domain data., f 50;
+#X text 718 138 fftData <data> should consist of (window/2)+1 real
+values and (window/2)+1 imaginary values \, packaged together as one
+long list., f 31;
+#X text 791 222 magSpec <data> should consist of (window/2)+1 magnitudes
+, f 25;
+#X text 559 25 The object in this help file accepts the chain_ messages
+listed below \, which should be followed by the associated data as
+a single list. In practice \, these messages are prepended to analysis
+results via [list prepend] \, followed by a [list trim] to remove the
+list selector. This is illustrated in the example at left.;
+#X text 98 15 To minimize redundant calculations on the same window
+of audio \, most of timbreID's non-real-time analysis objects have
+various chain_ methods. For example \, because many types of analysis
+start with an FFT \, it is more efficient to do a single FFT at the
+start of an analysis chain \, and pass the results to other analysis
+objects that require FFT data. chain_ methods make it possible to bypass
+various steps of the analysis calculation if the data is already available.
+Here \, note that the FFT data originated with a real-time analysis
+object \, but non-real-time objects can be used for consequent chain_
+calculations.;
+#X connect 0 0 2 0;
+#X connect 1 0 2 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 4 1 5 1;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 2 0;
+#X connect 8 0 4 0;
+#X restore 182 528 pd chain_messages;
+#X obj 637 654 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 16 0;
+#X connect 5 0 16 0;
+#X connect 10 0 16 0;
+#X connect 11 0 5 0;
+#X connect 12 0 6 0;
+#X connect 16 0 17 0;
+#X connect 19 0 16 0;
+#X connect 23 0 16 0;

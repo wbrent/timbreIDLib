@@ -1,0 +1,201 @@
+#N canvas 165 136 1150 681 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 165 155 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 849 514 timbreID;
+#X obj 87 88 *~;
+#X obj 116 88 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 139 88 *~;
+#X obj 168 88 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#N canvas 584 81 536 467 attack-detection 0;
+#X obj 33 329 select 1;
+#X obj 33 370 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 65 244 5 0 0 0 - - -;
+#X obj 33 69 adc~;
+#X obj 66 118 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 88 118 Turn on for continuous analysis;
+#X obj 66 148 metro 5.80499;
+#X obj 33 268 > 0.6;
+#X text 108 241 If 0.6 is too low or high \, try a different threshhold.
+;
+#X obj 85 371 print;
+#X obj 33 187 barkSpecFlux~ 1024 0.5 256;
+#X text 25 8 Bark spectrum flux can be used for basic attack detection.
+Turn on the toggle below to check it out.;
+#X obj 33 290 change;
+#X connect 0 0 1 0;
+#X connect 0 0 9 0;
+#X connect 2 0 7 1;
+#X connect 3 0 10 0;
+#X connect 4 0 6 0;
+#X connect 6 0 10 0;
+#X connect 7 0 12 0;
+#X connect 10 0 7 0;
+#X connect 12 0 0 0;
+#X restore 381 199 pd attack-detection;
+#X text 206 140 Activate a signal above and bang to output its flux.
+, f 19;
+#X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 0 50 450 278 (subpatch) 0;
+#X array \$0-band-diffs 50 float 0;
+#X coords 0 50 49 -50 200 140 1 0 0;
+#X restore 381 46 graph;
+#X obj 139 57 osc~ 440;
+#X obj 87 57 noise~;
+#X obj 189 188 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 37 88 *~;
+#X obj 66 88 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+;
+#X obj 37 57 adc~;
+#X text 254 504 Creation arguments are window size \, filterbank spacing
+in Barks \, and separation in samples between analysis windows., f
+44;
+#X obj 37 587 nbx 6 32 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 32
+-262144 -1 -1 0 256;
+#X text 674 252 In the [attack-detection] sub-patch \, the left outlet
+is used as an attack detector. bonk~ and timbreID's bark~ objects are
+much better designed for this purpose because they measure only growth
+(not energy decay) - the sub-patch here is just a proof of concept.
+;
+#X text 674 452 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 674 332 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two. The second creation argument sets the spacing of the Bark filterbank
+\, and the third creation argument specifies separation between the
+two analysis windows in samples.;
+#X obj 252 302 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 208 265 separation 512;
+#X msg 252 320 squared_diff \$1;
+#X text 378 306 Squared difference vs absolute value of difference
+, f 28;
+#X text 327 258 Change distance between analysis windows in samples
+, f 29;
+#X obj 37 519 barkSpecFlux~ 1024 0.5 512;
+#N canvas 442 81 850 694 other-settings 0;
+#X obj 44 66 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 4;
+#X msg 44 86 window_function \$1;
+#X obj 100 128 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 100 146 normalize \$1;
+#X msg 143 206 power_spectrum \$1;
+#X obj 143 188 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 44 635 outlet;
+#X text 292 253 Construct a new filterbank with a specific spacing.
+;
+#X text 284 206 Use power spectrum. (default: magnitude);
+#X msg 391 557 print;
+#X obj 243 326 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 243 346 spec_band_avg \$1;
+#X obj 273 386 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 273 406 filter_avg \$1;
+#X text 269 294 Rather than sum energy in the triangular Bark spaced
+filters to get the amount of energy in each Bark band \, you can average
+energy in the unfiltered bins. (default: OFF);
+#X text 299 374 If using the triangular Bark spaced filters \, you
+can either sum or average the energy in each filter .(default: sum)
+;
+#X text 441 559 Print current settings in the post window;
+#X text 42 29 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X msg 311 457 overlap 2;
+#X text 392 445 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X msg 351 512 window 2000;
+#X text 439 511 Change window size;
+#X msg 192 253 filterbank 1;
+#X text 206 146 Normalize spectrum (default: OFF);
+#X connect 0 0 1 0;
+#X connect 1 0 6 0;
+#X connect 2 0 3 0;
+#X connect 3 0 6 0;
+#X connect 4 0 6 0;
+#X connect 5 0 4 0;
+#X connect 9 0 6 0;
+#X connect 10 0 11 0;
+#X connect 11 0 6 0;
+#X connect 12 0 13 0;
+#X connect 13 0 6 0;
+#X connect 18 0 6 0;
+#X connect 20 0 6 0;
+#X connect 22 0 6 0;
+#X restore 301 361 pd other-settings;
+#X obj 189 209 metro 100;
+#X text 674 33 barkSpecFlux~ reports the full list of per-Bark-band
+energy differences at the right outlet \, and the sum of absolute values
+of numbers in that list at the left outlet. You get a lot more detailed
+information about how a Bark spectrum is changing with the right outlet
+if you have a reason to use it.;
+#X text 674 120 Typically \, spectral flux is the sum of squared differences
+between two successive spectra. barkSpecFlux~ gives you the option
+of either squaring or taking the absolute value of differences. The
+range of values for flux depends on which of these options you choose
+\, as well as frame separation and window size. With the default frame
+separation of a half window \, the flux of noise~ is higher than that
+of a sinusoid because the spectral content of noise is changes dramatically
+from window to window.;
+#N canvas 490 399 450 300 plot-diffs 0;
+#X obj 74 140 list prepend 0;
+#X obj 74 86 t l l;
+#X obj 194 127 list length;
+#X obj 74 161 s \$0-band-diffs;
+#X msg 194 193 \; \$2-band-diffs resize \$1 \;;
+#X obj 194 149 change;
+#X obj 194 171 pack f \$0;
+#X obj 74 56 inlet;
+#X connect 0 0 3 0;
+#X connect 1 0 0 0;
+#X connect 1 1 2 0;
+#X connect 2 0 5 0;
+#X connect 5 0 6 0;
+#X connect 6 0 4 0;
+#X connect 7 0 1 0;
+#X restore 242 565 pd plot-diffs;
+#X text 889 611 Updated for timbreID version 0.7.6;
+#X text 889 631 August 2018;
+#X msg 264 420 mode flux;
+#X msg 284 460 mode decay;
+#X msg 274 440 mode growth;
+#X text 371 421 Change modes to report flux \, spectral growth only
+\, or spectral decay only. This affects the output of both outlets
+, f 34;
+#X obj 890 654 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 27 0;
+#X connect 2 0 27 0;
+#X connect 3 0 2 1;
+#X connect 4 0 27 0;
+#X connect 5 0 4 1;
+#X connect 11 0 4 0;
+#X connect 12 0 2 0;
+#X connect 13 0 29 0;
+#X connect 14 0 27 0;
+#X connect 15 0 14 1;
+#X connect 16 0 14 0;
+#X connect 22 0 24 0;
+#X connect 23 0 27 0;
+#X connect 24 0 27 0;
+#X connect 27 0 18 0;
+#X connect 27 1 32 0;
+#X connect 28 0 27 0;
+#X connect 29 0 27 0;
+#X connect 35 0 27 0;
+#X connect 36 0 27 0;
+#X connect 37 0 27 0;

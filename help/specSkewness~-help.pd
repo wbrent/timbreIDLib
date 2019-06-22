@@ -1,0 +1,93 @@
+#N canvas 280 81 886 483 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 119 201 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X floatatom 50 433 10 0 0 0 - - -;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 635 97 633 497 other-settings 0;
+#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 0;
+#X msg 54 106 window_function \$1;
+#X msg 155 247 power_spectrum \$1;
+#X obj 155 229 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 54 415 outlet;
+#X text 296 247 Use power spectrum. (default: magnitude);
+#X msg 215 305 print;
+#X msg 104 168 overlap 2;
+#X text 185 156 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X text 52 49 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 6 0 4 0;
+#X connect 7 0 4 0;
+#X restore 221 338 pd other-settings;
+#X text 626 400 Updated for timbreID version 0.7;
+#X obj 592 348 timbreID;
+#X text 425 283 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 425 193 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two.;
+#X text 210 400 Creation argument is window size in samples;
+#X msg 185 296 window 2000;
+#X text 171 224 Bang continuously;
+#X obj 150 225 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 50 178 +~;
+#X text 183 278 Change window size;
+#X obj 150 247 metro 100;
+#X obj 50 400 specSkewness~ 1024;
+#X text 116 183 Bang to output skewness;
+#X obj 50 46 noise~;
+#X obj 50 106 hip~;
+#X obj 50 127 *~;
+#X obj 86 127 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 147 127 *~;
+#X obj 183 127 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 147 106 lop~;
+#X obj 171 47 hsl 128 15 20 20000 1 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X floatatom 168 67 10 0 0 0 - - -;
+#X text 626 420 July 2017;
+#X text 425 60 Spectral skewness measures the symmetry of a spectral
+envelope. Positive skew means most of the energy is in the low end
+\, and the envelope tapers to 0 toward the higher frequencies. Negative
+skew is the opposite: most of the energy is at the high end \, and
+the envelope tapers to 0 toward the low frequencies. By filtering white
+noise with either a low- or high-pass filter at left \, you can get
+a sense of the range of values. Unfiltered white noise will have a
+skew value near zero.;
+#X obj 628 445 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 16 0;
+#X connect 4 0 16 0;
+#X connect 10 0 16 0;
+#X connect 12 0 15 0;
+#X connect 13 0 16 0;
+#X connect 15 0 16 0;
+#X connect 16 0 1 0;
+#X connect 18 0 19 0;
+#X connect 18 0 24 0;
+#X connect 19 0 20 0;
+#X connect 20 0 13 0;
+#X connect 21 0 20 1;
+#X connect 22 0 13 1;
+#X connect 23 0 22 1;
+#X connect 24 0 22 0;
+#X connect 25 0 26 0;
+#X connect 26 0 24 1;
+#X connect 26 0 19 1;

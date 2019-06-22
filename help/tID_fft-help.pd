@@ -1,0 +1,144 @@
+#N canvas 234 81 874 631 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 50 310 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-waveform 1024 float 0;
+#X coords 0 1 1023 -1 200 140 1 0 0;
+#X restore 47 47 graph;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-fftDataReal-graph 513 float 0;
+#X coords 0 8 512 -8 200 140 1 0 0;
+#X restore 313 47 graph;
+#X text 72 307 Bang to analyze the entire array.;
+#N canvas 666 270 482 216 soundfile 0;
+#X obj 50 103 soundfiler;
+#X obj 50 24 loadbang;
+#X obj 185 120 table \$0-sample 130000;
+#X msg 50 78 read -skip 120000 ./audio/testing.wav \$1-sample;
+#X obj 50 46 f \$0;
+#X connect 1 0 4 0;
+#X connect 3 0 0 0;
+#X connect 4 0 3 0;
+#X restore 724 286 pd soundfile;
+#X msg 107 455 analyze \$1 1024;
+#N canvas 722 238 304 333 waveform 0;
+#X obj 46 61 inlet;
+#X obj 46 82 t f f;
+#X obj 91 131 + 1023;
+#X msg 46 200 copy_range 0 \$3-sample \$1 \$2;
+#X obj 46 164 pack f f \$0;
+#X obj 46 241 tabletool \$0-waveform;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 1 1 2 0;
+#X connect 2 0 4 1;
+#X connect 3 0 5 0;
+#X connect 4 0 3 0;
+#X restore 724 338 pd waveform;
+#X obj 50 243 hsl 800 25 0 128000 0 0 \$0-scrub-bar empty Scrub-bar
+-2 -8 0 12 -191407 -1 -1 0 1;
+#X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 608 189 762 536 other-settings 0;
+#X obj 44 56 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 4;
+#X msg 44 76 window_function \$1;
+#X obj 110 138 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 110 156 normalize \$1;
+#X msg 150 208 set another-sample-array;
+#X msg 189 264 samplerate 48000;
+#X text 338 207 Read from a different array;
+#X obj 44 475 outlet;
+#X text 323 263 Specify your sample's sampling rate. (default: 44100)
+;
+#X text 42 19 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X text 176 106 Change internal window size setting;
+#X msg 74 106 window 2000;
+#X msg 293 406 print;
+#X text 343 408 Print current settings in the post window;
+#X msg 239 324 zero_pad 2048;
+#X msg 249 344 zero_pad 0;
+#X text 350 305 Zero pad after the windowed signal content. A zero
+padded window size greater than the current window size will activate
+this feature \, and a pad size of 0 will deactivate it. Note that zero
+padding to a larger window size does not truly give better frequency
+resolution or new information \, but it may reveal signal information
+that is not apparent without zero padding.;
+#X text 216 156 Normalize spectrum (default: OFF);
+#X connect 0 0 1 0;
+#X connect 1 0 7 0;
+#X connect 2 0 3 0;
+#X connect 3 0 7 0;
+#X connect 4 0 7 0;
+#X connect 5 0 7 0;
+#X connect 11 0 7 0;
+#X connect 12 0 7 0;
+#X connect 14 0 7 0;
+#X connect 15 0 7 0;
+#X restore 152 498 pd other-settings;
+#X msg 94 379 analyze 44100 2000;
+#X obj 107 433 r \$0-scrub-bar;
+#X obj 724 316 r \$0-scrub-bar;
+#X text 235 438 Move through the soundfile with the slider above,
+f 28;
+#N canvas 205 170 965 301 do-plotting 0;
+#X obj 79 37 inlet;
+#X obj 79 203 list prepend 0;
+#X obj 203 116 list length;
+#X obj 203 138 change;
+#X obj 203 160 pack f \$0;
+#X obj 79 59 t l l;
+#X obj 79 223 s \$0-fftDataReal-graph;
+#X msg 203 181 \; \$2-fftDataReal-graph resize \$1 \;;
+#X obj 509 37 inlet;
+#X obj 509 203 list prepend 0;
+#X obj 633 116 list length;
+#X obj 633 138 change;
+#X obj 633 160 pack f \$0;
+#X obj 509 59 t l l;
+#X obj 509 223 s \$0-fftDataImag-graph;
+#X msg 633 181 \; \$2-fftDataImag-graph resize \$1 \;;
+#X connect 0 0 5 0;
+#X connect 1 0 6 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 7 0;
+#X connect 5 0 1 0;
+#X connect 5 1 2 0;
+#X connect 8 0 13 0;
+#X connect 9 0 14 0;
+#X connect 10 0 11 0;
+#X connect 11 0 12 0;
+#X connect 12 0 15 0;
+#X connect 13 0 9 0;
+#X connect 13 1 10 0;
+#X restore 50 582 pd do-plotting;
+#X text 213 540 Creation argument is the name of the sample array to
+read from., f 33;
+#X text 92 345 Analyze a window starting at sample 44100 that is 2000
+samples long (samples 44100 - 46099).;
+#X text 633 550 Updated for timbreID version 0.7.6;
+#X text 633 570 August 2018;
+#X obj 50 546 tID_fft \$0-sample;
+#X obj 560 480 tID_fft~;
+#X text 558 431 See the real-time version for more information on timbreID's
+FFT in general., f 33;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-fftDataImag-graph 513 float 0;
+#X coords 0 8 512 -8 200 140 1 0 0;
+#X restore 573 47 graph;
+#X obj 634 595 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 20 0;
+#X connect 5 0 20 0;
+#X connect 10 0 20 0;
+#X connect 11 0 20 0;
+#X connect 12 0 5 0;
+#X connect 13 0 6 0;
+#X connect 20 0 15 0;
+#X connect 20 1 15 1;

@@ -1,0 +1,125 @@
+#N canvas 134 174 957 589 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-real-graph 1025 float 0;
+#X coords 0 8 1024 -8 200 140 1 0 0;
+#X restore 483 310 graph;
+#X obj 137 171 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 621 89 780 478 other-settings 0;
+#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 4;
+#X msg 54 106 window_function \$1;
+#X obj 54 415 outlet;
+#X msg 258 348 print;
+#X text 308 350 Print current settings in the post window;
+#X text 52 49 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X msg 154 206 overlap 2;
+#X text 235 194 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X obj 104 138 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 104 156 normalize \$1;
+#X msg 204 266 zero_pad 2048;
+#X msg 214 286 zero_pad 0;
+#X text 315 247 Zero pad after the windowed signal content. A zero
+padded window size greater than the current window size will activate
+this feature \, and a pad size of 0 will deactivate it. Note that zero
+padding to a larger window size does not truly give better frequency
+resolution or new information \, but it may reveal signal information
+that is not apparent without zero padding.;
+#X text 210 156 Normalize spectrum (default: OFF);
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 3 0 2 0;
+#X connect 6 0 2 0;
+#X connect 8 0 9 0;
+#X connect 9 0 2 0;
+#X connect 10 0 2 0;
+#X connect 11 0 2 0;
+#X restore 217 300 pd other-settings;
+#X obj 57 72 adc~;
+#X msg 173 243 window 2000;
+#X text 268 236 Change analysis window size, f 17;
+#X obj 648 536 timbreID;
+#X text 161 170 Bang repeatedly to keep refreshing...;
+#X text 481 471 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X obj 137 190 metro 100;
+#X text 180 382 Creation argument is window size in samples, f 23
+;
+#N canvas 182 516 836 267 do-plotting 0;
+#X obj 79 37 inlet;
+#X obj 79 173 list prepend 0;
+#X obj 233 116 list length;
+#X obj 233 138 change;
+#X obj 233 160 pack f \$0;
+#X obj 79 59 t l l;
+#X obj 79 194 s \$0-real-graph;
+#X msg 233 181 \; \$2-real-graph resize \$1 \;;
+#X obj 449 37 inlet;
+#X obj 449 173 list prepend 0;
+#X obj 603 116 list length;
+#X obj 603 138 change;
+#X obj 603 160 pack f \$0;
+#X obj 449 59 t l l;
+#X obj 449 194 s \$0-imag-graph;
+#X msg 603 181 \; \$2-imag-graph resize \$1 \;;
+#X connect 0 0 5 0;
+#X connect 1 0 6 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 7 0;
+#X connect 5 0 1 0;
+#X connect 5 1 2 0;
+#X connect 8 0 13 0;
+#X connect 9 0 14 0;
+#X connect 10 0 11 0;
+#X connect 11 0 12 0;
+#X connect 12 0 15 0;
+#X connect 13 0 9 0;
+#X connect 13 1 10 0;
+#X restore 57 437 pd do-plotting;
+#X text 481 181 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two.;
+#X obj 57 387 tID_fft~ 1024;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-imag-graph 1025 float 0;
+#X coords 0 8 1024 -8 200 140 1 0 0;
+#X restore 713 310 graph;
+#X text 172 429 Outlet 1: real components;
+#X text 172 449 Outlet 2: imaginary components;
+#X text 105 115 Bang to output complex Fourier transform data as a
+list;
+#X text 481 54 The complex Fourier transform of a signal can be obtained
+with Pd's [fft~] object. However \, [fft~] computes continuously \,
+and the final output is a signal vector. [tID_fft~] does nothing until
+it receives a bang \, then it spits out the complex FFT data for the
+most recent analysis window as two lists: one containing the real components
+\, and the other containing the imaginary components. The length of
+these lists will be one half of the specified window size plus one
+(N/2+1).;
+#X obj 33 549 declare -lib timbreID/timbreIDLib;
+#X text 32 527 June 20189;
+#X text 32 507 Updated for timbreID version 0.7.9;
+#X connect 0 0 16 0;
+#X connect 2 0 12 0;
+#X connect 5 0 16 0;
+#X connect 6 0 16 0;
+#X connect 7 0 16 0;
+#X connect 12 0 16 0;
+#X connect 16 0 14 0;
+#X connect 16 1 14 1;

@@ -1,0 +1,38 @@
+#N canvas 259 182 868 457 10;
+#X declare -lib timbreID/timbreIDLib;
+#X floatatom 499 246 10 0 0 0 - - -;
+#X msg 499 155 927.55 819.1 527.85 497.31 303.98;
+#X text 42 143 Suppose you take 32 spectral centroid measurements over
+the course of a 2 second sound \, and 16 centroid measurements over
+the course of a 1 second sound. A distance between these two feature
+vectors cannot be calculated because they have a different number of
+components.;
+#X text 42 313 Creating a larger feature vector composed of several
+time-varying timbre features summarized in this fashion will pack a
+great deal of information into one compact descriptor. In other words
+\, you can create a vector that describes how spectral centroid \,
+flatness \, flux \, and individual Bark-frequency cepstral coefficients
+vary over the course of a sound.;
+#X text 42 43 The [tID_std] object calculates the standard deviation
+of a list of numbers. The list must have at least 2 elements. It is
+intended to be used for summarizing time-varying timbre attributes
+that are measured with other timbreID externals. This provides one
+way to compare the spectro-temporal characteristics of sounds with
+different durations.;
+#X text 536 313 Also see:;
+#X text 42 223 Taking the mean and standard deviation for each of these
+centroid lists creates two 2-component lists that CAN be compared to
+compute a distance. All the precise detail of how centroid varied over
+the course of each sound is lost \, but mean and standard deviation
+do provide meaningful general information about a data set.;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 499 201 tID_std;
+#X obj 608 313 tID_mean;
+#X text 600 378 Updated for timbreID version 0.7;
+#X text 600 398 July 2017;
+#X obj 601 425 declare -lib timbreID/timbreIDLib;
+#X connect 1 0 9 0;
+#X connect 9 0 0 0;

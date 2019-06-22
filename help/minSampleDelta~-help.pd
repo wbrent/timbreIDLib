@@ -1,0 +1,57 @@
+#N canvas 264 240 879 548 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 119 92 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 70 414 10 0 0 0 - - -;
+#X text 173 215 Change window size.;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 676 230 576 318 other-settings 0;
+#X obj 54 225 outlet;
+#X msg 165 135 print;
+#X msg 54 68 overlap 2;
+#X text 135 56 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X restore 221 289 pd other-settings;
+#X text 606 464 Updated for timbreID version 0.7;
+#X obj 592 300 timbreID;
+#X text 425 235 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 240 361 Creation argument is window size in samples;
+#X msg 175 233 window 2000;
+#X floatatom 210 414 10 0 0 0 - - -;
+#X text 606 484 July 2017;
+#X obj 159 142 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 159 162 metro 100;
+#X obj 70 361 minSampleDelta~ 1024;
+#X text 68 458 Outlet 1: minimum sample delta magnitude value;
+#X text 68 478 Outlet 2: index of minimum sample delta magnitude relative
+to the analysis window;
+#X text 116 54 Bang to output minimum sample delta magnitude of most
+recent N sample window, f 40;
+#X text 425 54 [minSampleDelta~] takes the absolute value of the difference
+between all neighboring pairs of samples in a window of audio \, then
+reports the value and location of the lowest difference. This is useful
+for finding moments in a signal before the attack or after the release
+of a sound event.;
+#X obj 70 41 adc~;
+#X text 425 145 Audio buffering is taken care of by the external \,
+so there is no need for [block~]. You can set the window size with
+a creation argument \, or change it with the "window" message. Window
+size is not required to be a power of two.;
+#X obj 607 505 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 15 0;
+#X connect 5 0 15 0;
+#X connect 10 0 15 0;
+#X connect 13 0 14 0;
+#X connect 14 0 15 0;
+#X connect 15 0 1 0;
+#X connect 15 1 11 0;
+#X connect 20 0 15 0;

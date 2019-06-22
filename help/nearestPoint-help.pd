@@ -1,0 +1,68 @@
+#N canvas 426 178 675 604 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 266 340 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#N canvas 736 161 304 400 random-point 0;
+#X obj 54 36 t b b b;
+#X obj 54 167 random 100;
+#X obj 54 249 pack f f f;
+#X obj 77 117 random 100;
+#X obj 100 66 random 100;
+#X obj 54 300 outlet;
+#X obj 54 7 inlet;
+#X obj 100 87 / 99;
+#X obj 77 138 / 99;
+#X obj 54 188 / 99;
+#X obj 123 290 print input-vector;
+#X connect 0 0 1 0;
+#X connect 0 1 3 0;
+#X connect 0 2 4 0;
+#X connect 1 0 9 0;
+#X connect 2 0 5 0;
+#X connect 2 0 10 0;
+#X connect 3 0 8 0;
+#X connect 4 0 7 0;
+#X connect 6 0 0 0;
+#X connect 7 0 2 2;
+#X connect 8 0 2 1;
+#X connect 9 0 2 0;
+#X restore 266 359 pd random-point;
+#X text 137 237 Clear the current set of points.;
+#X msg 88 238 clear;
+#X text 194 267 Change dimensionality.;
+#X msg 98 268 dimensions 2;
+#X text 43 476 The index of the nearest point comes out the left outlet
+\, and its distance from the input point comes out the right outlet.
+;
+#X text 289 338 Generate a random point in space.;
+#X obj 45 415 nearestPoint 3;
+#X text 42 91 nearestPoint accepts members from a set of points in
+its left inlet. All members of the set must have the same dimensionality
+\, set by a creation argument. Once you've given it all the points
+in your set \, send an arbitrary point of the same dimensionality to
+the right inlet to see which point in the set is nearest.;
+#X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X text 411 526 Updated for timbreID version 0.7;
+#X text 120 300 Output the N nearest matches to the test point;
+#X msg 156 355 print;
+#X msg 122 320 num_matches 5;
+#X obj 45 454 print Index;
+#X obj 175 454 print Distance;
+#X msg 45 188 1 0 0 \, 0 1 0 \, 0 0 1 \, 1 1 0 \, 0 1 1 \, 1 0 1;
+#X text 411 546 July 2017;
+#X text 42 41 This object exists in order to enable the timbreID timbre-space
+example patches \, but it's bound to be useful in other situations
+too.;
+#X obj 412 569 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 1 0;
+#X connect 1 0 8 1;
+#X connect 3 0 8 0;
+#X connect 5 0 8 0;
+#X connect 8 0 16 0;
+#X connect 8 1 17 0;
+#X connect 14 0 8 0;
+#X connect 15 0 8 0;
+#X connect 18 0 8 0;

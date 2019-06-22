@@ -1,0 +1,392 @@
+#N canvas 323 81 815 754 10;
+#X declare -lib timbreID/timbreIDLib;
+#N canvas 280 230 729 390 init 0;
+#X msg 32 174 \; pd dsp 1 \;;
+#X obj 69 27 loadbang;
+#X obj 312 176 soundfiler;
+#X msg 258 236 minvel 7 \, thresh -1 6.5 \, debounce 200 \, mask 4
+0.75 \, filter_range 0 49;
+#X obj 258 275 s \$0-bark;
+#X obj 69 50 t b b b;
+#X obj 312 135 f \$0;
+#X msg 312 156 read -resize ./audio/satie.wav \$1-sample;
+#X connect 1 0 5 0;
+#X connect 3 0 4 0;
+#X connect 5 0 0 0;
+#X connect 5 1 3 0;
+#X connect 5 2 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 2 0;
+#X restore 528 229 pd init;
+#N canvas 181 50 1048 781 other-messages-and-settings 0;
+#X msg 55 90 debug \$1;
+#X obj 55 70 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+;
+#X obj 55 280 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 404 430 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 404 450 loudness \$1;
+#X text 430 418 Apply a loudness weighting curve to the Bark spectrum
+before measuring growth., f 41;
+#X text 78 56 With debug on \, growth values will be posted for every
+onset report \, giving the peak and lower values.;
+#X floatatom 378 358 5 0 0 1 - - -;
+#X msg 378 376 minvel \$1;
+#X msg 125 123 print;
+#X text 172 123 Print current settings in the post window.;
+#X msg 498 648 samplerate 48000;
+#X text 624 642 If your file uses a sample rate other than the default
+44100 \, specify it here., f 43;
+#X obj 599 117 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 599 137 spew \$1;
+#X text 624 117 Spew growth data on every frame.;
+#X text 623 177 There is no "measure" function for the NRT version
+of bark \, as you can easily turn on spew mode and analyze a time range
+that is mostly silence. The results should be written to an array that
+you can look at for guidance on appropriate thresholds. See the [pd
+measure] subpatch in the parent level of this help patch for an example.
+;
+#X msg 55 300 power_spectrum \$1;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 426 515 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 426 535 spec_band_avg \$1;
+#X obj 458 585 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 458 605 filter_avg \$1;
+#X obj 482 57 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 0;
+#X msg 482 77 window_function \$1;
+#X text 480 20 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X obj 110 332 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 110 352 normalize \$1;
+#X text 135 332 Normalize spectrum (default: OFF);
+#X floatatom 174 481 5 0 0 1 - - -;
+#X msg 174 499 debounce \$1;
+#X text 80 280 Use power vs. magnitude spectrum (default: power).;
+#X text 169 418 Block onset reports for a given number of milliseconds
+after an onset is detected., f 24;
+#X text 484 573 If using the triangular Bark spaced filters \, you
+can either sum or average the energy in each filter (default: sum)
+;
+#X text 452 483 Rather than sum energy in the triangular Bark spaced
+filters to get the amount of energy in each Bark band \, you can average
+energy in the unfiltered bins (default: OFF);
+#X text 458 346 Ignore onsets that are below a certain amplitude threshold.
+Units are not dB or MIDI velocity \, but the sum of the energy in all
+filterbands.;
+#X obj 257 721 s \$0-bark;
+#X obj 546 188 s \$0-bark;
+#X obj 55 414 s \$0-bark;
+#X obj 55 181 s \$0-bark;
+#X connect 0 0 40 0;
+#X connect 1 0 0 0;
+#X connect 2 0 17 0;
+#X connect 3 0 4 0;
+#X connect 4 0 37 0;
+#X connect 7 0 8 0;
+#X connect 8 0 37 0;
+#X connect 9 0 40 0;
+#X connect 11 0 37 0;
+#X connect 13 0 14 0;
+#X connect 14 0 38 0;
+#X connect 17 0 39 0;
+#X connect 20 0 21 0;
+#X connect 21 0 37 0;
+#X connect 22 0 23 0;
+#X connect 23 0 37 0;
+#X connect 24 0 25 0;
+#X connect 25 0 38 0;
+#X connect 27 0 28 0;
+#X connect 28 0 39 0;
+#X connect 30 0 31 0;
+#X connect 31 0 37 0;
+#X restore 445 615 pd other-messages-and-settings;
+#X msg 340 465 mask 4 0.75;
+#X msg 360 505 debounce 100;
+#N canvas 567 151 477 161 thresh-details 0;
+#X text 26 19 As with bonk~ \, the thresh message lets you specify
+lower and upper growth thresholds. An onset is reported when growth
+exceeds the upper threshold \, then falls below the lower threshold.
+If lower threshold is set to -1 \, onsets are reported at the first
+sign of decay after growth exceeds the upper threshold.;
+#X restore 528 425 pd thresh-details;
+#N canvas 868 187 477 161 mask-details 0;
+#X text 18 49 As with bonk~ \, you can specify a number of analysis
+periods and decay rate for the energy mask.;
+#X restore 528 465 pd mask-details;
+#N canvas 913 269 464 176 debounce-details 0;
+#X text 18 39 The spectral flux that goes on during the first few milliseconds
+of an instrument's attack can cause extra onset reports. Provide a
+time in milliseconds with the "debounce" message to deal with this.
+After an onset report \, bark will suppress further reporting until
+the given number of milliseconds goes by. This feature is useful for
+eliminating a burst of attack reports when the first one is all you
+really needed.;
+#X restore 528 505 pd debounce-details;
+#X msg 380 545 filter_range 0 20;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-attacks 2 float 0;
+#X coords 0 1.13613e+06 1 0 200 140 1 0 0;
+#X restore 528 69 graph;
+#N canvas 218 210 384 446 segmented-player 0;
+#X obj 48 42 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 78 82 f;
+#X obj 78 124 t f f;
+#X obj 78 145 + 1;
+#X obj 78 217 -;
+#X obj 78 293 pack f f;
+#X obj 78 238 t b f;
+#X obj 78 259 f;
+#X obj 78 399 dac~;
+#X msg 114 48 0;
+#X obj 114 24 r \$0-reset;
+#X obj 228 166 tabread \$0-attacks;
+#X obj 78 166 tabread \$0-attacks;
+#X obj 78 358 tabplay~ \$0-sample;
+#X obj 108 103 %;
+#X obj 155 103 r \$0-num-attacks;
+#X obj 108 82 + 1;
+#X connect 0 0 1 0;
+#X connect 1 0 16 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 2 1 11 0;
+#X connect 3 0 12 0;
+#X connect 4 0 6 0;
+#X connect 5 0 13 0;
+#X connect 6 0 7 0;
+#X connect 6 1 5 1;
+#X connect 7 0 5 0;
+#X connect 9 0 1 1;
+#X connect 10 0 9 0;
+#X connect 11 0 4 1;
+#X connect 11 0 7 1;
+#X connect 12 0 4 0;
+#X connect 13 0 8 0;
+#X connect 13 0 8 1;
+#X connect 14 0 1 1;
+#X connect 15 0 14 1;
+#X connect 16 0 14 0;
+#X restore 528 269 pd segmented-player;
+#X text 40 653 See the real-time version too:;
+#X obj 43 671 bark~;
+#X obj 3 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X text 252 334 Creation arguments are the array to analyze \, window
+size & hop in samples \, and filter spacing in Barks.;
+#X obj 234 278 bng 15 250 50 0 \$0-reset empty reset 17 7 0 12 -262144
+-1 -1;
+#N canvas 677 389 466 228 filter_range-details 0;
+#X text 18 39 Use the "filter_range" message to specify a range of
+filters to use in the total growth measurement. The appropriate limits
+for these values depend on how many filters are in the Bark filterbank.
+With the default spacing of 0.5 Barks \, you get 50 filters \, so "filter_range
+0 49" would instruct bark to use the entire filterbank. If you think
+you can capture attacks by looking for spectral growth in the high
+frequencies only \, you might want to try "filter_range 30 49" \, for
+instance.;
+#X restore 528 545 pd filter_range-details;
+#X msg 320 425 thresh -1 6.5;
+#X text 536 668 Updated for timbreID version 0.7;
+#X text 42 36 bark is a non-real-time onset detector that makes use
+of the perceptually determined Bark frequency scale to achieve its
+weighting of the frequency spectrum. It uses a spectral differencing
+growth algorithm very similar to bonk~ \, but the use of the Bark scale
+may improve results for some types of signals. For instance \, with
+a lot of previous resonance \, bonk~ sometimes misses low notes in
+this piano recording.;
+#X text 41 552 Outlet 2: total energy growth;
+#X text 41 572 Outlet 3: growth list per Bark band;
+#X text 41 532 Outlet 1: onset location (seconds);
+#X obj 320 596 s \$0-bark;
+#X obj 528 249 table \$0-sample;
+#N canvas 1 83 671 378 textfile 0;
+#X obj 45 291 textfile;
+#X msg 108 242 clear;
+#X msg 45 150 add \$1;
+#X msg 82 182 write bark-test.txt cr;
+#X obj 45 44 inlet;
+#X text 252 182 write to a text file and import as labels in Audacity
+;
+#X obj 108 219 r \$0-reset;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 2 0;
+#X connect 6 0 1 0;
+#X restore 43 494 pd textfile;
+#N canvas 607 307 760 425 attacks-table-writer 0;
+#X obj 40 100 inlet;
+#X obj 40 121 t f b;
+#X obj 149 153 f;
+#X obj 179 153 + 1;
+#X msg 167 118 0;
+#X obj 40 142 * 44100;
+#X text 108 16 convert from seconds to samples before writing to attacks
+array;
+#X obj 149 174 moses 2;
+#X obj 199 218 t f f;
+#X obj 226 259 + 1;
+#X text 272 237 Make the attacks table bigger as more attacks are found
+;
+#X floatatom 268 257 5 0 0 0 - - -;
+#X obj 167 94 r \$0-reset;
+#X msg 336 117 \; \$1-attacks resize 2 \;;
+#X obj 336 73 r \$0-reset;
+#X obj 336 95 f \$0;
+#X obj 40 302 tabwrite \$0-attacks;
+#X msg 226 302 \; \$2-attacks resize \$1 \; \$2-num-attacks \$1 \;
+;
+#X obj 226 281 pack f \$0;
+#X connect 0 0 1 0;
+#X connect 1 0 5 0;
+#X connect 1 1 2 0;
+#X connect 2 0 3 0;
+#X connect 2 0 7 0;
+#X connect 3 0 2 1;
+#X connect 4 0 2 1;
+#X connect 5 0 16 0;
+#X connect 7 0 16 1;
+#X connect 7 1 8 0;
+#X connect 8 0 16 1;
+#X connect 8 1 9 0;
+#X connect 9 0 11 0;
+#X connect 9 0 18 0;
+#X connect 12 0 4 0;
+#X connect 14 0 15 0;
+#X connect 15 0 13 0;
+#X connect 18 0 17 0;
+#X restore 63 474 pd attacks-table-writer;
+#N canvas 985 139 574 583 growth-record 0;
+#X obj 64 23 inlet;
+#X obj 64 94 t f b;
+#X obj 166 155 f;
+#X obj 196 155 + 1;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-growth 8860 float 0;
+#X coords 0 50 8859 0 200 140 1 0 0;
+#X restore 344 81 graph;
+#X obj 166 176 % 8860;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-growth-closeup 100 float 0;
+#X coords 0 12 99 0 200 140 1 0 0;
+#X restore 344 305 graph;
+#X floatatom 62 268 10 0 0 2 frame-number - -;
+#X msg 184 130 0;
+#X obj 62 286 t f f f;
+#X floatatom 182 323 15 0 0 3 location-msec - -;
+#X obj 182 302 / 44.1;
+#X obj 182 279 * 128;
+#X obj 115 322 + 99;
+#X msg 62 375 copy_range 0 \$3-growth \$1 \$2;
+#X obj 62 346 pack f f \$0;
+#X obj 62 396 tabletool \$0-growth-closeup;
+#X obj 64 205 tabwrite \$0-growth;
+#X obj 184 109 r \$0-reset;
+#X connect 0 0 1 0;
+#X connect 1 0 17 0;
+#X connect 1 1 2 0;
+#X connect 2 0 3 0;
+#X connect 2 0 5 0;
+#X connect 3 0 2 1;
+#X connect 5 0 17 1;
+#X connect 7 0 9 0;
+#X connect 8 0 2 1;
+#X connect 9 0 15 0;
+#X connect 9 1 13 0;
+#X connect 9 2 12 0;
+#X connect 11 0 10 0;
+#X connect 12 0 11 0;
+#X connect 13 0 15 1;
+#X connect 14 0 16 0;
+#X connect 15 0 14 0;
+#X connect 18 0 8 0;
+#X restore 122 416 pd growth-record;
+#X msg 43 229 analyze;
+#X msg 73 259 analyze 0.4 10.2;
+#X text 109 205 Analyze the whole array \, or a range given in seconds.
+If you're planning to make labels or measure growth using the subpatches
+here \, hit the reset button below first.;
+#N canvas 186 280 832 617 measure 0;
+#X obj 48 37 inlet;
+#X obj 190 28 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 190 48 spew \$1;
+#X text 212 27 Turn on spew mode;
+#X obj 48 147 t f b;
+#X obj 157 208 f;
+#X obj 187 208 + 1;
+#X msg 175 183 0;
+#X msg 212 86 analyze 0.523 0.899;
+#X text 363 71 then analyze a time range that is relatively silent.
+In this file \, there's no complete silence \, so I just specified
+a range with piano resonance but no attack. So it's still relatively
+inactive.;
+#X obj 48 335 loadbang;
+#X msg 498 462 max;
+#X floatatom 498 524 10 0 0 0 - - -;
+#X msg 539 477 mean;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-measure 112 float 0;
+#X coords 0 10 112 0 200 140 1 0 0;
+#X restore 458 189 graph;
+#X obj 157 230 % 112;
+#X obj 48 58 moses 200;
+#X text 361 358 You can see from the results that this portion of the
+file (with no attacks in it \, only resonance) peaks out with a growth
+of around 5.5 So it's probably safe to set the threshold to something
+like 6 or 6.5 on the high end \, and maybe 4.5 on the low end. If you
+have the [tabletool] external \, you can get the peak value with the
+"max" method \, and the average growth with the "mean" method;
+#X msg 48 378 \; \$1-measure ylabel -5 0 2 4 6 8 10 \;;
+#X obj 48 357 f \$0;
+#X obj 498 503 tabletool \$0-measure;
+#X obj 190 129 s \$0-bark;
+#X obj 175 162 r \$0-reset;
+#X obj 48 258 tabwrite \$0-measure;
+#X connect 0 0 16 0;
+#X connect 1 0 2 0;
+#X connect 2 0 21 0;
+#X connect 4 0 23 0;
+#X connect 4 1 5 0;
+#X connect 5 0 6 0;
+#X connect 5 0 15 0;
+#X connect 6 0 5 1;
+#X connect 7 0 5 1;
+#X connect 8 0 21 0;
+#X connect 10 0 19 0;
+#X connect 11 0 20 0;
+#X connect 13 0 20 0;
+#X connect 15 0 23 1;
+#X connect 16 0 4 0;
+#X connect 19 0 18 0;
+#X connect 20 0 12 0;
+#X connect 22 0 7 0;
+#X restore 142 396 pd measure;
+#X obj 43 341 bark \$0-sample 2048 128 0.5;
+#X obj 117 308 r \$0-bark;
+#X text 536 688 July 2017;
+#X obj 594 720 declare -lib timbreID/timbreIDLib;
+#X connect 2 0 23 0;
+#X connect 3 0 23 0;
+#X connect 7 0 23 0;
+#X connect 17 0 23 0;
+#X connect 28 0 32 0;
+#X connect 29 0 32 0;
+#X connect 32 0 25 0;
+#X connect 32 0 26 0;
+#X connect 32 1 27 0;
+#X connect 32 1 31 0;
+#X connect 33 0 32 0;

@@ -1,0 +1,101 @@
+#N canvas 314 128 904 547 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 143 128 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X text 178 163 Change window size.;
+#X obj 55 79 *~;
+#X obj 84 79 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+;
+#X obj 107 79 *~;
+#X obj 136 79 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 55 48 noise~;
+#X text 140 110 Bang to output brightness.;
+#X obj 107 48 osc~ 440;
+#X obj 3 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 3 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 592 23 765 615 other-settings 0;
+#X obj 24 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+-1 3;
+#X msg 24 106 window_function \$1;
+#X msg 125 217 power_spectrum \$1;
+#X obj 125 199 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 24 535 outlet;
+#X text 266 217 Use power spectrum. (default: magnitude);
+#X msg 83 163 filterbank 1;
+#X msg 283 457 print;
+#X obj 171 279 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 171 299 spec_band_avg \$1;
+#X obj 201 339 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 201 359 filter_avg \$1;
+#X text 333 459 Print current settings in the post window;
+#X text 22 49 Change windowing function. Rectangular (0) \, Blackman
+(1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
+;
+#X text 183 163 Construct a new filterbank with a specific spacing.
+;
+#X msg 250 406 overlap 2;
+#X text 331 394 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X text 227 327 If using the triangular Bark spaced filters \, you
+can either sum or average the energy in each filter (default: sum)
+;
+#X text 197 247 Rather than sum energy in the triangular Bark spaced
+filters to get the amount of energy in each Bark band \, you can average
+energy in the unfiltered bins (default: OFF);
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 6 0 4 0;
+#X connect 7 0 4 0;
+#X connect 8 0 9 0;
+#X connect 9 0 4 0;
+#X connect 10 0 11 0;
+#X connect 11 0 4 0;
+#X connect 15 0 4 0;
+#X restore 216 300 pd other-settings;
+#X msg 180 181 window 3000;
+#X obj 55 408 barkSpecBrightness~ 1024 0.5 8.5;
+#X msg 207 235 boundary 10;
+#X text 206 217 Set boundary point in Barks;
+#X text 651 466 Updated for timbreID version 0.7;
+#X text 299 402 Creation arguments are window size in samples \, filterbank
+spacing in Barks \, and boundary point in Barks;
+#X obj 601 298 timbreID;
+#X obj 55 442 nbx 7 32 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 32
+-262144 -1 -1 0 256;
+#X text 434 34 Bark Spectrum Brightness is the ratio of the sum of
+energy above a given boundary point in Barks to the sum of all energy
+in a Bark spectrum. Signals with a lot of high Bark frequency content
+will have high brightness. At left \, noise will have much higher brightness
+than a sinusoid at 440 Hz.;
+#X text 434 114 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two. The second creation argument specifies the Bark-spacing of the
+filterbank. This can also be changed later with the "filterbank" message.
+The third creation argument sets the boundary point in Barks.;
+#X text 433 238 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 651 486 July 2017;
+#X obj 653 511 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 13 0;
+#X connect 2 0 13 0;
+#X connect 3 0 2 1;
+#X connect 4 0 13 0;
+#X connect 5 0 4 1;
+#X connect 6 0 2 0;
+#X connect 8 0 4 0;
+#X connect 11 0 13 0;
+#X connect 12 0 13 0;
+#X connect 13 0 19 0;
+#X connect 14 0 13 0;

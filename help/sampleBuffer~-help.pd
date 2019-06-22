@@ -1,0 +1,74 @@
+#N canvas 205 140 940 589 10;
+#X declare -lib timbreID/timbreIDLib;
+#X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-sampleBuffer-graph 1024 float 0;
+#X coords 0 1 1023 -1 200 140 1 0 0;
+#X restore 483 240 graph;
+#X obj 137 171 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 648 263 574 351 other-settings 0;
+#X obj 54 255 outlet;
+#X msg 108 119 print;
+#X text 158 121 Print current settings in the post window;
+#X msg 54 67 overlap 2;
+#X text 135 55 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X connect 1 0 0 0;
+#X connect 3 0 0 0;
+#X restore 217 300 pd other-settings;
+#X text 52 507 Updated for timbreID version 0.7;
+#X msg 173 243 window 2000;
+#X text 272 237 Change analysis window size, f 16;
+#X obj 648 466 timbreID;
+#X text 161 170 Bang repeatedly to keep refreshing...;
+#X text 481 401 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X obj 137 190 metro 100;
+#X text 200 382 Creation argument is window size in samples, f 23
+;
+#N canvas 205 170 462 302 do-plotting 0;
+#X obj 79 37 inlet;
+#X obj 79 203 list prepend 0;
+#X obj 203 116 list length;
+#X obj 203 138 change;
+#X obj 203 160 pack f \$0;
+#X obj 79 59 t l l;
+#X obj 79 224 s \$0-sampleBuffer-graph;
+#X msg 203 181 \; \$2-sampleBuffer-graph resize \$1 \;;
+#X connect 0 0 5 0;
+#X connect 1 0 6 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 7 0;
+#X connect 5 0 1 0;
+#X connect 5 1 2 0;
+#X restore 57 437 pd do-plotting;
+#X text 52 527 July 2017;
+#X text 105 95 Bang to output the most recent N samples as a list,
+f 31;
+#X obj 57 387 sampleBuffer~ 1024;
+#X obj 57 72 adc~;
+#X text 481 54 [sampleBuffer~] contains the same audio buffering routine
+that other real-time timbreID analysis objects use. This could be useful
+for viewing the exact audio frame that is analyzed by analysis objects
+triggered via the same bang.;
+#X text 481 121 Audio buffering is taken care of by the external \,
+so there is no need for [block~]. You can set the window size with
+a creation argument \, or change it with the "window" message. Window
+size is not required to be a power of two.;
+#X obj 53 549 declare -lib timbreID/timbreIDLib;
+#X connect 0 0 17 0;
+#X connect 2 0 12 0;
+#X connect 5 0 17 0;
+#X connect 7 0 17 0;
+#X connect 12 0 17 0;
+#X connect 17 0 14 0;
+#X connect 18 0 17 0;
