@@ -1,4 +1,4 @@
-#N canvas 208 172 842 705 10;
+#N canvas 183 84 842 705 10;
 #X declare -lib timbreID/timbreIDLib;
 #X msg 149 288 clear;
 #X text 382 482 To clear memory \, send the "clear" message. Note that

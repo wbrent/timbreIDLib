@@ -113,8 +113,8 @@ most recent analysis window as two lists: one containing the real components
 these lists will be one half of the specified window size plus one
 (N/2+1).;
 #X obj 33 549 declare -lib timbreID/timbreIDLib;
-#X text 32 527 June 20189;
-#X text 32 507 Updated for timbreID version 0.7.9;
+#X text 32 507 Updated for timbreID version 0.8.0;
+#X text 32 527 June 2019;
 #X connect 0 0 16 0;
 #X connect 2 0 12 0;
 #X connect 5 0 16 0;

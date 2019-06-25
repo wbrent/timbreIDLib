@@ -6,18 +6,17 @@
 #X coords 0 1.1 3 -1.1 200 140 1 0 0;
 #X restore 422 231 graph;
 #X text 207 577 Also see:;
-#X msg 259 354 length 7;
+#X msg 289 414 length 7;
 #X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
 0;
 #X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
 0;
-#X msg 279 374 print;
+#X msg 309 434 print;
 #X obj 655 587 declare -lib timbreID/timbreIDLib;
-#X text 654 545 Updated for timbreID version 0.7.9;
 #X text 654 565 June 2019;
 #X obj 279 597 binWrangler;
 #X obj 60 186 bfcc~;
-#X msg 239 334 mode \$1;
+#X msg 139 354 mode \$1;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array \$0-current-graph 3 float 2;
 #X coords 0 1.1 3 -1.1 200 140 1 0 0;
@@ -81,18 +80,14 @@
 #X connect 5 0 1 0;
 #X connect 5 1 2 0;
 #X restore 60 531 pd plot-delta;
-#X msg 239 274 diff;
-#X msg 279 274 abs;
-#X msg 319 274 squared;
-#X obj 239 305 symbol;
-#X text 420 464 Creation arguments are the length of the feature and
+#X msg 139 294 diff;
+#X msg 179 294 abs;
+#X msg 219 294 squared;
+#X obj 139 325 symbol;
+#X text 420 484 Creation arguments are the length of the feature and
 a symbol indicating the desired mode: "diff" \, "abs" \, or "squared"
 for straight difference \, absolute value of difference \, or squared
 difference., f 73;
-#X text 420 396 [featureDelta] calculates the difference between each
-attribute in pairs of feature lists sent to its hot and cold inlets.
-Incoming features must be of a common length N \, specified at creation
-time \, or with the "length" message., f 73;
 #X obj 210 124 delwrite~ \$0-del 100;
 #X obj 210 144 delread~ \$0-del 100;
 #X obj 148 59 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
@@ -103,23 +98,41 @@ time \, or with the "length" message., f 73;
 , f 25;
 #X obj 210 207 list split 3;
 #X obj 60 207 list split 3;
-#X connect 0 0 11 0;
-#X connect 0 0 28 0;
-#X connect 3 0 16 0;
-#X connect 6 0 16 0;
-#X connect 11 0 34 0;
-#X connect 12 0 16 0;
-#X connect 16 0 21 0;
-#X connect 18 0 33 0;
-#X connect 22 0 25 0;
-#X connect 23 0 25 0;
-#X connect 24 0 25 0;
-#X connect 25 0 12 0;
-#X connect 29 0 18 0;
-#X connect 30 0 31 0;
-#X connect 31 0 11 0;
-#X connect 31 1 18 0;
-#X connect 33 0 19 0;
-#X connect 33 0 16 1;
-#X connect 34 0 17 0;
-#X connect 34 0 16 0;
+#X obj 229 355 symbol;
+#X msg 229 384 direction \$1;
+#X msg 229 324 pos;
+#X msg 269 324 neg;
+#X msg 309 324 both;
+#X text 420 396 [featureDelta] calculates the difference between each
+attribute in pairs of feature lists sent to its hot and cold inlets.
+Incoming features must be of a common length N \, specified at creation
+time \, or with the "length" message. The "direction" message allows
+you to get either positive-only \, negative-only \, or all delta values.
+If "direction" is positive- or negative-only \, other values are reported
+as zero., f 73;
+#X text 654 545 Updated for timbreID version 0.8.0;
+#X connect 0 0 10 0;
+#X connect 0 0 26 0;
+#X connect 3 0 15 0;
+#X connect 6 0 15 0;
+#X connect 10 0 32 0;
+#X connect 11 0 15 0;
+#X connect 15 0 20 0;
+#X connect 17 0 31 0;
+#X connect 21 0 24 0;
+#X connect 22 0 24 0;
+#X connect 23 0 24 0;
+#X connect 24 0 11 0;
+#X connect 27 0 17 0;
+#X connect 28 0 29 0;
+#X connect 29 0 10 0;
+#X connect 29 1 17 0;
+#X connect 31 0 18 0;
+#X connect 31 0 15 1;
+#X connect 32 0 16 0;
+#X connect 32 0 15 0;
+#X connect 33 0 34 0;
+#X connect 34 0 15 0;
+#X connect 35 0 33 0;
+#X connect 36 0 33 0;
+#X connect 37 0 33 0;

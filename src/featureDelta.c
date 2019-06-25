@@ -24,6 +24,13 @@ typedef enum
 	deltaSquared
 } t_deltaMode;
 
+typedef enum
+{
+	deltaPos = 0,
+	deltaNeg,
+	deltaBoth
+} t_deltaDirection;
+
 typedef struct _featureDelta
 {
 	t_object  x_obj;
@@ -31,6 +38,7 @@ typedef struct _featureDelta
     t_float *x_prevFeature;
 	t_attributeIdx x_featureLength;
 	t_deltaMode x_mode;
+	t_deltaDirection x_direction;
     t_atom *x_listOut;
     t_outlet *x_featureList;
 } t_featureDelta;
@@ -82,6 +90,18 @@ static void featureDelta_delta(t_featureDelta *x, t_symbol *s, int argc, t_atom 
 			t_float thisDiff;
 		
 			thisDiff = atom_getfloat(argv+i) - x->x_prevFeature[i];
+
+			switch(x->x_direction)
+			{
+				case deltaPos:
+					thisDiff = (thisDiff<0)?0:thisDiff;
+					break;
+				case deltaNeg:
+					thisDiff = (thisDiff>0)?0:thisDiff;
+					break;
+				default:
+					break;
+			}
 
 			switch(x->x_mode)
 			{
@@ -138,6 +158,22 @@ static void featureDelta_print(t_featureDelta *x)
 			post("%s mode: difference", x->x_objSymbol->s_name);
 			break;
 	}
+
+	switch(x->x_direction)
+	{
+		case deltaPos:
+			post("%s direction: positive delta only", x->x_objSymbol->s_name);
+			break;
+		case deltaNeg:
+			post("%s direction: negative delta only", x->x_objSymbol->s_name);
+			break;
+		case deltaBoth:
+			post("%s direction: all delta", x->x_objSymbol->s_name);
+			break;
+		default:
+			post("%s direction: all delta", x->x_objSymbol->s_name);
+			break;
+	}
 }
 
 static void featureDelta_clear(t_featureDelta *x)
@@ -149,16 +185,15 @@ static void featureDelta_clear(t_featureDelta *x)
 
 static void featureDelta_length(t_featureDelta *x, t_floatarg len)
 {
-	if(len)
-	{
-		// free memory first		
-		featureDelta_free(x);
-		
-		x->x_featureLength = len;
-		
-		featureDelta_allocMem(x);
-		featureDelta_initMem(x);
-	}
+	len = (len<1)?1:len;
+
+	// free memory first		
+	featureDelta_free(x);
+	
+	x->x_featureLength = len;
+	
+	featureDelta_allocMem(x);
+	featureDelta_initMem(x);
 }
 
 static void featureDelta_mode(t_featureDelta *x, t_symbol *m)
@@ -173,9 +208,22 @@ static void featureDelta_mode(t_featureDelta *x, t_symbol *m)
 		x->x_mode = deltaDiff;	
 }
 
+static void featureDelta_direction(t_featureDelta *x, t_symbol *d)
+{
+	if(!strcmp(d->s_name, "pos"))
+		x->x_direction = deltaPos;
+	else if(!strcmp(d->s_name, "neg"))
+		x->x_direction = deltaNeg;
+	else if(!strcmp(d->s_name, "both"))
+		x->x_direction = deltaBoth;
+	else
+		x->x_direction = deltaBoth;	
+}
+
 static void *featureDelta_new(t_symbol *s, int argc, t_atom *argv)
 {
 	t_featureDelta *x = (t_featureDelta *)pd_new(featureDelta_class);
+	t_float featureLength;
 	
 	x->x_featureList = outlet_new(&x->x_obj, gensym("list"));
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("list"), gensym("prevFeature"));
@@ -189,15 +237,20 @@ static void *featureDelta_new(t_symbol *s, int argc, t_atom *argv)
 			x->x_mode = deltaDiff;
 			break;
 		case 1:	
-			x->x_featureLength = atom_getfloat(argv);
+			featureLength = atom_getfloat(argv);
+			featureLength = (featureLength<1)?1:featureLength;
+			x->x_featureLength = featureLength;
 			x->x_mode = deltaDiff;
 			break;		
 		default:
-			x->x_featureLength = atom_getfloat(argv);
+			featureLength = atom_getfloat(argv);
+			featureLength = (featureLength<1)?1:featureLength;
+			x->x_featureLength = featureLength;
 			x->x_mode = atom_getfloat(argv+1);
 			break;
 	}
-	
+
+	x->x_direction = deltaBoth;	
  	featureDelta_allocMem(x);
  	featureDelta_initMem(x);
 
@@ -267,6 +320,14 @@ void featureDelta_setup(void) {
 		featureDelta_class,
         (t_method)featureDelta_mode,
 		gensym("mode"),
+		A_DEFSYMBOL,
+		0
+	);
+
+	class_addmethod(
+		featureDelta_class,
+        (t_method)featureDelta_direction,
+		gensym("direction"),
 		A_DEFSYMBOL,
 		0
 	);

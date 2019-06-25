@@ -200,16 +200,15 @@ static void featureNorm_clear(t_featureNorm *x)
 
 static void featureNorm_length(t_featureNorm *x, t_floatarg len)
 {
-	if(len)
-	{
-		// free memory first		
-		featureNorm_free(x);
-		
-		x->x_featureLength = len;
-		
-		featureNorm_allocMem(x);
-		featureNorm_initMem(x);
-	}
+	len = (len<1)?1:len;
+
+	// free memory first		
+	featureNorm_free(x);
+	
+	x->x_featureLength = len;
+	
+	featureNorm_allocMem(x);
+	featureNorm_initMem(x);
 }
 
 static void featureNorm_mode(t_featureNorm *x, t_floatarg m)
@@ -223,6 +222,7 @@ static void featureNorm_mode(t_featureNorm *x, t_floatarg m)
 static void *featureNorm_new(t_symbol *s, int argc, t_atom *argv)
 {
 	t_featureNorm *x = (t_featureNorm *)pd_new(featureNorm_class);
+	t_float featureLength;
 	
 	x->x_featureList = outlet_new(&x->x_obj, gensym("list"));
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("list"), gensym("minValues"));
@@ -237,11 +237,15 @@ static void *featureNorm_new(t_symbol *s, int argc, t_atom *argv)
 			x->x_mode = 0;
 			break;
 		case 1:	
-			x->x_featureLength = atom_getfloat(argv);
+			featureLength = atom_getfloat(argv);
+			featureLength = (featureLength<1)?1:featureLength;
+			x->x_featureLength = featureLength;
 			x->x_mode = 0;
 			break;		
 		default:
-			x->x_featureLength = atom_getfloat(argv);
+			featureLength = atom_getfloat(argv);
+			featureLength = (featureLength<1)?1:featureLength;
+			x->x_featureLength = featureLength;
 			x->x_mode = atom_getfloat(argv+1);
 			break;
 	}
