@@ -315,9 +315,8 @@ static void chroma_chain_magSpec(t_chroma *x, t_symbol *s, int argc, t_atom *arg
 	t_sampIdx i, j, windowHalf;
 	t_float maxEnergySum, chromaSums[x->x_numChroma];
 
-	// incoming fftData list should be 2*(N/2+1) elements long, so windowHalf is:
+	// incoming magSpec list should be N/2+1 elements long, so windowHalf is one less than this
 	windowHalf = argc-1;
-	windowHalf *= 0.5;
 	
 	// make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
 	if(windowHalf!=x->x_windowHalf)
