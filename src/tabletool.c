@@ -1898,17 +1898,20 @@ static void tabletool_overlapAdd(t_tabletool *x, t_symbol *s, int argc, t_atom *
 		t_word *vecSource;
 		t_symbol *sourceArray, *w;
 		t_sampIdx i, j, k, n, sourceArrayPts, sourceStartSamp, targetStartSamp;
-		t_float *wPtr;
+		t_float *wPtr, nFloat, sourceStartSampFloat, targetStartSampFloat;
 
-		sourceStartSamp = atom_getfloat(argv+0);
-		n = atom_getfloat(argv+1);
+		sourceStartSampFloat = atom_getfloat(argv+0);
+		sourceStartSamp = (sourceStartSampFloat<0)?0:sourceStartSampFloat;
+		nFloat = atom_getfloat(argv+1);
+		n = (nFloat<0)?0:nFloat;
 		w = atom_getsymbol(argv+2);
 		sourceArray = atom_getsymbol(argv+3);
-		targetStartSamp = atom_getfloat(argv+4);
+		targetStartSampFloat = atom_getfloat(argv+4);
+		targetStartSamp = (targetStartSampFloat<0)?0:targetStartSampFloat;
 		
 		// must initialize this before using in garray_getfloatwords()
 		sourceArrayPts = 0;
-		
+	
 		if(!(source = (t_garray *)pd_findbyclass(sourceArray, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, sourceArray->s_name);
@@ -1919,6 +1922,8 @@ static void tabletool_overlapAdd(t_tabletool *x, t_symbol *s, int argc, t_atom *
 			pd_error(x, "%s: bad template for %s", sourceArray->s_name, x->x_objSymbol->s_name);
 			return;
 		}
+		
+		// post("sourceStartSamp: %lu, targetStartSamp: %lu, sourceArrayPts: %lu, n: %lu", sourceStartSamp, targetStartSamp, sourceArrayPts, n);
 
 		if(sourceStartSamp>=sourceArrayPts)
 		{
@@ -1940,7 +1945,7 @@ static void tabletool_overlapAdd(t_tabletool *x, t_symbol *s, int argc, t_atom *
 			pd_error(x, "%s: target sample range out of bounds", x->x_objSymbol->s_name);
 			return;
 		}	
-		
+				
 		wPtr = (t_float *)t_getbytes(n*sizeof(t_float));
 
 		// initialize to 1.0 for rectangular
