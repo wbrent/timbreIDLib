@@ -1431,6 +1431,9 @@ static void tabletool_lace(t_tabletool *x, t_symbol *array2)
 		t_atom *listOut;
 		t_word *vec2;
 
+		// must initialize this before using in garray_getfloatwords()
+		array2pts = 0;
+		
 		if(!(b = (t_garray *)pd_findbyclass(array2, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, array2->s_name);
@@ -1480,6 +1483,9 @@ static void tabletool_concatenate(t_tabletool *x, t_symbol *array2)
 		t_word *vec2;
 		t_atom *listOut;
 
+		// must initialize this before using in garray_getfloatwords()
+		array2pts = 0;
+		
 		if(!(b = (t_garray *)pd_findbyclass(array2, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, array2->s_name);
@@ -1777,6 +1783,9 @@ static void tabletool_add(t_tabletool *x, t_symbol *array2)
 		t_sampIdx i, array2pts;
 		t_atom *listOut;
 
+		// must initialize this before using in garray_getfloatwords()
+		array2pts = 0;
+		
 		if(!(b = (t_garray *)pd_findbyclass(array2, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, array2->s_name);
@@ -1897,6 +1906,9 @@ static void tabletool_overlapAdd(t_tabletool *x, t_symbol *s, int argc, t_atom *
 		sourceArray = atom_getsymbol(argv+3);
 		targetStartSamp = atom_getfloat(argv+4);
 		
+		// must initialize this before using in garray_getfloatwords()
+		sourceArrayPts = 0;
+		
 		if(!(source = (t_garray *)pd_findbyclass(sourceArray, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, sourceArray->s_name);
@@ -1976,6 +1988,9 @@ static void tabletool_subtract(t_tabletool *x, t_symbol *array2)
 		t_word *vec2;
 		t_atom *listOut;
 
+		// must initialize this before using in garray_getfloatwords()
+		array2pts = 0;
+		
 		if(!(b = (t_garray *)pd_findbyclass(array2, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, array2->s_name);
@@ -2018,6 +2033,9 @@ static void tabletool_multiply(t_tabletool *x, t_symbol *array2)
 		t_atom *listOut;
 		t_sampIdx i, array2pts;
 
+		// must initialize this before using in garray_getfloatwords()
+		array2pts = 0;
+		
 		if(!(b = (t_garray *)pd_findbyclass(array2, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, array2->s_name);
@@ -2060,6 +2078,9 @@ static void tabletool_divide(t_tabletool *x, t_symbol *array2)
 		t_word *vec2;
 		t_atom *listOut;
 
+		// must initialize this before using in garray_getfloatwords()
+		array2pts = 0;
+		
 		if(!(b = (t_garray *)pd_findbyclass(array2, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, array2->s_name);
@@ -2109,6 +2130,9 @@ static void tabletool_dot(t_tabletool *x, t_symbol *array1)
 		t_word *vec1;
 		t_float dot, *vecBuffer, *vec1Buffer;
 
+		// must initialize this before using in garray_getfloatwords()
+		array1pts = 0;
+		
 		if(!(b = (t_garray *)pd_findbyclass(array1, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, array1->s_name);
@@ -2171,6 +2195,9 @@ static void tabletool_euclid(t_tabletool *x, t_symbol *array1)
 		t_word *vec1;
 		t_float dist, *vecBuffer, *vec1Buffer, *vecWeights;
 
+		// must initialize this before using in garray_getfloatwords()
+		array1pts = 0;
+		
 		if(!(b = (t_garray *)pd_findbyclass(array1, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, array1->s_name);
@@ -2237,6 +2264,9 @@ static void tabletool_taxi(t_tabletool *x, t_symbol *array1)
 		t_word *vec1;
 		t_float dist, *vecBuffer, *vec1Buffer, *vecWeights;
 
+		// must initialize this before using in garray_getfloatwords()
+		array1pts = 0;
+		
 		if(!(b = (t_garray *)pd_findbyclass(array1, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, array1->s_name);
@@ -2303,6 +2333,9 @@ static void tabletool_corr(t_tabletool *x, t_symbol *array1)
 		t_word *vec1;
 		t_float corr, *vecBuffer, *vec1Buffer;
 	
+		// must initialize this before using in garray_getfloatwords()
+		array1pts = 0;
+		
 		if(!(b = (t_garray *)pd_findbyclass(array1, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, array1->s_name);
@@ -2901,7 +2934,10 @@ static void tabletool_copy(t_tabletool *x, t_symbol *source)
 		t_sampIdx i, sourcePts;
 		t_garray *b;
 		t_word *sourceVec;
-	
+
+		// must initialize this before using in garray_getfloatwords()
+		sourcePts = 0;
+		
 		if(!(b = (t_garray *)pd_findbyclass(source, garray_class)))
 		{
 			pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, source->s_name);
@@ -2949,6 +2985,9 @@ static void tabletool_copy_range(t_tabletool *x, t_symbol *s, int argc, t_atom *
 		t_symbol *source;
 		t_word *sourceVec;
 
+		// must initialize this before using in garray_getfloatwords()
+		sourcePts = 0;
+		
 		targetStartFloat = atom_getfloat(argv+0);
 		source = atom_getsymbol(argv+1);
 		sourceStartFloat = atom_getfloat(argv+2);
@@ -2974,7 +3013,7 @@ static void tabletool_copy_range(t_tabletool *x, t_symbol *s, int argc, t_atom *
 			post("%s: bad range of samples.", x->x_objSymbol->s_name);
 			return;
 		}
-			
+
 		for(i=targetStart, j=sourceStart; j<=sourceEnd; i++, j++)
 		{
 			if(i>x->x_arrayPoints-1)
@@ -3501,6 +3540,9 @@ static void *tabletool_new(t_symbol *s)
 	x->x_storedFlag = false;
 	x->x_randState = (t_uInt)clock_getlogicaltime(); // seed with (t_uInt) logical time
 
+	// must initialize this before using in garray_getfloatwords()
+	x->x_arrayPoints = 0;
+		
     return (x);
 }
 
