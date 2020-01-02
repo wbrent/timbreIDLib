@@ -9,7 +9,7 @@ timbreID is free software: you can redistribute it and/or modify it under the te
 timbreID is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-version 0.8.1, June 27, 2019
+version 0.8.2C, January 2, 2020
 
 */
 
@@ -23,7 +23,7 @@ version 0.8.1, June 27, 2019
 #include "m_pd.h"
 #include "fftw3.h"
 
-#define TIDVERSION "0.8.1"
+#define TIDVERSION "0.8.2C"
 
 // choose either FFTW_MEASURE or FFTW_ESTIMATE here.
 #define FFTWPLANNERFLAG FFTW_ESTIMATE
@@ -45,6 +45,8 @@ version 0.8.1, June 27, 2019
 #define BLOCKSIZEDEFAULT 64
 #define NUMWEIGHTPOINTS 29
 #define MAXTIDTEXTSTRING 100000
+#define PBINRANGEBUFSIZE 64
+// this can just be 64 because the most octaves we'd have even with a pitch below MIDI 21 is about 10, so we only need around 20 pairs of bin indices at most.
 
 #ifndef M_PI
 #define M_PI 3.1415926535897932384626433832795

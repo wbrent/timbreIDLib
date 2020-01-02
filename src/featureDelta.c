@@ -224,6 +224,8 @@ static void *featureDelta_new(t_symbol *s, int argc, t_atom *argv)
 {
 	t_featureDelta *x = (t_featureDelta *)pd_new(featureDelta_class);
 	t_float featureLength;
+	t_symbol *mode;
+	t_symbol *direction;
 	
 	x->x_featureList = outlet_new(&x->x_obj, gensym("list"));
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("list"), gensym("prevFeature"));
@@ -235,22 +237,91 @@ static void *featureDelta_new(t_symbol *s, int argc, t_atom *argv)
 		case 0:	
 			x->x_featureLength = 50;
 			x->x_mode = deltaDiff;
+			x->x_direction = deltaBoth;	
 			break;
 		case 1:	
 			featureLength = atom_getfloat(argv);
 			featureLength = (featureLength<1)?1:featureLength;
 			x->x_featureLength = featureLength;
 			x->x_mode = deltaDiff;
-			break;		
+			x->x_direction = deltaBoth;	
+			break;
+		case 2:
+			featureLength = atom_getfloat(argv);
+			featureLength = (featureLength<1)?1:featureLength;
+			x->x_featureLength = featureLength;
+		
+			mode = atom_getsymbol(argv+1);
+
+			if(!strcmp(mode->s_name, "diff"))
+				x->x_mode = deltaDiff;
+			else if(!strcmp(mode->s_name, "abs"))
+				x->x_mode = deltaAbs;
+			else if(!strcmp(mode->s_name, "squared"))
+				x->x_mode = deltaSquared;
+			else
+				x->x_mode = deltaDiff;
+			
+			x->x_direction = deltaBoth;	
+			break;	
+		case 3:
+			featureLength = atom_getfloat(argv);
+			featureLength = (featureLength<1)?1:featureLength;
+			x->x_featureLength = featureLength;
+		
+			mode = atom_getsymbol(argv+1);
+
+			if(!strcmp(mode->s_name, "diff"))
+				x->x_mode = deltaDiff;
+			else if(!strcmp(mode->s_name, "abs"))
+				x->x_mode = deltaAbs;
+			else if(!strcmp(mode->s_name, "squared"))
+				x->x_mode = deltaSquared;
+			else
+				x->x_mode = deltaDiff;
+
+			direction = atom_getsymbol(argv+2);
+
+			if(!strcmp(direction->s_name, "pos"))
+				x->x_direction = deltaPos;
+			else if(!strcmp(direction->s_name, "neg"))
+				x->x_direction = deltaNeg;
+			else if(!strcmp(direction->s_name, "both"))
+				x->x_direction = deltaBoth;
+			else
+				x->x_direction = deltaBoth;	
+		
+			break;	
 		default:
 			featureLength = atom_getfloat(argv);
 			featureLength = (featureLength<1)?1:featureLength;
 			x->x_featureLength = featureLength;
-			x->x_mode = atom_getfloat(argv+1);
+		
+			mode = atom_getsymbol(argv+1);
+
+			if(!strcmp(mode->s_name, "diff"))
+				x->x_mode = deltaDiff;
+			else if(!strcmp(mode->s_name, "abs"))
+				x->x_mode = deltaAbs;
+			else if(!strcmp(mode->s_name, "squared"))
+				x->x_mode = deltaSquared;
+			else
+				x->x_mode = deltaDiff;
+
+			direction = atom_getsymbol(argv+2);
+
+			if(!strcmp(direction->s_name, "pos"))
+				x->x_direction = deltaPos;
+			else if(!strcmp(direction->s_name, "neg"))
+				x->x_direction = deltaNeg;
+			else if(!strcmp(direction->s_name, "both"))
+				x->x_direction = deltaBoth;
+			else
+				x->x_direction = deltaBoth;	
+		
 			break;
 	}
 
-	x->x_direction = deltaBoth;	
  	featureDelta_allocMem(x);
  	featureDelta_initMem(x);
 

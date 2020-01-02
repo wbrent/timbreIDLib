@@ -206,8 +206,6 @@ static void chroma_tilde_window(t_chroma_tilde *x, t_floatarg w)
 	
 	x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window+x->x_n) * sizeof(t_sample), (window+x->x_n) * sizeof(t_sample));
 
-	x->x_binRanges = (t_binIdx *)t_resizebytes(x->x_binRanges, x->x_window*20*sizeof(t_binIdx), window*20*sizeof(t_binIdx));
-
 	x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, x->x_window * sizeof(t_float), window * sizeof(t_float));
 
 	x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, x->x_window*sizeof(t_float), window*sizeof(t_float));
@@ -566,7 +564,7 @@ static void *chroma_tilde_new(t_symbol *s, int argc, t_atom *argv)
 	x->x_lastDspTime = clock_getlogicaltime();
 
 	x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window+x->x_n) * sizeof(t_sample));
-	x->x_binRanges = (t_binIdx *)t_getbytes(x->x_window*20*sizeof(t_binIdx));
+	x->x_binRanges = (t_binIdx *)t_getbytes(PBINRANGEBUFSIZE*sizeof(t_binIdx));
 	x->x_fftwIn = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
 	x->x_listOut = (t_atom *)t_getbytes(x->x_numChroma*sizeof(t_atom));
 
@@ -668,7 +666,7 @@ static void chroma_tilde_free(t_chroma_tilde *x)
     t_freebytes(x->x_pitchClasses, x->x_numChroma*sizeof(t_float));
 
     // free the bin ranges memory
-    t_freebytes(x->x_binRanges, (x->x_window*20)*sizeof(t_binIdx));
+    t_freebytes(x->x_binRanges, PBINRANGEBUFSIZE*sizeof(t_binIdx));
 
 	// free FFTW stuff
     t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_float));

@@ -2046,19 +2046,19 @@ static void timbreID_writeText(t_timbreID *x, t_symbol *s)
 
 			if(thisAttribute>=x->x_instances[i].length)
 				break;
-// 			{	
-// 				pd_error(x, "%s: attribute %i out of range for instance %i. aborting file write", x->x_objSymbol->s_name, thisAttribute, i);
-// 				fclose(filePtr);
-// 				return;
-// 			}
-			
+
 			if(x->x_normalize)
 				thisFeatureData = (*(featurePtr+thisAttribute) - x->x_attributeData[thisAttribute].normData.min)*x->x_attributeData[thisAttribute].normData.normScalar;
 			else
 				thisFeatureData = *(featurePtr+thisAttribute);
 
-//			What's the best float resolution to print?	
-			fprintf(filePtr, "%0.6f ", thisFeatureData);
+			// What's the best float resolution to print?
+			// no space after final value on an instance line
+			if(j==x->x_attributeHi)
+				fprintf(filePtr, "%0.6f", thisFeatureData);
+			else
+				fprintf(filePtr, "%0.6f ", thisFeatureData);
+			
 			j++;
 		};
 
@@ -2113,13 +2113,19 @@ static void timbreID_readText(t_timbreID *x, t_symbol *s)
 	while(fgets(textLine, MAXTIDTEXTSTRING, filePtr))
 	{		
 		stringLength = strlen(textLine);
+
+		// check to see if there's a space after the last data entry on the line. if so, our space counter loop below should stop prior to that final space. this allows us to read text files written both with and without spaces after the final entry of a line
+		// stringLength-2 would be the position for this space, because the final character is a carriage return (10) at position stringLength-1
+		if(textLine[stringLength-2]==32)
+			stringLength = stringLength-2; // lop off the final space and CR		
+		
 		numSpaces = 0;
 		for(j=0; j<stringLength; j++)
 			if(textLine[j]==32)
 				numSpaces++;
 
-		// there's a space after each entry in a file written by write_text(). So numSpaces==length
-		x->x_instances[i].length = numSpaces;
+		// there's a space after each entry in a file written by write_text(), except for the final entry. So (numSpaces+1)==length
+		x->x_instances[i].length = numSpaces+1;
 
 		if(x->x_instances[i].length>maxLength)
 			maxLength = x->x_instances[i].length;
@@ -2546,9 +2552,13 @@ static void timbreID_writeClustersText(t_timbreID *x, t_symbol *s)
     {
 		clusterPtr = x->x_clusters[i].members;
 
-		for(j=0; j<x->x_clusters[i].numMembers-1; j++)
+		for(j=0; j<x->x_clusters[i].numMembers-2; j++)
 			fprintf(filePtr, "%i ", *clusterPtr++);
 
+		// no space for the final instance given on the line for cluster i
+		fprintf(filePtr, "%i", *clusterPtr++);
+		
+		// newline to end the list of instances for cluster i
 		fprintf(filePtr, "\n");
    	};
    	
@@ -2600,13 +2610,19 @@ static void timbreID_readClustersText(t_timbreID *x, t_symbol *s)
 	while(fgets(textLine, MAXTIDTEXTSTRING, filePtr))
 	{		
 		stringLength = strlen(textLine);
+		
+		// check to see if there's a space after the last data entry on the line. if so, our space counter loop below should stop prior to that final space. this allows us to read text files written both with and without spaces after the final entry of a line
+		// stringLength-2 would be the position for this space, because the final character is a carriage return (10) at position stringLength-1
+		if(textLine[stringLength-2]==32)
+			stringLength = stringLength-2; // lop off the final space and CR
+			
 		numSpaces = 0;
 		for(j=0; j<stringLength; j++)
 			if(textLine[j]==32)
 				numSpaces++;
 
-		// there's a space after each entry in a file written by write_clusters_text(). So numMembers should be numSpaces, +1 for the terminating UINT_MAX for each cluster list
-		x->x_clusters[i].numMembers = numSpaces+1;
+		// there's a space after each entry in a file written by write_clusters_text(), except for the final instance on the line. So numMembers should be numSpaces+1. However, we must add one more slot for the terminating UINT_MAX of each cluster list. So in the end, numMembers should be numSpaces+2
+		x->x_clusters[i].numMembers = numSpaces+2;
 
 		// get the appropriate number of bytes for the data 
 	   x->x_clusters[i].members = (t_instanceIdx *)t_getbytes(x->x_clusters[i].numMembers*sizeof(t_instanceIdx));

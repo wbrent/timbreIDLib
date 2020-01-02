@@ -1170,7 +1170,7 @@ void tIDLib_getPitchBinRanges(t_binIdx *binRanges, t_float thisPitch, t_float lo
 	t_attributeIdx i, j;
 	
 	// fill buffer with ULONG_MAX so we can see where to stop when using this buffer
-	for(i=0; i<n*20; i++)
+	for(i=0; i<PBINRANGEBUFSIZE; i++)
 		binRanges[i] = ULONG_MAX;
 	
 	// find the octave of this pitch that is above x_loFreq
