@@ -19,34 +19,34 @@ static t_class *barkSpecSkewness_tilde_class;
 
 typedef struct _barkSpecSkewness_tilde
 {
-	t_object x_obj;
-	t_symbol *x_objSymbol;
-	t_float x_sr;
-	t_float x_n;
-	t_sampIdx x_window;
-	t_sampIdx x_windowHalf;
-	t_windowFunction x_windowFunction;
-	t_uShortInt x_overlap;
-	t_bool x_powerSpectrum;
-	double x_lastDspTime;
-	t_sample *x_signalBuffer;
+    t_object x_obj;
+    t_symbol *x_objSymbol;
+    t_float x_sr;
+    t_float x_n;
+    t_sampIdx x_window;
+    t_sampIdx x_windowHalf;
+    t_windowFunction x_windowFunction;
+    t_uShortInt x_overlap;
+    t_bool x_powerSpectrum;
+    double x_lastDspTime;
+    t_sample *x_signalBuffer;
     t_float *x_fftwIn;
     fftwf_complex *x_fftwOut;
-	fftwf_plan x_fftwPlan;
-	t_float *x_blackman;
-	t_float *x_cosine;
-	t_float *x_hamming;
-	t_float *x_hann;
-	t_filterIdx x_sizeFilterFreqs;
-	t_filterIdx x_numFilters;
-	t_float *x_barkFreqList;
-	t_float x_barkSpacing;
-	t_float *x_filterFreqs;
-	t_filter *x_filterbank;
-	t_bool x_specBandAvg;
-	t_bool x_filterAvg;
+    fftwf_plan x_fftwPlan;
+    t_float *x_blackman;
+    t_float *x_cosine;
+    t_float *x_hamming;
+    t_float *x_hann;
+    t_filterIdx x_sizeFilterFreqs;
+    t_filterIdx x_numFilters;
+    t_float *x_barkFreqList;
+    t_float x_barkSpacing;
+    t_float *x_filterFreqs;
+    t_filter *x_filterbank;
+    t_bool x_specBandAvg;
+    t_bool x_filterAvg;
     t_outlet *x_skewness;
-	t_float x_f;
+    t_float x_f;
 
 } t_barkSpecSkewness_tilde;
 
@@ -55,98 +55,98 @@ typedef struct _barkSpecSkewness_tilde
 
 static void barkSpecSkewness_tilde_bang(t_barkSpecSkewness_tilde *x)
 {
-	t_sampIdx i, j, window, windowHalf, bangSample;
-	t_float energySum, centroid, spread, skewness, *windowFuncPtr;
-	double currentTime;
+    t_sampIdx i, j, window, windowHalf, bangSample;
+    t_float energySum, centroid, spread, skewness, *windowFuncPtr;
+    double currentTime;
 
-	window = x->x_window;
-	windowHalf = x->x_windowHalf;
+    window = x->x_window;
+    windowHalf = x->x_windowHalf;
 
-	currentTime = clock_gettimesince(x->x_lastDspTime);
-	bangSample = roundf((currentTime/1000.0)*x->x_sr);
+    currentTime = clock_gettimesince(x->x_lastDspTime);
+    bangSample = roundf((currentTime/1000.0)*x->x_sr);
 
-	if(bangSample >= x->x_n)
-		bangSample = x->x_n-1;
+    if(bangSample >= x->x_n)
+        bangSample = x->x_n-1;
 
-	// construct analysis window using bangSample as the end of the window
-	for(i=0, j=bangSample; i<window; i++, j++)
-		x->x_fftwIn[i] = x->x_signalBuffer[j];
+    // construct analysis window using bangSample as the end of the window
+    for(i=0, j=bangSample; i<window; i++, j++)
+        x->x_fftwIn[i] = x->x_signalBuffer[j];
 
-	switch(x->x_windowFunction)
-	{
-		case rectangular:
-			break;
-		case blackman:
-			windowFuncPtr = x->x_blackman;
-			break;
-		case cosine:
-			windowFuncPtr = x->x_cosine;
-			break;
-		case hamming:
-			windowFuncPtr = x->x_hamming;
-			break;
-		case hann:
-			windowFuncPtr = x->x_hann;
-			break;
-		default:
-			windowFuncPtr = x->x_blackman;
-			break;
-	};
+    switch(x->x_windowFunction)
+    {
+        case rectangular:
+            break;
+        case blackman:
+            windowFuncPtr = x->x_blackman;
+            break;
+        case cosine:
+            windowFuncPtr = x->x_cosine;
+            break;
+        case hamming:
+            windowFuncPtr = x->x_hamming;
+            break;
+        case hann:
+            windowFuncPtr = x->x_hann;
+            break;
+        default:
+            windowFuncPtr = x->x_blackman;
+            break;
+    };
 
-	// if windowFunction == 0, skip the windowing (rectangular)
-	if(x->x_windowFunction!=rectangular)
-		for(i=0; i<window; i++, windowFuncPtr++)
-			x->x_fftwIn[i] *= *windowFuncPtr;
+    // if windowFunction == 0, skip the windowing (rectangular)
+    if(x->x_windowFunction!=rectangular)
+        for(i=0; i<window; i++, windowFuncPtr++)
+            x->x_fftwIn[i] *= *windowFuncPtr;
 
-	fftwf_execute(x->x_fftwPlan);
+    fftwf_execute(x->x_fftwPlan);
 
-	// put the result of power calc back in x_fftwIn
-	tIDLib_power(windowHalf+1, x->x_fftwOut, x->x_fftwIn);
-	
-	if(!x->x_powerSpectrum)
-		tIDLib_mag(windowHalf+1, x->x_fftwIn);
+    // put the result of power calc back in x_fftwIn
+    tIDLib_power(windowHalf+1, x->x_fftwOut, x->x_fftwIn);
 
-	if(x->x_specBandAvg)
-		tIDLib_specFilterBands(windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
-	else
-		tIDLib_filterbankMultiply(x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+    if(!x->x_powerSpectrum)
+        tIDLib_mag(windowHalf+1, x->x_fftwIn);
 
-	energySum = 0.0;
-	for(i=0; i<x->x_numFilters; i++)
-		energySum += x->x_fftwIn[i];
-		
-	centroid = tIDLib_computeCentroid(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum);
-	spread = tIDLib_computeSpread(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid);
-	skewness = tIDLib_computeSkewness(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid, spread);
+    if(x->x_specBandAvg)
+        tIDLib_specFilterBands(windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
+    else
+        tIDLib_filterbankMultiply(x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
-	outlet_float(x->x_skewness, skewness);
+    energySum = 0.0;
+    for(i=0; i<x->x_numFilters; i++)
+        energySum += x->x_fftwIn[i];
+
+    centroid = tIDLib_computeCentroid(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum);
+    spread = tIDLib_computeSpread(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid);
+    skewness = tIDLib_computeSkewness(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid, spread);
+
+    outlet_float(x->x_skewness, skewness);
 }
 
 
 static void barkSpecSkewness_tilde_createFilterbank(t_barkSpecSkewness_tilde *x, t_floatarg bs)
 {
-	t_filterIdx i, oldNumFilters;
+    t_filterIdx i, oldNumFilters;
 
-	x->x_barkSpacing = bs;
+    x->x_barkSpacing = bs;
 
-	if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
-	{
-		x->x_barkSpacing = BARKSPACINGDEFAULT;
-		post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
-	}
+    if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+    {
+        x->x_barkSpacing = BARKSPACINGDEFAULT;
+        post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+    }
 
-	oldNumFilters = x->x_numFilters;
+    oldNumFilters = x->x_numFilters;
 
-	x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
+    x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
 
-	x->x_numFilters = x->x_sizeFilterFreqs-2;
+    x->x_numFilters = x->x_sizeFilterFreqs-2;
 
-	tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, oldNumFilters, x->x_numFilters, x->x_window, x->x_sr);
-	
-	x->x_barkFreqList = (t_float *)t_resizebytes(x->x_barkFreqList, oldNumFilters * sizeof(t_float), x->x_numFilters * sizeof(t_float));
+    tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, oldNumFilters, x->x_numFilters, x->x_window, x->x_sr);
 
- 	for(i=0; i<x->x_numFilters; i++)
-		x->x_barkFreqList[i] = i*x->x_barkSpacing;
+    x->x_barkFreqList = (t_float *)t_resizebytes(x->x_barkFreqList, oldNumFilters * sizeof(t_float), x->x_numFilters * sizeof(t_float));
+
+     for(i=0; i<x->x_numFilters; i++)
+        x->x_barkFreqList[i] = i*x->x_barkSpacing;
 }
 
 
@@ -154,12 +154,12 @@ static void barkSpecSkewness_tilde_spec_band_avg(t_barkSpecSkewness_tilde *x, t_
 {
     avg = (avg<0)?0:avg;
     avg = (avg>1)?1:avg;
-	x->x_specBandAvg = avg;
+    x->x_specBandAvg = avg;
 
-	if(x->x_specBandAvg)
-		post("%s: averaging energy in spectrum bands.", x->x_objSymbol->s_name);
-	else
-		post("%s: using triangular filterbank.", x->x_objSymbol->s_name);
+    if(x->x_specBandAvg)
+        post("%s: averaging energy in spectrum bands.", x->x_objSymbol->s_name);
+    else
+        post("%s: using triangular filterbank.", x->x_objSymbol->s_name);
 }
 
 
@@ -167,92 +167,92 @@ static void barkSpecSkewness_tilde_filter_avg(t_barkSpecSkewness_tilde *x, t_flo
 {
     avg = (avg<0)?0:avg;
     avg = (avg>1)?1:avg;
-	x->x_filterAvg = avg;
+    x->x_filterAvg = avg;
 
-	if(x->x_filterAvg)
-		post("%s: averaging energy in triangular filters.", x->x_objSymbol->s_name);
-	else
-		post("%s: summing energy in triangular filters.", x->x_objSymbol->s_name);
+    if(x->x_filterAvg)
+        post("%s: averaging energy in triangular filters.", x->x_objSymbol->s_name);
+    else
+        post("%s: summing energy in triangular filters.", x->x_objSymbol->s_name);
 }
 
 
 static void barkSpecSkewness_tilde_print(t_barkSpecSkewness_tilde *x)
 {
-	post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr/x->x_overlap));
-	post("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
-	post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
-	post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
-	post("%s power spectrum: %i", x->x_objSymbol->s_name, x->x_powerSpectrum);
-	post("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
-	post("%s Bark spacing: %f", x->x_objSymbol->s_name, x->x_barkSpacing);
-	post("%s number of filters: %i", x->x_objSymbol->s_name, x->x_numFilters);
-	post("%s spectrum band averaging: %i", x->x_objSymbol->s_name, x->x_specBandAvg);
-	post("%s triangular filter averaging: %i", x->x_objSymbol->s_name, x->x_filterAvg);
+    post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr/x->x_overlap));
+    post("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
+    post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
+    post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
+    post("%s power spectrum: %i", x->x_objSymbol->s_name, x->x_powerSpectrum);
+    post("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
+    post("%s Bark spacing: %f", x->x_objSymbol->s_name, x->x_barkSpacing);
+    post("%s number of filters: %i", x->x_objSymbol->s_name, x->x_numFilters);
+    post("%s spectrum band averaging: %i", x->x_objSymbol->s_name, x->x_specBandAvg);
+    post("%s triangular filter averaging: %i", x->x_objSymbol->s_name, x->x_filterAvg);
 }
 
 
 static void barkSpecSkewness_tilde_window(t_barkSpecSkewness_tilde *x, t_floatarg w)
 {
-	t_sampIdx i, window, windowHalf;
+    t_sampIdx i, window, windowHalf;
 
-	window = w;
-	
-	if(window<MINWINDOWSIZE)
-	{
-		window = WINDOWSIZEDEFAULT;
-		post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
-	}
-	
-	windowHalf = window*0.5;
-	
-	x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window+x->x_n)*sizeof(t_sample), (window+x->x_n)*sizeof(t_sample));
-	x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, x->x_window*sizeof(t_float), window*sizeof(t_float));
+    window = w;
 
-	x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, x->x_window*sizeof(t_float), window*sizeof(t_float));
-	x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, x->x_window*sizeof(t_float), window*sizeof(t_float));
-	x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, x->x_window*sizeof(t_float), window*sizeof(t_float));
-	x->x_hann = (t_float *)t_resizebytes(x->x_hann, x->x_window*sizeof(t_float), window*sizeof(t_float));
+    if(window<MINWINDOWSIZE)
+    {
+        window = WINDOWSIZEDEFAULT;
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+    }
 
-	x->x_window = window;
-	x->x_windowHalf = windowHalf;
+    windowHalf = window*0.5;
 
-	// free the FFTW output buffer, and re-malloc according to new window
-	fftwf_free(x->x_fftwOut);
-	
-	// destroy old DFT plan, which depended on x->x_window
-	fftwf_destroy_plan(x->x_fftwPlan); 
-	
-	// allocate new fftwf_complex memory for the plan based on new window size
-	x->x_fftwOut = (fftwf_complex *) fftwf_alloc_complex(windowHalf+1);
+    x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window+x->x_n)*sizeof(t_sample), (window+x->x_n)*sizeof(t_sample));
+    x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, x->x_window*sizeof(t_float), window*sizeof(t_float));
 
-	// create a new DFT plan based on new window size
-	x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
+    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, x->x_window*sizeof(t_float), window*sizeof(t_float));
+    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, x->x_window*sizeof(t_float), window*sizeof(t_float));
+    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, x->x_window*sizeof(t_float), window*sizeof(t_float));
+    x->x_hann = (t_float *)t_resizebytes(x->x_hann, x->x_window*sizeof(t_float), window*sizeof(t_float));
 
-	// we're supposed to initialize the input array after we create the plan
- 	for(i=0; i<x->x_window; i++)
-		x->x_fftwIn[i] = 0.0;
-		
-	// initialize signal buffer
-	for(i=0; i<x->x_window+x->x_n; i++)
-		x->x_signalBuffer[i] = 0.0;
-	
-	// re-init window functions
-	tIDLib_blackmanWindow(x->x_blackman, x->x_window);
-	tIDLib_cosineWindow(x->x_cosine, x->x_window);
-	tIDLib_hammingWindow(x->x_hamming, x->x_window);
-	tIDLib_hannWindow(x->x_hann, x->x_window);
+    x->x_window = window;
+    x->x_windowHalf = windowHalf;
 
-	// x_numFilters doesn't change with a change to x_window, so oldNumFilters and newNumFilters arguments are the same
-	tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, x->x_numFilters, x->x_numFilters, x->x_window, x->x_sr);
+    // free the FFTW output buffer, and re-malloc according to new window
+    fftwf_free(x->x_fftwOut);
 
-	post("%s window size: %i", x->x_objSymbol->s_name, x->x_window);
+    // destroy old DFT plan, which depended on x->x_window
+    fftwf_destroy_plan(x->x_fftwPlan);
+
+    // allocate new fftwf_complex memory for the plan based on new window size
+    x->x_fftwOut = (fftwf_complex *) fftwf_alloc_complex(windowHalf+1);
+
+    // create a new DFT plan based on new window size
+    x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
+
+    // we're supposed to initialize the input array after we create the plan
+     for(i=0; i<x->x_window; i++)
+        x->x_fftwIn[i] = 0.0;
+
+    // initialize signal buffer
+    for(i=0; i<x->x_window+x->x_n; i++)
+        x->x_signalBuffer[i] = 0.0;
+
+    // re-init window functions
+    tIDLib_blackmanWindow(x->x_blackman, x->x_window);
+    tIDLib_cosineWindow(x->x_cosine, x->x_window);
+    tIDLib_hammingWindow(x->x_hamming, x->x_window);
+    tIDLib_hannWindow(x->x_hann, x->x_window);
+
+    // x_numFilters doesn't change with a change to x_window, so oldNumFilters and newNumFilters arguments are the same
+    tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, x->x_numFilters, x->x_numFilters, x->x_window, x->x_sr);
+
+    post("%s window size: %i", x->x_objSymbol->s_name, x->x_window);
 }
 
 
 static void barkSpecSkewness_tilde_overlap(t_barkSpecSkewness_tilde *x, t_floatarg o)
 {
-	// this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr/x->x_overlap;
-	x->x_overlap = (o<1)?1:o;
+    // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr/x->x_overlap;
+    x->x_overlap = (o<1)?1:o;
 
     post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
 }
@@ -262,28 +262,28 @@ static void barkSpecSkewness_tilde_windowFunction(t_barkSpecSkewness_tilde *x, t
 {
     f = (f<0)?0:f;
     f = (f>4)?4:f;
-	x->x_windowFunction = f;
+    x->x_windowFunction = f;
 
-	switch(x->x_windowFunction)
-	{
-		case rectangular:
-			post("%s window function: rectangular.", x->x_objSymbol->s_name);
-			break;
-		case blackman:
-			post("%s window function: blackman.", x->x_objSymbol->s_name);
-			break;
-		case cosine:
-			post("%s window function: cosine.", x->x_objSymbol->s_name);
-			break;
-		case hamming:
-			post("%s window function: hamming.", x->x_objSymbol->s_name);
-			break;
-		case hann:
-			post("%s window function: hann.", x->x_objSymbol->s_name);
-			break;
-		default:
-			break;
-	};
+    switch(x->x_windowFunction)
+    {
+        case rectangular:
+            post("%s window function: rectangular.", x->x_objSymbol->s_name);
+            break;
+        case blackman:
+            post("%s window function: blackman.", x->x_objSymbol->s_name);
+            break;
+        case cosine:
+            post("%s window function: cosine.", x->x_objSymbol->s_name);
+            break;
+        case hamming:
+            post("%s window function: hamming.", x->x_objSymbol->s_name);
+            break;
+        case hann:
+            post("%s window function: hann.", x->x_objSymbol->s_name);
+            break;
+        default:
+            break;
+    };
 }
 
 
@@ -291,305 +291,305 @@ static void barkSpecSkewness_tilde_powerSpectrum(t_barkSpecSkewness_tilde *x, t_
 {
     power = (power<0)?0:power;
     power = (power>1)?1:power;
-	x->x_powerSpectrum = power;
+    x->x_powerSpectrum = power;
 
-	if(x->x_powerSpectrum)
-		post("%s using power spectrum", x->x_objSymbol->s_name);
-	else
-		post("%s using magnitude spectrum", x->x_objSymbol->s_name);
+    if(x->x_powerSpectrum)
+        post("%s using power spectrum", x->x_objSymbol->s_name);
+    else
+        post("%s using magnitude spectrum", x->x_objSymbol->s_name);
 }
 
 
 static void *barkSpecSkewness_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
-	t_barkSpecSkewness_tilde *x = (t_barkSpecSkewness_tilde *)pd_new(barkSpecSkewness_tilde_class);
-	t_sampIdx i;
+    t_barkSpecSkewness_tilde *x = (t_barkSpecSkewness_tilde *)pd_new(barkSpecSkewness_tilde_class);
+    t_sampIdx i;
 
-	x->x_skewness = outlet_new(&x->x_obj, &s_float);
+    x->x_skewness = outlet_new(&x->x_obj, &s_float);
 
-	// store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
-	x->x_objSymbol = s;
+    // store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
+    x->x_objSymbol = s;
 
-	switch(argc)
-	{
-		case 2:
-			x->x_window = atom_getfloat(argv);
-			if(x->x_window<MINWINDOWSIZE)
-			{
-				x->x_window = WINDOWSIZEDEFAULT;
-				post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
-			}
-			
-			x->x_barkSpacing = atom_getfloat(argv+1);
-			if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
-			{
-				x->x_barkSpacing = BARKSPACINGDEFAULT;
-				post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
-			}		
-			break;
-		
-		case 1:
-			x->x_window = atom_getfloat(argv);
-			if(x->x_window<MINWINDOWSIZE)
-			{
-				x->x_window = WINDOWSIZEDEFAULT;
-				post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
-			}
-			x->x_barkSpacing = BARKSPACINGDEFAULT;
-			break;
-			
-		case 0:
-			x->x_window = WINDOWSIZEDEFAULT;
-			x->x_barkSpacing = BARKSPACINGDEFAULT;
-			break;
-						
-		default:
-			post("%s WARNING: Too many arguments supplied. Using default window size of %i and Bark spacing of %f.", x->x_objSymbol->s_name, BARKSPACINGDEFAULT, WINDOWSIZEDEFAULT);
-			x->x_window = WINDOWSIZEDEFAULT;
-			x->x_barkSpacing = BARKSPACINGDEFAULT;
-			break;
-	}
+    switch(argc)
+    {
+        case 2:
+            x->x_window = atom_getfloat(argv);
+            if(x->x_window<MINWINDOWSIZE)
+            {
+                x->x_window = WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+            }
 
-	x->x_windowHalf = x->x_window*0.5;	
-	x->x_sr = SAMPLERATEDEFAULT;
-	x->x_n = BLOCKSIZEDEFAULT;
-	x->x_overlap = 1;
-	x->x_windowFunction = blackman;
-	x->x_powerSpectrum = false;
-	x->x_lastDspTime = clock_getlogicaltime();
-	x->x_sizeFilterFreqs = 0;
-	x->x_numFilters = 0; // this is just an init size that will be updated in createFilterbank anyway.
-	x->x_specBandAvg = false;
-	x->x_filterAvg = false;
+            x->x_barkSpacing = atom_getfloat(argv+1);
+            if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+            {
+                x->x_barkSpacing = BARKSPACINGDEFAULT;
+                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+            }
+            break;
 
-	x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window+x->x_n)*sizeof(t_sample));
-	x->x_fftwIn = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+        case 1:
+            x->x_window = atom_getfloat(argv);
+            if(x->x_window<MINWINDOWSIZE)
+            {
+                x->x_window = WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+            }
+            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            break;
 
-	// initialize signal buffer
-	for(i=0; i<x->x_window+x->x_n; i++)
-		x->x_signalBuffer[i] = 0.0;
-		
-  	x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-  	x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-  	x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-  	x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+        case 0:
+            x->x_window = WINDOWSIZEDEFAULT;
+            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            break;
 
- 	// initialize signal windowing functions
-	tIDLib_blackmanWindow(x->x_blackman, x->x_window);
-	tIDLib_cosineWindow(x->x_cosine, x->x_window);
-	tIDLib_hammingWindow(x->x_hamming, x->x_window);
-	tIDLib_hannWindow(x->x_hann, x->x_window);
+        default:
+            post("%s WARNING: Too many arguments supplied. Using default window size of %i and Bark spacing of %f.", x->x_objSymbol->s_name, BARKSPACINGDEFAULT, WINDOWSIZEDEFAULT);
+            x->x_window = WINDOWSIZEDEFAULT;
+            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            break;
+    }
 
-	// set up the FFTW output buffer
-	x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_windowHalf = x->x_window*0.5;
+    x->x_sr = SAMPLERATEDEFAULT;
+    x->x_n = BLOCKSIZEDEFAULT;
+    x->x_overlap = 1;
+    x->x_windowFunction = blackman;
+    x->x_powerSpectrum = false;
+    x->x_lastDspTime = clock_getlogicaltime();
+    x->x_sizeFilterFreqs = 0;
+    x->x_numFilters = 0; // this is just an init size that will be updated in createFilterbank anyway.
+    x->x_specBandAvg = false;
+    x->x_filterAvg = false;
 
-	// DFT plan
-	x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
+    x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window+x->x_n)*sizeof(t_sample));
+    x->x_fftwIn = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
 
-	// we're supposed to initialize the input array after we create the plan
- 	for(i=0; i<x->x_window; i++)
-		x->x_fftwIn[i] = 0.0;
+    // initialize signal buffer
+    for(i=0; i<x->x_window+x->x_n; i++)
+        x->x_signalBuffer[i] = 0.0;
 
-	// grab memory
-	x->x_filterbank = (t_filter *)t_getbytes(0);
-	x->x_filterFreqs = (t_float *)t_getbytes(0);
+      x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
 
-	x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
+     // initialize signal windowing functions
+    tIDLib_blackmanWindow(x->x_blackman, x->x_window);
+    tIDLib_cosineWindow(x->x_cosine, x->x_window);
+    tIDLib_hammingWindow(x->x_hamming, x->x_window);
+    tIDLib_hannWindow(x->x_hann, x->x_window);
 
-	// sizeFilterFreqs-2 is the correct number of filters, since we don't count the start point of the first filter, or the finish point of the last filter
-	x->x_numFilters = x->x_sizeFilterFreqs-2;
+    // set up the FFTW output buffer
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
 
-	tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, 0, x->x_numFilters, x->x_window, x->x_sr);
-	
-	x->x_barkFreqList = (t_float *)t_getbytes(x->x_numFilters * sizeof(t_float));
+    // DFT plan
+    x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
 
- 	for(i=0; i<x->x_numFilters; i++)
-		x->x_barkFreqList[i] = i*x->x_barkSpacing;
+    // we're supposed to initialize the input array after we create the plan
+     for(i=0; i<x->x_window; i++)
+        x->x_fftwIn[i] = 0.0;
 
-	return (x);
+    // grab memory
+    x->x_filterbank = (t_filter *)t_getbytes(0);
+    x->x_filterFreqs = (t_float *)t_getbytes(0);
+
+    x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
+
+    // sizeFilterFreqs-2 is the correct number of filters, since we don't count the start point of the first filter, or the finish point of the last filter
+    x->x_numFilters = x->x_sizeFilterFreqs-2;
+
+    tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, 0, x->x_numFilters, x->x_window, x->x_sr);
+
+    x->x_barkFreqList = (t_float *)t_getbytes(x->x_numFilters * sizeof(t_float));
+
+     for(i=0; i<x->x_numFilters; i++)
+        x->x_barkFreqList[i] = i*x->x_barkSpacing;
+
+    return (x);
 }
 
 
 static t_int *barkSpecSkewness_tilde_perform(t_int *w)
 {
-	t_uShortInt n;
-	t_sampIdx i;
+    t_uShortInt n;
+    t_sampIdx i;
 
-	t_barkSpecSkewness_tilde *x = (t_barkSpecSkewness_tilde *)(w[1]);
+    t_barkSpecSkewness_tilde *x = (t_barkSpecSkewness_tilde *)(w[1]);
 
-	t_sample *in = (t_sample *)(w[2]);
-	n = w[3];
+    t_sample *in = (t_sample *)(w[2]);
+    n = w[3];
 
- 	// shift signal buffer contents back.
-	for(i=0; i<x->x_window; i++)
-		x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+     // shift signal buffer contents back.
+    for(i=0; i<x->x_window; i++)
+        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
 
-	// write new block to end of signal buffer.
-	for(i=0; i<n; i++)
-		x->x_signalBuffer[x->x_window+i] = in[i];
+    // write new block to end of signal buffer.
+    for(i=0; i<n; i++)
+        x->x_signalBuffer[x->x_window+i] = in[i];
 
-	x->x_lastDspTime = clock_getlogicaltime();
+    x->x_lastDspTime = clock_getlogicaltime();
 
-	return (w+4);
+    return (w+4);
 }
 
 
 static void barkSpecSkewness_tilde_dsp(t_barkSpecSkewness_tilde *x, t_signal **sp)
 {
-	dsp_add(
-		barkSpecSkewness_tilde_perform,
-		3,
-		x,
-		sp[0]->s_vec,
-		sp[0]->s_n
-	);
+    dsp_add(
+        barkSpecSkewness_tilde_perform,
+        3,
+        x,
+        sp[0]->s_vec,
+        sp[0]->s_n
+    );
 
 // compare sr to stored sr and update if different
-	if( sp[0]->s_sr != (x->x_sr*x->x_overlap) )
-	{
-		x->x_sr = sp[0]->s_sr/x->x_overlap;
+    if( sp[0]->s_sr != (x->x_sr*x->x_overlap) )
+    {
+        x->x_sr = sp[0]->s_sr/x->x_overlap;
 
-		tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, x->x_numFilters, x->x_numFilters, x->x_window, x->x_sr);
-	};
+        tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, x->x_numFilters, x->x_numFilters, x->x_window, x->x_sr);
+    };
 
 // compare n to stored n and update/resize buffer if different
-	if( sp[0]->s_n != x->x_n )
-	{
-		t_sampIdx i;
+    if( sp[0]->s_n != x->x_n )
+    {
+        t_sampIdx i;
 
-		x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window+x->x_n) * sizeof(t_sample), (x->x_window+sp[0]->s_n) * sizeof(t_sample));
+        x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window+x->x_n) * sizeof(t_sample), (x->x_window+sp[0]->s_n) * sizeof(t_sample));
 
-		x->x_n = sp[0]->s_n;
-		x->x_lastDspTime = clock_getlogicaltime();
+        x->x_n = sp[0]->s_n;
+        x->x_lastDspTime = clock_getlogicaltime();
 
-		// init signal buffer
-		for(i=0; i<(x->x_window+x->x_n); i++)
-			x->x_signalBuffer[i] = 0.0;
-	}
+        // init signal buffer
+        for(i=0; i<(x->x_window+x->x_n); i++)
+            x->x_signalBuffer[i] = 0.0;
+    }
 };
 
 
 static void barkSpecSkewness_tilde_free(t_barkSpecSkewness_tilde *x)
 {
-	t_filterIdx i;
+    t_filterIdx i;
 
-	// free the input buffer memory
-	t_freebytes(x->x_signalBuffer, (x->x_window+x->x_n)*sizeof(t_sample));
+    // free the input buffer memory
+    t_freebytes(x->x_signalBuffer, (x->x_window+x->x_n)*sizeof(t_sample));
 
-	// free FFTW stuff
+    // free FFTW stuff
     t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_float));
-	fftwf_free(x->x_fftwOut);
-	fftwf_destroy_plan(x->x_fftwPlan); 
-	
-	// free the window memory
-	t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
-	t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
-	t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
-	t_freebytes(x->x_hann, x->x_window*sizeof(t_float));
+    fftwf_free(x->x_fftwOut);
+    fftwf_destroy_plan(x->x_fftwPlan);
+
+    // free the window memory
+    t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_hann, x->x_window*sizeof(t_float));
 
     // free filterFreqs memory
-	t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs*sizeof(t_float));
-	t_freebytes(x->x_barkFreqList, x->x_numFilters*sizeof(t_float));
+    t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs*sizeof(t_float));
+    t_freebytes(x->x_barkFreqList, x->x_numFilters*sizeof(t_float));
 
-	// free the filterbank memory
-	for(i=0; i<x->x_numFilters; i++)
-		t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].size*sizeof(t_float));
+    // free the filterbank memory
+    for(i=0; i<x->x_numFilters; i++)
+        t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].size*sizeof(t_float));
 
-	t_freebytes(x->x_filterbank, x->x_numFilters*sizeof(t_filter));
+    t_freebytes(x->x_filterbank, x->x_numFilters*sizeof(t_filter));
 }
 
 
 void barkSpecSkewness_tilde_setup(void)
 {
-	barkSpecSkewness_tilde_class =
-	class_new(
-		gensym("barkSpecSkewness~"),
-		(t_newmethod)barkSpecSkewness_tilde_new,
-		(t_method)barkSpecSkewness_tilde_free,
-		sizeof(t_barkSpecSkewness_tilde),
-		CLASS_DEFAULT,
-		A_GIMME,
-		0
-	);
+    barkSpecSkewness_tilde_class =
+    class_new(
+        gensym("barkSpecSkewness~"),
+        (t_newmethod)barkSpecSkewness_tilde_new,
+        (t_method)barkSpecSkewness_tilde_free,
+        sizeof(t_barkSpecSkewness_tilde),
+        CLASS_DEFAULT,
+        A_GIMME,
+        0
+    );
 
-	class_addcreator(
-		(t_newmethod)barkSpecSkewness_tilde_new,
-		gensym("timbreIDLib/barkSpecSkewness~"),
-		A_GIMME,
-		0
-	);
-	
-	CLASS_MAINSIGNALIN(barkSpecSkewness_tilde_class, t_barkSpecSkewness_tilde, x_f);
+    class_addcreator(
+        (t_newmethod)barkSpecSkewness_tilde_new,
+        gensym("timbreIDLib/barkSpecSkewness~"),
+        A_GIMME,
+        0
+    );
 
-	class_addbang(barkSpecSkewness_tilde_class, barkSpecSkewness_tilde_bang);
+    CLASS_MAINSIGNALIN(barkSpecSkewness_tilde_class, t_barkSpecSkewness_tilde, x_f);
 
-	class_addmethod(
-		barkSpecSkewness_tilde_class,
-		(t_method)barkSpecSkewness_tilde_print,
-		gensym("print"),
-		0
-	);
+    class_addbang(barkSpecSkewness_tilde_class, barkSpecSkewness_tilde_bang);
 
-	class_addmethod(
-		barkSpecSkewness_tilde_class,
-		(t_method)barkSpecSkewness_tilde_createFilterbank,
-		gensym("filterbank"),
-		A_DEFFLOAT,
-		0
-	);
+    class_addmethod(
+        barkSpecSkewness_tilde_class,
+        (t_method)barkSpecSkewness_tilde_print,
+        gensym("print"),
+        0
+    );
 
-	class_addmethod(
-		barkSpecSkewness_tilde_class,
-		(t_method)barkSpecSkewness_tilde_window,
-		gensym("window"),
-		A_DEFFLOAT,
-		0
-	);
+    class_addmethod(
+        barkSpecSkewness_tilde_class,
+        (t_method)barkSpecSkewness_tilde_createFilterbank,
+        gensym("filterbank"),
+        A_DEFFLOAT,
+        0
+    );
 
-	class_addmethod(
-		barkSpecSkewness_tilde_class,
+    class_addmethod(
+        barkSpecSkewness_tilde_class,
+        (t_method)barkSpecSkewness_tilde_window,
+        gensym("window"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        barkSpecSkewness_tilde_class,
         (t_method)barkSpecSkewness_tilde_overlap,
-		gensym("overlap"),
-		A_DEFFLOAT,
-		0
-	);
+        gensym("overlap"),
+        A_DEFFLOAT,
+        0
+    );
 
-	class_addmethod(
-		barkSpecSkewness_tilde_class,
-		(t_method)barkSpecSkewness_tilde_windowFunction,
-		gensym("window_function"),
-		A_DEFFLOAT,
-		0
-	);
+    class_addmethod(
+        barkSpecSkewness_tilde_class,
+        (t_method)barkSpecSkewness_tilde_windowFunction,
+        gensym("window_function"),
+        A_DEFFLOAT,
+        0
+    );
 
-	class_addmethod(
-		barkSpecSkewness_tilde_class,
-		(t_method)barkSpecSkewness_tilde_powerSpectrum,
-		gensym("power_spectrum"),
-		A_DEFFLOAT,
-		0
-	);
+    class_addmethod(
+        barkSpecSkewness_tilde_class,
+        (t_method)barkSpecSkewness_tilde_powerSpectrum,
+        gensym("power_spectrum"),
+        A_DEFFLOAT,
+        0
+    );
 
-	class_addmethod(
-		barkSpecSkewness_tilde_class,
-		(t_method)barkSpecSkewness_tilde_dsp,
-		gensym("dsp"),
-		0
-	);
+    class_addmethod(
+        barkSpecSkewness_tilde_class,
+        (t_method)barkSpecSkewness_tilde_dsp,
+        gensym("dsp"),
+        0
+    );
 
-	class_addmethod(
-		barkSpecSkewness_tilde_class,
+    class_addmethod(
+        barkSpecSkewness_tilde_class,
         (t_method)barkSpecSkewness_tilde_spec_band_avg,
-		gensym("spec_band_avg"),
-		A_DEFFLOAT,
-		0
-	);
-	
-	class_addmethod(
-		barkSpecSkewness_tilde_class,
+        gensym("spec_band_avg"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        barkSpecSkewness_tilde_class,
         (t_method)barkSpecSkewness_tilde_filter_avg,
-		gensym("filter_avg"),
-		A_DEFFLOAT,
-		0
-	);
+        gensym("filter_avg"),
+        A_DEFFLOAT,
+        0
+    );
 }

@@ -20,8 +20,8 @@ static t_class *barkSpecIrregularity_class;
 
 typedef enum
 {
-	jensen = 0,
-	krimphoff
+    jensen = 0,
+    krimphoff
 } t_algoChoice;
 
 typedef struct _barkSpecIrregularity
@@ -29,29 +29,29 @@ typedef struct _barkSpecIrregularity
     t_object x_obj;
     t_symbol *x_objSymbol;
     t_float x_sr;
-	t_sampIdx x_window;
-	t_sampIdx x_windowHalf;
-	t_windowFunction x_windowFunction;
-	t_bool x_normalize;
-	t_bool x_powerSpectrum;
-	t_float *x_fftwIn;
+    t_sampIdx x_window;
+    t_sampIdx x_windowHalf;
+    t_windowFunction x_windowFunction;
+    t_bool x_normalize;
+    t_bool x_powerSpectrum;
+    t_float *x_fftwIn;
     fftwf_complex *x_fftwOut;
-	fftwf_plan x_fftwPlan;
-	t_float *x_blackman;
-	t_float *x_cosine;
-	t_float *x_hamming;
-	t_float *x_hann;
-	t_word *x_vec;
-	t_symbol *x_arrayName;
-	t_sampIdx x_arrayPoints;
-	t_filterIdx x_sizeFilterFreqs;
-	t_filterIdx x_numFilters;
-	t_float x_barkSpacing;
-	t_float *x_filterFreqs;
-	t_filter *x_filterbank;
-	t_bool x_specBandAvg;
-	t_bool x_filterAvg;
-    t_algoChoice x_algorithm;	
+    fftwf_plan x_fftwPlan;
+    t_float *x_blackman;
+    t_float *x_cosine;
+    t_float *x_hamming;
+    t_float *x_hann;
+    t_word *x_vec;
+    t_symbol *x_arrayName;
+    t_sampIdx x_arrayPoints;
+    t_filterIdx x_sizeFilterFreqs;
+    t_filterIdx x_numFilters;
+    t_float x_barkSpacing;
+    t_float *x_filterFreqs;
+    t_filter *x_filterbank;
+    t_bool x_specBandAvg;
+    t_bool x_filterAvg;
+    t_algoChoice x_algorithm;
     t_outlet *x_irregularity;
 } t_barkSpecIrregularity;
 
@@ -59,465 +59,465 @@ typedef struct _barkSpecIrregularity
 /* ------------------------ barkSpecIrregularity -------------------------------- */
 static void barkSpecIrregularity_resizeWindow(t_barkSpecIrregularity *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
 {
-	t_sampIdx windowHalf;
-	
-	windowHalf = window * 0.5;
-	
-	// FFT must be at least MINWINDOWSIZE points long
-	if(window<MINWINDOWSIZE)
-	{
-		window = WINDOWSIZEDEFAULT;
-		windowHalf = window * 0.5;
-		post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
-	
-		*endSamp = startSamp + window-1;
-		if(*endSamp >= x->x_arrayPoints)
-			*endSamp = x->x_arrayPoints-1;
-	}
+    t_sampIdx windowHalf;
 
-	// hang on to these values for next time
-	x->x_window = window;
-	x->x_windowHalf = windowHalf;
+    windowHalf = window * 0.5;
 
-	x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    // FFT must be at least MINWINDOWSIZE points long
+    if(window<MINWINDOWSIZE)
+    {
+        window = WINDOWSIZEDEFAULT;
+        windowHalf = window * 0.5;
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
 
-	fftwf_free(x->x_fftwOut);
-	fftwf_destroy_plan(x->x_fftwPlan); 
-	// set up a new FFTW output buffer
-	x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
-	// FFTW plan
-	x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
+        *endSamp = startSamp + window-1;
+        if(*endSamp >= x->x_arrayPoints)
+            *endSamp = x->x_arrayPoints-1;
+    }
 
-	x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-	x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-	x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-	x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    // hang on to these values for next time
+    x->x_window = window;
+    x->x_windowHalf = windowHalf;
 
-	tIDLib_blackmanWindow(x->x_blackman, x->x_window);
-	tIDLib_cosineWindow(x->x_cosine, x->x_window);
-	tIDLib_hammingWindow(x->x_hamming, x->x_window);
-	tIDLib_hannWindow(x->x_hann, x->x_window);
+    x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
 
-	// x_numFilters doesn't change with a change to x_window, so oldNumFilters and newNumFilters arguments are the same
-	tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, x->x_numFilters, x->x_numFilters, x->x_window, x->x_sr);
+    fftwf_free(x->x_fftwOut);
+    fftwf_destroy_plan(x->x_fftwPlan);
+    // set up a new FFTW output buffer
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    // FFTW plan
+    x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
+
+    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+
+    tIDLib_blackmanWindow(x->x_blackman, x->x_window);
+    tIDLib_cosineWindow(x->x_cosine, x->x_window);
+    tIDLib_hammingWindow(x->x_hamming, x->x_window);
+    tIDLib_hannWindow(x->x_hann, x->x_window);
+
+    // x_numFilters doesn't change with a change to x_window, so oldNumFilters and newNumFilters arguments are the same
+    tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, x->x_numFilters, x->x_numFilters, x->x_window, x->x_sr);
 }
 
 
 static void barkSpecIrregularity_analyze(t_barkSpecIrregularity *x, t_floatarg start, t_floatarg n)
 {
-	t_garray *a;
+    t_garray *a;
 
-	if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
         pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-    	pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-	else
-	{
-		t_sampIdx i, j, window, startSamp, endSamp;
-		t_float divisor, irregularity, *windowFuncPtr;
+        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    else
+    {
+        t_sampIdx i, j, window, startSamp, endSamp;
+        t_float divisor, irregularity, *windowFuncPtr;
 
-		startSamp = (start<0)?0:start;
+        startSamp = (start<0)?0:start;
 
-		if(n)
-			endSamp = startSamp + n-1;
-		else
-			endSamp = startSamp + x->x_window-1;
+        if(n)
+            endSamp = startSamp + n-1;
+        else
+            endSamp = startSamp + x->x_window-1;
 
-		if(endSamp >= x->x_arrayPoints)
-			endSamp = x->x_arrayPoints-1;
+        if(endSamp >= x->x_arrayPoints)
+            endSamp = x->x_arrayPoints-1;
 
-		window = endSamp-startSamp+1;
+        window = endSamp-startSamp+1;
 
-		if(endSamp <= startSamp)
-		{
-			post("%s: bad range of samples.", x->x_objSymbol->s_name);
-			return;
-		}
+        if(endSamp <= startSamp)
+        {
+            post("%s: bad range of samples.", x->x_objSymbol->s_name);
+            return;
+        }
 
-		if(x->x_window != window)
-			barkSpecIrregularity_resizeWindow(x, x->x_window, window, startSamp, &endSamp);
+        if(x->x_window != window)
+            barkSpecIrregularity_resizeWindow(x, x->x_window, window, startSamp, &endSamp);
 
-		// construct analysis window
-		for(i=0, j=startSamp; j<=endSamp; i++, j++)
-			x->x_fftwIn[i] = x->x_vec[j].w_float;
+        // construct analysis window
+        for(i=0, j=startSamp; j<=endSamp; i++, j++)
+            x->x_fftwIn[i] = x->x_vec[j].w_float;
 
-		switch(x->x_windowFunction)
-		{
-			case rectangular:
-				break;
-			case blackman:
-				windowFuncPtr = x->x_blackman;
-				break;
-			case cosine:
-				windowFuncPtr = x->x_cosine;
-				break;
-			case hamming:
-				windowFuncPtr = x->x_hamming;
-				break;
-			case hann:
-				windowFuncPtr = x->x_hann;
-				break;
-			default:
-				windowFuncPtr = x->x_blackman;
-				break;
-		};
+        switch(x->x_windowFunction)
+        {
+            case rectangular:
+                break;
+            case blackman:
+                windowFuncPtr = x->x_blackman;
+                break;
+            case cosine:
+                windowFuncPtr = x->x_cosine;
+                break;
+            case hamming:
+                windowFuncPtr = x->x_hamming;
+                break;
+            case hann:
+                windowFuncPtr = x->x_hann;
+                break;
+            default:
+                windowFuncPtr = x->x_blackman;
+                break;
+        };
 
-		// if windowFunction == 0, skip the windowing (rectangular)
-		if(x->x_windowFunction!=rectangular)
-			for(i=0; i<x->x_window; i++, windowFuncPtr++)
-				x->x_fftwIn[i] *= *windowFuncPtr;
+        // if windowFunction == 0, skip the windowing (rectangular)
+        if(x->x_windowFunction!=rectangular)
+            for(i=0; i<x->x_window; i++, windowFuncPtr++)
+                x->x_fftwIn[i] *= *windowFuncPtr;
 
-		fftwf_execute(x->x_fftwPlan);
+        fftwf_execute(x->x_fftwPlan);
 
-		tIDLib_power(x->x_windowHalf+1, x->x_fftwOut, x->x_fftwIn);
+        tIDLib_power(x->x_windowHalf+1, x->x_fftwOut, x->x_fftwIn);
 
-		if(!x->x_powerSpectrum)
-			tIDLib_mag(x->x_windowHalf+1, x->x_fftwIn);
+        if(!x->x_powerSpectrum)
+            tIDLib_mag(x->x_windowHalf+1, x->x_fftwIn);
 
-		if(x->x_specBandAvg)
-			tIDLib_specFilterBands(x->x_windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
-		else
-			tIDLib_filterbankMultiply(x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        if(x->x_specBandAvg)
+            tIDLib_specFilterBands(x->x_windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
+        else
+            tIDLib_filterbankMultiply(x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
-		divisor=irregularity=0.0;
+        divisor=irregularity=0.0;
 
-		switch(x->x_algorithm)
-		{
-			case jensen:
-				// Jensen
-				for(i=0; i<x->x_numFilters; i++)
-				{
-					if(i==(x->x_numFilters-1))
-						irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
-					else
-						irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+        switch(x->x_algorithm)
+        {
+            case jensen:
+                // Jensen
+                for(i=0; i<x->x_numFilters; i++)
+                {
+                    if(i==(x->x_numFilters-1))
+                        irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
+                    else
+                        irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
 
-					divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
-				}
+                    divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
+                }
 
-				if(divisor<=0.0)
-					irregularity = -1.0;
-				else
-					irregularity /= divisor;
-				break;
-				
-			case krimphoff:
-				// Krimphoff
-				for(i=1; i<(x->x_numFilters-1); i++)
-				{
-					t_float localAvg;
-					localAvg = 0.0;
+                if(divisor<=0.0)
+                    irregularity = -1.0;
+                else
+                    irregularity /= divisor;
+                break;
 
-					for(j=0; j<3; j++)
-						localAvg += x->x_fftwIn[i-1+j];
+            case krimphoff:
+                // Krimphoff
+                for(i=1; i<(x->x_numFilters-1); i++)
+                {
+                    t_float localAvg;
+                    localAvg = 0.0;
 
-					localAvg *= 0.333333333333;
+                    for(j=0; j<3; j++)
+                        localAvg += x->x_fftwIn[i-1+j];
 
-					irregularity += fabs(x->x_fftwIn[i] - localAvg);
-					//irregularity = log10(irregularity);
-				};
-				break;
+                    localAvg *= 0.333333333333;
 
-			default:
-				break;
-		}
+                    irregularity += fabs(x->x_fftwIn[i] - localAvg);
+                    //irregularity = log10(irregularity);
+                };
+                break;
 
-		outlet_float(x->x_irregularity, irregularity);
-	}
+            default:
+                break;
+        }
+
+        outlet_float(x->x_irregularity, irregularity);
+    }
 }
 
 
 static void barkSpecIrregularity_chain_fftData(t_barkSpecIrregularity *x, t_symbol *s, int argc, t_atom *argv)
 {
-	t_sampIdx i, j, windowHalf;
-	t_float divisor, irregularity;
+    t_sampIdx i, j, windowHalf;
+    t_float divisor, irregularity;
 
-	// incoming fftData list should be 2*(N/2+1) elements long, so windowHalf is:
-	windowHalf = argc-2;
-	windowHalf *= 0.5;
-	
-	// make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
-	if(windowHalf!=x->x_windowHalf)
-	{
-		pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
-		return;
-	}
-		
-	// fill the x_fftwOut buffer with the incoming fftData list, for both real and imag elements
-	for(i=0; i<=x->x_windowHalf; i++)
-	{
-		x->x_fftwOut[i][0] = atom_getfloat(argv+i);
-		x->x_fftwOut[i][1] = atom_getfloat(argv+(x->x_windowHalf+1)+i);
-	}
+    // incoming fftData list should be 2*(N/2+1) elements long, so windowHalf is:
+    windowHalf = argc-2;
+    windowHalf *= 0.5;
 
-	tIDLib_power(x->x_windowHalf+1, x->x_fftwOut, x->x_fftwIn);
+    // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
+    if(windowHalf!=x->x_windowHalf)
+    {
+        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
+        return;
+    }
 
-	if(!x->x_powerSpectrum)
-		tIDLib_mag(x->x_windowHalf+1, x->x_fftwIn);
+    // fill the x_fftwOut buffer with the incoming fftData list, for both real and imag elements
+    for(i=0; i<=x->x_windowHalf; i++)
+    {
+        x->x_fftwOut[i][0] = atom_getfloat(argv+i);
+        x->x_fftwOut[i][1] = atom_getfloat(argv+(x->x_windowHalf+1)+i);
+    }
 
-	if(x->x_specBandAvg)
-		tIDLib_specFilterBands(windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
-	else
-		tIDLib_filterbankMultiply(x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+    tIDLib_power(x->x_windowHalf+1, x->x_fftwOut, x->x_fftwIn);
 
-	divisor=irregularity=0.0;
+    if(!x->x_powerSpectrum)
+        tIDLib_mag(x->x_windowHalf+1, x->x_fftwIn);
 
-	switch(x->x_algorithm)
-	{
-		case jensen:
-			// Jensen
-			for(i=0; i<x->x_numFilters; i++)
-			{
-				if(i==(x->x_numFilters-1))
-					irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
-				else
-					irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+    if(x->x_specBandAvg)
+        tIDLib_specFilterBands(windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
+    else
+        tIDLib_filterbankMultiply(x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
-				divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
-			}
+    divisor=irregularity=0.0;
 
-			if(divisor<=0.0)
-				irregularity = -1.0;
-			else
-				irregularity /= divisor;
-			break;
-			
-		case krimphoff:
-			// Krimphoff
-			for(i=1; i<(x->x_numFilters-1); i++)
-			{
-				t_float localAvg;
-				localAvg = 0.0;
+    switch(x->x_algorithm)
+    {
+        case jensen:
+            // Jensen
+            for(i=0; i<x->x_numFilters; i++)
+            {
+                if(i==(x->x_numFilters-1))
+                    irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
+                else
+                    irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
 
-				for(j=0; j<3; j++)
-					localAvg += x->x_fftwIn[i-1+j];
+                divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
+            }
 
-				localAvg *= 0.333333333333;
+            if(divisor<=0.0)
+                irregularity = -1.0;
+            else
+                irregularity /= divisor;
+            break;
 
-				irregularity += fabs(x->x_fftwIn[i] - localAvg);
-				//irregularity = log10(irregularity);
-			};
-			break;
+        case krimphoff:
+            // Krimphoff
+            for(i=1; i<(x->x_numFilters-1); i++)
+            {
+                t_float localAvg;
+                localAvg = 0.0;
 
-		default:
-			break;
-	}
+                for(j=0; j<3; j++)
+                    localAvg += x->x_fftwIn[i-1+j];
 
-	outlet_float(x->x_irregularity, irregularity);
+                localAvg *= 0.333333333333;
+
+                irregularity += fabs(x->x_fftwIn[i] - localAvg);
+                //irregularity = log10(irregularity);
+            };
+            break;
+
+        default:
+            break;
+    }
+
+    outlet_float(x->x_irregularity, irregularity);
 }
 
 
 static void barkSpecIrregularity_chain_magSpec(t_barkSpecIrregularity *x, t_symbol *s, int argc, t_atom *argv)
 {
-	t_sampIdx i, j, windowHalf;
-	t_float divisor, irregularity;
+    t_sampIdx i, j, windowHalf;
+    t_float divisor, irregularity;
 
-	// incoming magSpec list should be N/2+1 elements long, so windowHalf is one less than this
-	windowHalf = argc-1;
-	
-	// make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
-	if(windowHalf!=x->x_windowHalf)
-	{
-		pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
-		return;
-	}
-	
-	// fill the x_fftwIn buffer with the incoming magSpec list
-	for(i=0; i<=x->x_windowHalf; i++)
-		x->x_fftwIn[i] = atom_getfloat(argv+i);	
-	
-	if(x->x_specBandAvg)
-		tIDLib_specFilterBands(x->x_windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
-	else
-		tIDLib_filterbankMultiply(x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+    // incoming magSpec list should be N/2+1 elements long, so windowHalf is one less than this
+    windowHalf = argc-1;
 
-	divisor=irregularity=0.0;
+    // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
+    if(windowHalf!=x->x_windowHalf)
+    {
+        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
+        return;
+    }
 
-	switch(x->x_algorithm)
-	{
-		case jensen:
-			// Jensen
-			for(i=0; i<x->x_numFilters; i++)
-			{
-				if(i==(x->x_numFilters-1))
-					irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
-				else
-					irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+    // fill the x_fftwIn buffer with the incoming magSpec list
+    for(i=0; i<=x->x_windowHalf; i++)
+        x->x_fftwIn[i] = atom_getfloat(argv+i);
 
-				divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
-			}
+    if(x->x_specBandAvg)
+        tIDLib_specFilterBands(x->x_windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
+    else
+        tIDLib_filterbankMultiply(x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
-			if(divisor<=0.0)
-				irregularity = -1.0;
-			else
-				irregularity /= divisor;
-			break;
-			
-		case krimphoff:
-			// Krimphoff
-			for(i=1; i<(x->x_numFilters-1); i++)
-			{
-				t_float localAvg;
-				localAvg = 0.0;
+    divisor=irregularity=0.0;
 
-				for(j=0; j<3; j++)
-					localAvg += x->x_fftwIn[i-1+j];
+    switch(x->x_algorithm)
+    {
+        case jensen:
+            // Jensen
+            for(i=0; i<x->x_numFilters; i++)
+            {
+                if(i==(x->x_numFilters-1))
+                    irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
+                else
+                    irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
 
-				localAvg *= 0.333333333333;
+                divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
+            }
 
-				irregularity += fabs(x->x_fftwIn[i] - localAvg);
-				//irregularity = log10(irregularity);
-			};
-			break;
+            if(divisor<=0.0)
+                irregularity = -1.0;
+            else
+                irregularity /= divisor;
+            break;
 
-		default:
-			break;
-	}
+        case krimphoff:
+            // Krimphoff
+            for(i=1; i<(x->x_numFilters-1); i++)
+            {
+                t_float localAvg;
+                localAvg = 0.0;
 
-	outlet_float(x->x_irregularity, irregularity);
+                for(j=0; j<3; j++)
+                    localAvg += x->x_fftwIn[i-1+j];
+
+                localAvg *= 0.333333333333;
+
+                irregularity += fabs(x->x_fftwIn[i] - localAvg);
+                //irregularity = log10(irregularity);
+            };
+            break;
+
+        default:
+            break;
+    }
+
+    outlet_float(x->x_irregularity, irregularity);
 }
 
 
 static void barkSpecIrregularity_chain_barkSpec(t_barkSpecIrregularity *x, t_symbol *s, int argc, t_atom *argv)
 {
-	t_filterIdx i, j;
-	t_float divisor, irregularity;
-	
-	// make sure that argc == x->x_numFilters in order to avoid an out of bounds memory read below. we won't resize all memory based on an incoming chain_ command with a different size. instead, just throw an error and exit
-	if(argc!=x->x_numFilters)
-	{
-		pd_error(x, "%s: length of chain_ message (%i) does not match current number of Bark filters (%i)", x->x_objSymbol->s_name, argc, x->x_numFilters);
-		return;
-	}
-	
-	// fill the x_fftwIn buffer with the incoming magSpec list
-	for(i=0; i<x->x_numFilters; i++)
-		x->x_fftwIn[i] = atom_getfloat(argv+i);
+    t_filterIdx i, j;
+    t_float divisor, irregularity;
 
-	divisor=irregularity=0.0;
+    // make sure that argc == x->x_numFilters in order to avoid an out of bounds memory read below. we won't resize all memory based on an incoming chain_ command with a different size. instead, just throw an error and exit
+    if(argc!=x->x_numFilters)
+    {
+        pd_error(x, "%s: length of chain_ message (%i) does not match current number of Bark filters (%i)", x->x_objSymbol->s_name, argc, x->x_numFilters);
+        return;
+    }
 
-	switch(x->x_algorithm)
-	{
-		case jensen:
-			// Jensen
-			for(i=0; i<x->x_numFilters; i++)
-			{
-				if(i==(x->x_numFilters-1))
-					irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
-				else
-					irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+    // fill the x_fftwIn buffer with the incoming magSpec list
+    for(i=0; i<x->x_numFilters; i++)
+        x->x_fftwIn[i] = atom_getfloat(argv+i);
 
-				divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
-			}
+    divisor=irregularity=0.0;
 
-			if(divisor<=0.0)
-				irregularity = -1.0;
-			else
-				irregularity /= divisor;
-			break;
-			
-		case krimphoff:
-			// Krimphoff
-			for(i=1; i<(x->x_numFilters-1); i++)
-			{
-				t_float localAvg;
-				localAvg = 0.0;
+    switch(x->x_algorithm)
+    {
+        case jensen:
+            // Jensen
+            for(i=0; i<x->x_numFilters; i++)
+            {
+                if(i==(x->x_numFilters-1))
+                    irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
+                else
+                    irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
 
-				for(j=0; j<3; j++)
-					localAvg += x->x_fftwIn[i-1+j];
+                divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
+            }
 
-				localAvg *= 0.333333333333;
+            if(divisor<=0.0)
+                irregularity = -1.0;
+            else
+                irregularity /= divisor;
+            break;
 
-				irregularity += fabs(x->x_fftwIn[i] - localAvg);
-				//irregularity = log10(irregularity);
-			};
-			break;
+        case krimphoff:
+            // Krimphoff
+            for(i=1; i<(x->x_numFilters-1); i++)
+            {
+                t_float localAvg;
+                localAvg = 0.0;
 
-		default:
-			break;
-	}
+                for(j=0; j<3; j++)
+                    localAvg += x->x_fftwIn[i-1+j];
 
-	outlet_float(x->x_irregularity, irregularity);
+                localAvg *= 0.333333333333;
+
+                irregularity += fabs(x->x_fftwIn[i] - localAvg);
+                //irregularity = log10(irregularity);
+            };
+            break;
+
+        default:
+            break;
+    }
+
+    outlet_float(x->x_irregularity, irregularity);
 }
 
 
 // analyze the whole damn array
 static void barkSpecIrregularity_bang(t_barkSpecIrregularity *x)
 {
-	t_garray *a;
+    t_garray *a;
 
-	if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
         pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-    	pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-	else
-	{
-		t_sampIdx window, startSamp;
+        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    else
+    {
+        t_sampIdx window, startSamp;
 
-		startSamp = 0;
-		window = x->x_arrayPoints;
-		barkSpecIrregularity_analyze(x, startSamp, window);
-	}
+        startSamp = 0;
+        window = x->x_arrayPoints;
+        barkSpecIrregularity_analyze(x, startSamp, window);
+    }
 }
 
 
 static void barkSpecIrregularity_createFilterbank(t_barkSpecIrregularity *x, t_floatarg bs)
 {
-	t_filterIdx oldNumFilters;
+    t_filterIdx oldNumFilters;
 
-	x->x_barkSpacing = bs;
+    x->x_barkSpacing = bs;
 
-	if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
-	{
-		x->x_barkSpacing = BARKSPACINGDEFAULT;
-		post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
-	}	
+    if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+    {
+        x->x_barkSpacing = BARKSPACINGDEFAULT;
+        post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+    }
 
-	oldNumFilters = x->x_numFilters;
+    oldNumFilters = x->x_numFilters;
 
-	x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
+    x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
 
-	x->x_numFilters = x->x_sizeFilterFreqs-2;
+    x->x_numFilters = x->x_sizeFilterFreqs-2;
 
-	tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, oldNumFilters, x->x_numFilters, x->x_window, x->x_sr);
+    tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, oldNumFilters, x->x_numFilters, x->x_window, x->x_sr);
 }
 
 
 static void barkSpecIrregularity_set(t_barkSpecIrregularity *x, t_symbol *s)
 {
-	t_garray *a;
+    t_garray *a;
 
-	if(!(a = (t_garray *)pd_findbyclass(s, garray_class)))
-		pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
-	else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-		pd_error(x, "%s: bad template for %s", s->s_name, x->x_objSymbol->s_name);
-	else
-	    x->x_arrayName = s;
+    if(!(a = (t_garray *)pd_findbyclass(s, garray_class)))
+        pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
+    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error(x, "%s: bad template for %s", s->s_name, x->x_objSymbol->s_name);
+    else
+        x->x_arrayName = s;
 }
 
 
 static void barkSpecIrregularity_print(t_barkSpecIrregularity *x)
 {
-	post("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-	post("%s samplerate: %i", x->x_objSymbol->s_name, (int)(x->x_sr));
-	post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
-	post("%s power spectrum: %i", x->x_objSymbol->s_name, x->x_powerSpectrum);
-	post("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
-	post("%s Bark spacing: %f", x->x_objSymbol->s_name, x->x_barkSpacing);
-	post("%s number of filters: %i", x->x_objSymbol->s_name, x->x_numFilters);
-	post("%s spectrum band averaging: %i", x->x_objSymbol->s_name, x->x_specBandAvg);
-	post("%s triangular filter averaging: %i", x->x_objSymbol->s_name, x->x_filterAvg);
-	switch(x->x_algorithm)
-	{
-		case jensen:
-			post("%s algorithm: Jensen", x->x_objSymbol->s_name);
-			break;
-		case krimphoff:
-			post("%s algorithm: Krimphoff", x->x_objSymbol->s_name);
-			break;
-		default:
-			break;
-	}
+    post("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    post("%s samplerate: %i", x->x_objSymbol->s_name, (int)(x->x_sr));
+    post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
+    post("%s power spectrum: %i", x->x_objSymbol->s_name, x->x_powerSpectrum);
+    post("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
+    post("%s Bark spacing: %f", x->x_objSymbol->s_name, x->x_barkSpacing);
+    post("%s number of filters: %i", x->x_objSymbol->s_name, x->x_numFilters);
+    post("%s spectrum band averaging: %i", x->x_objSymbol->s_name, x->x_specBandAvg);
+    post("%s triangular filter averaging: %i", x->x_objSymbol->s_name, x->x_filterAvg);
+    switch(x->x_algorithm)
+    {
+        case jensen:
+            post("%s algorithm: Jensen", x->x_objSymbol->s_name);
+            break;
+        case krimphoff:
+            post("%s algorithm: Krimphoff", x->x_objSymbol->s_name);
+            break;
+        default:
+            break;
+    }
 }
 
 
@@ -525,41 +525,41 @@ static void barkSpecIrregularity_algorithm(t_barkSpecIrregularity *x, t_floatarg
 {
     a = (a<0)?0:a;
     a = (a>1)?1:a;
-	x->x_algorithm = a;
+    x->x_algorithm = a;
 
-	switch(x->x_algorithm)
-	{
-		case jensen:
-			post("%s using Jensen irregularity.", x->x_objSymbol->s_name);
-			break;
-		case krimphoff:
-			post("%s using Krimphoff irregularity.", x->x_objSymbol->s_name);
-			break;
-		default:
-			break;
-	};
+    switch(x->x_algorithm)
+    {
+        case jensen:
+            post("%s using Jensen irregularity.", x->x_objSymbol->s_name);
+            break;
+        case krimphoff:
+            post("%s using Krimphoff irregularity.", x->x_objSymbol->s_name);
+            break;
+        default:
+            break;
+    };
 }
 
 
 static void barkSpecIrregularity_samplerate(t_barkSpecIrregularity *x, t_floatarg sr)
 {
-	if(sr<MINSAMPLERATE)
-		x->x_sr = MINSAMPLERATE;
-	else
-		x->x_sr = sr;
+    if(sr<MINSAMPLERATE)
+        x->x_sr = MINSAMPLERATE;
+    else
+        x->x_sr = sr;
 
-	tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, x->x_numFilters, x->x_numFilters, x->x_window, x->x_sr);
+    tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, x->x_numFilters, x->x_numFilters, x->x_window, x->x_sr);
 
 }
 
 
 static void barkSpecIrregularity_window(t_barkSpecIrregularity *x, t_floatarg w)
 {
-	t_sampIdx endSamp;
-    
+    t_sampIdx endSamp;
+
     // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
-    
+
     barkSpecIrregularity_resizeWindow(x, x->x_window, w, 0, &endSamp);
 }
 
@@ -568,28 +568,28 @@ static void barkSpecIrregularity_windowFunction(t_barkSpecIrregularity *x, t_flo
 {
     f = (f<0)?0:f;
     f = (f>4)?4:f;
-	x->x_windowFunction = f;
+    x->x_windowFunction = f;
 
-	switch(x->x_windowFunction)
-	{
-		case rectangular:
-			post("%s window function: rectangular.", x->x_objSymbol->s_name);
-			break;
-		case blackman:
-			post("%s window function: blackman.", x->x_objSymbol->s_name);
-			break;
-		case cosine:
-			post("%s window function: cosine.", x->x_objSymbol->s_name);
-			break;
-		case hamming:
-			post("%s window function: hamming.", x->x_objSymbol->s_name);
-			break;
-		case hann:
-			post("%s window function: hann.", x->x_objSymbol->s_name);
-			break;
-		default:
-			break;
-	};
+    switch(x->x_windowFunction)
+    {
+        case rectangular:
+            post("%s window function: rectangular.", x->x_objSymbol->s_name);
+            break;
+        case blackman:
+            post("%s window function: blackman.", x->x_objSymbol->s_name);
+            break;
+        case cosine:
+            post("%s window function: cosine.", x->x_objSymbol->s_name);
+            break;
+        case hamming:
+            post("%s window function: hamming.", x->x_objSymbol->s_name);
+            break;
+        case hann:
+            post("%s window function: hann.", x->x_objSymbol->s_name);
+            break;
+        default:
+            break;
+    };
 }
 
 
@@ -597,12 +597,12 @@ static void barkSpecIrregularity_spec_band_avg(t_barkSpecIrregularity *x, t_floa
 {
     avg = (avg<0)?0:avg;
     avg = (avg>1)?1:avg;
-	x->x_specBandAvg = avg;
+    x->x_specBandAvg = avg;
 
-	if(x->x_specBandAvg)
-		post("%s: averaging energy in spectrum bands.", x->x_objSymbol->s_name);
-	else
-		post("%s: using triangular filterbank.", x->x_objSymbol->s_name);
+    if(x->x_specBandAvg)
+        post("%s: averaging energy in spectrum bands.", x->x_objSymbol->s_name);
+    else
+        post("%s: using triangular filterbank.", x->x_objSymbol->s_name);
 }
 
 
@@ -610,12 +610,12 @@ static void barkSpecIrregularity_filter_avg(t_barkSpecIrregularity *x, t_floatar
 {
     avg = (avg<0)?0:avg;
     avg = (avg>1)?1:avg;
-	x->x_filterAvg = avg;
+    x->x_filterAvg = avg;
 
-	if(x->x_filterAvg)
-		post("%s: averaging energy in triangular filters.", x->x_objSymbol->s_name);
-	else
-		post("%s: summing energy in triangular filters.", x->x_objSymbol->s_name);
+    if(x->x_filterAvg)
+        post("%s: averaging energy in triangular filters.", x->x_objSymbol->s_name);
+    else
+        post("%s: summing energy in triangular filters.", x->x_objSymbol->s_name);
 }
 
 
@@ -623,12 +623,12 @@ static void barkSpecIrregularity_powerSpectrum(t_barkSpecIrregularity *x, t_floa
 {
     spec = (spec<0)?0:spec;
     spec = (spec>1)?1:spec;
-	x->x_powerSpectrum = spec;
+    x->x_powerSpectrum = spec;
 
-	if(x->x_powerSpectrum)
-		post("%s using power spectrum", x->x_objSymbol->s_name);
-	else
-		post("%s using magnitude spectrum", x->x_objSymbol->s_name);
+    if(x->x_powerSpectrum)
+        post("%s using power spectrum", x->x_objSymbol->s_name);
+    else
+        post("%s using magnitude spectrum", x->x_objSymbol->s_name);
 }
 
 
@@ -636,142 +636,142 @@ static void barkSpecIrregularity_normalize(t_barkSpecIrregularity *x, t_floatarg
 {
     norm = (norm<0)?0:norm;
     norm = (norm>1)?1:norm;
-	x->x_normalize = norm;
+    x->x_normalize = norm;
 
-	if(x->x_normalize)
-		post("%s spectrum normalization ON.", x->x_objSymbol->s_name);
-	else
-		post("%s spectrum normalization OFF.", x->x_objSymbol->s_name);
+    if(x->x_normalize)
+        post("%s spectrum normalization ON.", x->x_objSymbol->s_name);
+    else
+        post("%s spectrum normalization OFF.", x->x_objSymbol->s_name);
 }
 
 
 static void *barkSpecIrregularity_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_barkSpecIrregularity *x = (t_barkSpecIrregularity *)pd_new(barkSpecIrregularity_class);
-	t_sampIdx i;
+    t_sampIdx i;
 //	t_garray *a;
 
-	x->x_irregularity = outlet_new(&x->x_obj, &s_float);
+    x->x_irregularity = outlet_new(&x->x_obj, &s_float);
 
-	// store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
-	x->x_objSymbol = s;
-	
-	switch(argc)
-	{
-		case 3:
-			x->x_arrayName = atom_getsymbol(argv);
-			/*
-			if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-				pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-			else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-				pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-			*/
-			x->x_barkSpacing = atom_getfloat(argv+1);
-			if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
-			{
-				x->x_barkSpacing = BARKSPACINGDEFAULT;
-				post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
-			}
-			if(atom_getfloat(argv+2)>=1)
-				x->x_algorithm = krimphoff;
-			else
-				x->x_algorithm = jensen;
-			break;
+    // store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
+    x->x_objSymbol = s;
 
-		case 2:
-			x->x_arrayName = atom_getsymbol(argv);
-			/*
-			if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-				pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-			else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-				pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-			*/
-			x->x_barkSpacing = atom_getfloat(argv+1);
-			if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
-			{
-				x->x_barkSpacing = BARKSPACINGDEFAULT;
-				post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
-			}
-			x->x_algorithm = DEFAULTALGO;
-			break;
-			
-		case 1:
-			x->x_arrayName = atom_getsymbol(argv);
-			/*
-			if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-				pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-			else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-				pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-			*/
-			x->x_barkSpacing = BARKSPACINGDEFAULT;
-			x->x_algorithm = DEFAULTALGO;
-			break;
-	
-		case 0:
-			post("%s: no array specified.", x->x_objSymbol->s_name);
-			// a bogus array name to trigger the safety check in _analyze()
-			x->x_arrayName = gensym("NOARRAYSPECIFIED");
-			x->x_barkSpacing = BARKSPACINGDEFAULT;
-			x->x_algorithm = DEFAULTALGO;
-			break;
-		
-		default:
-			x->x_arrayName = atom_getsymbol(argv);
-			/*
-			if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-				pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-			else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-				pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-			*/
-			post("%s WARNING: Too many arguments supplied. Using default Bark spacing of %0.2f, and the Jensen algorithm.", x->x_objSymbol->s_name, BARKSPACINGDEFAULT);
-			x->x_barkSpacing = BARKSPACINGDEFAULT;
-			x->x_algorithm = DEFAULTALGO;
-			break;
-	}
-	
-	x->x_sr = SAMPLERATEDEFAULT;
-	x->x_window = WINDOWSIZEDEFAULT;
-	x->x_windowHalf = x->x_window*0.5;
-	x->x_windowFunction = blackman;
-	x->x_normalize = true;
-	x->x_powerSpectrum = false;
-	x->x_sizeFilterFreqs = 0;
-	x->x_numFilters = 0; // this is just an init size that will be updated in createFilterbank anyway.
-	x->x_specBandAvg = false;
-	x->x_filterAvg = false;
+    switch(argc)
+    {
+        case 3:
+            x->x_arrayName = atom_getsymbol(argv);
+            /*
+            if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+                pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+            else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+                pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+            */
+            x->x_barkSpacing = atom_getfloat(argv+1);
+            if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+            {
+                x->x_barkSpacing = BARKSPACINGDEFAULT;
+                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+            }
+            if(atom_getfloat(argv+2)>=1)
+                x->x_algorithm = krimphoff;
+            else
+                x->x_algorithm = jensen;
+            break;
 
-	x->x_fftwIn = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
+        case 2:
+            x->x_arrayName = atom_getsymbol(argv);
+            /*
+            if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+                pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+            else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+                pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+            */
+            x->x_barkSpacing = atom_getfloat(argv+1);
+            if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+            {
+                x->x_barkSpacing = BARKSPACINGDEFAULT;
+                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+            }
+            x->x_algorithm = DEFAULTALGO;
+            break;
 
-	// set up the FFTW output buffer. Is there no function to initialize it?
-	x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+        case 1:
+            x->x_arrayName = atom_getsymbol(argv);
+            /*
+            if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+                pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+            else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+                pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+            */
+            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            x->x_algorithm = DEFAULTALGO;
+            break;
 
-	// FFTW plan
-	x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG); // FFTWPLANNERFLAG may be slower than FFTWPLANNERFLAG but more efficient after the first run?
-	
-	for(i=0; i<x->x_window; i++)
-		x->x_fftwIn[i] = 0.0;
+        case 0:
+            post("%s: no array specified.", x->x_objSymbol->s_name);
+            // a bogus array name to trigger the safety check in _analyze()
+            x->x_arrayName = gensym("NOARRAYSPECIFIED");
+            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            x->x_algorithm = DEFAULTALGO;
+            break;
 
-  	x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-  	x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-  	x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-  	x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+        default:
+            x->x_arrayName = atom_getsymbol(argv);
+            /*
+            if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+                pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+            else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+                pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+            */
+            post("%s WARNING: Too many arguments supplied. Using default Bark spacing of %0.2f, and the Jensen algorithm.", x->x_objSymbol->s_name, BARKSPACINGDEFAULT);
+            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            x->x_algorithm = DEFAULTALGO;
+            break;
+    }
 
- 	// initialize signal windowing functions
-	tIDLib_blackmanWindow(x->x_blackman, x->x_window);
-	tIDLib_cosineWindow(x->x_cosine, x->x_window);
-	tIDLib_hammingWindow(x->x_hamming, x->x_window);
-	tIDLib_hannWindow(x->x_hann, x->x_window);
+    x->x_sr = SAMPLERATEDEFAULT;
+    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_windowHalf = x->x_window*0.5;
+    x->x_windowFunction = blackman;
+    x->x_normalize = true;
+    x->x_powerSpectrum = false;
+    x->x_sizeFilterFreqs = 0;
+    x->x_numFilters = 0; // this is just an init size that will be updated in createFilterbank anyway.
+    x->x_specBandAvg = false;
+    x->x_filterAvg = false;
 
-	// grab memory
-	x->x_filterbank = (t_filter *)t_getbytes(0);
-	x->x_filterFreqs = (t_float *)t_getbytes(0);
+    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
 
-	x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
+    // set up the FFTW output buffer. Is there no function to initialize it?
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
 
-	// sizeFilterFreqs-2 is the correct number of filters, since we don't count the start point of the first filter, or the finish point of the last filter
-	x->x_numFilters = x->x_sizeFilterFreqs-2;
+    // FFTW plan
+    x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG); // FFTWPLANNERFLAG may be slower than FFTWPLANNERFLAG but more efficient after the first run?
 
-	tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, 0, x->x_numFilters, x->x_window, x->x_sr);
+    for(i=0; i<x->x_window; i++)
+        x->x_fftwIn[i] = 0.0;
+
+      x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+
+     // initialize signal windowing functions
+    tIDLib_blackmanWindow(x->x_blackman, x->x_window);
+    tIDLib_cosineWindow(x->x_cosine, x->x_window);
+    tIDLib_hammingWindow(x->x_hamming, x->x_window);
+    tIDLib_hannWindow(x->x_hann, x->x_window);
+
+    // grab memory
+    x->x_filterbank = (t_filter *)t_getbytes(0);
+    x->x_filterFreqs = (t_float *)t_getbytes(0);
+
+    x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
+
+    // sizeFilterFreqs-2 is the correct number of filters, since we don't count the start point of the first filter, or the finish point of the last filter
+    x->x_numFilters = x->x_sizeFilterFreqs-2;
+
+    tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, 0, x->x_numFilters, x->x_window, x->x_sr);
 
     return (x);
 }
@@ -779,27 +779,27 @@ static void *barkSpecIrregularity_new(t_symbol *s, int argc, t_atom *argv)
 
 static void barkSpecIrregularity_free(t_barkSpecIrregularity *x)
 {
-	t_filterIdx i;
-	
-	// free FFTW stuff
+    t_filterIdx i;
+
+    // free FFTW stuff
     t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_float));
-	fftwf_free(x->x_fftwOut);
-	fftwf_destroy_plan(x->x_fftwPlan);
-	
-	// free the window memory
+    fftwf_free(x->x_fftwOut);
+    fftwf_destroy_plan(x->x_fftwPlan);
+
+    // free the window memory
     t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
     t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
     t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
     t_freebytes(x->x_hann, x->x_window*sizeof(t_float));
 
     // free filterFreqs memory
-	t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs*sizeof(t_float));
+    t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs*sizeof(t_float));
 
-	// free the filterbank memory
-	for(i=0; i<x->x_numFilters; i++)
-		t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].size*sizeof(t_float));
+    // free the filterbank memory
+    for(i=0; i<x->x_numFilters; i++)
+        t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].size*sizeof(t_float));
 
-	t_freebytes(x->x_filterbank, x->x_numFilters*sizeof(t_filter));
+    t_freebytes(x->x_filterbank, x->x_numFilters*sizeof(t_filter));
 }
 
 
@@ -807,143 +807,143 @@ void barkSpecIrregularity_setup(void)
 {
     barkSpecIrregularity_class =
     class_new(
-    	gensym("barkSpecIrregularity"),
-    	(t_newmethod)barkSpecIrregularity_new,
-    	(t_method)barkSpecIrregularity_free,
+        gensym("barkSpecIrregularity"),
+        (t_newmethod)barkSpecIrregularity_new,
+        (t_method)barkSpecIrregularity_free,
         sizeof(t_barkSpecIrregularity),
         CLASS_DEFAULT,
         A_GIMME,
-		0
+        0
     );
 
-	class_addcreator(
-		(t_newmethod)barkSpecIrregularity_new,
-		gensym("timbreIDLib/barkSpecIrregularity"),
-		A_GIMME,
-		0
-	);
-	
-	class_addbang(barkSpecIrregularity_class, barkSpecIrregularity_bang);
+    class_addcreator(
+        (t_newmethod)barkSpecIrregularity_new,
+        gensym("timbreIDLib/barkSpecIrregularity"),
+        A_GIMME,
+        0
+    );
 
-	class_addmethod(
-		barkSpecIrregularity_class,
+    class_addbang(barkSpecIrregularity_class, barkSpecIrregularity_bang);
+
+    class_addmethod(
+        barkSpecIrregularity_class,
         (t_method)barkSpecIrregularity_analyze,
-		gensym("analyze"),
+        gensym("analyze"),
         A_DEFFLOAT,
         A_DEFFLOAT,
-		0
-	);
+        0
+    );
 
-	class_addmethod(
-		barkSpecIrregularity_class,
-		(t_method)barkSpecIrregularity_chain_fftData,
-		gensym("chain_fftData"),
-		A_GIMME,
-		0
-	);
-	
-	class_addmethod(
-		barkSpecIrregularity_class,
-		(t_method)barkSpecIrregularity_chain_magSpec,
-		gensym("chain_magSpec"),
-		A_GIMME,
-		0
-	);
+    class_addmethod(
+        barkSpecIrregularity_class,
+        (t_method)barkSpecIrregularity_chain_fftData,
+        gensym("chain_fftData"),
+        A_GIMME,
+        0
+    );
 
-	class_addmethod(
-		barkSpecIrregularity_class,
-		(t_method)barkSpecIrregularity_chain_barkSpec,
-		gensym("chain_barkSpec"),
-		A_GIMME,
-		0
-	);
-	
-	class_addmethod(
-		barkSpecIrregularity_class,
+    class_addmethod(
+        barkSpecIrregularity_class,
+        (t_method)barkSpecIrregularity_chain_magSpec,
+        gensym("chain_magSpec"),
+        A_GIMME,
+        0
+    );
+
+    class_addmethod(
+        barkSpecIrregularity_class,
+        (t_method)barkSpecIrregularity_chain_barkSpec,
+        gensym("chain_barkSpec"),
+        A_GIMME,
+        0
+    );
+
+    class_addmethod(
+        barkSpecIrregularity_class,
         (t_method)barkSpecIrregularity_algorithm,
-		gensym("algorithm"),
-		A_DEFFLOAT,
-		0
-	);
-	
-	class_addmethod(
-		barkSpecIrregularity_class,
-		(t_method)barkSpecIrregularity_set,
-		gensym("set"),
-		A_SYMBOL,
-		0
-	);
+        gensym("algorithm"),
+        A_DEFFLOAT,
+        0
+    );
 
-	class_addmethod(
-		barkSpecIrregularity_class,
-		(t_method)barkSpecIrregularity_print,
-		gensym("print"),
-		0
-	);
+    class_addmethod(
+        barkSpecIrregularity_class,
+        (t_method)barkSpecIrregularity_set,
+        gensym("set"),
+        A_SYMBOL,
+        0
+    );
 
-	class_addmethod(
-		barkSpecIrregularity_class,
+    class_addmethod(
+        barkSpecIrregularity_class,
+        (t_method)barkSpecIrregularity_print,
+        gensym("print"),
+        0
+    );
+
+    class_addmethod(
+        barkSpecIrregularity_class,
         (t_method)barkSpecIrregularity_samplerate,
-		gensym("samplerate"),
-		A_DEFFLOAT,
-		0
-	);
+        gensym("samplerate"),
+        A_DEFFLOAT,
+        0
+    );
 
-	class_addmethod(
-		barkSpecIrregularity_class,
+    class_addmethod(
+        barkSpecIrregularity_class,
         (t_method)barkSpecIrregularity_window,
-		gensym("window"),
-		A_DEFFLOAT,
-		0
-	);
-	
-	class_addmethod(
-		barkSpecIrregularity_class,
+        gensym("window"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        barkSpecIrregularity_class,
         (t_method)barkSpecIrregularity_windowFunction,
-		gensym("window_function"),
-		A_DEFFLOAT,
-		0
-	);
+        gensym("window_function"),
+        A_DEFFLOAT,
+        0
+    );
 
-	class_addmethod(
-		barkSpecIrregularity_class,
+    class_addmethod(
+        barkSpecIrregularity_class,
         (t_method)barkSpecIrregularity_powerSpectrum,
-		gensym("power_spectrum"),
-		A_DEFFLOAT,
-		0
-	);
+        gensym("power_spectrum"),
+        A_DEFFLOAT,
+        0
+    );
 
-	class_addmethod(
-		barkSpecIrregularity_class,
+    class_addmethod(
+        barkSpecIrregularity_class,
         (t_method)barkSpecIrregularity_normalize,
-		gensym("normalize"),
-		A_DEFFLOAT,
-		0
-	);
+        gensym("normalize"),
+        A_DEFFLOAT,
+        0
+    );
 
 
-	class_addmethod(
-		barkSpecIrregularity_class,
-		(t_method)barkSpecIrregularity_createFilterbank,
-		gensym("filterbank"),
-		A_DEFFLOAT,
-		0
-	);
+    class_addmethod(
+        barkSpecIrregularity_class,
+        (t_method)barkSpecIrregularity_createFilterbank,
+        gensym("filterbank"),
+        A_DEFFLOAT,
+        0
+    );
 
-	class_addmethod(
-		barkSpecIrregularity_class,
+    class_addmethod(
+        barkSpecIrregularity_class,
         (t_method)barkSpecIrregularity_spec_band_avg,
-		gensym("spec_band_avg"),
-		A_DEFFLOAT,
-		0
-	);
-	
-	class_addmethod(
-		barkSpecIrregularity_class,
+        gensym("spec_band_avg"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        barkSpecIrregularity_class,
         (t_method)barkSpecIrregularity_filter_avg,
-		gensym("filter_avg"),
-		A_DEFFLOAT,
-		0
-	);
+        gensym("filter_avg"),
+        A_DEFFLOAT,
+        0
+    );
 }
 

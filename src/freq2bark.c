@@ -20,10 +20,10 @@ static t_class *freq2bark_class;
 typedef struct _freq2bark
 {
     t_object x_obj;
-	t_symbol *x_objSymbol;
-	t_freq2barkFormula x_formula;
+    t_symbol *x_objSymbol;
+    t_freq2barkFormula x_formula;
     t_outlet *x_barkFreq;
-    
+
 } t_freq2bark;
 
 
@@ -31,38 +31,38 @@ typedef struct _freq2bark
 /* ------------------------ freq2bark -------------------------------- */
 static void freq2bark_calculate(t_freq2bark *x, t_float f)
 {
-	t_float freq;
-	
-	freq = f;
-	
-	if(freq>=0.0 && freq<=MAXBARKFREQ)
-	{
-		t_float barkFreq;
-	
-		barkFreq = tIDLib_freq2bark(freq);
+    t_float freq;
 
-		outlet_float(x->x_barkFreq, barkFreq);
-	}
-	else
-		pd_error(x, "%s: frequency must be between 0 and %f Hz", x->x_objSymbol->s_name, MAXBARKFREQ);
+    freq = f;
+
+    if(freq>=0.0 && freq<=MAXBARKFREQ)
+    {
+        t_float barkFreq;
+
+        barkFreq = tIDLib_freq2bark(freq);
+
+        outlet_float(x->x_barkFreq, barkFreq);
+    }
+    else
+        pd_error(x, "%s: frequency must be between 0 and %f Hz", x->x_objSymbol->s_name, MAXBARKFREQ);
 }
 
 static void *freq2bark_new(t_symbol *s, int argc, t_atom *argv)
-{	
+{
     t_freq2bark *x = (t_freq2bark *)pd_new(freq2bark_class);
     x->x_barkFreq = outlet_new(&x->x_obj, &s_float);
 
-	x->x_objSymbol = s;
+    x->x_objSymbol = s;
 
     // will use x->x_formula in future
     switch(argc)
     {
-    	case 1:
-    		x->x_formula = atom_getfloat(argv);
-    		break;
-    	default:
-    		x->x_formula = freq2barkFormula0;
-    		break;
+        case 1:
+            x->x_formula = atom_getfloat(argv);
+            break;
+        default:
+            x->x_formula = freq2barkFormula0;
+            break;
     }
 
     return (x);
@@ -70,28 +70,28 @@ static void *freq2bark_new(t_symbol *s, int argc, t_atom *argv)
 
 void freq2bark_setup(void)
 {
-    freq2bark_class = 
+    freq2bark_class =
     class_new(
-    	gensym("freq2bark"),
-    	(t_newmethod)freq2bark_new,
-    	0,
+        gensym("freq2bark"),
+        (t_newmethod)freq2bark_new,
+        0,
         sizeof(t_freq2bark),
         CLASS_DEFAULT,
         A_GIMME,
-		0
+        0
     );
 
-	class_addcreator(
-		(t_newmethod)freq2bark_new,
-		gensym("timbreIDLib/freq2bark"),
-		A_GIMME,
-		0
-	);
+    class_addcreator(
+        (t_newmethod)freq2bark_new,
+        gensym("timbreIDLib/freq2bark"),
+        A_GIMME,
+        0
+    );
 
-	class_addfloat(
-		freq2bark_class,
-		(t_method)freq2bark_calculate
-	);
+    class_addfloat(
+        freq2bark_class,
+        (t_method)freq2bark_calculate
+    );
 
-	class_sethelpsymbol(freq2bark_class, gensym("tID-conversion"));
+    class_sethelpsymbol(freq2bark_class, gensym("tID-conversion"));
 }

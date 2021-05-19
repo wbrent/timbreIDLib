@@ -22,19 +22,19 @@ typedef struct _phaseSpec
     t_object x_obj;
     t_symbol *x_objSymbol;
     t_float x_sr;
-	t_sampIdx x_window;
-	t_sampIdx x_windowHalf;
-	t_windowFunction x_windowFunction;
-	t_float *x_fftwIn;
+    t_sampIdx x_window;
+    t_sampIdx x_windowHalf;
+    t_windowFunction x_windowFunction;
+    t_float *x_fftwIn;
     fftwf_complex *x_fftwOut;
-	fftwf_plan x_fftwPlan;
-	t_float *x_blackman;
-	t_float *x_cosine;
-	t_float *x_hamming;
-	t_float *x_hann;
-	t_word *x_vec;
-	t_symbol *x_arrayName;
-	t_sampIdx x_arrayPoints;
+    fftwf_plan x_fftwPlan;
+    t_float *x_blackman;
+    t_float *x_cosine;
+    t_float *x_hamming;
+    t_float *x_hann;
+    t_word *x_vec;
+    t_symbol *x_arrayName;
+    t_sampIdx x_arrayPoints;
     t_atom *x_listOut;
     t_outlet *x_phase;
 } t_phaseSpec;
@@ -42,214 +42,214 @@ typedef struct _phaseSpec
 
 /* ------------------------ phaseSpec -------------------------------- */
 static void phaseSpec_resizeWindow(t_phaseSpec *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
-{			
-	t_sampIdx windowHalf, oldWindowHalf;
-	
-	windowHalf = window * 0.5;
-	oldWindowHalf = oldWindow * 0.5;
+{
+    t_sampIdx windowHalf, oldWindowHalf;
 
-	if(window<MINWINDOWSIZE)
-	{
-		window = WINDOWSIZEDEFAULT;
-		windowHalf = window * 0.5;
-		post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
-		
-		*endSamp = startSamp + window-1;
-		if(*endSamp >= x->x_arrayPoints)
-			*endSamp = x->x_arrayPoints-1;
-	}
+    windowHalf = window * 0.5;
+    oldWindowHalf = oldWindow * 0.5;
 
-	// hang on to these values for next time
-	x->x_window = window;
-	x->x_windowHalf = windowHalf;
+    if(window<MINWINDOWSIZE)
+    {
+        window = WINDOWSIZEDEFAULT;
+        windowHalf = window * 0.5;
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
 
-	x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+        *endSamp = startSamp + window-1;
+        if(*endSamp >= x->x_arrayPoints)
+            *endSamp = x->x_arrayPoints-1;
+    }
 
-	fftwf_free(x->x_fftwOut);
-	fftwf_destroy_plan(x->x_fftwPlan); 
-	// set up a new FFTW output buffer
-	x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
-	// FFTW plan
-	x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
+    // hang on to these values for next time
+    x->x_window = window;
+    x->x_windowHalf = windowHalf;
 
-	x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-	x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-	x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-	x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
 
-	// resize listOut memory
-	x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, (oldWindowHalf+1)*sizeof(t_atom), (x->x_windowHalf+1)*sizeof(t_atom));
-	
-	tIDLib_blackmanWindow(x->x_blackman, x->x_window);
-	tIDLib_cosineWindow(x->x_cosine, x->x_window);
-	tIDLib_hammingWindow(x->x_hamming, x->x_window);
-	tIDLib_hannWindow(x->x_hann, x->x_window);
+    fftwf_free(x->x_fftwOut);
+    fftwf_destroy_plan(x->x_fftwPlan);
+    // set up a new FFTW output buffer
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    // FFTW plan
+    x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
+
+    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+
+    // resize listOut memory
+    x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, (oldWindowHalf+1)*sizeof(t_atom), (x->x_windowHalf+1)*sizeof(t_atom));
+
+    tIDLib_blackmanWindow(x->x_blackman, x->x_window);
+    tIDLib_cosineWindow(x->x_cosine, x->x_window);
+    tIDLib_hammingWindow(x->x_hamming, x->x_window);
+    tIDLib_hannWindow(x->x_hann, x->x_window);
 }
-		
+
 
 static void phaseSpec_analyze(t_phaseSpec *x, t_floatarg start, t_floatarg n)
 {
-	t_garray *a;
+    t_garray *a;
 
-	if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
         pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-    	pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-	else
-	{
-		t_sampIdx i, j, window, windowHalf, startSamp, endSamp;
-		t_float *windowFuncPtr;
+        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    else
+    {
+        t_sampIdx i, j, window, windowHalf, startSamp, endSamp;
+        t_float *windowFuncPtr;
 
-		startSamp = start;
-		startSamp = (start<0)?0:start;
+        startSamp = start;
+        startSamp = (start<0)?0:start;
 
-		if(n)
-			endSamp = startSamp + n-1;
-		else
-			endSamp = startSamp + x->x_window-1;
+        if(n)
+            endSamp = startSamp + n-1;
+        else
+            endSamp = startSamp + x->x_window-1;
 
-		if(endSamp >= x->x_arrayPoints)
-			endSamp = x->x_arrayPoints-1;
+        if(endSamp >= x->x_arrayPoints)
+            endSamp = x->x_arrayPoints-1;
 
-		window = endSamp-startSamp+1;
+        window = endSamp-startSamp+1;
 
-		if(endSamp <= startSamp)
-		{
-			post("%s: bad range of samples.", x->x_objSymbol->s_name);
-			return;
-		}
+        if(endSamp <= startSamp)
+        {
+            post("%s: bad range of samples.", x->x_objSymbol->s_name);
+            return;
+        }
 
-		if(x->x_window != window)
-			phaseSpec_resizeWindow(x, x->x_window, window, startSamp, &endSamp);
-		
-		windowHalf = x->x_windowHalf;
-		
-		// construct analysis window
-		for(i=0, j=startSamp; j<=endSamp; i++, j++)
-			x->x_fftwIn[i] = x->x_vec[j].w_float;
+        if(x->x_window != window)
+            phaseSpec_resizeWindow(x, x->x_window, window, startSamp, &endSamp);
 
-		switch(x->x_windowFunction)
-		{
-			case rectangular:
-				break;
-			case blackman:
-				windowFuncPtr = x->x_blackman;
-				break;
-			case cosine:
-				windowFuncPtr = x->x_cosine;
-				break;
-			case hamming:
-				windowFuncPtr = x->x_hamming;
-				break;
-			case hann:
-				windowFuncPtr = x->x_hann;
-				break;
-			default:
-				windowFuncPtr = x->x_blackman;
-				break;
-		};
+        windowHalf = x->x_windowHalf;
 
-		// if windowFunction == 0, skip the windowing (rectangular)
-		if(x->x_windowFunction!=rectangular)
-			for(i=0; i<x->x_window; i++, windowFuncPtr++)
-				x->x_fftwIn[i] *= *windowFuncPtr;
+        // construct analysis window
+        for(i=0, j=startSamp; j<=endSamp; i++, j++)
+            x->x_fftwIn[i] = x->x_vec[j].w_float;
 
-		fftwf_execute(x->x_fftwPlan);
+        switch(x->x_windowFunction)
+        {
+            case rectangular:
+                break;
+            case blackman:
+                windowFuncPtr = x->x_blackman;
+                break;
+            case cosine:
+                windowFuncPtr = x->x_cosine;
+                break;
+            case hamming:
+                windowFuncPtr = x->x_hamming;
+                break;
+            case hann:
+                windowFuncPtr = x->x_hann;
+                break;
+            default:
+                windowFuncPtr = x->x_blackman;
+                break;
+        };
 
-		for(i=0; i<=windowHalf; i++)
-			SETFLOAT(x->x_listOut+i, atan2(x->x_fftwOut[i][1], x->x_fftwOut[i][0]));
-	
-		outlet_list(x->x_phase, 0, windowHalf+1, x->x_listOut);
-	}
+        // if windowFunction == 0, skip the windowing (rectangular)
+        if(x->x_windowFunction!=rectangular)
+            for(i=0; i<x->x_window; i++, windowFuncPtr++)
+                x->x_fftwIn[i] *= *windowFuncPtr;
+
+        fftwf_execute(x->x_fftwPlan);
+
+        for(i=0; i<=windowHalf; i++)
+            SETFLOAT(x->x_listOut+i, atan2(x->x_fftwOut[i][1], x->x_fftwOut[i][0]));
+
+        outlet_list(x->x_phase, 0, windowHalf+1, x->x_listOut);
+    }
 }
 
 
 static void phaseSpec_chain_fftData(t_phaseSpec *x, t_symbol *s, int argc, t_atom *argv)
 {
-	t_sampIdx i, windowHalf;
+    t_sampIdx i, windowHalf;
 
-	// incoming fftData list should be 2*(N/2+1) elements long, so windowHalf is:
-	windowHalf = argc-2;
-	windowHalf *= 0.5;
-	
-	// make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
-	if(windowHalf!=x->x_windowHalf)
-	{
-		pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
-		return;
-	}
-		
-	// fill the x_fftwOut buffer with the incoming fftData list, for both real and imag elements
-	for(i=0; i<=x->x_windowHalf; i++)
-	{
-		x->x_fftwOut[i][0] = atom_getfloat(argv+i);
-		x->x_fftwOut[i][1] = atom_getfloat(argv+(x->x_windowHalf+1)+i);
-	}
+    // incoming fftData list should be 2*(N/2+1) elements long, so windowHalf is:
+    windowHalf = argc-2;
+    windowHalf *= 0.5;
 
-	for(i=0; i<=windowHalf; i++)
-		SETFLOAT(x->x_listOut+i, atan2(x->x_fftwOut[i][1], x->x_fftwOut[i][0]));
+    // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
+    if(windowHalf!=x->x_windowHalf)
+    {
+        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
+        return;
+    }
 
-	outlet_list(x->x_phase, 0, windowHalf+1, x->x_listOut);
+    // fill the x_fftwOut buffer with the incoming fftData list, for both real and imag elements
+    for(i=0; i<=x->x_windowHalf; i++)
+    {
+        x->x_fftwOut[i][0] = atom_getfloat(argv+i);
+        x->x_fftwOut[i][1] = atom_getfloat(argv+(x->x_windowHalf+1)+i);
+    }
+
+    for(i=0; i<=windowHalf; i++)
+        SETFLOAT(x->x_listOut+i, atan2(x->x_fftwOut[i][1], x->x_fftwOut[i][0]));
+
+    outlet_list(x->x_phase, 0, windowHalf+1, x->x_listOut);
 }
 
 
 // analyze the whole damn array
 static void phaseSpec_bang(t_phaseSpec *x)
 {
-	t_garray *a;
+    t_garray *a;
 
-	if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
         pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-    	pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-	else
-	{
-		t_sampIdx window, startSamp;
-		startSamp = 0;
-		window = x->x_arrayPoints;
-		phaseSpec_analyze(x, startSamp, window);
-	}
+        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    else
+    {
+        t_sampIdx window, startSamp;
+        startSamp = 0;
+        window = x->x_arrayPoints;
+        phaseSpec_analyze(x, startSamp, window);
+    }
 }
 
 
 static void phaseSpec_set(t_phaseSpec *x, t_symbol *s)
 {
-	t_garray *a;
+    t_garray *a;
 
-	if(!(a = (t_garray *)pd_findbyclass(s, garray_class)))
-		pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
-	else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-		pd_error(x, "%s: bad template for %s", s->s_name, x->x_objSymbol->s_name);
-	else
-	    x->x_arrayName = s;
+    if(!(a = (t_garray *)pd_findbyclass(s, garray_class)))
+        pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
+    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error(x, "%s: bad template for %s", s->s_name, x->x_objSymbol->s_name);
+    else
+        x->x_arrayName = s;
 }
 
 
 static void phaseSpec_print(t_phaseSpec *x)
 {
-	post("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-	post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
-	post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
-	post("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
+    post("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
+    post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
+    post("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
 }
 
 
 static void phaseSpec_samplerate(t_phaseSpec *x, t_floatarg sr)
 {
-	if(sr<MINSAMPLERATE)
-		x->x_sr = MINSAMPLERATE;
-	else
-		x->x_sr = sr;
+    if(sr<MINSAMPLERATE)
+        x->x_sr = MINSAMPLERATE;
+    else
+        x->x_sr = sr;
 }
 
 
 static void phaseSpec_window(t_phaseSpec *x, t_floatarg w)
 {
-	t_sampIdx endSamp;
-    
+    t_sampIdx endSamp;
+
     // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
-    
+
     phaseSpec_resizeWindow(x, x->x_window, w, 0, &endSamp);
 }
 
@@ -258,101 +258,101 @@ static void phaseSpec_windowFunction(t_phaseSpec *x, t_floatarg f)
 {
     f = (f<0)?0:f;
     f = (f>4)?4:f;
-	x->x_windowFunction = f;
+    x->x_windowFunction = f;
 
-	switch(x->x_windowFunction)
-	{
-		case rectangular:
-			post("%s window function: rectangular.", x->x_objSymbol->s_name);
-			break;
-		case blackman:
-			post("%s window function: blackman.", x->x_objSymbol->s_name);
-			break;
-		case cosine:
-			post("%s window function: cosine.", x->x_objSymbol->s_name);
-			break;
-		case hamming:
-			post("%s window function: hamming.", x->x_objSymbol->s_name);
-			break;
-		case hann:
-			post("%s window function: hann.", x->x_objSymbol->s_name);
-			break;
-		default:
-			break;
-	};
+    switch(x->x_windowFunction)
+    {
+        case rectangular:
+            post("%s window function: rectangular.", x->x_objSymbol->s_name);
+            break;
+        case blackman:
+            post("%s window function: blackman.", x->x_objSymbol->s_name);
+            break;
+        case cosine:
+            post("%s window function: cosine.", x->x_objSymbol->s_name);
+            break;
+        case hamming:
+            post("%s window function: hamming.", x->x_objSymbol->s_name);
+            break;
+        case hann:
+            post("%s window function: hann.", x->x_objSymbol->s_name);
+            break;
+        default:
+            break;
+    };
 }
 
 
 static void *phaseSpec_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_phaseSpec *x = (t_phaseSpec *)pd_new(phaseSpec_class);
-	t_sampIdx i;
+    t_sampIdx i;
 //	t_garray *a;
 
-	x->x_phase = outlet_new(&x->x_obj, gensym("list"));
+    x->x_phase = outlet_new(&x->x_obj, gensym("list"));
 
-	// store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
-	x->x_objSymbol = s;
-	
-	switch(argc)
-	{
-		case 1:
-			x->x_arrayName = atom_getsymbol(argv);
-			/*
-			if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-				pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-			else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-				pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-			*/
-			break;
-	
-		case 0:
-			post("%s: no array specified.", x->x_objSymbol->s_name);
-			// a bogus array name to trigger the safety check in _analyze()
-			x->x_arrayName = gensym("NOARRAYSPECIFIED");
-			break;
-		
-		default:
-			x->x_arrayName = atom_getsymbol(argv);
-			/*
-			if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-				pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-			else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-				pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-			*/
-			post("%s WARNING: extra arguments ignored.", x->x_objSymbol->s_name);
-			break;
-	}
-	
-	x->x_sr = SAMPLERATEDEFAULT;
-	x->x_window = WINDOWSIZEDEFAULT;
-	x->x_windowHalf = x->x_window*0.5;
-	x->x_windowFunction = blackman;
-	
-	x->x_fftwIn = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
+    // store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
+    x->x_objSymbol = s;
 
-	// set up the FFTW output buffer. Is there no function to initialize it?
-	x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    switch(argc)
+    {
+        case 1:
+            x->x_arrayName = atom_getsymbol(argv);
+            /*
+            if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+                pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+            else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+                pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+            */
+            break;
 
-	// FFTW plan
-	x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG); // FFTWPLANNERFLAG may be slower than FFTWPLANNERFLAG but more efficient after the first run?
-	
-	for(i=0; i<x->x_window; i++)
-		x->x_fftwIn[i] = 0.0;
+        case 0:
+            post("%s: no array specified.", x->x_objSymbol->s_name);
+            // a bogus array name to trigger the safety check in _analyze()
+            x->x_arrayName = gensym("NOARRAYSPECIFIED");
+            break;
 
-  	x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-  	x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-  	x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-  	x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+        default:
+            x->x_arrayName = atom_getsymbol(argv);
+            /*
+            if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+                pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+            else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+                pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+            */
+            post("%s WARNING: extra arguments ignored.", x->x_objSymbol->s_name);
+            break;
+    }
 
-	// create listOut memory
-	x->x_listOut = (t_atom *)t_getbytes((x->x_windowHalf+1)*sizeof(t_atom));
-	
- 	// initialize signal windowing functions
-	tIDLib_blackmanWindow(x->x_blackman, x->x_window);
-	tIDLib_cosineWindow(x->x_cosine, x->x_window);
-	tIDLib_hammingWindow(x->x_hamming, x->x_window);
-	tIDLib_hannWindow(x->x_hann, x->x_window);
+    x->x_sr = SAMPLERATEDEFAULT;
+    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_windowHalf = x->x_window*0.5;
+    x->x_windowFunction = blackman;
+
+    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
+
+    // set up the FFTW output buffer. Is there no function to initialize it?
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+
+    // FFTW plan
+    x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG); // FFTWPLANNERFLAG may be slower than FFTWPLANNERFLAG but more efficient after the first run?
+
+    for(i=0; i<x->x_window; i++)
+        x->x_fftwIn[i] = 0.0;
+
+      x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+
+    // create listOut memory
+    x->x_listOut = (t_atom *)t_getbytes((x->x_windowHalf+1)*sizeof(t_atom));
+
+     // initialize signal windowing functions
+    tIDLib_blackmanWindow(x->x_blackman, x->x_window);
+    tIDLib_cosineWindow(x->x_cosine, x->x_window);
+    tIDLib_hammingWindow(x->x_hamming, x->x_window);
+    tIDLib_hannWindow(x->x_hann, x->x_window);
 
     return (x);
 }
@@ -360,12 +360,12 @@ static void *phaseSpec_new(t_symbol *s, int argc, t_atom *argv)
 
 static void phaseSpec_free(t_phaseSpec *x)
 {
-	// free FFTW stuff
+    // free FFTW stuff
     t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_float));
-	fftwf_free(x->x_fftwOut);
-	fftwf_destroy_plan(x->x_fftwPlan);
-	
-	// free the window memory
+    fftwf_free(x->x_fftwOut);
+    fftwf_destroy_plan(x->x_fftwPlan);
+
+    // free the window memory
     t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
     t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
     t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
@@ -380,78 +380,78 @@ void phaseSpec_setup(void)
 {
     phaseSpec_class =
     class_new(
-    	gensym("phaseSpec"),
-    	(t_newmethod)phaseSpec_new,
-    	(t_method)phaseSpec_free,
+        gensym("phaseSpec"),
+        (t_newmethod)phaseSpec_new,
+        (t_method)phaseSpec_free,
         sizeof(t_phaseSpec),
         CLASS_DEFAULT,
         A_GIMME,
-		0
+        0
     );
 
-	class_addcreator(
-		(t_newmethod)phaseSpec_new,
-		gensym("timbreIDLib/phaseSpec"),
-		A_GIMME,
-		0
-	);
+    class_addcreator(
+        (t_newmethod)phaseSpec_new,
+        gensym("timbreIDLib/phaseSpec"),
+        A_GIMME,
+        0
+    );
 
-	class_addbang(phaseSpec_class, phaseSpec_bang);
+    class_addbang(phaseSpec_class, phaseSpec_bang);
 
-	class_addmethod(
-		phaseSpec_class,
+    class_addmethod(
+        phaseSpec_class,
         (t_method)phaseSpec_analyze,
-		gensym("analyze"),
+        gensym("analyze"),
         A_DEFFLOAT,
         A_DEFFLOAT,
-		0
-	);
+        0
+    );
 
-	class_addmethod(
-		phaseSpec_class,
-		(t_method)phaseSpec_chain_fftData,
-		gensym("chain_fftData"),
-		A_GIMME,
-		0
-	);
-	
-	class_addmethod(
-		phaseSpec_class,
-		(t_method)phaseSpec_set,
-		gensym("set"),
-		A_SYMBOL,
-		0
-	);
+    class_addmethod(
+        phaseSpec_class,
+        (t_method)phaseSpec_chain_fftData,
+        gensym("chain_fftData"),
+        A_GIMME,
+        0
+    );
 
-	class_addmethod(
-		phaseSpec_class,
-		(t_method)phaseSpec_print,
-		gensym("print"),
-		0
-	);
+    class_addmethod(
+        phaseSpec_class,
+        (t_method)phaseSpec_set,
+        gensym("set"),
+        A_SYMBOL,
+        0
+    );
 
-	class_addmethod(
-		phaseSpec_class,
+    class_addmethod(
+        phaseSpec_class,
+        (t_method)phaseSpec_print,
+        gensym("print"),
+        0
+    );
+
+    class_addmethod(
+        phaseSpec_class,
         (t_method)phaseSpec_samplerate,
-		gensym("samplerate"),
-		A_DEFFLOAT,
-		0
-	);
+        gensym("samplerate"),
+        A_DEFFLOAT,
+        0
+    );
 
-	class_addmethod(
-		phaseSpec_class,
+    class_addmethod(
+        phaseSpec_class,
         (t_method)phaseSpec_window,
-		gensym("window"),
-		A_DEFFLOAT,
-		0
-	);
-	
-	class_addmethod(
-		phaseSpec_class,
+        gensym("window"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        phaseSpec_class,
         (t_method)phaseSpec_windowFunction,
-		gensym("window_function"),
-		A_DEFFLOAT,
-		0
-	);
+        gensym("window_function"),
+        A_DEFFLOAT,
+        0
+    );
 }
 

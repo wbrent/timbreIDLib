@@ -9,21 +9,21 @@ timbreID is free software: you can redistribute it and/or modify it under the te
 timbreID is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-version 0.8.2C, January 2, 2020
+version 0.9.0, May 19, 2021
 
 */
 
-#include <math.h>	// for fabs(), cos(), etc
-#include <stdlib.h> // for abs()
+#include <math.h>  // for fabs(), cos(), etc
+#include <stdlib.h>  // for abs()
 //#include <stdio.h>
 //#include <stdbool.h>
-#include <string.h>	// for memset() and strlen()
-#include <limits.h> // for INT_MAX, etc
+#include <string.h>  // for memset() and strlen()
+#include <limits.h>  // for INT_MAX, etc
 #include <float.h>
+#include <fftw3.h>
 #include "m_pd.h"
-#include "fftw3.h"
 
-#define TIDVERSION "0.8.2C"
+#define TIDVERSION "0.9.0"
 
 // choose either FFTW_MEASURE or FFTW_ESTIMATE here.
 #define FFTWPLANNERFLAG FFTW_ESTIMATE
@@ -73,64 +73,64 @@ typedef t_uInt t_instanceIdx; // again, gets us over 4 billion instances
 
 typedef enum
 {
-	false = 0,
-	true
+    false = 0,
+    true
 } t_bool;
 
 typedef enum
 {
-	rectangular = 0,
-	blackman,
-	cosine,
-	hamming,
-	hann
+    rectangular = 0,
+    blackman,
+    cosine,
+    hamming,
+    hann
 } t_windowFunction;
 
 typedef enum
 {
-	freq2barkFormula0 = 0,
-	freq2barkFormula1,
-	freq2barkFormula2
+    freq2barkFormula0 = 0,
+    freq2barkFormula1,
+    freq2barkFormula2
 } t_freq2barkFormula;
 
 typedef enum
 {
-	bark2freqFormula0 = 0,
-	bark2freqFormula1,
-	bark2freqFormula2
+    bark2freqFormula0 = 0,
+    bark2freqFormula1,
+    bark2freqFormula2
 } t_bark2freqFormula;
 
 typedef enum
 {
-	freq2melFormula0 = 0,
-	freq2melFormula1
+    freq2melFormula0 = 0,
+    freq2melFormula1
 } t_freq2melFormula;
 
 typedef enum
 {
-	mel2freqFormula0 = 0,
-	mel2freqFormula1
+    mel2freqFormula0 = 0,
+    mel2freqFormula1
 } t_mel2freqFormula;
 
 typedef enum
 {
-	mFlux = 0,
-	mGrowth,
-	mDecay
+    mFlux = 0,
+    mGrowth,
+    mDecay
 } t_fluxMode;
 
 typedef struct filter
 {
-	t_float *filter;
-	t_binIdx size;
-	t_binIdx indices[2];
-	t_float filterFreqs[2];
+    t_float *filter;
+    t_binIdx size;
+    t_binIdx indices[2];
+    t_float filterFreqs[2];
 } t_filter;
 
 typedef struct knnInfo
 {
     t_float dist;
-	t_float safeDist;
+    t_float safeDist;
     t_instanceIdx idx;
     t_instanceIdx cluster;
 } t_knnInfo;
@@ -154,16 +154,16 @@ typedef struct normData
 {
     t_float max;
     t_float min;
-	t_float normScalar;
+    t_float normScalar;
 } t_normData;
 
 typedef struct attributeData
 {
-	t_float inputData;
-	t_normData normData;
-	t_float weight;
-	t_attributeIdx order;
-	t_symbol *name;
+    t_float inputData;
+    t_normData normData;
+    t_float weight;
+    t_attributeIdx order;
+    t_symbol *name;
 } t_attributeData;
 
 

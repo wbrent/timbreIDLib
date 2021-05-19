@@ -23,109 +23,109 @@ typedef struct _bin2freq
     t_float x_n;
     t_float x_sr;
     t_outlet *x_freq;
-    
+
 } t_bin2freq;
 
 
 /* ------------------------ bin2freq -------------------------------- */
 static void bin2freq_calculate(t_bin2freq *x, t_float bin)
-{	
-	if(bin>=0.0 && bin<x->x_n)
-	{
-		t_float freq;
-	
-		freq = tIDLib_bin2freq(bin, x->x_n, x->x_sr);
+{
+    if(bin>=0.0 && bin<x->x_n)
+    {
+        t_float freq;
 
-		outlet_float(x->x_freq, freq);
-	}
-	else
-	{
-		pd_error(x, "bin2freq: bin number must be between 0 and %lu", (t_binIdx)(x->x_n-1));
-	}
+        freq = tIDLib_bin2freq(bin, x->x_n, x->x_sr);
+
+        outlet_float(x->x_freq, freq);
+    }
+    else
+    {
+        pd_error(x, "bin2freq: bin number must be between 0 and %lu", (t_binIdx)(x->x_n-1));
+    }
 }
 
 
 static void bin2freq_setWinSampRate(t_bin2freq *x, t_float n, t_float sr)
 {
-	if(sr)
-	{
-		x->x_n = n;
-		x->x_sr = sr;
+    if(sr)
+    {
+        x->x_n = n;
+        x->x_sr = sr;
     }
     else if(n)
     {
         x->x_n = n;
-  		x->x_sr = SAMPLERATEDEFAULT;
+          x->x_sr = SAMPLERATEDEFAULT;
     }
     else
     {
-		x->x_n = WINDOWSIZEDEFAULT;
-		x->x_sr = SAMPLERATEDEFAULT;
+        x->x_n = WINDOWSIZEDEFAULT;
+        x->x_sr = SAMPLERATEDEFAULT;
     }
 }
 
 
 static void bin2freq_print(t_bin2freq *x)
-{	
-	post("bin2freq window size: %i", (t_sampIdx)x->x_n);
-	post("bin2freq samplerate: %i", (t_sampIdx)x->x_sr);
+{
+    post("bin2freq window size: %i", (t_sampIdx)x->x_n);
+    post("bin2freq samplerate: %i", (t_sampIdx)x->x_sr);
 }
 
 
 static void *bin2freq_new(t_float n, t_float sr)
-{	
+{
     t_bin2freq *x = (t_bin2freq *)pd_new(bin2freq_class);
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("list"), gensym("setWinSampRate"));
     x->x_freq = outlet_new(&x->x_obj, &s_float);
 
-	bin2freq_setWinSampRate(x, n, sr);
-    
+    bin2freq_setWinSampRate(x, n, sr);
+
     return (x);
 }
 
 
 void bin2freq_setup(void)
 {
-    bin2freq_class = 
+    bin2freq_class =
     class_new(
-    	gensym("bin2freq"),
-    	(t_newmethod)bin2freq_new,
-    	0,
+        gensym("bin2freq"),
+        (t_newmethod)bin2freq_new,
+        0,
         sizeof(t_bin2freq),
         CLASS_DEFAULT,
         A_DEFFLOAT,
         A_DEFFLOAT,
-		0
+        0
     );
 
-	class_addcreator(
-		(t_newmethod)bin2freq_new,
-		gensym("timbreIDLib/bin2freq"),
+    class_addcreator(
+        (t_newmethod)bin2freq_new,
+        gensym("timbreIDLib/bin2freq"),
         A_DEFFLOAT,
         A_DEFFLOAT,
-		0
-	);
-	
-	class_addmethod(
-		bin2freq_class,
-		(t_method)bin2freq_print,
-		gensym("print"),
-		0
-	);
-	
-	class_addfloat(
-		bin2freq_class,
-		(t_method)bin2freq_calculate
-	);
+        0
+    );
 
-	class_addmethod(
-		bin2freq_class,
+    class_addmethod(
+        bin2freq_class,
+        (t_method)bin2freq_print,
+        gensym("print"),
+        0
+    );
+
+    class_addfloat(
+        bin2freq_class,
+        (t_method)bin2freq_calculate
+    );
+
+    class_addmethod(
+        bin2freq_class,
         (t_method)bin2freq_setWinSampRate,
-		gensym("setWinSampRate"),
-		A_DEFFLOAT,
-		A_DEFFLOAT,
-		0
-	);
+        gensym("setWinSampRate"),
+        A_DEFFLOAT,
+        A_DEFFLOAT,
+        0
+    );
 
-	class_sethelpsymbol(bin2freq_class, gensym("tID-conversion"));
+    class_sethelpsymbol(bin2freq_class, gensym("tID-conversion"));
 }

@@ -20,45 +20,45 @@ static t_class *mel2freq_class;
 typedef struct _mel2freq
 {
     t_object x_obj;
-	t_symbol *x_objSymbol;
-	t_mel2freqFormula x_formula;
+    t_symbol *x_objSymbol;
+    t_mel2freqFormula x_formula;
     t_outlet *x_freq;
-    
+
 } t_mel2freq;
 
 
 /* ------------------------ mel2freq -------------------------------- */
 static void mel2freq_calculate(t_mel2freq *x, t_float m)
 {
-	t_float mel, freq;
-	
-	mel = m;
-	
-	if(mel>=0.0 && mel<=MAXMELS)
-	{
-		freq = tIDLib_mel2freq(mel);
-		outlet_float(x->x_freq, freq);
-	}
-	else
-		pd_error(x, "%s: mel frequency must be between 0 and %f mels", x->x_objSymbol->s_name, MAXMELS);
+    t_float mel, freq;
+
+    mel = m;
+
+    if(mel>=0.0 && mel<=MAXMELS)
+    {
+        freq = tIDLib_mel2freq(mel);
+        outlet_float(x->x_freq, freq);
+    }
+    else
+        pd_error(x, "%s: mel frequency must be between 0 and %f mels", x->x_objSymbol->s_name, MAXMELS);
 }
 
 static void *mel2freq_new(t_symbol *s, int argc, t_atom *argv)
-{	
+{
     t_mel2freq *x = (t_mel2freq *)pd_new(mel2freq_class);
     x->x_freq = outlet_new(&x->x_obj, &s_float);
 
-	x->x_objSymbol = s;
+    x->x_objSymbol = s;
 
     // will use x->x_formula in future
     switch(argc)
     {
-    	case 1:
-    		x->x_formula = atom_getfloat(argv);
-    		break;
-    	default:
-    		x->x_formula = mel2freqFormula0;
-    		break;
+        case 1:
+            x->x_formula = atom_getfloat(argv);
+            break;
+        default:
+            x->x_formula = mel2freqFormula0;
+            break;
     }
 
     return (x);
@@ -66,28 +66,28 @@ static void *mel2freq_new(t_symbol *s, int argc, t_atom *argv)
 
 void mel2freq_setup(void)
 {
-    mel2freq_class = 
+    mel2freq_class =
     class_new(
-    	gensym("mel2freq"),
-    	(t_newmethod)mel2freq_new,
-    	0,
+        gensym("mel2freq"),
+        (t_newmethod)mel2freq_new,
+        0,
         sizeof(t_mel2freq),
         CLASS_DEFAULT,
         A_GIMME,
-		0
+        0
     );
 
-	class_addcreator(
-		(t_newmethod)mel2freq_new,
-		gensym("timbreIDLib/mel2freq"),
-		A_GIMME,
-		0
-	);
-	
-	class_addfloat(
-		mel2freq_class,
-		(t_method)mel2freq_calculate
-	);
+    class_addcreator(
+        (t_newmethod)mel2freq_new,
+        gensym("timbreIDLib/mel2freq"),
+        A_GIMME,
+        0
+    );
 
-	class_sethelpsymbol(mel2freq_class, gensym("tID-conversion"));
+    class_addfloat(
+        mel2freq_class,
+        (t_method)mel2freq_calculate
+    );
+
+    class_sethelpsymbol(mel2freq_class, gensym("tID-conversion"));
 }
