@@ -25,7 +25,7 @@ typedef struct _zeroCrossing_tilde
     t_float x_n;
     t_uShortInt x_overlap;
     t_sampIdx x_window;
-    t_sampIdx x_normalize;
+    t_bool x_normalize;
     double x_lastDspTime;
     t_sample *x_signalBuffer;
     t_float *x_analysisBuffer;
@@ -57,7 +57,7 @@ static void zeroCrossing_tilde_bang(t_zeroCrossing_tilde *x)
 
     crossings=0.0;
 
-    crossings = tIDLib_zeroCrossingRate(window, x->x_analysisBuffer);
+    crossings = tIDLib_zeroCrossingRate(window, x->x_analysisBuffer, x->x_normalize);
 
     outlet_float(x->x_crossings, crossings);
 }
@@ -100,6 +100,13 @@ static void zeroCrossing_tilde_overlap(t_zeroCrossing_tilde *x, t_floatarg o)
     post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
 }
 
+static void zeroCrossing_tilde_normalize(t_zeroCrossing_tilde *x, t_floatarg n)
+{
+    n = (n < 0) ? 0 : n;
+    x->x_normalize = (n > 1) ? 1 : n;
+
+    post("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
+}
 
 static void zeroCrossing_tilde_print(t_zeroCrossing_tilde *x)
 {
@@ -107,6 +114,7 @@ static void zeroCrossing_tilde_print(t_zeroCrossing_tilde *x)
     post("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
     post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
     post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
+    post("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
 }
 
 
@@ -146,6 +154,7 @@ static void *zeroCrossing_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_n = BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
     x->x_lastDspTime = clock_getlogicaltime();
+    x->x_normalize = false;
 
     x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window+x->x_n) * sizeof(t_sample));
     x->x_analysisBuffer = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
@@ -270,6 +279,14 @@ void zeroCrossing_tilde_setup(void)
         zeroCrossing_tilde_class,
         (t_method)zeroCrossing_tilde_overlap,
         gensym("overlap"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        zeroCrossing_tilde_class,
+        (t_method)zeroCrossing_tilde_normalize,
+        gensym("normalize"),
         A_DEFFLOAT,
         0
     );

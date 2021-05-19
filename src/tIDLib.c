@@ -1149,19 +1149,22 @@ t_sampIdx tIDLib_findAttackStartSamp(t_sampIdx n, t_float *input, t_float sampMa
 }
 
 // this could also return the location of the zero crossing
-t_float tIDLib_zeroCrossingRate(t_sampIdx n, t_sample *input)
+t_float tIDLib_zeroCrossingRate (t_sampIdx n, t_sample *input, t_bool normalize)
 {
     t_float crossings;
     t_sampIdx i;
 
     crossings = 0.0;
 
-    for(i=1; i<n; i++)
+    for (i = 1; i < n; i++)
         crossings += abs(tIDLib_signum(input[i]) - tIDLib_signum(input[i-1]));
 
-    crossings *= 0.5;
+    if (normalize)
+        crossings *= 1.0 / (t_float)(2 * n);
+    else
+        crossings *= 0.5;
 
-    return(crossings);
+    return (crossings);
 }
 
 // for chroma objects

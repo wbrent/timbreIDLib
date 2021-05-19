@@ -225,7 +225,7 @@ void tIDLib_hannWindow(t_float *wPtr, t_sampIdx n);
 t_float tIDLib_ampDB(t_sampIdx n, t_sample *input);
 void tIDLib_peakSample(t_sampIdx n, t_float *input, t_sampIdx *peakIdx, t_float *peakVal);
 t_sampIdx tIDLib_findAttackStartSamp(t_sampIdx n, t_float *input, t_float sampDeltaThresh, t_uShortInt numSampsThresh);
-t_float tIDLib_zeroCrossingRate(t_sampIdx n, t_sample *input);
+t_float tIDLib_zeroCrossingRate(t_sampIdx n, t_sample *input, t_bool normalize);
 void tIDLib_getPitchBinRanges(t_binIdx *binRanges, t_float thisPitch, t_float loFreq, t_uChar octaveLimit, t_float pitchTolerance, t_sampIdx n, t_float sr);
 void tIDLib_power(t_binIdx n, void *fftw_out, t_float *powBuf);
 void tIDLib_mag(t_binIdx n, t_float *input);

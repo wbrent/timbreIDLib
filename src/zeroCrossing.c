@@ -23,6 +23,7 @@ typedef struct _zeroCrossing
     t_symbol *x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
+    t_bool x_normalize;
     t_float *x_analysisBuffer;
     t_word *x_vec;
     t_symbol *x_arrayName;
@@ -91,7 +92,7 @@ static void zeroCrossing_analyze(t_zeroCrossing *x, t_floatarg start, t_floatarg
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
         crossings=0.0;
-        crossings = tIDLib_zeroCrossingRate(window, x->x_analysisBuffer);
+        crossings = tIDLib_zeroCrossingRate(window, x->x_analysisBuffer, x->x_normalize);
         outlet_float(x->x_crossings, crossings);
     }
 }
@@ -128,11 +129,19 @@ static void zeroCrossing_set(t_zeroCrossing *x, t_symbol *s)
         x->x_arrayName = s;
 }
 
+static void zeroCrossing_normalize(t_zeroCrossing *x, t_floatarg n)
+{
+    n = (n < 0) ? 0 : n;
+    x->x_normalize = (n > 1) ? 1 : n;
+
+    post("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
+}
 
 static void zeroCrossing_print(t_zeroCrossing *x)
 {
     post("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
+    post("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
 }
 
 
@@ -187,6 +196,7 @@ static void *zeroCrossing_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_sr = SAMPLERATEDEFAULT;
     x->x_window = WINDOWSIZEDEFAULT;
+    x->x_normalize = false;
 
     x->x_analysisBuffer = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
 
@@ -237,6 +247,14 @@ void zeroCrossing_setup(void)
         (t_method)zeroCrossing_set,
         gensym("set"),
         A_SYMBOL,
+        0
+    );
+
+    class_addmethod(
+        zeroCrossing_class,
+        (t_method)zeroCrossing_normalize,
+        gensym("normalize"),
+        A_DEFFLOAT,
         0
     );
 
