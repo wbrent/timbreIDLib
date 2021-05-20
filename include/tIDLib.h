@@ -122,7 +122,7 @@ typedef enum
 typedef struct filter
 {
     t_float *filter;
-    t_binIdx size;
+    t_binIdx filterSize;
     t_binIdx indices[2];
     t_float filterFreqs[2];
 } t_filter;

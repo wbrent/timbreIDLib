@@ -682,7 +682,7 @@ void tIDLib_createFilterbank(t_float *filterFreqs, t_filter **filterbank, t_filt
 
     // free memory for each filter
     for(i=0; i<oldNumFilters; i++)
-        t_freebytes((*filterbank)[i].filter, (*filterbank)[i].size*sizeof(t_float));
+        t_freebytes((*filterbank)[i].filter, (*filterbank)[i].filterSize*sizeof(t_float));
 
     (*filterbank) = (t_filter *)t_resizebytes((*filterbank), oldNumFilters*sizeof(t_filter), newNumFilters*sizeof(t_filter));
 
@@ -697,7 +697,7 @@ void tIDLib_createFilterbank(t_float *filterFreqs, t_filter **filterbank, t_filt
 
     // initialize filterbank sizes
     for(i=0; i<newNumFilters; i++)
-        (*filterbank)[i].size = 0;
+        (*filterbank)[i].filterSize = 0;
 
     {
         t_binIdx bfi;
@@ -717,16 +717,16 @@ void tIDLib_createFilterbank(t_float *filterFreqs, t_filter **filterbank, t_filt
         {
             t_binIdx j;
 
-            (*filterbank)[fbi].size = 1;
+            (*filterbank)[fbi].filterSize = 1;
             (*filterbank)[fbi].indices[0] = fbi;
             (*filterbank)[fbi].indices[1] = fbi;
             (*filterbank)[fbi].filterFreqs[0] = binFreqs[fbi];
             (*filterbank)[fbi].filterFreqs[1] = binFreqs[fbi];
 
-            (*filterbank)[fbi].filter = (t_float *)t_getbytes((*filterbank)[fbi].size*sizeof(t_float));
+            (*filterbank)[fbi].filter = (t_float *)t_getbytes((*filterbank)[fbi].filterSize*sizeof(t_float));
 
             // initialize this filter
-            for(j=0; j<(*filterbank)[fbi].size; j++)
+            for(j=0; j<(*filterbank)[fbi].filterSize; j++)
                 (*filterbank)[fbi].filter[j] = 0.0;
         }
 
@@ -735,16 +735,16 @@ void tIDLib_createFilterbank(t_float *filterFreqs, t_filter **filterbank, t_filt
         {
             t_binIdx j;
 
-            (*filterbank)[fbi].size = 1;
+            (*filterbank)[fbi].filterSize = 1;
             (*filterbank)[fbi].indices[0] = windowHalf;
             (*filterbank)[fbi].indices[1] = windowHalf;
             (*filterbank)[fbi].filterFreqs[0] = binFreqs[windowHalf];
             (*filterbank)[fbi].filterFreqs[1] = binFreqs[windowHalf];
 
-            (*filterbank)[fbi].filter = (t_float *)t_getbytes((*filterbank)[fbi].size*sizeof(t_float));
+            (*filterbank)[fbi].filter = (t_float *)t_getbytes((*filterbank)[fbi].filterSize*sizeof(t_float));
 
             // initialize this filter
-            for(j=0; j<(*filterbank)[fbi].size; j++)
+            for(j=0; j<(*filterbank)[fbi].filterSize; j++)
                 (*filterbank)[fbi].filter[j] = 0.0;
         }
     }
@@ -770,7 +770,7 @@ void tIDLib_createFilterbank(t_float *filterFreqs, t_filter **filterbank, t_filt
             filterWidth = finishIdx-startIdx + 1;
             filterWidth = (filterWidth<1)?1:filterWidth;
 
-            (*filterbank)[ffi-1].size = filterWidth; // store the sizes for freeing memory later
+            (*filterbank)[ffi-1].filterSize = filterWidth; // store the sizes for freeing memory later
             (*filterbank)[ffi-1].filter = (t_float *)t_getbytes(filterWidth*sizeof(t_float));
 
             // initialize this filter
@@ -852,7 +852,7 @@ void tIDLib_specFilterBands(t_binIdx n, t_filterIdx numFilters, t_float *spectru
         for(j=filterbank[i].indices[0]; j<=filterbank[i].indices[1]; j++)
                 smoothedSpec[i] += spectrum[j];
 
-        smoothedSpec[i] /= filterbank[i].size;
+        smoothedSpec[i] /= filterbank[i].filterSize;
 
         totalEnergy += smoothedSpec[i];
     };
@@ -899,7 +899,7 @@ void tIDLib_filterbankMultiply(t_float *spectrum, t_bool normalize, t_bool filte
         for(j=filterbank[i].indices[0], k=0; j<=filterbank[i].indices[1]; j++, k++)
             sum += spectrum[j] * filterbank[i].filter[k];
 
-        k = filterbank[i].size;
+        k = filterbank[i].filterSize;
         if(filterAvg)
             sum /= k;
 

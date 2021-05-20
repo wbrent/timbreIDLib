@@ -558,7 +558,7 @@ static void barkSpec_free(t_barkSpec *x)
 
     // free the filterbank memory
     for(i=0; i<x->x_numFilters; i++)
-        t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].size*sizeof(t_float));
+        t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].filterSize*sizeof(t_float));
 
     t_freebytes(x->x_filterbank, x->x_numFilters*sizeof(t_filter));
 }

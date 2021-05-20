@@ -193,8 +193,8 @@ static void barkSpecSlope_tilde_hat(t_barkSpecSlope_tilde *x, t_floatarg filt)
         post("%s filter %i does not exist.", x->x_objSymbol->s_name, idx);
     else
     {
-        post("%s filter size[%i]: %i", x->x_objSymbol->s_name, idx, x->x_filterbank[idx].size);
-        for(i=0; i<x->x_filterbank[idx].size; i++)
+        post("%s filter size[%i]: %i", x->x_objSymbol->s_name, idx, x->x_filterbank[idx].filterSize);
+        for(i=0; i<x->x_filterbank[idx].filterSize; i++)
             post("val %i: %f", i, x->x_filterbank[idx].filter[i]);
 
         post("idxLo: %i, idxHi: %i", x->x_filterbank[idx].indices[0], x->x_filterbank[idx].indices[1]);
@@ -512,7 +512,7 @@ static void barkSpecSlope_tilde_free(t_barkSpecSlope_tilde *x)
 
     // free the filterbank memory
     for(i=0; i<x->x_numFilters; i++)
-        t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].size*sizeof(t_float));
+        t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].filterSize*sizeof(t_float));
 
     t_freebytes(x->x_filterbank, x->x_numFilters*sizeof(t_filter));
 }
