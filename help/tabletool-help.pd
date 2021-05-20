@@ -340,7 +340,7 @@ value (\$2), f 39;
 #N canvas 308 126 1046 503 conversion 0;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-conversion 64 float 0;
-#X coords 0 107.22 63 21.0007 200 140 1 0 0;
+#X coords 0 107.906 63 22.4181 200 140 1 0 0;
 #X restore 738 57 graph;
 #X msg 43 39 mtof;
 #X text 120 38 Convert all values from MIDI to frequency in Hz;
@@ -532,11 +532,11 @@ in order to label peak indices directly on the table., f 89;
 changed since the last time this method was called \, it is sent out
 the left outlet \, and its index out the right outlet. Bang repeatedly
 with a metro to update constantly., f 41;
-#X msg 649 345 find_zero_crossings;
+#X msg 687 270 find_zero_crossings;
 #X obj 76 355 s \$0-tool-1;
 #X obj 87 582 s \$0-tool-1;
-#X obj 649 437 s \$0-tool-1;
-#X text 670 375 Search for zero crossings. Left outlet reports the
+#X obj 687 362 s \$0-tool-1;
+#X text 708 300 Search for zero crossings. Left outlet reports the
 number of zero crossings \, and right outlet supplies a list of the
 crossing indices.;
 #X obj 676 111 s \$0-tool-1;
@@ -564,6 +564,11 @@ of sign).;
 #X text 254 531 Nearest value in table.;
 #X text 214 579 For these methods \, the value itself appears at the
 left outlet \, and its index at the right.;
+#X obj 687 592 s \$0-tool-1;
+#X text 745 490 Find the k smallest values and output as a list;
+#X text 775 521 Find the k largest values and output as a list;
+#X msg 687 491 mink 5;
+#X msg 717 522 maxk 7;
 #X connect 0 0 11 0;
 #X connect 1 0 12 0;
 #X connect 2 0 12 0;
@@ -574,6 +579,8 @@ left outlet \, and its index at the right.;
 #X connect 7 0 12 0;
 #X connect 8 0 15 0;
 #X connect 10 0 13 0;
+#X connect 28 0 25 0;
+#X connect 29 0 25 0;
 #X restore 202 323 pd searching-1;
 #X text 53 219 [tabletool] manipulates \, searches \, and provides
 information about tables and their data. Generally \, when the output
@@ -735,8 +742,6 @@ the results out the right outlet as a list.;
 #X connect 10 0 11 0;
 #X connect 11 0 7 0;
 #X restore 332 343 pd multi-table-stuff;
-#X text 550 392 Updated for timbreID version 0.7.6;
-#X text 550 412 June 2018;
 #N canvas 484 89 751 696 request-info-2 0;
 #X msg 324 497 differentiate;
 #X text 53 417 If table size == N \, this creates a list of N values
@@ -1087,6 +1092,8 @@ peak in a frequency spectrum context)., f 39;
 #X connect 19 1 15 0;
 #X restore 202 363 pd analysis;
 #X obj 551 435 declare -lib timbreID/timbreIDLib;
+#X text 550 392 Updated for timbreID version 0.9.0;
+#X text 550 412 May 2021;
 #X connect 14 0 15 0;
 #X connect 15 0 13 0;
 #X connect 15 1 12 0;

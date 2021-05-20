@@ -278,6 +278,74 @@ static void tabletool_max(t_tabletool *x)
 }
 
 
+static void tabletool_mink(t_tabletool *x, t_float k)
+{
+    t_garray *a;
+
+    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+        pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    else
+    {
+        t_sampIdx i;
+        t_float *tableVals;
+        t_atom *outputList;
+
+        tableVals = (t_float *)t_getbytes(x->x_arrayPoints*sizeof(t_float));
+        outputList = (t_atom *)t_getbytes(k*sizeof(t_atom));
+
+        for(i=0; i<x->x_arrayPoints; i++)
+            tableVals[i] = x->x_vec[i].w_float;
+
+        tIDLib_bubbleSort(x->x_arrayPoints, tableVals);
+
+        for (i = 0; i < k; i++)
+            SETFLOAT(outputList + i, tableVals[i]);
+
+        outlet_list(x->x_list, 0, k, outputList);
+
+        // free the tableVals and outputList buffers
+        t_freebytes(tableVals, x->x_arrayPoints * sizeof(t_float));
+        t_freebytes(outputList, k * sizeof(t_atom));
+    }
+}
+
+
+static void tabletool_maxk(t_tabletool *x, t_float k)
+{
+    t_garray *a;
+
+    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+        pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    else
+    {
+        t_sampIdx i;
+        t_float *tableVals;
+        t_atom *outputList;
+
+        tableVals = (t_float *)t_getbytes(x->x_arrayPoints*sizeof(t_float));
+        outputList = (t_atom *)t_getbytes(k*sizeof(t_atom));
+
+        for(i=0; i<x->x_arrayPoints; i++)
+            tableVals[i] = x->x_vec[i].w_float;
+
+        tIDLib_bubbleSort(x->x_arrayPoints, tableVals);
+
+        for (i = 0; i < k; i++)
+            SETFLOAT(outputList + i, tableVals[(x->x_arrayPoints - 1) - i]);
+
+        outlet_list(x->x_list, 0, k, outputList);
+
+        // free the tableVals and outputList buffers
+        t_freebytes(tableVals, x->x_arrayPoints * sizeof(t_float));
+        t_freebytes(outputList, k * sizeof(t_atom));
+    }
+}
+
+
 static void tabletool_maxMag(t_tabletool *x)
 {
     t_garray *a;
@@ -3634,6 +3702,22 @@ void tabletool_setup(void)
         tabletool_class,
         (t_method)tabletool_max,
         gensym("max"),
+        0
+    );
+
+    class_addmethod(
+        tabletool_class,
+        (t_method)tabletool_mink,
+        gensym("mink"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        tabletool_class,
+        (t_method)tabletool_maxk,
+        gensym("maxk"),
+        A_DEFFLOAT,
         0
     );
 
