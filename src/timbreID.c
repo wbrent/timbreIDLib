@@ -113,7 +113,7 @@ static t_float timbreID_attributeMean(t_instanceIdx numRows, t_attributeIdx colu
         {
             if(normalFlag)
             {
-                min = attributeData[column].normData.min;
+                min = attributeData[column].normData.minVal;
                 scalar = attributeData[column].normData.normScalar;
 
                 avg += (instances[i].data[column] - min) * scalar;
@@ -160,19 +160,19 @@ static t_float timbreID_getInputDist(t_timbreID *x, t_instanceIdx instanceID)
 
         if(x->x_normalize)
         {
-            if(x->x_attributeData[thisAttribute].inputData < x->x_attributeData[thisAttribute].normData.min)
+            if(x->x_attributeData[thisAttribute].inputData < x->x_attributeData[thisAttribute].normData.minVal)
                 min = x->x_attributeData[thisAttribute].inputData;
             else
-                min = x->x_attributeData[thisAttribute].normData.min;
+                min = x->x_attributeData[thisAttribute].normData.minVal;
 
-            if(x->x_attributeData[thisAttribute].inputData > x->x_attributeData[thisAttribute].normData.max)
+            if(x->x_attributeData[thisAttribute].inputData > x->x_attributeData[thisAttribute].normData.maxVal)
             {
                 max = x->x_attributeData[thisAttribute].inputData;
                 normScalar = 1.0/(max-min);
             }
             else
             {
-                max = x->x_attributeData[thisAttribute].normData.max;
+                max = x->x_attributeData[thisAttribute].normData.maxVal;
                 normScalar = x->x_attributeData[thisAttribute].normData.normScalar;
             }
 
@@ -245,8 +245,8 @@ static t_float timbreID_getDist(t_timbreID *x, t_instance instance1, t_instance 
         if(x->x_normalize)
         {
             // don't need to test if instance1 has attribute values below/above current min/max values in normData, because this function isn't used on input vectors from the wild. It's only used to compare database instances to other database instances, so the normalization terms are valid.
-            min = x->x_attributeData[thisAttribute].normData.min;
-            max = x->x_attributeData[thisAttribute].normData.max;
+            min = x->x_attributeData[thisAttribute].normData.minVal;
+            max = x->x_attributeData[thisAttribute].normData.maxVal;
             normScalar = x->x_attributeData[thisAttribute].normData.normScalar;
 
             vec1Buffer[j] = (instance1.data[thisAttribute] - min) * normScalar;
@@ -811,8 +811,8 @@ static void timbreID_normalize(t_timbreID *x, t_floatarg n)
         // initialize normData
         for(i=0; i<x->x_maxFeatureLength; i++)
         {
-            x->x_attributeData[i].normData.min = 0.0;
-            x->x_attributeData[i].normData.max = 0.0;
+            x->x_attributeData[i].normData.minVal = 0.0;
+            x->x_attributeData[i].normData.maxVal = 0.0;
             x->x_attributeData[i].normData.normScalar = 1.0;
         }
 
@@ -847,17 +847,17 @@ static void timbreID_normalize(t_timbreID *x, t_floatarg n)
 
                 tIDLib_bubbleSort(x->x_numInstances, attributeColumn);
 
-                x->x_attributeData[j].normData.min = attributeColumn[0];
-                x->x_attributeData[j].normData.max = attributeColumn[x->x_numInstances-1];
+                x->x_attributeData[j].normData.minVal = attributeColumn[0];
+                x->x_attributeData[j].normData.maxVal = attributeColumn[x->x_numInstances-1];
 
-                if(x->x_attributeData[j].normData.max <= x->x_attributeData[j].normData.min)
+                if(x->x_attributeData[j].normData.maxVal <= x->x_attributeData[j].normData.minVal)
                 {
                     // this will fix things in the case of 1 instance, where min==max
-                    x->x_attributeData[j].normData.min = 0.0;
+                    x->x_attributeData[j].normData.minVal = 0.0;
                     x->x_attributeData[j].normData.normScalar = 1.0;
                 }
                 else
-                    x->x_attributeData[j].normData.normScalar = 1.0/(x->x_attributeData[j].normData.max - x->x_attributeData[j].normData.min);
+                    x->x_attributeData[j].normData.normScalar = 1.0/(x->x_attributeData[j].normData.maxVal - x->x_attributeData[j].normData.minVal);
 
             };
 
@@ -1257,7 +1257,7 @@ static void timbreID_computeVariance(t_timbreID *x)
             for(j=0; j<meanCentered[i].length; j++)
             {
                 if(x->x_normalize)
-                    meanCentered[i].data[j] = ((x->x_instances[i].data[j] - x->x_attributeData[j].normData.min) * x->x_attributeData[j].normData.normScalar) - attributeVar[j];
+                    meanCentered[i].data[j] = ((x->x_instances[i].data[j] - x->x_attributeData[j].normData.minVal) * x->x_attributeData[j].normData.normScalar) - attributeVar[j];
                 else
                     meanCentered[i].data[j] = x->x_instances[i].data[j] - attributeVar[j];
             }
@@ -1650,7 +1650,7 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx)
         for(i=0; i<thisFeatureLength; i++)
         {
             if(x->x_normalize)
-                SETFLOAT(listOut+i, (x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.min)*x->x_attributeData[i].normData.normScalar);
+                SETFLOAT(listOut+i, (x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal)*x->x_attributeData[i].normData.normScalar);
             else
                 SETFLOAT(listOut+i, x->x_instances[idxInt].data[i]);
         }
@@ -1790,7 +1790,7 @@ static void timbreID_maxValues(t_timbreID *x)
         listOut = (t_atom *)t_getbytes(x->x_maxFeatureLength * sizeof(t_atom));
 
         for(i=0; i<x->x_maxFeatureLength; i++)
-            SETFLOAT(listOut+i, x->x_attributeData[i].normData.max);
+            SETFLOAT(listOut+i, x->x_attributeData[i].normData.maxVal);
 
         selector = gensym("max_values");
         outlet_anything(x->x_listOut, selector, x->x_maxFeatureLength, listOut);
@@ -1815,7 +1815,7 @@ static void timbreID_minValues(t_timbreID *x)
         listOut = (t_atom *)t_getbytes(x->x_maxFeatureLength * sizeof(t_atom));
 
         for(i=0; i<x->x_maxFeatureLength; i++)
-            SETFLOAT(listOut+i, x->x_attributeData[i].normData.min);
+            SETFLOAT(listOut+i, x->x_attributeData[i].normData.minVal);
 
         selector = gensym("min_values");
         outlet_anything(x->x_listOut, selector, x->x_maxFeatureLength, listOut);
@@ -2048,7 +2048,7 @@ static void timbreID_writeText(t_timbreID *x, t_symbol *s)
                 break;
 
             if(x->x_normalize)
-                thisFeatureData = (*(featurePtr+thisAttribute) - x->x_attributeData[thisAttribute].normData.min)*x->x_attributeData[thisAttribute].normData.normScalar;
+                thisFeatureData = (*(featurePtr+thisAttribute) - x->x_attributeData[thisAttribute].normData.minVal)*x->x_attributeData[thisAttribute].normData.normScalar;
             else
                 thisFeatureData = *(featurePtr+thisAttribute);
 
@@ -2415,9 +2415,9 @@ static void timbreID_FANN(t_timbreID *x, t_symbol *s, t_float normRange)
             if(x->x_normalize)
             {
                 if(normRange)
-                    fprintf(filePtr, "%f ", ((x->x_instances[i].data[j] - x->x_attributeData[j].normData.min)*x->x_attributeData[j].normData.normScalar*2.0)-1.0);
+                    fprintf(filePtr, "%f ", ((x->x_instances[i].data[j] - x->x_attributeData[j].normData.minVal)*x->x_attributeData[j].normData.normScalar*2.0)-1.0);
                 else
-                    fprintf(filePtr, "%f ", (x->x_instances[i].data[j] - x->x_attributeData[j].normData.min)*x->x_attributeData[j].normData.normScalar);
+                    fprintf(filePtr, "%f ", (x->x_instances[i].data[j] - x->x_attributeData[j].normData.minVal)*x->x_attributeData[j].normData.normScalar);
             }
             else
                 fprintf(filePtr, "%f ", (x->x_instances[i].data[j]));

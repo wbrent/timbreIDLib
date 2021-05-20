@@ -152,8 +152,8 @@ typedef struct cluster
 
 typedef struct normData
 {
-    t_float max;
-    t_float min;
+    t_float maxVal;
+    t_float minVal;
     t_float normScalar;
 } t_normData;
 
