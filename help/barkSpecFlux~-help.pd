@@ -9,34 +9,6 @@
 #X obj 139 88 *~;
 #X obj 168 88 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#N canvas 584 81 536 467 attack-detection 0;
-#X obj 33 329 select 1;
-#X obj 33 370 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X floatatom 65 244 5 0 0 0 - - -;
-#X obj 33 69 adc~;
-#X obj 66 118 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X text 88 118 Turn on for continuous analysis;
-#X obj 66 148 metro 5.80499;
-#X obj 33 268 > 0.6;
-#X text 108 241 If 0.6 is too low or high \, try a different threshhold.
-;
-#X obj 85 371 print;
-#X obj 33 187 barkSpecFlux~ 1024 0.5 256;
-#X text 25 8 Bark spectrum flux can be used for basic attack detection.
-Turn on the toggle below to check it out.;
-#X obj 33 290 change;
-#X connect 0 0 1 0;
-#X connect 0 0 9 0;
-#X connect 2 0 7 1;
-#X connect 3 0 10 0;
-#X connect 4 0 6 0;
-#X connect 6 0 10 0;
-#X connect 7 0 12 0;
-#X connect 10 0 7 0;
-#X connect 12 0 0 0;
-#X restore 381 199 pd attack-detection;
 #X text 206 140 Activate a signal above and bang to output its flux.
 , f 19;
 #X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
@@ -84,7 +56,7 @@ two analysis windows in samples.;
 #X text 327 258 Change distance between analysis windows in samples
 , f 29;
 #X obj 37 519 barkSpecFlux~ 1024 0.5 512;
-#N canvas 442 81 850 694 other-settings 0;
+#N canvas 442 96 850 744 other-settings 0;
 #X obj 44 66 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
 -1 4;
 #X msg 44 86 window_function \$1;
@@ -94,35 +66,40 @@ two analysis windows in samples.;
 #X msg 143 206 power_spectrum \$1;
 #X obj 143 188 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 44 635 outlet;
-#X text 292 253 Construct a new filterbank with a specific spacing.
+#X obj 44 695 outlet;
+#X text 292 313 Construct a new filterbank with a specific spacing.
 ;
 #X text 284 206 Use power spectrum. (default: magnitude);
-#X msg 391 557 print;
-#X obj 243 326 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X msg 391 617 print;
+#X obj 243 386 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X msg 243 346 spec_band_avg \$1;
-#X obj 273 386 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X msg 243 406 spec_band_avg \$1;
+#X obj 273 446 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X msg 273 406 filter_avg \$1;
-#X text 269 294 Rather than sum energy in the triangular Bark spaced
+#X msg 273 466 filter_avg \$1;
+#X text 269 354 Rather than sum energy in the triangular Bark spaced
 filters to get the amount of energy in each Bark band \, you can average
 energy in the unfiltered bins. (default: OFF);
-#X text 299 374 If using the triangular Bark spaced filters \, you
+#X text 299 434 If using the triangular Bark spaced filters \, you
 can either sum or average the energy in each filter .(default: sum)
 ;
-#X text 441 559 Print current settings in the post window;
+#X text 441 619 Print current settings in the post window;
 #X text 42 29 Change windowing function. Rectangular (0) \, Blackman
 (1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
 ;
-#X msg 311 457 overlap 2;
-#X text 392 445 Inside a subpatch with re-blocking involving overlap
+#X msg 311 517 overlap 2;
+#X text 392 505 Inside a subpatch with re-blocking involving overlap
 (e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
 things to behave properly;
-#X msg 351 512 window 2000;
-#X text 439 511 Change window size;
-#X msg 192 253 filterbank 1;
+#X msg 351 572 window 2000;
+#X text 439 571 Change window size;
+#X msg 192 313 filterbank 1;
 #X text 206 146 Normalize spectrum (default: OFF);
+#X obj 173 248 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 173 266 log_spectrum \$1;
+#X text 294 266 Use the natural logarithm of spectrum values. (default:
+OFF);
 #X connect 0 0 1 0;
 #X connect 1 0 6 0;
 #X connect 2 0 3 0;
@@ -137,6 +114,8 @@ things to behave properly;
 #X connect 18 0 6 0;
 #X connect 20 0 6 0;
 #X connect 22 0 6 0;
+#X connect 24 0 25 0;
+#X connect 25 0 6 0;
 #X restore 301 361 pd other-settings;
 #X obj 189 209 metro 100;
 #X text 674 33 barkSpecFlux~ reports the full list of per-Bark-band
@@ -169,8 +148,6 @@ from window to window.;
 #X connect 6 0 4 0;
 #X connect 7 0 1 0;
 #X restore 242 565 pd plot-diffs;
-#X text 889 611 Updated for timbreID version 0.7.6;
-#X text 889 631 August 2018;
 #X msg 264 420 mode flux;
 #X msg 284 460 mode decay;
 #X msg 274 440 mode growth;
@@ -178,24 +155,90 @@ from window to window.;
 \, or spectral decay only. This affects the output of both outlets
 , f 34;
 #X obj 890 654 declare -lib timbreID/timbreIDLib;
-#X connect 0 0 27 0;
-#X connect 2 0 27 0;
+#X text 889 631 May 2021;
+#X text 889 611 Updated for timbreID version 0.9.0;
+#N canvas 603 273 983 497 attack-detection 0;
+#X obj 33 399 select 1;
+#X obj 33 440 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 103 334 5 0 1500 0 - - -;
+#X obj 33 69 adc~;
+#X obj 66 118 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X text 88 118 Turn on for continuous analysis;
+#X obj 66 148 metro 5.80499;
+#X obj 96 190 loadbang;
+#X msg 96 213 mode growth \, log_spectrum 1;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-rt-flux 400 float 0;
+#X coords 0 150 399 0 400 280 1 0 0;
+#X restore 528 58 graph;
+#N canvas 970 563 573 235 do-plotting 0;
+#X obj 48 39 inlet;
+#X obj 48 78 t f b;
+#X obj 159 128 f;
+#X obj 189 121 + 1;
+#X obj 48 158 tabwrite \$0-rt-flux;
+#X obj 189 144 % 400;
+#X obj 312 127 pack f \$0;
+#X msg 312 150 \; \$2-rt-flux ylabel 0 \$1;
+#X obj 312 57 loadbang;
+#X obj 392 57 inlet;
+#X msg 312 80 100;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 1 1 2 0;
+#X connect 2 0 3 0;
+#X connect 2 0 4 1;
+#X connect 3 0 5 0;
+#X connect 5 0 2 1;
+#X connect 6 0 7 0;
+#X connect 8 0 10 0;
+#X connect 9 0 6 0;
+#X connect 10 0 6 0;
+#X restore 83 378 pd do-plotting;
+#X text 285 161 For these purposes \, we'll turn on "growth" mode so
+that only positive flux is accumulated into the total. We can also
+activate "log_spectrum" to tighten and exaggerate the flux peaks so
+that they're easier to locate. These seettings work pretty well for
+quick/sudden broadband transients like snaps \, claps \, and snare
+drums., f 30;
+#X obj 33 277 barkSpecFlux~ 1024 0.5 256;
+#X text 25 8 Bark spectrum flux can be used for basic attack detection.
+Turn on the toggle below to check it out.;
+#X text 146 334 If 100 is too low or high \, try a different threshhold.
+, f 29;
+#X obj 33 378 > 100;
+#X connect 0 0 1 0;
+#X connect 2 0 10 1;
+#X connect 2 0 15 1;
+#X connect 3 0 12 0;
+#X connect 4 0 6 0;
+#X connect 6 0 12 0;
+#X connect 7 0 8 0;
+#X connect 8 0 12 0;
+#X connect 12 0 10 0;
+#X connect 12 0 15 0;
+#X connect 15 0 0 0;
+#X restore 381 196 pd attack-detection;
+#X connect 0 0 26 0;
+#X connect 2 0 26 0;
 #X connect 3 0 2 1;
-#X connect 4 0 27 0;
+#X connect 4 0 26 0;
 #X connect 5 0 4 1;
-#X connect 11 0 4 0;
-#X connect 12 0 2 0;
-#X connect 13 0 29 0;
-#X connect 14 0 27 0;
-#X connect 15 0 14 1;
-#X connect 16 0 14 0;
-#X connect 22 0 24 0;
-#X connect 23 0 27 0;
-#X connect 24 0 27 0;
-#X connect 27 0 18 0;
-#X connect 27 1 32 0;
-#X connect 28 0 27 0;
-#X connect 29 0 27 0;
-#X connect 35 0 27 0;
-#X connect 36 0 27 0;
-#X connect 37 0 27 0;
+#X connect 10 0 4 0;
+#X connect 11 0 2 0;
+#X connect 12 0 28 0;
+#X connect 13 0 26 0;
+#X connect 14 0 13 1;
+#X connect 15 0 13 0;
+#X connect 21 0 23 0;
+#X connect 22 0 26 0;
+#X connect 23 0 26 0;
+#X connect 26 0 17 0;
+#X connect 26 1 31 0;
+#X connect 27 0 26 0;
+#X connect 28 0 26 0;
+#X connect 32 0 26 0;
+#X connect 33 0 26 0;
+#X connect 34 0 26 0;

@@ -27,6 +27,7 @@ typedef struct _barkSpecFlux
     t_windowFunction x_windowFunction;
     t_bool x_normalize;
     t_bool x_powerSpectrum;
+    t_bool x_logSpectrum;
     t_float *x_fftwInForwardWindow;
     t_float *x_fftwInBackWindow;
     fftwf_complex *x_fftwOutForwardWindow;
@@ -254,6 +255,23 @@ static void barkSpecFlux_analyze(t_barkSpecFlux *x, t_floatarg start, t_floatarg
         {
             t_float diff, val;
 
+        if (x->x_logSpectrum)
+        {
+            t_float logForward, logBack;
+
+            if (x->x_fftwInForwardWindow[i] == 0.0)
+                logForward = 0.0;
+            else
+                logForward = log (x->x_fftwInForwardWindow[i]);
+
+            if (x->x_fftwInBackWindow[i] == 0.0)
+                logBack = 0.0;
+            else
+                logBack = log (x->x_fftwInBackWindow[i]);
+
+            diff = logForward - logBack;
+        }
+        else
             diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
 
             switch(x->x_mode)
@@ -337,7 +355,24 @@ static void barkSpecFlux_chain_fftData(t_barkSpecFlux *x, t_symbol *s, int argc,
     {
         t_float diff, val;
 
-        diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
+        if (x->x_logSpectrum)
+        {
+            t_float logForward, logBack;
+
+            if (x->x_fftwInForwardWindow[i] == 0.0)
+                logForward = 0.0;
+            else
+                logForward = log (x->x_fftwInForwardWindow[i]);
+
+            if (x->x_fftwInBackWindow[i] == 0.0)
+                logBack = 0.0;
+            else
+                logBack = log (x->x_fftwInBackWindow[i]);
+
+            diff = logForward - logBack;
+        }
+        else
+            diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
 
         switch(x->x_mode)
         {
@@ -407,7 +442,24 @@ static void barkSpecFlux_chain_magSpec(t_barkSpecFlux *x, t_symbol *s, int argc,
     {
         t_float diff, val;
 
-        diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
+        if (x->x_logSpectrum)
+        {
+            t_float logForward, logBack;
+
+            if (x->x_fftwInForwardWindow[i] == 0.0)
+                logForward = 0.0;
+            else
+                logForward = log (x->x_fftwInForwardWindow[i]);
+
+            if (x->x_fftwInBackWindow[i] == 0.0)
+                logBack = 0.0;
+            else
+                logBack = log (x->x_fftwInBackWindow[i]);
+
+            diff = logForward - logBack;
+        }
+        else
+            diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
 
         switch(x->x_mode)
         {
@@ -460,7 +512,24 @@ static void barkSpecFlux_chain_barkSpec(t_barkSpecFlux *x, t_symbol *s, int argc
     {
         t_float diff, val;
 
-        diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
+        if (x->x_logSpectrum)
+        {
+            t_float logForward, logBack;
+
+            if (x->x_fftwInForwardWindow[i] == 0.0)
+                logForward = 0.0;
+            else
+                logForward = log (x->x_fftwInForwardWindow[i]);
+
+            if (x->x_fftwInBackWindow[i] == 0.0)
+                logBack = 0.0;
+            else
+                logBack = log (x->x_fftwInBackWindow[i]);
+
+            diff = logForward - logBack;
+        }
+        else
+            diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
 
         switch(x->x_mode)
         {
@@ -577,6 +646,7 @@ static void barkSpecFlux_print(t_barkSpecFlux *x)
     post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
     post("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
     post("%s power spectrum: %i", x->x_objSymbol->s_name, x->x_powerSpectrum);
+    post("%s log spectrum: %i", x->x_objSymbol->s_name, x->x_logSpectrum);
     post("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
     post("%s separation: %i", x->x_objSymbol->s_name, x->x_separation);
     post("%s squared difference: %i", x->x_objSymbol->s_name, x->x_squaredDiff);
@@ -658,6 +728,19 @@ static void barkSpecFlux_powerSpectrum(t_barkSpecFlux *x, t_floatarg spec)
         post("%s using power spectrum", x->x_objSymbol->s_name);
     else
         post("%s using magnitude spectrum", x->x_objSymbol->s_name);
+}
+
+
+static void barkSpecFlux_logSpectrum(t_barkSpecFlux *x, t_floatarg spec)
+{
+    spec = (spec<0)?0:spec;
+    spec = (spec>1)?1:spec;
+    x->x_logSpectrum = spec;
+
+    if(x->x_logSpectrum)
+        post("%s log spectrum enabled", x->x_objSymbol->s_name);
+    else
+        post("%s log spectrum disabled", x->x_objSymbol->s_name);
 }
 
 
@@ -824,6 +907,7 @@ static void *barkSpecFlux_new(t_symbol *s, int argc, t_atom *argv)
     x->x_windowFunction = blackman;
     x->x_normalize = false;
     x->x_powerSpectrum = false;
+    x->x_logSpectrum = false;
     x->x_specBandAvg = false;
     x->x_filterAvg = false;
     x->x_squaredDiff = false; // absolute value by default
@@ -843,8 +927,8 @@ static void *barkSpecFlux_new(t_symbol *s, int argc, t_atom *argv)
     x->x_fftwPlanBackWindow = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwInBackWindow, x->x_fftwOutBackWindow, FFTWPLANNERFLAG);
 
     // we're supposed to initialize the input array after we create the plan
-     for(i=0; i<x->x_window; i++)
-     {
+    for(i=0; i<x->x_window; i++)
+    {
         x->x_fftwInForwardWindow[i] = 0.0;
         x->x_fftwInBackWindow[i] = 0.0;
     }
@@ -1032,6 +1116,14 @@ void barkSpecFlux_setup(void)
         barkSpecFlux_class,
         (t_method)barkSpecFlux_powerSpectrum,
         gensym("power_spectrum"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        barkSpecFlux_class,
+        (t_method)barkSpecFlux_logSpectrum,
+        gensym("log_spectrum"),
         A_DEFFLOAT,
         0
     );

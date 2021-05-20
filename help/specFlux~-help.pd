@@ -9,11 +9,11 @@
 #X obj 169 90 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X floatatom 88 461 10 0 0 0 - - specFlux;
-#N canvas 584 81 517 376 attack-detection 0;
-#X obj 33 289 select 1;
-#X obj 33 330 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#N canvas 603 273 983 497 attack-detection 0;
+#X obj 33 399 select 1;
+#X obj 33 440 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X floatatom 65 244 5 0 0 0 - - -;
+#X floatatom 103 334 5 0 1500 0 - - -;
 #X obj 33 69 adc~;
 #X obj 66 118 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
@@ -21,17 +21,57 @@
 #X obj 66 148 metro 5.80499;
 #X text 25 8 Spectral flux can be used for basic attack detection.
 Turn on the toggle below to check it out.;
-#X obj 33 268 > 0.6;
-#X text 108 241 If 0.6 is too low or high \, try a different threshhold.
-;
-#X obj 33 187 specFlux~ 1024 256;
+#X obj 33 277 specFlux~ 1024 256;
+#X obj 96 190 loadbang;
+#X msg 96 213 mode growth \, log_spectrum 1;
+#X obj 33 378 > 800;
+#X text 146 334 If 800 is too low or high \, try a different threshhold.
+, f 29;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-rt-flux 400 float 0;
+#X coords 0 1500 399 0 400 280 1 0 0;
+#X restore 528 58 graph;
+#N canvas 970 563 573 235 do-plotting 0;
+#X obj 48 39 inlet;
+#X obj 48 78 t f b;
+#X obj 159 128 f;
+#X obj 189 121 + 1;
+#X obj 48 158 tabwrite \$0-rt-flux;
+#X obj 189 144 % 400;
+#X obj 312 127 pack f \$0;
+#X msg 312 150 \; \$2-rt-flux ylabel 0 \$1;
+#X obj 312 57 loadbang;
+#X msg 312 80 800;
+#X obj 392 57 inlet;
 #X connect 0 0 1 0;
-#X connect 2 0 8 1;
-#X connect 3 0 10 0;
+#X connect 1 0 4 0;
+#X connect 1 1 2 0;
+#X connect 2 0 3 0;
+#X connect 2 0 4 1;
+#X connect 3 0 5 0;
+#X connect 5 0 2 1;
+#X connect 6 0 7 0;
+#X connect 8 0 9 0;
+#X connect 9 0 6 0;
+#X connect 10 0 6 0;
+#X restore 83 378 pd do-plotting;
+#X text 285 161 For these purposes \, we'll turn on "growth" mode so
+that only positive flux is accumulated into the total. We can also
+activate "log_spectrum" to tighten and exaggerate the flux peaks so
+that they're easier to locate. These seettings work pretty well for
+quick/sudden broadband transients like snaps \, claps \, and snare
+drums., f 30;
+#X connect 0 0 1 0;
+#X connect 2 0 11 1;
+#X connect 2 0 14 1;
+#X connect 3 0 8 0;
 #X connect 4 0 6 0;
-#X connect 6 0 10 0;
-#X connect 8 0 0 0;
+#X connect 6 0 8 0;
+#X connect 8 0 11 0;
+#X connect 8 0 14 0;
+#X connect 9 0 10 0;
 #X connect 10 0 8 0;
+#X connect 11 0 0 0;
 #X restore 435 240 pd attack-detection;
 #X text 208 144 Activate a signal above and bang to output its flux.
 , f 21;
@@ -39,37 +79,41 @@ Turn on the toggle below to check it out.;
 0;
 #X obj 4 5 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
 0;
-#N canvas 278 81 890 662 other-settings 0;
-#X text 191 249 Change window size.;
-#X obj 144 189 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#N canvas 278 96 890 662 other-settings 0;
+#X text 241 309 Change window size.;
+#X obj 194 249 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X msg 144 207 normalize \$1;
-#X obj 300 368 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X msg 194 267 normalize \$1;
+#X obj 350 428 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X text 338 367 Squared difference vs. Absolute value of difference.
+#X text 388 427 Squared difference vs. Absolute value of difference.
 ;
 #X obj 95 123 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X msg 95 143 power_spectrum \$1;
 #X text 126 123 Use power instead of magnitude;
 #X obj 33 606 outlet;
-#X text 355 322 Change distance between analysis windows in samples.
+#X text 405 382 Change distance between analysis windows in samples.
 ;
 #X obj 33 57 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
 -1 0;
 #X msg 33 77 window_function \$1;
-#X msg 300 386 squared_diff \$1;
-#X msg 358 435 overlap 2;
-#X text 439 423 Inside a subpatch with re-blocking involving overlap
+#X msg 350 446 squared_diff \$1;
+#X msg 408 495 overlap 2;
+#X text 489 483 Inside a subpatch with re-blocking involving overlap
 (e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
 things to behave properly;
-#X msg 193 270 window 2000;
+#X msg 243 330 window 2000;
 #X text 31 20 Change windowing function. Rectangular (0) \, Blackman
 (1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
 ;
-#X msg 245 323 separation 400;
-#X msg 401 497 print;
-#X text 182 188 Normalize spectrum. Default: OFF.;
+#X msg 295 383 separation 400;
+#X msg 451 557 print;
+#X text 232 248 Normalize spectrum. Default: OFF.;
+#X obj 145 183 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 145 203 log_spectrum \$1;
+#X text 176 183 Use the natural logarithm of spectrum values;
 #X connect 1 0 2 0;
 #X connect 2 0 8 0;
 #X connect 3 0 12 0;
@@ -82,6 +126,8 @@ things to behave properly;
 #X connect 15 0 8 0;
 #X connect 17 0 8 0;
 #X connect 18 0 8 0;
+#X connect 20 0 21 0;
+#X connect 21 0 8 0;
 #X restore 240 263 pd other-settings;
 #X text 223 413 Creation arguments are window size and separation in
 samples between analysis windows., f 48;
@@ -116,7 +162,7 @@ for classification \, see the timbreID helpfile:;
 is used in an attack detector. bonk~ and timbreID's bark~ objects are
 much better designed for this purpose - the sub-patch here is only
 a proof of concept.;
-#N canvas 0 81 450 300 do-plotting 0;
+#N canvas 0 96 450 300 do-plotting 0;
 #X obj 84 51 inlet;
 #X obj 84 150 list prepend 0;
 #X obj 84 90 t l l;
@@ -141,8 +187,6 @@ range of values for flux depends on which of these methods you choose
 \, the flux of noise~ is much higher than that of a sinusoid. This
 is because the spectrum of a sinusoid at a fixed frequency hardly changes
 at all from moment to moment.;
-#X text 41 513 Updated for timbreID version 0.7.6;
-#X text 41 533 August 2018;
 #X msg 270 309 mode flux;
 #X msg 290 349 mode decay;
 #X msg 280 329 mode growth;
@@ -150,6 +194,8 @@ at all from moment to moment.;
 \, or spectral decay only. This affects the output of both outlets
 , f 34;
 #X obj 42 555 declare -lib timbreID/timbreIDLib;
+#X text 41 513 Updated for timbreID version 0.9.0;
+#X text 41 533 May 2021;
 #X connect 0 0 15 0;
 #X connect 1 0 15 0;
 #X connect 2 0 1 1;
@@ -162,6 +208,6 @@ at all from moment to moment.;
 #X connect 15 1 23 0;
 #X connect 16 0 1 0;
 #X connect 17 0 15 0;
+#X connect 25 0 15 0;
+#X connect 26 0 15 0;
 #X connect 27 0 15 0;
-#X connect 28 0 15 0;
-#X connect 29 0 15 0;

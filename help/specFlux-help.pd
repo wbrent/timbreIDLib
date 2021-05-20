@@ -1,4 +1,4 @@
-#N canvas 213 81 963 670 10;
+#N canvas 213 96 963 670 10;
 #X declare -lib timbreID/timbreIDLib;
 #X obj 59 583 nbx 7 32 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 32
 -262144 -1 -1 0 256;
@@ -12,37 +12,42 @@ flux in general.;
 #X obj 4 5 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
 0;
 #N canvas 471 170 850 654 other-settings 0;
-#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
+#X obj 54 66 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
 -1 0;
-#X msg 54 106 window_function \$1;
-#X msg 110 168 set another-sample-array;
-#X msg 149 224 samplerate 48000;
-#X text 298 167 Read from a different array;
-#X msg 175 277 power_spectrum \$1;
-#X obj 175 259 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X msg 54 86 window_function \$1;
+#X msg 110 148 set another-sample-array;
+#X msg 149 204 samplerate 48000;
+#X text 298 147 Read from a different array;
+#X msg 175 257 power_spectrum \$1;
+#X obj 175 239 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 54 575 outlet;
-#X text 283 223 Specify your sample's sampling rate. (default: 44100)
+#X obj 54 605 outlet;
+#X text 283 203 Specify your sample's sampling rate. (default: 44100)
 ;
-#X text 316 277 Use power spectrum. (default: magnitude);
-#X msg 236 392 separation 128;
-#X obj 205 319 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X text 316 257 Use power spectrum. (default: magnitude);
+#X msg 286 422 separation 128;
+#X obj 255 349 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X msg 205 337 normalize \$1;
-#X text 384 460 Squared difference vs. Absolute value of difference.
+#X msg 255 367 normalize \$1;
+#X text 434 490 Squared difference vs. Absolute value of difference.
 ;
-#X msg 271 460 squared_diff \$1;
-#X obj 271 440 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X msg 321 490 squared_diff \$1;
+#X obj 321 470 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X text 52 49 Change windowing function. Rectangular (0) \, Blackman
+#X text 52 29 Change windowing function. Rectangular (0) \, Blackman
 (1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
 ;
-#X msg 316 502 print;
-#X text 363 386 Set separation in samples between analysis windows
+#X msg 366 532 print;
+#X text 413 416 Set separation in samples between analysis windows
 (default: half of current window size);
-#X text 186 136 Change internal window size setting;
-#X msg 84 136 window 2000;
-#X text 306 337 Normalize spectrum. (default: OFF);
+#X text 186 116 Change internal window size setting;
+#X msg 84 116 window 2000;
+#X text 356 367 Normalize spectrum. (default: OFF);
+#X obj 215 289 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 215 307 log_spectrum \$1;
+#X text 336 307 Use the natural logarithm of spectrum values. (default:
+OFF);
 #X connect 0 0 1 0;
 #X connect 1 0 7 0;
 #X connect 2 0 7 0;
@@ -56,6 +61,8 @@ flux in general.;
 #X connect 15 0 14 0;
 #X connect 17 0 7 0;
 #X connect 20 0 7 0;
+#X connect 22 0 23 0;
+#X connect 23 0 7 0;
 #X restore 182 321 pd other-settings;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-waveform 1024 float 0;
@@ -124,8 +131,6 @@ from the beginning of the array may produce incorrect flux values.
 #X msg 232 406 mode flux;
 #X msg 252 446 mode decay;
 #X msg 242 426 mode growth;
-#X text 713 595 Updated for timbreID version 0.7.6;
-#X text 713 615 August 2018;
 #X text 347 405 Change modes to report flux \, spectral growth only
 \, or spectral decay only. This affects the output of both outlets
 , f 34;
@@ -200,6 +205,8 @@ back window., f 25;
 #X connect 17 0 4 0;
 #X restore 212 351 pd chain_messages;
 #X obj 714 637 declare -lib timbreID/timbreIDLib;
+#X text 713 595 Updated for timbreID version 0.9.0;
+#X text 713 615 May 2021;
 #X connect 2 0 9 0;
 #X connect 6 0 15 0;
 #X connect 9 0 14 0;
@@ -210,4 +217,4 @@ back window., f 25;
 #X connect 17 0 15 0;
 #X connect 18 0 15 0;
 #X connect 19 0 15 0;
-#X connect 23 0 15 0;
+#X connect 21 0 15 0;

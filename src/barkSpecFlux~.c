@@ -29,6 +29,7 @@ typedef struct _barkSpecFlux_tilde
     t_uShortInt x_overlap;
     t_bool x_normalize;
     t_bool x_powerSpectrum;
+    t_bool x_logSpectrum;
     double x_lastDspTime;
     t_sample *x_signalBuffer;
     t_float *x_fftwInForwardWindow;
@@ -168,7 +169,24 @@ static void barkSpecFlux_tilde_bang(t_barkSpecFlux_tilde *x)
     {
         t_float diff, val;
 
-        diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
+        if (x->x_logSpectrum)
+        {
+            t_float logForward, logBack;
+
+            if (x->x_fftwInForwardWindow[i] == 0.0)
+                logForward = 0.0;
+            else
+                logForward = log (x->x_fftwInForwardWindow[i]);
+
+            if (x->x_fftwInBackWindow[i] == 0.0)
+                logBack = 0.0;
+            else
+                logBack = log (x->x_fftwInBackWindow[i]);
+
+            diff = logForward - logBack;
+        }
+        else
+            diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
 
         switch(x->x_mode)
         {
@@ -255,6 +273,7 @@ static void barkSpecFlux_tilde_print(t_barkSpecFlux_tilde *x)
     post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
     post("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
     post("%s power spectrum: %i", x->x_objSymbol->s_name, x->x_powerSpectrum);
+    post("%s log spectrum: %i", x->x_objSymbol->s_name, x->x_logSpectrum);
     post("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
     post("%s Bark spacing: %f", x->x_objSymbol->s_name, x->x_barkSpacing);
     post("%s number of filters: %i", x->x_objSymbol->s_name, x->x_numFilters);
@@ -400,6 +419,19 @@ static void barkSpecFlux_tilde_powerSpectrum(t_barkSpecFlux_tilde *x, t_floatarg
         post("%s using power spectrum", x->x_objSymbol->s_name);
     else
         post("%s using magnitude spectrum", x->x_objSymbol->s_name);
+}
+
+
+static void barkSpecFlux_tilde_logSpectrum(t_barkSpecFlux_tilde *x, t_floatarg spec)
+{
+    spec = (spec<0)?0:spec;
+    spec = (spec>1)?1:spec;
+    x->x_logSpectrum = spec;
+
+    if(x->x_logSpectrum)
+        post("%s log spectrum enabled", x->x_objSymbol->s_name);
+    else
+        post("%s log spectrum disabled", x->x_objSymbol->s_name);
 }
 
 
@@ -557,6 +589,7 @@ static void *barkSpecFlux_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_windowFunction = blackman;
     x->x_normalize = false;
     x->x_powerSpectrum = false;
+    x->x_logSpectrum = false;
     x->x_lastDspTime = clock_getlogicaltime();
     x->x_sizeFilterFreqs = 0;
     x->x_numFilters = 0; // this is just an init size that will be updated in createFilterbank anyway.
@@ -806,6 +839,14 @@ void barkSpecFlux_tilde_setup(void)
         barkSpecFlux_tilde_class,
         (t_method)barkSpecFlux_tilde_powerSpectrum,
         gensym("power_spectrum"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        barkSpecFlux_tilde_class,
+        (t_method)barkSpecFlux_tilde_logSpectrum,
+        gensym("log_spectrum"),
         A_DEFFLOAT,
         0
     );

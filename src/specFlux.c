@@ -27,6 +27,7 @@ typedef struct _specFlux
     t_windowFunction x_windowFunction;
     t_bool x_normalize;
     t_bool x_powerSpectrum;
+    t_bool x_logSpectrum;
     t_float *x_fftwInForwardWindow;
     t_float *x_fftwInBackWindow;
     fftwf_complex *x_fftwOutForwardWindow;
@@ -245,7 +246,24 @@ static void specFlux_analyze(t_specFlux *x, t_floatarg start, t_floatarg n)
         {
             t_float diff, val;
 
-            diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
+            if (x->x_logSpectrum)
+            {
+                t_float logForward, logBack;
+
+                if (x->x_fftwInForwardWindow[i] == 0.0)
+                    logForward = 0.0;
+                else
+                    logForward = log (x->x_fftwInForwardWindow[i]);
+
+                if (x->x_fftwInBackWindow[i] == 0.0)
+                    logBack = 0.0;
+                else
+                    logBack = log (x->x_fftwInBackWindow[i]);
+
+                diff = logForward - logBack;
+            }
+            else
+                diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
 
             switch(x->x_mode)
             {
@@ -323,7 +341,24 @@ static void specFlux_chain_fftData(t_specFlux *x, t_symbol *s, int argc, t_atom 
     {
         t_float diff, val;
 
-        diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
+        if (x->x_logSpectrum)
+        {
+            t_float logForward, logBack;
+
+            if (x->x_fftwInForwardWindow[i] == 0.0)
+                logForward = 0.0;
+            else
+                logForward = log (x->x_fftwInForwardWindow[i]);
+
+            if (x->x_fftwInBackWindow[i] == 0.0)
+                logBack = 0.0;
+            else
+                logBack = log (x->x_fftwInBackWindow[i]);
+
+            diff = logForward - logBack;
+        }
+        else
+            diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
 
         switch(x->x_mode)
         {
@@ -382,7 +417,24 @@ static void specFlux_chain_magSpec(t_specFlux *x, t_symbol *s, int argc, t_atom 
     {
         t_float diff, val;
 
-        diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
+        if (x->x_logSpectrum)
+        {
+            t_float logForward, logBack;
+
+            if (x->x_fftwInForwardWindow[i] == 0.0)
+                logForward = 0.0;
+            else
+                logForward = log (x->x_fftwInForwardWindow[i]);
+
+            if (x->x_fftwInBackWindow[i] == 0.0)
+                logBack = 0.0;
+            else
+                logBack = log (x->x_fftwInBackWindow[i]);
+
+            diff = logForward - logBack;
+        }
+        else
+            diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
 
         switch(x->x_mode)
         {
@@ -448,6 +500,7 @@ static void specFlux_print(t_specFlux *x)
     post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
     post("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
     post("%s power spectrum: %i", x->x_objSymbol->s_name, x->x_powerSpectrum);
+    post("%s log spectrum: %i", x->x_objSymbol->s_name, x->x_logSpectrum);
     post("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
     post("%s separation: %i", x->x_objSymbol->s_name, x->x_separation);
     post("%s squared difference: %i", x->x_objSymbol->s_name, x->x_squaredDiff);
@@ -529,6 +582,19 @@ static void specFlux_powerSpectrum(t_specFlux *x, t_floatarg spec)
         post("%s using power spectrum", x->x_objSymbol->s_name);
     else
         post("%s using magnitude spectrum", x->x_objSymbol->s_name);
+}
+
+
+static void specFlux_logSpectrum(t_specFlux *x, t_floatarg spec)
+{
+    spec = (spec<0)?0:spec;
+    spec = (spec>1)?1:spec;
+    x->x_logSpectrum = spec;
+
+    if(x->x_logSpectrum)
+        post("%s log spectrum enabled", x->x_objSymbol->s_name);
+    else
+        post("%s log spectrum disabled", x->x_objSymbol->s_name);
 }
 
 
@@ -665,6 +731,7 @@ static void *specFlux_new(t_symbol *s, int argc, t_atom *argv)
     x->x_windowFunction = blackman;
     x->x_normalize = false;
     x->x_powerSpectrum = false;
+    x->x_logSpectrum = false;
     x->x_squaredDiff = false;
     x->x_mode = mFlux;
 
@@ -814,6 +881,14 @@ void specFlux_setup(void)
         specFlux_class,
         (t_method)specFlux_powerSpectrum,
         gensym("power_spectrum"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        specFlux_class,
+        (t_method)specFlux_logSpectrum,
+        gensym("log_spectrum"),
         A_DEFFLOAT,
         0
     );
