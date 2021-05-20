@@ -1168,27 +1168,40 @@ t_float tIDLib_zeroCrossingRate (t_sampIdx n, t_sample *input, t_bool normalize)
 }
 
 // for chroma objects
-void tIDLib_getPitchBinRanges(t_binIdx *binRanges, t_float thisPitch, t_float loFreq, t_uChar octaveLimit, t_float pitchTolerance, t_sampIdx n, t_float sr)
+t_uInt tIDLib_getPitchBinRanges (t_binIdx *binRanges, t_float thisPitch, t_float loFreq, t_float hiFreq, t_float pitchTolerance, t_sampIdx n, t_float sr)
 {
     t_attributeIdx i, j;
+    t_uInt cardinality;
+
+    cardinality = 0;
 
     // fill buffer with ULONG_MAX so we can see where to stop when using this buffer
-    for(i=0; i<PBINRANGEBUFSIZE; i++)
+    for (i = 0; i < PBINRANGEBUFSIZE; i++)
         binRanges[i] = ULONG_MAX;
 
     // find the octave of this pitch that is above x_loFreq
-    while(mtof(thisPitch)<loFreq)
+    while (mtof(thisPitch) < loFreq)
         thisPitch += 12.0;
 
+    i = 0;
+
     // store all the bin ranges of octaves of thisPitch within x_loFreq and x_hiFreq
-    for(i=0, j=0; i<=octaveLimit; i++, j += 2)
+    while (mtof(thisPitch) < hiFreq)
     {
-        binRanges[j] = tIDLib_freq2bin(mtof(thisPitch - pitchTolerance), n, sr);
-        binRanges[j+1] = tIDLib_freq2bin(mtof(thisPitch + pitchTolerance), n, sr);
+        t_uShortInt;
+
+        binRanges[i] = tIDLib_freq2bin (mtof (thisPitch - pitchTolerance), n, sr);
+        binRanges[i+1] = tIDLib_freq2bin (mtof (thisPitch + pitchTolerance), n, sr);
+
+        // update the cardinality
+        cardinality++;
 
         // jump to next octave
         thisPitch += 12.0;
+        i += 2;
     }
+
+    return (cardinality);
 }
 
 void tIDLib_power(t_binIdx n, void *fftw_out, t_float *powBuf)

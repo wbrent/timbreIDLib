@@ -9,7 +9,7 @@ timbreID is free software: you can redistribute it and/or modify it under the te
 timbreID is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-version 0.9.0, May 19, 2021
+version 0.9.0A, May 20, 2021
 
 */
 
@@ -23,7 +23,7 @@ version 0.9.0, May 19, 2021
 #include <fftw3.h>
 #include "m_pd.h"
 
-#define TIDVERSION "0.9.0"
+#define TIDVERSION "0.9.0A"
 
 // choose either FFTW_MEASURE or FFTW_ESTIMATE here.
 #define FFTWPLANNERFLAG FFTW_ESTIMATE
@@ -226,7 +226,7 @@ t_float tIDLib_ampDB(t_sampIdx n, t_sample *input);
 void tIDLib_peakSample(t_sampIdx n, t_float *input, t_sampIdx *peakIdx, t_float *peakVal);
 t_sampIdx tIDLib_findAttackStartSamp(t_sampIdx n, t_float *input, t_float sampDeltaThresh, t_uShortInt numSampsThresh);
 t_float tIDLib_zeroCrossingRate(t_sampIdx n, t_sample *input, t_bool normalize);
-void tIDLib_getPitchBinRanges(t_binIdx *binRanges, t_float thisPitch, t_float loFreq, t_uChar octaveLimit, t_float pitchTolerance, t_sampIdx n, t_float sr);
+t_uInt tIDLib_getPitchBinRanges(t_binIdx *binRanges, t_float thisPitch, t_float loFreq, t_float hiFreq, t_float pitchTolerance, t_sampIdx n, t_float sr);
 void tIDLib_power(t_binIdx n, void *fftw_out, t_float *powBuf);
 void tIDLib_mag(t_binIdx n, t_float *input);
 void tIDLib_normal(t_binIdx n, t_float *input);

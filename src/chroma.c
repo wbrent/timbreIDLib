@@ -30,7 +30,6 @@ typedef struct _chroma
     t_binIdx *x_binRanges;
     t_float x_loFreq;
     t_float x_hiFreq;
-    t_uChar x_octaveLimit;
     t_float x_pitchTolerance;
     t_float x_energyThresh;
     t_uChar x_numChroma;
@@ -171,9 +170,10 @@ static void chroma_analyze(t_chroma *x, t_floatarg start, t_floatarg n)
 
         for(i=0; i<x->x_numChroma; i++)
         {
+            t_uInt cardinality;
             chromaSums[i] = 0.0;
 
-            tIDLib_getPitchBinRanges(x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_octaveLimit, x->x_pitchTolerance, x->x_window, x->x_sr);
+            cardinality = tIDLib_getPitchBinRanges(x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_hiFreq, x->x_pitchTolerance, x->x_window, x->x_sr);
 
             //startpost("chroma %lu bin ranges ", i);
 
@@ -205,6 +205,9 @@ static void chroma_analyze(t_chroma *x, t_floatarg start, t_floatarg n)
                 j += 2;
             }
             //endpost();
+
+            // divide by the cardinality to account for the fact that different pitch classes will have energy in a different number of bins
+            chromaSums[i] /= cardinality;
 
             if(chromaSums[i]>maxEnergySum)
                 maxEnergySum = chromaSums[i];
@@ -257,8 +260,10 @@ static void chroma_chain_fftData(t_chroma *x, t_symbol *s, int argc, t_atom *arg
 
     for(i=0; i<x->x_numChroma; i++)
     {
+        t_uInt cardinality;
         chromaSums[i] = 0.0;
-        tIDLib_getPitchBinRanges(x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_octaveLimit, x->x_pitchTolerance, x->x_window, x->x_sr);
+
+        cardinality = tIDLib_getPitchBinRanges(x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_hiFreq, x->x_pitchTolerance, x->x_window, x->x_sr);
         //startpost("chroma %lu bin ranges ", i);
 
         j = 0;
@@ -289,6 +294,9 @@ static void chroma_chain_fftData(t_chroma *x, t_symbol *s, int argc, t_atom *arg
             j += 2;
         }
         //endpost();
+
+        // divide by the cardinality to account for the fact that different pitch classes will have energy in a different number of bins
+        chromaSums[i] /= cardinality;
 
         if(chromaSums[i]>maxEnergySum)
             maxEnergySum = chromaSums[i];
@@ -331,8 +339,10 @@ static void chroma_chain_magSpec(t_chroma *x, t_symbol *s, int argc, t_atom *arg
 
     for(i=0; i<x->x_numChroma; i++)
     {
+        t_uInt cardinality;
         chromaSums[i] = 0.0;
-        tIDLib_getPitchBinRanges(x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_octaveLimit, x->x_pitchTolerance, x->x_window, x->x_sr);
+
+        cardinality = tIDLib_getPitchBinRanges(x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_hiFreq, x->x_pitchTolerance, x->x_window, x->x_sr);
         //startpost("chroma %lu bin ranges ", i);
 
         j = 0;
@@ -363,6 +373,9 @@ static void chroma_chain_magSpec(t_chroma *x, t_symbol *s, int argc, t_atom *arg
             j += 2;
         }
         //endpost();
+
+        // divide by the cardinality to account for the fact that different pitch classes will have energy in a different number of bins
+        chromaSums[i] /= cardinality;
 
         if(chromaSums[i]>maxEnergySum)
             maxEnergySum = chromaSums[i];
@@ -425,7 +438,6 @@ static void chroma_print(t_chroma *x)
     post("%s power spectrum: %i", x->x_objSymbol->s_name, x->x_powerSpectrum);
     post("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
     post("%s frequency range: %0.2f to %0.2fHz", x->x_objSymbol->s_name, x->x_loFreq, x->x_hiFreq);
-    post("octave limit: %u", x->x_octaveLimit);
     post("%s pitch tolerance: %f", x->x_objSymbol->s_name, x->x_pitchTolerance);
     post("%s spectral energy threshold: %f", x->x_objSymbol->s_name, x->x_energyThresh);
     post("%s resolution: %i", x->x_objSymbol->s_name, x->x_numChroma);
@@ -545,34 +557,6 @@ static void chroma_freqRange(t_chroma *x, t_floatarg loFreq, t_floatarg hiFreq)
 
     x->x_loFreq = loFreq;
     x->x_hiFreq = hiFreq;
-
-    // check all 12 pitch classes and find the largest number of octaves that all can accommodate in this frequency range
-    x->x_octaveLimit = 255;
-
-    for(i=0; i<x->x_numChroma; i++)
-    {
-        t_uChar thisPitch, numOctaves;
-        thisPitch = x->x_pitchClasses[i];
-        numOctaves = 0;
-
-        // find the octave of this pitch that is above x_loFreq
-        while(mtof(thisPitch)<loFreq)
-            thisPitch += 12.0;
-
-        while(mtof(thisPitch)<=hiFreq)
-        {
-            // jump to next octave
-            thisPitch += 12.0;
-            numOctaves++;
-        }
-
-        // back up a step since breaking out of the while puts us one step past the limit
-        thisPitch -= 12.0;
-        numOctaves--;
-
-        if(numOctaves < x->x_octaveLimit)
-            x->x_octaveLimit = numOctaves;
-    }
 }
 
 
