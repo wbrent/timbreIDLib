@@ -290,7 +290,7 @@ t_float tIDLib_mode(t_float *data, t_uLongInt n, t_uLongInt *countOut)
  }
 
 
-void tIDLib_bubbleSort(t_sampIdx n, t_float *list)
+void tIDLib_bubbleSort(t_sampIdx n, t_float *input )
 {
     t_sampIdx i;
 
@@ -301,15 +301,15 @@ void tIDLib_bubbleSort(t_sampIdx n, t_float *list)
 
         for(j=0; j<(n-1); j++)
         {
-            if(list[j] > list[j+1])
+            if(input[j] > input[j+1])
             {
                 t_float tmp;
 
                 flag = true;
 
-                tmp = list[j+1];
-                list[j+1] = list[j];
-                list[j] = tmp;
+                tmp = input[j+1];
+                input[j+1] = input[j];
+                input[j] = tmp;
             }
         }
 

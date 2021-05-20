@@ -183,7 +183,7 @@ t_sChar tIDLib_signum(t_float sample);
 t_float tIDLib_fitLineSlope(t_sampIdx n, t_float *input);
 t_float tIDLib_hps(t_float *data, t_uInt n, t_float loIdx, t_float hiIdx, t_uShortInt numHarm, t_float *yValues, t_float *maxYValue, t_bool debug);
 t_float tIDLib_mode(t_float *data, t_uLongInt n, t_uLongInt *countOut);
-void tIDLib_bubbleSort(t_sampIdx n, t_float *list);
+void tIDLib_bubbleSort(t_sampIdx n, t_float *input);
 void tIDLib_knnInfoBubbleSort(t_uShortInt n, t_instance *instances);
 void tIDLib_sortKnnInfo(t_uShortInt k, t_instanceIdx numInstances, t_instanceIdx prevMatch, t_instance *instances);
 t_float tIDLib_dotProd(t_attributeIdx n, t_float *v1, t_float *v2);
