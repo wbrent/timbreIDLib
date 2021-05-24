@@ -1,4 +1,4 @@
-#N canvas 208 81 1106 818 10;
+#N canvas 208 96 1106 818 10;
 #X declare -lib timbreID/timbreIDLib;
 #X obj 104 642 tgl 15 0 empty empty train 17 7 0 12 -262144 -1 -1 0
 1;
@@ -65,7 +65,6 @@ analysis in Pd have been streamlined as much as possible.;
 #X restore 594 62 pd long-winded-introduction;
 #X obj 594 105 cnv 15 380 50 empty empty empty 20 12 0 14 -228856 -66577
 0;
-#X text 608 120 Many more details inside -->;
 #X obj 692 500 timbreID, f 17;
 #X text 637 200 Read & write feature database (binary format).;
 #X text 548 354 Wipe all instances to start over.;
@@ -224,16 +223,15 @@ algorithm came up with.;
 #X connect 20 0 19 0;
 #X restore 35 132 pd file-formats;
 #N canvas 369 206 940 574 requesting-info 0;
-#X msg 32 260 feature_list \$1;
-#X floatatom 32 241 5 0 0 0 - - -;
+#X floatatom 32 141 5 0 0 0 - - -;
 #X msg 482 380 max_values;
 #X msg 568 380 min_values;
-#X msg 32 140 print;
-#X text 109 138 Print information about timbreID's internal memory
-and settings to Pd's post window., f 44;
+#X msg 485 97 print;
+#X text 562 95 Print information about timbreID's internal memory and
+settings to Pd's post window., f 44;
 #X msg 32 330 num_instances;
-#X obj 32 162 s \$0-tID;
-#X obj 32 280 s \$0-tID;
+#X obj 485 119 s \$0-tID;
+#X obj 32 180 s \$0-tID;
 #X obj 482 411 s \$0-tID;
 #X obj 32 352 s \$0-tID;
 #X obj 32 432 s \$0-tID;
@@ -246,7 +244,7 @@ database;
 f 34;
 #X text 481 342 Spit out a list of the max or min values for all attributes
 in your feature database.;
-#X text 77 235 Request a specific instance's full feature list;
+#X text 77 135 Request a specific instance's full feature list;
 #X msg 32 410 similarity_matrix 0 19 1;
 #X text 102 434 Generate a similarity matrix. Arguments are starting
 and ending instance indices \, and a normalization flag. The data is
@@ -258,15 +256,23 @@ matrix using GEM., f 46;
 timbreID's fourth outlet \, with selectors at the head of their output
 so that you can parse using [route]. See the subpatch for the fourth
 outlet for more details.;
-#X connect 0 0 8 0;
-#X connect 1 0 0 0;
-#X connect 2 0 9 0;
-#X connect 3 0 9 0;
-#X connect 4 0 7 0;
-#X connect 6 0 10 0;
-#X connect 13 0 12 0;
-#X connect 15 0 12 0;
-#X connect 19 0 11 0;
+#X msg 32 160 instance_list \$1;
+#X floatatom 32 231 5 0 0 0 - - -;
+#X obj 32 270 s \$0-tID;
+#X text 77 225 Request a list of a specific attribute for all instances
+;
+#X msg 32 250 attribute_list \$1;
+#X connect 0 0 21 0;
+#X connect 1 0 8 0;
+#X connect 2 0 8 0;
+#X connect 3 0 6 0;
+#X connect 5 0 9 0;
+#X connect 12 0 11 0;
+#X connect 14 0 11 0;
+#X connect 18 0 10 0;
+#X connect 21 0 7 0;
+#X connect 22 0 25 0;
+#X connect 25 0 23 0;
 #X restore 35 221 pd requesting-info;
 #N canvas 227 94 956 589 concatenative 0;
 #X msg 32 312 search_center 30;
@@ -594,18 +600,26 @@ synthesis, f 25;
 #X obj 692 432 r \$0-tID;
 #X obj 753 462 r \$0-id;
 #X obj 400 410 s \$0-tID;
-#N canvas 710 204 703 592 outlet-4 0;
+#N canvas 710 204 745 574 outlet-4 0;
 #X obj 66 39 inlet;
 #X obj 66 523 print num_instances;
-#X obj 116 503 print feature_list;
-#X obj 166 483 print cluster_membership;
-#X obj 206 463 print clusters_list;
-#X obj 246 443 print cluster_list;
-#X obj 326 403 print min_values;
-#X obj 366 383 print max_values;
-#X obj 406 363 print min_feature_length;
-#X obj 446 343 print max_feature_length;
-#X obj 486 323 print similarity_matrix;
+#X text 96 87 Several methods produce output at the fourth outlet \,
+with a selector at the head of the output list so that you can parse
+the results using [route]. All of the methods listed in this route
+below are explained in other areas of this help patch. The results
+are simply printed to the post window here.;
+#X obj 116 503 print instance_list;
+#X obj 66 201 route num_instances instance_list attribute_list cluster_membership
+clusters_list cluster_list order min_values max_values min_feature_length
+max_feature_length similarity_matrix attribute_info;
+#X obj 216 463 print cluster_membership;
+#X obj 256 443 print clusters_list;
+#X obj 296 423 print cluster_list;
+#X obj 376 383 print min_values;
+#X obj 416 363 print max_values;
+#X obj 456 343 print min_feature_length;
+#X obj 496 323 print max_feature_length;
+#X obj 536 303 print similarity_matrix;
 #N canvas 855 555 398 382 order-stuff 0;
 #X obj 46 188 list prepend 0;
 #X obj 172 179 list length;
@@ -626,64 +640,59 @@ synthesis, f 25;
 #X connect 7 1 1 0;
 #X connect 7 2 8 0;
 #X connect 9 0 7 0;
-#X restore 286 423 pd order-stuff;
-#X text 96 87 Several methods produce output at the fourth outlet \,
-with a selector at the head of the output list so that you can parse
-the results using [route]. All of the methods listed in this route
-below are explained in other areas of this help patch. The results
-are simply printed to the post window here.;
-#X text 390 425 << this sends timbre order results to a table in [pd
+#X restore 336 403 pd order-stuff;
+#X text 440 405 << this sends timbre order results to a table in [pd
 order-by-timbre], f 38;
-#X obj 66 201 route num_instances feature_list cluster_membership clusters_list
-cluster_list order min_values max_values min_feature_length max_feature_length
-similarity_matrix attribute_info;
-#X obj 526 303 print attribute_info;
-#X connect 0 0 14 0;
-#X connect 14 0 1 0;
-#X connect 14 1 2 0;
-#X connect 14 2 3 0;
-#X connect 14 3 4 0;
-#X connect 14 4 5 0;
-#X connect 14 5 11 0;
-#X connect 14 6 6 0;
-#X connect 14 7 7 0;
-#X connect 14 8 8 0;
-#X connect 14 9 9 0;
-#X connect 14 10 10 0;
-#X connect 14 11 15 0;
+#X obj 576 283 print attribute_info;
+#X obj 166 483 print attribute_list;
+#X connect 0 0 4 0;
+#X connect 4 0 1 0;
+#X connect 4 1 3 0;
+#X connect 4 2 16 0;
+#X connect 4 3 5 0;
+#X connect 4 4 6 0;
+#X connect 4 5 7 0;
+#X connect 4 6 13 0;
+#X connect 4 7 8 0;
+#X connect 4 8 9 0;
+#X connect 4 9 10 0;
+#X connect 4 10 11 0;
+#X connect 4 11 12 0;
+#X connect 4 12 15 0;
 #X restore 836 583 pd outlet-4;
 #X obj 55 491 list split 25;
 #X text 109 415 You can train on any combination of audio features.
 We'll use the first 25 BFCCs., f 31;
 #X msg 400 189 write ./data/feature-db.timid;
 #X msg 436 214 read ./data/feature-db.timid;
-#X text 39 739 Updated for timbreID version 0.7.6;
-#X text 39 759 August 2018;
 #X obj 39 785 declare -lib timbreID/timbreIDLib;
-#X connect 0 0 35 1;
-#X connect 1 0 37 0;
+#X text 39 739 Updated for timbreID version 0.9.0;
+#X text 39 759 June 2021;
+#X text 608 120 Many more details inside >>;
+#X connect 0 0 34 1;
+#X connect 1 0 36 0;
 #X connect 2 0 1 1;
 #X connect 3 0 10 0;
 #X connect 4 0 5 0;
-#X connect 4 0 22 0;
+#X connect 4 0 21 0;
 #X connect 4 0 5 1;
-#X connect 7 0 40 0;
-#X connect 9 0 40 0;
-#X connect 14 0 3 0;
-#X connect 14 1 6 0;
-#X connect 14 2 25 0;
-#X connect 14 3 41 0;
-#X connect 17 0 40 0;
-#X connect 20 0 4 0;
-#X connect 22 0 23 0;
-#X connect 22 1 23 0;
-#X connect 23 0 42 0;
+#X connect 7 0 39 0;
+#X connect 9 0 39 0;
+#X connect 13 0 3 0;
+#X connect 13 1 6 0;
+#X connect 13 2 24 0;
+#X connect 13 3 40 0;
+#X connect 16 0 39 0;
+#X connect 19 0 4 0;
+#X connect 21 0 22 0;
+#X connect 21 1 22 0;
+#X connect 22 0 41 0;
+#X connect 28 0 4 0;
 #X connect 29 0 4 0;
-#X connect 30 0 4 0;
-#X connect 35 0 36 0;
-#X connect 38 0 14 0;
-#X connect 39 0 14 1;
-#X connect 42 0 1 0;
-#X connect 42 0 35 0;
-#X connect 44 0 40 0;
-#X connect 45 0 40 0;
+#X connect 34 0 35 0;
+#X connect 37 0 13 0;
+#X connect 38 0 13 1;
+#X connect 41 0 1 0;
+#X connect 41 0 34 0;
+#X connect 43 0 39 0;
+#X connect 44 0 39 0;

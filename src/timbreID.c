@@ -1632,9 +1632,11 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx)
 {
     t_instanceIdx idxInt;
 
+    post("%s WARNING: \"feature_list\" method name is deprecated, use \"instance_list\" instead", x->x_objSymbol->s_name);
+
     idxInt = (idx<0)?0:idx;
 
-    if(idxInt > x->x_numInstances-1)
+    if(idxInt >= x->x_numInstances)
         pd_error(x, "%s: instance %i does not exist.", x->x_objSymbol->s_name, idxInt);
     else
     {
@@ -1660,6 +1662,86 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx)
 
         // free local memory
         t_freebytes(listOut, thisFeatureLength*sizeof(t_atom));
+    }
+}
+
+
+static void timbreID_instanceList(t_timbreID *x, t_floatarg idx)
+{
+    t_instanceIdx idxInt;
+
+    idxInt = (idx<0)?0:idx;
+
+    if(idxInt >= x->x_numInstances)
+        pd_error(x, "%s: instance %i does not exist.", x->x_objSymbol->s_name, idxInt);
+    else
+    {
+        t_attributeIdx i, thisFeatureLength;
+        t_atom *listOut;
+        t_symbol *selector;
+
+        thisFeatureLength = x->x_instances[idxInt].length;
+
+        // create local memory
+        listOut = (t_atom *)t_getbytes(thisFeatureLength * sizeof(t_atom));
+
+        for(i=0; i<thisFeatureLength; i++)
+        {
+            if(x->x_normalize)
+                SETFLOAT(listOut+i, (x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal)*x->x_attributeData[i].normData.normScalar);
+            else
+                SETFLOAT(listOut+i, x->x_instances[idxInt].data[i]);
+        }
+
+        selector = gensym("instance_list");
+        outlet_anything(x->x_listOut, selector, thisFeatureLength, listOut);
+
+        // free local memory
+        t_freebytes(listOut, thisFeatureLength*sizeof(t_atom));
+    }
+}
+
+
+static void timbreID_attributeList(t_timbreID *x, t_floatarg idx)
+{
+    t_attributeIdx idxInt;
+
+    idxInt = (idx<0)?0:idx;
+
+    if(x->x_numInstances == 0 || idxInt > x->x_maxFeatureLength - 1)
+        pd_error(x, "%s: attribute %i does not exist.", x->x_objSymbol->s_name, idxInt);
+    else
+    {
+        t_attributeIdx i, attributeListLength;
+        t_atom *listOut;
+        t_symbol *selector;
+
+        attributeListLength = x->x_numInstances;
+
+        // create local memory
+        listOut = (t_atom *)t_getbytes(attributeListLength * sizeof(t_atom));
+
+        for(i=0; i<attributeListLength; i++)
+        {
+            if (idxInt >= x->x_instances[i].length)
+            {
+                SETFLOAT(listOut+i, 0.0);
+                post("%s WARNING: attribute %i does not exist for instance %i, outputting 0 instead.", x->x_objSymbol->s_name, idxInt, i);
+            }
+            else
+            {
+                if(x->x_normalize)
+                    SETFLOAT(listOut+i, (x->x_instances[i].data[idxInt] - x->x_attributeData[idxInt].normData.minVal)*x->x_attributeData[idxInt].normData.normScalar);
+                else
+                    SETFLOAT(listOut+i, x->x_instances[i].data[idxInt]);
+            }
+        }
+
+        selector = gensym("attribute_list");
+        outlet_anything(x->x_listOut, selector, attributeListLength, listOut);
+
+        // free local memory
+        t_freebytes(listOut, attributeListLength*sizeof(t_atom));
     }
 }
 
@@ -1800,6 +1882,78 @@ static void timbreID_maxValues(t_timbreID *x)
     }
     else
         pd_error(x, "%s: feature database not normalized. maximum values not calculated yet.", x->x_objSymbol->s_name);
+}
+
+
+static void timbreID_mink(t_timbreID *x, t_float k)
+{
+/*
+    t_garray *a;
+
+    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+        pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    else
+    {
+        t_sampIdx i;
+        t_float *tableVals;
+        t_atom *outputList;
+
+        tableVals = (t_float *)t_getbytes(x->x_arrayPoints*sizeof(t_float));
+        outputList = (t_atom *)t_getbytes(k*sizeof(t_atom));
+
+        for(i=0; i<x->x_arrayPoints; i++)
+            tableVals[i] = x->x_vec[i].w_float;
+
+        tIDLib_bubbleSort(x->x_arrayPoints, tableVals);
+
+        for (i = 0; i < k; i++)
+            SETFLOAT(outputList + i, tableVals[i]);
+
+        outlet_list(x->x_list, 0, k, outputList);
+
+        // free the tableVals and outputList buffers
+        t_freebytes(tableVals, x->x_arrayPoints * sizeof(t_float));
+        t_freebytes(outputList, k * sizeof(t_atom));
+    }
+*/
+}
+
+
+static void timbreID_maxk(t_timbreID *x, t_float k)
+{
+/*
+    t_garray *a;
+
+    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+        pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    else
+    {
+        t_sampIdx i;
+        t_float *tableVals;
+        t_atom *outputList;
+
+        tableVals = (t_float *)t_getbytes(x->x_arrayPoints*sizeof(t_float));
+        outputList = (t_atom *)t_getbytes(k*sizeof(t_atom));
+
+        for(i=0; i<x->x_arrayPoints; i++)
+            tableVals[i] = x->x_vec[i].w_float;
+
+        tIDLib_bubbleSort(x->x_arrayPoints, tableVals);
+
+        for (i = 0; i < k; i++)
+            SETFLOAT(outputList + i, tableVals[(x->x_arrayPoints - 1) - i]);
+
+        outlet_list(x->x_list, 0, k, outputList);
+
+        // free the tableVals and outputList buffers
+        t_freebytes(tableVals, x->x_arrayPoints * sizeof(t_float));
+        t_freebytes(outputList, k * sizeof(t_atom));
+    }
+*/
 }
 
 
@@ -3015,6 +3169,23 @@ void timbreID_setup(void)
         0
     );
 
+// adding this additional method name to retrieve an instance. makes it more consistent with new attribute_list name. adding a warning that feature_list is deprecated
+    class_addmethod(
+        timbreID_class,
+        (t_method)timbreID_instanceList,
+        gensym("instance_list"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        timbreID_class,
+        (t_method)timbreID_attributeList,
+        gensym("attribute_list"),
+        A_DEFFLOAT,
+        0
+    );
+
     class_addmethod(
         timbreID_class,
         (t_method)timbreID_similarityMatrix,
@@ -3036,6 +3207,20 @@ void timbreID_setup(void)
         timbreID_class,
         (t_method)timbreID_minValues,
         gensym("min_values"),
+        0
+    );
+
+    class_addmethod(
+        timbreID_class,
+        (t_method)timbreID_maxk,
+        gensym("max_k_values"),
+        0
+    );
+
+    class_addmethod(
+        timbreID_class,
+        (t_method)timbreID_mink,
+        gensym("min_k_values"),
         0
     );
 
