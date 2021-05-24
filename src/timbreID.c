@@ -1887,73 +1887,90 @@ static void timbreID_maxValues(t_timbreID *x)
 
 static void timbreID_mink(t_timbreID *x, t_float k)
 {
-/*
-    t_garray *a;
+    t_sampIdx i;
+    t_attributeIdx j, kInt;
+    t_float *attVals;
+    t_symbol *selector;
+    t_atom *outputList;
 
-    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-        pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-    else
+    // TODO: must do a safety check on k to make sure it's between 0 and x_maxFeatureLength
+    if (k < 0 || k >= x->x_maxFeatureLength)
     {
-        t_sampIdx i;
-        t_float *tableVals;
-        t_atom *outputList;
-
-        tableVals = (t_float *)t_getbytes(x->x_arrayPoints*sizeof(t_float));
-        outputList = (t_atom *)t_getbytes(k*sizeof(t_atom));
-
-        for(i=0; i<x->x_arrayPoints; i++)
-            tableVals[i] = x->x_vec[i].w_float;
-
-        tIDLib_bubbleSort(x->x_arrayPoints, tableVals);
-
-        for (i = 0; i < k; i++)
-            SETFLOAT(outputList + i, tableVals[i]);
-
-        outlet_list(x->x_list, 0, k, outputList);
-
-        // free the tableVals and outputList buffers
-        t_freebytes(tableVals, x->x_arrayPoints * sizeof(t_float));
-        t_freebytes(outputList, k * sizeof(t_atom));
+        pd_error (x, "%s: k must be less than the maximum number of attributes in the database.", x->x_objSymbol->s_name);
+        return;
     }
-*/
+    else
+        kInt = k;
+
+    attVals = (t_float *)t_getbytes (x->x_numInstances * sizeof(t_float));
+    outputList = (t_atom *)t_getbytes ((kInt + 1) * sizeof (t_atom));
+
+    selector = gensym("min_k_values");
+
+    for (j = 0; j < x->x_maxFeatureLength; j++)
+    {
+        for (i = 0; i < x->x_numInstances; i++)
+            attVals[i] = x->x_instances[i].data[j];
+
+        tIDLib_bubbleSort(x->x_numInstances, attVals);
+
+        // start the list with the ID of this attribute
+        SETFLOAT (outputList, j);
+
+        for (i = 0; i < kInt; i++)
+            SETFLOAT (outputList + 1 + i, attVals[i]);
+
+        // output k values for this attribute
+        outlet_anything (x->x_listOut, selector, kInt + 1, outputList);
+    }
+
+    // free the attVals and outputList buffers
+    t_freebytes (attVals, x->x_numInstances * sizeof (t_float));
+    t_freebytes (outputList, (kInt + 1) * sizeof (t_atom));
 }
 
 
 static void timbreID_maxk(t_timbreID *x, t_float k)
 {
-/*
-    t_garray *a;
+    t_sampIdx i;
+    t_attributeIdx j, kInt;
+    t_float *attVals;
+    t_symbol *selector;
+    t_atom *outputList;
 
-    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-        pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-    else
+    if (k < 0 || k >= x->x_maxFeatureLength)
     {
-        t_sampIdx i;
-        t_float *tableVals;
-        t_atom *outputList;
-
-        tableVals = (t_float *)t_getbytes(x->x_arrayPoints*sizeof(t_float));
-        outputList = (t_atom *)t_getbytes(k*sizeof(t_atom));
-
-        for(i=0; i<x->x_arrayPoints; i++)
-            tableVals[i] = x->x_vec[i].w_float;
-
-        tIDLib_bubbleSort(x->x_arrayPoints, tableVals);
-
-        for (i = 0; i < k; i++)
-            SETFLOAT(outputList + i, tableVals[(x->x_arrayPoints - 1) - i]);
-
-        outlet_list(x->x_list, 0, k, outputList);
-
-        // free the tableVals and outputList buffers
-        t_freebytes(tableVals, x->x_arrayPoints * sizeof(t_float));
-        t_freebytes(outputList, k * sizeof(t_atom));
+        pd_error (x, "%s: k must be less than the maximum number of attributes in the database.", x->x_objSymbol->s_name);
+        return;
     }
-*/
+    else
+        kInt = k;
+
+    attVals = (t_float *)t_getbytes (x->x_numInstances * sizeof(t_float));
+    outputList = (t_atom *)t_getbytes ((kInt + 1) * sizeof (t_atom));
+
+    selector = gensym("max_k_values");
+
+    for (j = 0; j < x->x_maxFeatureLength; j++)
+    {
+        for (i = 0; i < x->x_numInstances; i++)
+            attVals[i] = x->x_instances[i].data[j];
+
+        tIDLib_bubbleSort(x->x_numInstances, attVals);
+
+        // start the list with the ID of this attribute
+        SETFLOAT (outputList, j);
+
+        for (i = 0; i < kInt; i++)
+            SETFLOAT (outputList + 1 + i, attVals[(x->x_numInstances - 1) - i]);
+
+        // output k values for this attribute
+        outlet_anything (x->x_listOut, selector, kInt + 1, outputList);
+    }
+
+    // free the attVals and outputList buffers
+    t_freebytes (attVals, x->x_numInstances * sizeof (t_float));
+    t_freebytes (outputList, (kInt + 1) * sizeof (t_atom));
 }
 
 
@@ -3214,6 +3231,7 @@ void timbreID_setup(void)
         timbreID_class,
         (t_method)timbreID_maxk,
         gensym("max_k_values"),
+        A_DEFFLOAT,
         0
     );
 
@@ -3221,6 +3239,7 @@ void timbreID_setup(void)
         timbreID_class,
         (t_method)timbreID_mink,
         gensym("min_k_values"),
+        A_DEFFLOAT,
         0
     );
 
