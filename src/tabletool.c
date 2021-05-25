@@ -292,6 +292,13 @@ static void tabletool_mink(t_tabletool *x, t_float k)
         t_float *tableVals;
         t_atom *outputList;
 
+        // safety check that k < x->x_arrayPoints
+        if (k < 0 || k >= x->x_arrayPoints)
+        {
+            pd_error (x, "%s: k must be less than the number of values in %s (%i).", x->x_objSymbol->s_name, x->x_arrayName->s_name, x->x_arrayPoints);
+            return;
+        }
+
         tableVals = (t_float *)t_getbytes(x->x_arrayPoints*sizeof(t_float));
         outputList = (t_atom *)t_getbytes(k*sizeof(t_atom));
 
@@ -325,6 +332,13 @@ static void tabletool_maxk(t_tabletool *x, t_float k)
         t_sampIdx i;
         t_float *tableVals;
         t_atom *outputList;
+
+        // safety check that k < x->x_arrayPoints
+        if (k < 0 || k >= x->x_arrayPoints)
+        {
+            pd_error (x, "%s: k must be less than the number of values in %s (%i).", x->x_objSymbol->s_name, x->x_arrayName->s_name, x->x_arrayPoints);
+            return;
+        }
 
         tableVals = (t_float *)t_getbytes(x->x_arrayPoints*sizeof(t_float));
         outputList = (t_atom *)t_getbytes(k*sizeof(t_atom));

@@ -1902,10 +1902,9 @@ static void timbreID_mink(t_timbreID *x, t_float k)
     t_symbol *selector;
     t_atom *outputList;
 
-    // TODO: must do a safety check on k to make sure it's between 0 and x_maxFeatureLength
-    if (k < 0 || k >= x->x_maxFeatureLength)
+    if (k < 0 || k >= x->x_numInstances)
     {
-        pd_error (x, "%s: k must be less than the maximum number of attributes in the database.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: k must be less than the number of instances in the database.", x->x_objSymbol->s_name);
         return;
     }
     else
@@ -1927,7 +1926,12 @@ static void timbreID_mink(t_timbreID *x, t_float k)
         SETFLOAT (outputList, j);
 
         for (i = 0; i < kInt; i++)
-            SETFLOAT (outputList + 1 + i, attVals[i]);
+        {
+            if (x->x_normalize)
+                SETFLOAT (outputList + 1 + i, (attVals[i] - x->x_attributeData[j].normData.minVal)*x->x_attributeData[j].normData.normScalar);
+            else
+                SETFLOAT (outputList + 1 + i, attVals[i]);
+        }
 
         // output k values for this attribute
         outlet_anything (x->x_listOut, selector, kInt + 1, outputList);
@@ -1947,9 +1951,9 @@ static void timbreID_maxk(t_timbreID *x, t_float k)
     t_symbol *selector;
     t_atom *outputList;
 
-    if (k < 0 || k >= x->x_maxFeatureLength)
+    if (k < 0 || k >= x->x_numInstances)
     {
-        pd_error (x, "%s: k must be less than the maximum number of attributes in the database.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: k must be less than the number of instances in the database.", x->x_objSymbol->s_name);
         return;
     }
     else
@@ -1971,7 +1975,12 @@ static void timbreID_maxk(t_timbreID *x, t_float k)
         SETFLOAT (outputList, j);
 
         for (i = 0; i < kInt; i++)
-            SETFLOAT (outputList + 1 + i, attVals[(x->x_numInstances - 1) - i]);
+        {
+            if (x->x_normalize)
+                SETFLOAT (outputList + 1 + i, (attVals[(x->x_numInstances - 1) - i] - x->x_attributeData[j].normData.minVal)*x->x_attributeData[j].normData.normScalar);
+            else
+                SETFLOAT (outputList + 1 + i, attVals[(x->x_numInstances - 1) - i]);
+        }
 
         // output k values for this attribute
         outlet_anything (x->x_listOut, selector, kInt + 1, outputList);
