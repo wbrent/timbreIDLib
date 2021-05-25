@@ -693,14 +693,14 @@ cosine \; hamming \; hann \;;
 #X restore 332 383 pd overlap-add;
 #N canvas 727 422 652 250 permutations 0;
 #X obj 66 114 tabletool \$0-perms;
-#X obj 289 184 tabletool \$0-perms;
-#X obj 289 137 loadbang;
+#X obj 289 194 tabletool \$0-perms;
+#X obj 289 147 loadbang;
 #X msg 66 23 permute 2;
 #X msg 86 53 permute 3;
 #X obj 447 158 table \$0-perms 5;
 #X floatatom 66 165 5 0 0 0 - - -;
 #X obj 176 165 print;
-#X msg 289 163 series 0 4 1;
+#X msg 289 173 series 0 4 1;
 #X text 227 29 The permute method lists all permutations (with repetition)
 of the data in the target table. The number of elements in the permutation
 results can be controlled with an argument. Here \, a table is filled
@@ -851,7 +851,7 @@ at the right outlet., f 75;
 #X connect 19 0 20 0;
 #X connect 22 0 20 0;
 #X restore 55 383 pd request-info-1;
-#N canvas 455 227 915 603 analysis 0;
+#N canvas 455 198 1148 603 analysis 0;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array \$0-table-analysis 513 float 1;
 #A 0 0.00400066 0.00235748 0.000394239 1.59483e-05 1.79706e-05 1.73275e-05
@@ -1077,6 +1077,22 @@ errors where there is more than one strong y-value peak.;
 #X text 35 19 Run the Harmonic Product Spectrum algorithm \, which
 attempts to find the common spacing of peak data (i.e. \, the fundamental
 peak in a frequency spectrum context)., f 39;
+#N canvas 0 96 450 278 (subpatch) 0;
+#X array \$0-table-region-labels 24 float 3;
+#A 0 3 3 3 1 1 4 4 4 4 4 2 2 2 0 0 0 0 2 2 0 0 3 3 3;
+#X coords 0 6 24 -1 200 100 1 0 0;
+#X restore 852 471 graph;
+#X msg 818 363 merge_naive;
+#X obj 818 386 tabletool \$0-table-region-labels;
+#X obj 1007 419 print region-bounds;
+#X text 816 188 When building a label file based on classifications
+of audio sub-frames \, it's often necessary to merge identically classified
+frames into regions with a starting and ending index. The "merge_naive"
+method performs this process \, reporting a list composed of <class
+ID> <start index> <end index> for each region found. The region lists
+are reported at the right outlet \, and the number of regions found
+is reported at the left outlet., f 43;
+#X floatatom 818 419 5 0 0 0 - - -;
 #X connect 1 0 3 0;
 #X connect 1 0 5 0;
 #X connect 1 1 19 0;
@@ -1092,6 +1108,9 @@ peak in a frequency spectrum context)., f 39;
 #X connect 18 0 17 0;
 #X connect 19 0 18 0;
 #X connect 19 1 15 0;
+#X connect 23 0 24 0;
+#X connect 24 0 27 0;
+#X connect 24 1 25 0;
 #X restore 202 363 pd analysis;
 #X obj 551 435 declare -lib timbreID/timbreIDLib;
 #X text 550 392 Updated for timbreID version 0.9.0;

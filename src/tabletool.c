@@ -3538,6 +3538,75 @@ static void tabletool_hps(t_tabletool *x, t_float loIdx, t_float hiIdx, t_float 
 }
 
 
+static void tabletool_mergeNaive (t_tabletool *x)
+{
+    t_garray *a;
+
+    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+        pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    else
+    {
+        int label;
+        t_sampIdx i, startIdx, endIdx, numRegions;
+        t_atom *listOut;
+
+        listOut = (t_atom *)t_getbytes (3 * sizeof (t_atom));
+
+        numRegions = 0;
+        startIdx = 0;
+
+        // start at the second value and compare all neighboring values
+        for (i = 1; i < x->x_arrayPoints; i++)
+        {
+            // if the value at index i does not match its previous neighbor, we found a region boundary
+            if (x->x_vec[i].w_float != x->x_vec[i - 1].w_float)
+            {
+                // the ending boundary of the current region is the previous neighbor index, i - 1
+                endIdx = i - 1;
+
+                // store the label, which is the value at the previous neighbor before the new region occurred on index i
+                label = x->x_vec[i - 1].w_float;
+
+                // fill output list with label, startIdx, endIdx
+                SETFLOAT (listOut, label);
+                SETFLOAT (listOut + 1, startIdx);
+                SETFLOAT (listOut + 2, endIdx);
+
+                // send the list out to report this region
+                outlet_list (x->x_list, 0, 3, listOut);
+
+                // increment the numRegions counter
+                numRegions++;
+
+                // set the current index as the starting boundary of the next region
+                startIdx = i;
+
+            }
+        }
+
+        // close the final region with the last index in the array as the end
+        endIdx = x->x_arrayPoints - 1;
+        label = x->x_vec[endIdx].w_float;
+
+        // fill output list with label, startIdx, endIdx
+        SETFLOAT (listOut, label);
+        SETFLOAT (listOut + 1, startIdx);
+        SETFLOAT (listOut + 2, endIdx);
+
+        // send the list out to report this region
+        outlet_list (x->x_list, 0, 3, listOut);
+
+        // increment numRegions one more for this final region
+        outlet_float(x->x_info, numRegions + 1);
+
+        // free local memory
+        t_freebytes (listOut, 3 * sizeof (t_atom));
+    }
+}
+
+
 static void tabletool_store(t_tabletool *x)
 {
     t_garray *a;
@@ -4379,6 +4448,13 @@ void tabletool_setup(void)
         A_DEFFLOAT,
         A_DEFFLOAT,
         A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        tabletool_class,
+        (t_method)tabletool_mergeNaive,
+        gensym("merge_naive"),
         0
     );
 
