@@ -833,12 +833,21 @@ static void timbreID_normalize(t_timbreID *x, t_floatarg n)
                 {
                     if(j>x->x_instances[i].length-1)
                     {
-                        // TODO: is this a good way to escape?
                         pd_error(x, "%s: attribute %i out of range for database instance %i. aborting normalization", x->x_objSymbol->s_name, j, i);
+                        // initialize normData
+                        for(i=0; i<x->x_maxFeatureLength; i++)
+                        {
+                            x->x_attributeData[i].normData.minVal = 0.0;
+                            x->x_attributeData[i].normData.maxVal = 0.0;
+                            x->x_attributeData[i].normData.normScalar = 1.0;
+                        }
+
                         x->x_normalize=false;
+
                         post("%s: feature attribute normalization OFF.", x->x_objSymbol->s_name);
                         // free local memory before exit
                         t_freebytes(attributeColumn, x->x_numInstances*sizeof(t_float));
+
                         return;
                     }
                     else
