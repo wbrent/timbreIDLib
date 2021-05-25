@@ -522,11 +522,11 @@ in order to label peak indices directly on the table., f 89;
 #X msg 76 45 equals 0;
 #X msg 117 452 max;
 #X msg 87 421 min;
-#X msg 157 531 nearest 0.5;
+#X msg 177 551 nearest 0.5;
 #X msg 127 125 greater 0.3;
 #X msg 166 215 less -0.1;
 #X msg 176 285 between -0.5 0.5;
-#X msg 137 488 max_mag;
+#X msg 157 518 max_mag;
 #X msg 676 70 change;
 #X text 777 51 Search for any changes in the table. If any value has
 changed since the last time this method was called \, it is sent out
@@ -534,7 +534,7 @@ the left outlet \, and its index out the right outlet. Bang repeatedly
 with a metro to update constantly., f 41;
 #X msg 687 270 find_zero_crossings;
 #X obj 76 355 s \$0-tool-1;
-#X obj 87 582 s \$0-tool-1;
+#X obj 87 602 s \$0-tool-1;
 #X obj 687 362 s \$0-tool-1;
 #X text 708 300 Search for zero crossings. Left outlet reports the
 number of zero crossings \, and right outlet supplies a list of the
@@ -559,16 +559,17 @@ out the right.;
 ;
 #X text 125 420 Minimum value in table.;
 #X text 155 451 Maximum value in table.;
-#X text 204 481 Value in table with the maximum magnitude (regardless
-of sign).;
-#X text 254 531 Nearest value in table.;
-#X text 214 579 For these methods \, the value itself appears at the
+#X text 274 551 Nearest value in table.;
+#X text 214 599 For these methods \, the value itself appears at the
 left outlet \, and its index at the right.;
 #X obj 687 592 s \$0-tool-1;
 #X text 745 490 Find the k smallest values and output as a list;
 #X text 775 521 Find the k largest values and output as a list;
 #X msg 687 491 mink 5;
 #X msg 717 522 maxk 7;
+#X msg 137 488 min_mag;
+#X text 224 496 Value and index of the item with the minimum/maximum
+magnitude (regardless of sign)., f 48;
 #X connect 0 0 11 0;
 #X connect 1 0 12 0;
 #X connect 2 0 12 0;
@@ -579,8 +580,9 @@ left outlet \, and its index at the right.;
 #X connect 7 0 12 0;
 #X connect 8 0 15 0;
 #X connect 10 0 13 0;
-#X connect 28 0 25 0;
-#X connect 29 0 25 0;
+#X connect 27 0 24 0;
+#X connect 28 0 24 0;
+#X connect 29 0 12 0;
 #X restore 202 323 pd searching-1;
 #X text 53 219 [tabletool] manipulates \, searches \, and provides
 information about tables and their data. Generally \, when the output

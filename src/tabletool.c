@@ -346,6 +346,37 @@ static void tabletool_maxk(t_tabletool *x, t_float k)
 }
 
 
+static void tabletool_minMag(t_tabletool *x)
+{
+    t_garray *a;
+
+    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
+        pd_error(x, "%s: no array named %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    else
+    {
+        t_sampIdx i;
+        t_float min, minVal;
+        t_atom indexOut;
+
+        min = FLT_MAX;
+        minVal = 0;
+
+        for(i=0; i<x->x_arrayPoints; i++)
+            if(fabs(x->x_vec[i].w_float) < min)
+            {
+                min = fabs(x->x_vec[i].w_float);
+                minVal = x->x_vec[i].w_float;
+                SETFLOAT(&indexOut, i);
+            }
+
+        outlet_list(x->x_list, 0, 1, &indexOut);
+        outlet_float(x->x_info, minVal);
+    }
+}
+
+
 static void tabletool_maxMag(t_tabletool *x)
 {
     t_garray *a;
@@ -3718,6 +3749,13 @@ void tabletool_setup(void)
         (t_method)tabletool_maxk,
         gensym("maxk"),
         A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        tabletool_class,
+        (t_method)tabletool_minMag,
+        gensym("min_mag"),
         0
     );
 
