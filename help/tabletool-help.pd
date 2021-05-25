@@ -565,11 +565,11 @@ left outlet \, and its index at the right.;
 #X obj 687 592 s \$0-tool-1;
 #X text 745 490 Find the k smallest values and output as a list;
 #X text 775 521 Find the k largest values and output as a list;
-#X msg 687 491 mink 5;
-#X msg 717 522 maxk 7;
 #X msg 137 488 min_mag;
 #X text 224 496 Value and index of the item with the minimum/maximum
 magnitude (regardless of sign)., f 48;
+#X msg 687 491 min_k 5;
+#X msg 717 522 max_k 7;
 #X connect 0 0 11 0;
 #X connect 1 0 12 0;
 #X connect 2 0 12 0;
@@ -580,9 +580,9 @@ magnitude (regardless of sign)., f 48;
 #X connect 7 0 12 0;
 #X connect 8 0 15 0;
 #X connect 10 0 13 0;
-#X connect 27 0 24 0;
-#X connect 28 0 24 0;
-#X connect 29 0 12 0;
+#X connect 27 0 12 0;
+#X connect 29 0 24 0;
+#X connect 30 0 24 0;
 #X restore 202 323 pd searching-1;
 #X text 53 219 [tabletool] manipulates \, searches \, and provides
 information about tables and their data. Generally \, when the output
@@ -1095,7 +1095,7 @@ peak in a frequency spectrum context)., f 39;
 #X restore 202 363 pd analysis;
 #X obj 551 435 declare -lib timbreID/timbreIDLib;
 #X text 550 392 Updated for timbreID version 0.9.0;
-#X text 550 412 May 2021;
+#X text 550 412 June 2021;
 #X connect 14 0 15 0;
 #X connect 15 0 13 0;
 #X connect 15 1 12 0;

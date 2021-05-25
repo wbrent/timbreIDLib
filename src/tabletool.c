@@ -3739,7 +3739,7 @@ void tabletool_setup(void)
     class_addmethod(
         tabletool_class,
         (t_method)tabletool_mink,
-        gensym("mink"),
+        gensym("min_k"),
         A_DEFFLOAT,
         0
     );
@@ -3747,7 +3747,7 @@ void tabletool_setup(void)
     class_addmethod(
         tabletool_class,
         (t_method)tabletool_maxk,
-        gensym("maxk"),
+        gensym("max_k"),
         A_DEFFLOAT,
         0
     );
