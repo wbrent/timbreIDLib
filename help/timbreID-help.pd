@@ -11,63 +11,61 @@
 #X obj 92 186 dac~;
 #X floatatom 712 652 10 0 0 0 - - -;
 #X msg 472 311 uncluster;
-#X text 545 310 Go back to reporting raw instance indexes.;
 #X msg 504 355 clear;
 #X obj 604 729 print timbre;
-#N canvas 274 109 973 518 long-winded-introduction 0;
+#N canvas 392 143 973 518 long-winded-introduction 0;
 #X obj 3 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
 0;
 #X obj 3 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
 0;
-#X text 47 50 timbreID stores \, clusters \, and classifies feature
-vectors. Features sent to the first inlet are used for training. Features
-sent to the second inlet are used for identification \, and produce
-a nearest match report from the first outlet. The third inlet also
-takes features intended for identification \, but the identification
-process is specifically designed for concatenative synthesis. See the
-concatenative.pd patch in the accompanying examples package for how
-to do concatenative synthesis using this set of externals. timbreID
-can also order the timbres you train it with when it receives the "order"
-message. This could be used in real-time for a performance \, or for
-non-real-time research and composition. See the timbre-ordering example
-in the examples package for more information.;
-#X text 505 260 Because there is a lot of flexibility \, there are
-also a lot of features and messages to cover in this helpfile. But
-you can get the gist of the system very quickly by trying the percussion
-classification demo here. Check the "train" toggle at the lower left
-and play "training.wav" at the top left to train the system. (And make
-sure DSP is turned on first...);
-#X text 505 370 For more detailed examples \, download the separate
-examples package from http://www.williambrent.com;
-#X text 47 242 This help patch provides a basic example of how to classify
+#X text 505 380 For more detailed examples \, download the separate
+examples package from https://www.github.com/wbrent/timbreID;
+#X text 505 190 The aim of this library is to provide a flexible set
+of analysis tools that encourage and facilitate signal analysis and
+classification. The intricate processes that accompany signal analysis
+in Pd have been streamlined as much as possible.;
+#X text 505 270 Because there is a lot of flexibility \, there are
+also a lot of features \, messages \, and techniques to get acquainted
+with. But you can get the gist of the system very quickly by trying
+the percussion classification demo here. Check the "train" toggle at
+the lower left and play "training.wav" at the top left to train the
+system. (And make sure DSP is turned on first...);
+#X text 47 252 This help patch provides a basic example of how to classify
 percussive sounds. After sending 5-10 training examples per instrument
 \, try using the "cluster" message to group them into as many clusters
-as you have instruments. Then timbreID will output cluster indices
-in response to ID requests. Here \, each of the 12 instruments in "training.wav"
-is played 5 times \, and feature data for those 60 instances can be
-clustered into 12 groups.;
-#X text 47 362 BFCCs are used here \, but any feature vector can go
-into timbreID. Swap bfcc~ for mfcc~ \, cepstrum~ \, full magnitude
-spectrum (magSpec~) \, or any combination of features to experiment
-with your particular sound set. Analyses that capture changes over
-time are significantly more effective.;
-#X text 505 60 Apart from cepstrum-based externals \, other features
-in the timbreID library are magSpec~ \, barkSpec~ \, specBrightness~
-\, specCentroid~ \, specFlatness~ \, specFlux~ \, specRolloff~ \, zeroCrossing~
+as you have instruments. Then [timbreID] will output cluster indices
+rather than training instance indices in response to ID requests. Here
+\, each of the 12 instruments in "training.wav" is played 5 times \,
+and feature data for those 60 instances can be clustered into 12 groups.
+;
+#X text 47 382 BFCCs are used here \, but [timbreID] can receive any
+kind of feature vector. Swap [bfcc~] for [mfcc~] \, [cepstrum~] \,
+full magnitude spectrum ([magSpec~]) \, or any combination of features
+to experiment with your particular sound set. Analyses that capture
+changes over time are significantly more effective.;
+#X text 505 60 Some other feature extraction objects in the timbreIDLib
+library include: [barkSpec~ \, [specBrightness~] \, [specCentroid~]
+\, [specFlatness~] \, [specFlux~] \, [specRolloff~] \, [zeroCrossing~]
 \, and many more. Each analysis object has a help file that explains
 the kind of analysis it is performing. Note that a non-real-time version
 of each analysis object is also available. This makes it easy to analyze
 large amounts of pre-recorded audio very quickly.;
-#X text 505 180 The goal of this library is to provide a flexible set
-of analysis tools that encourage and facilitate signal analysis and
-classification. Many of the cumbersome details that accompany signal
-analysis in Pd have been streamlined as much as possible.;
+#X text 47 50 [timbreID] stores \, clusters \, and classifies feature
+vectors. Feature vectors sent to the first inlet are added to the training
+database. A feature sent to the second inlet is compared with all instances
+in the database \, producing a nearest match report from the first
+outlet. The third inlet also takes features intended for classification
+\, but the identification process is specifically designed for concatenative
+synthesis. See the concatenative patch in the accompanying examples
+package for a detailed example. [timbreID] can also order the timbres
+you train it with when it receives the "order" message. This could
+be used in real-time for a performance \, or for non-real-time research
+and composition. See the timbre-ordering example in the examples package
+for more information.;
 #X restore 594 62 pd long-winded-introduction;
 #X obj 594 105 cnv 15 380 50 empty empty empty 20 12 0 14 -228856 -66577
 0;
 #X obj 692 500 timbreID, f 17;
-#X text 637 200 Read & write feature database (binary format).;
-#X text 548 354 Wipe all instances to start over.;
 #X msg 457 291 cluster 12;
 #X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
 0;
@@ -110,9 +108,6 @@ but has several extra conveniences.;
 #X connect 7 0 8 0;
 #X restore 55 340 pd onsets;
 #X obj 55 469 bfcc~ 1024 0.5;
-#X text 456 246 Perform hierarchical clustering to find a given number
-of clusters (e.g. \, instruments). See arcane_parameters subpatch above
-for manual clustering.;
 #N canvas 744 501 601 208 outlet-3 0;
 #X obj 77 26 inlet;
 #X floatatom 77 141 10 0 0 0 - - -;
@@ -122,9 +117,7 @@ between 0 and 1.0. This is more meaningful when clusters are specified
 examples given per cluster.;
 #X connect 0 0 1 0;
 #X restore 786 623 pd outlet-3;
-#X text 709 669 Second outlet reports the distance to the nearest match.
-, f 30;
-#N canvas 279 133 1141 737 arcane-parameters 0;
+#N canvas 279 133 1156 737 arcane-parameters 0;
 #X msg 35 78 dist_metric \$1;
 #X text 34 509 Specify a list of weights. Suppose you have a feature
 vector composed of spectral centroid and spectral flux \, and want
@@ -134,22 +127,8 @@ distance calculation. This is the way to play with the balance.;
 #X obj 581 193 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X msg 581 213 normalize \$1;
-#X text 688 144 Normalize all feature attributes to the 0-1 range.
-If the range of some attributes is much larger than others \, they
-will have more of an influence on the distance calculation \, which
-may skew things in an undesireable way. Normalization evens the playing
-field. BUT - it also means that noisy attributes with a small magnitude
-(like the highest MFCCs) might have undue influence. In the case of
-mixing spectral centroid and zero crossing rate into a single feature
-\, however \, normalization is almost certainly the way to go. Note:
-if you have thousands rather than hundreds of instances \, this calculation
-will take several seconds. This is something to be performed before
-any real time classification is going on.;
 #X obj 35 48 hradio 15 1 0 3 empty empty empty 0 -8 0 10 -262144 -1
 -1 0;
-#X text 719 625 Go back to regular attribute order.;
-#X text 199 332 Specify a restricted range of attributes to use in
-the distance calculation., f 41;
 #X msg 35 419 knn 7;
 #X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
 0;
@@ -161,9 +140,6 @@ Change the number of nearest neighbors searched in the KNN algorithm
 of training examples you give per instrument \, the confidence measure
 reported from timbreID's 3rd outlet will be much more meaningful.;
 #N canvas 418 126 971 714 file-formats 0;
-#X text 48 8 timbreID's default binary file format is .timid. This
-will write and read much faster than the text format \, so it's the
-best choice for large databases (i.e. 1000s of instances);
 #X obj 482 454 s \$0-tID;
 #X obj 49 452 s \$0-tID;
 #X obj 49 277 s \$0-tID;
@@ -178,18 +154,6 @@ best choice for large databases (i.e. 1000s of instances);
 #X text 48 167 If you need to look at the feature database values \,
 you might want to export in the text file format using the write_text
 method.;
-#X text 492 109 Note that as of timbreID version 0.7 \, the text file
-format for databases has changed. There is no longer a text header
-at the top of the file indicating the number of instances and feature
-length. It's just the raw feature instances \, with attributes delimited
-by spaces and terminating with a carriage return.;
-#X text 491 199 Also note that "write_text" obeys the "attribute_order"
-\, "attribute_range" \, and "normalize" settings \, so you can export
-only certain attributes from a normalized database in order to use
-the data in other environments (for plotting 3D coordinates \, for
-instance).;
-#X text 481 379 Write a MATLAB matrix file \, that can be loaded into
-either program with the command load -ascii 'filename';
 #X text 48 533 Write an OCTAVE data file in text data format. You can
 load this file in Octave using load octave-db.txt \, and it will appear
 in Octave memory space as a matrix called "variableName"., f 40;
@@ -203,6 +167,21 @@ below is an example.;
 #X msg 482 523 FANN ./data/fann-training.txt;
 #X text 480 489 Write a training database file for use with the FANN
 library for neural networks: http://leenissen.dk/fann/wp/;
+#X text 48 18 [timbreID]'s default binary file format is .timid. This
+will write and read much faster than the text format \, so it's the
+best choice for large databases (i.e. \, 1000s of instances);
+#X text 492 109 Note that as of [timbreID] version 0.7 \, the text
+file format for databases has changed. There is no longer a text header
+at the top of the file indicating the number of instances and feature
+length. It's just the raw feature instances \, with attributes delimited
+by spaces and terminating with a carriage return.;
+#X text 491 199 Also note that "write_text" obeys the "attribute_order"
+\, "attribute_range" \, and "normalize" settings \, so you can export
+specifically chosen attributes from a normalized database in order
+to use the data in other environments (for plotting 3D coordinates
+\, for instance).;
+#X text 481 377 Write a MATLAB matrix file \, that can be loaded with
+the command: load -ascii 'filename';
 #X text 556 555 This method uses the current cluster index of each
 training instance to generate the label data used for neural net training.
 For this situation \, use the "manual_cluster" method or a manually
@@ -211,22 +190,20 @@ It would normally not make sense to use the results of automatic clustering
 via "cluster" when preparing a FANN training database \, as that would
 train a net to classify input according to whatever [timbreID]'s clustering
 algorithm came up with.;
-#X connect 6 0 5 0;
-#X connect 7 0 1 0;
-#X connect 8 0 3 0;
+#X connect 5 0 4 0;
+#X connect 6 0 0 0;
+#X connect 7 0 2 0;
+#X connect 8 0 2 0;
 #X connect 9 0 3 0;
-#X connect 10 0 4 0;
-#X connect 11 0 4 0;
-#X connect 18 0 2 0;
-#X connect 20 0 19 0;
+#X connect 10 0 3 0;
+#X connect 14 0 1 0;
+#X connect 16 0 15 0;
 #X restore 35 132 pd file-formats;
 #N canvas 369 206 940 574 requesting-info 0;
 #X floatatom 32 141 5 0 0 0 - - -;
 #X msg 482 350 max_values;
 #X msg 568 350 min_values;
 #X msg 485 97 print;
-#X text 562 95 Print information about timbreID's internal memory and
-settings to Pd's post window., f 44;
 #X msg 32 330 num_instances;
 #X obj 485 119 s \$0-tID;
 #X obj 32 180 s \$0-tID;
@@ -238,22 +215,8 @@ settings to Pd's post window., f 44;
 #X text 484 160 Query the maximum and minimum instance lengths in the
 database;
 #X msg 511 228 min_feature_length;
-#X text 150 324 Find out how many instances are in the database.,
-f 34;
-#X text 481 312 Spit out a list of the max or min values for all attributes
-in your feature database.;
 #X text 77 135 Request a specific instance's full feature list;
 #X msg 32 410 similarity_matrix 0 19 1;
-#X text 102 434 Generate a similarity matrix. Arguments are starting
-and ending instance indices \, and a normalization flag. The data is
-sent out as N lists with N elements in each (where N is the number
-of instances in the requested range). See the similarity matrix example
-in the accompanying examples package to see how to graph a similarity
-matrix using GEM., f 46;
-#X text 31 44 Apart from "print" \, these methods produce output at
-timbreID's fourth outlet \, with selectors at the head of their output
-so that you can parse using [route]. See the subpatch for the fourth
-outlet for more details.;
 #X msg 32 160 instance_list \$1;
 #X floatatom 32 231 5 0 0 0 - - -;
 #X obj 32 270 s \$0-tID;
@@ -266,48 +229,44 @@ outlet for more details.;
 #X text 481 422 Get a list of the K largest or smallest values for
 all attributes across all database instances. A separate list is output
 for each attribute \, starting with the attribute ID.;
-#X connect 0 0 21 0;
-#X connect 1 0 8 0;
-#X connect 2 0 8 0;
-#X connect 3 0 6 0;
-#X connect 5 0 9 0;
-#X connect 12 0 11 0;
-#X connect 14 0 11 0;
-#X connect 18 0 10 0;
-#X connect 21 0 7 0;
-#X connect 22 0 25 0;
-#X connect 25 0 23 0;
-#X connect 27 0 26 0;
-#X connect 28 0 26 0;
+#X text 130 330 Find out how many instances are in the database, f
+48;
+#X text 562 95 Print information about [timbreID]'s internal memory
+and settings to Pd's post window, f 44;
+#X text 481 312 Spit out a list of the max or min values for all attributes
+in your feature database;
+#X text 31 44 Apart from "print" \, these methods produce output at
+[timbreID]'s fourth outlet \, with selectors at the head of their output
+so that you can parse using [route]. See the subpatch for the fourth
+outlet for more details.;
+#X text 102 438 Generate a similarity matrix. Arguments are starting
+and ending instance indices \, and a normalization flag. The data is
+sent out as N lists with N elements in each (where N is the number
+of instances in the requested range). Refer to the plotting/similarity-matrix.pd
+example in the accompanying examples package to see how to graph a
+similarity matrix using GEM., f 49;
+#X connect 0 0 16 0;
+#X connect 1 0 7 0;
+#X connect 2 0 7 0;
+#X connect 3 0 5 0;
+#X connect 4 0 8 0;
+#X connect 11 0 10 0;
+#X connect 13 0 10 0;
+#X connect 15 0 9 0;
+#X connect 16 0 6 0;
+#X connect 17 0 20 0;
+#X connect 20 0 18 0;
+#X connect 22 0 21 0;
+#X connect 23 0 21 0;
 #X restore 35 221 pd requesting-info;
-#N canvas 227 94 956 589 concatenative 0;
+#N canvas 227 96 956 589 concatenative 0;
 #X msg 32 312 search_center 30;
 #X msg 32 210 neighborhood 7;
-#X text 30 132 Restrict the search to a neighborhood of instances around
-a specific center (see search_center below). With a center of 30 and
-neighborhood of 7 \, timbreID will search instances 27-33. If the neighborhood
-is even the range above search_center will be one greater than that
-below.;
-#X text 30 278 Specify the center instance for searching within a neighborhood.
-;
-#X text 30 368 With reorient on \, the search_center will be constantly
-updated as the most recent match.;
 #X msg 487 127 jump_prob 0.75;
-#X text 485 93 Set a probability between 0-1 that search center will
-be randomly reassigned on each identification request.;
 #X msg 487 297 max_matches 5;
-#X text 30 458 With the "stutter_protect" option on \, timbreID does
-not allow the same match to be output twice in a row.;
 #X obj 487 472 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X msg 487 492 concat_search_wrap \$1;
-#X text 486 359 Turn on/off database search wrapping when using timbreID's
-3rd inlet for concatenative synthesis (default: ON). If the search_center
-and neighborhood settings cause the search range to extend below instance
-0 or past the last instance in the database \, timbreID will make the
-search range wrap around to the beginning or end of the database accordingly.
-With this feature turned off \, timbreID will clip the search range
-and not wrap around.;
 #X obj 32 230 s \$0-tID;
 #X obj 32 332 s \$0-tID;
 #X obj 32 422 s \$0-tID;
@@ -322,28 +281,48 @@ and not wrap around.;
 #X obj 12 402 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X text 30 26 These methods are only relevant when performing ID requests
-via timbreID's third inlet \, which is designed for use in concatenative
-synthesis. See the concatenative.pd example in the accompanying examples
-package for a fleshed-out example of how these parameters can be useful.
+via [timbreID]'s third inlet \, which is designed for use in concatenative
+synthesis. See the concatenative example in the accompanying examples
+package for a fleshed-out demonstration of how these parameters can
+be useful.;
+#X text 30 132 Restrict the search to a neighborhood of instances around
+a specific center (see search_center below). With a center of 30 and
+neighborhood of 7 \, [timbreID] will search instances 27-33. If the
+neighborhood is even \, the range above search_center will be one greater
+than that below.;
+#X text 30 278 Specify the center instance for searching within a neighborhood
 ;
+#X text 30 368 With reorient on \, the search_center will be constantly
+updated as the most recent match;
+#X text 30 458 With the "stutter_protect" option on \, [timbreID] does
+not allow the same match to be output twice in a row;
+#X text 485 93 Set a probability between 0-1 that search center will
+be randomly reassigned on each identification request;
 #X text 485 193 The "max_matches" setting can have an impact on how
 continuous the concatenated audio output sounds. If max_matches==5
-\, timbreID will find the top 5 matches \, and check to see how they
+\, [timbreID] will find the top 5 matches \, and check to see how they
 compare with the grain from the previous match. If one of these 5 is
 a better match to the previous grain than the current input grain \,
 it will be reported as the best match.;
-#X connect 0 0 13 0;
-#X connect 1 0 12 0;
-#X connect 5 0 18 0;
-#X connect 7 0 17 0;
-#X connect 9 0 10 0;
-#X connect 10 0 16 0;
-#X connect 19 0 14 0;
-#X connect 20 0 15 0;
-#X connect 21 0 20 0;
-#X connect 22 0 19 0;
+#X text 486 359 Turn on/off database search wrapping when using [timbreID]'s
+3rd inlet for concatenative synthesis (default: ON). If the search_center
+and neighborhood settings cause the search range to extend below instance
+0 or past the last instance in the database \, [timbreID] will make
+the search range wrap around to the beginning or end of the database
+accordingly. With this feature turned off \, [timbreID] will clip the
+search range and not wrap around.;
+#X connect 0 0 7 0;
+#X connect 1 0 6 0;
+#X connect 2 0 12 0;
+#X connect 3 0 11 0;
+#X connect 4 0 5 0;
+#X connect 5 0 10 0;
+#X connect 13 0 8 0;
+#X connect 14 0 9 0;
+#X connect 15 0 14 0;
+#X connect 16 0 13 0;
 #X restore 35 251 pd concatenative;
-#N canvas 307 81 1030 603 more-on-clustering 0;
+#N canvas 307 96 1030 603 more-on-clustering 0;
 #X msg 361 431 manual_cluster 12 0 0 4;
 #X text 567 507 Also note that timbreID does not check to see if you
 actually end up defining 12 clusters if you've sent a few messages
@@ -352,14 +331,7 @@ if you don't keep track of this properly.;
 #X msg 44 202 clusters_list;
 #X floatatom 71 323 5 0 0 0 - - -;
 #X msg 71 342 cluster_list \$1;
-#X text 565 34 For small training datasets like the one in this help
-patch \, clustering is basically instantaneous. But if you start working
-with large sets (1000s of instances) like those in the timbre-order
-patches from the timbreID example package \, it can take several seconds
-or even minutes. In those cases \, it's good to have a way to save
-the cluster information you just computed. The fastest way to read/write
-the data is with the "read_clusters" & "write_clusters" messages.;
-#X text 568 360 Another alternative to auto-clustering is "manual_cluster"
+#X text 568 350 Another alternative to auto-clustering is "manual_cluster"
 \, which might be useful if you have to cluster things in the middle
 of a performance and want to be able to do it entirely within Pd. Send
 this message for each cluster you want to create. Argument list is
@@ -369,7 +341,7 @@ you can't cluster non-neighboring instances at present. I'll get around
 to it if anyone actually has a need for it \, but for now you'll have
 to read in off of a text file if you want non-neighboring instances
 clustered together.;
-#X text 565 154 The text format that results from "write_clusters_text"
+#X text 565 164 The text format that results from "write_clusters_text"
 takes a bit more time to generate \, but could be useful in certain
 situations. For instance \, even with small datasets \, you might want
 to cluster data in an unusual way \, or maybe the automatic clustering
@@ -396,20 +368,24 @@ cluster list out of the fourth outlet with the clusters_list message.
 Or \, use cluster_list <cluster no.> to send out the member list of
 only one specific cluster. (Notice the difference of singular vs. plural
 - clusters_list vs. cluster_list)., f 64;
-#X connect 0 0 15 0;
-#X connect 2 0 16 0;
+#X text 565 34 For small training datasets like the one in this help
+patch \, clustering is basically instantaneous. But if you start working
+with large sets (1000s of instances) like those in the timbre-ordering
+patches from the timbreID example package \, it can take several seconds
+or minutes. In those cases \, it's good to have a way to save the cluster
+information you just computed. The fastest way to read/write the data
+is with the "read_clusters" & "write_clusters" messages.;
+#X connect 0 0 14 0;
+#X connect 2 0 15 0;
 #X connect 3 0 4 0;
-#X connect 4 0 16 0;
-#X connect 8 0 9 0;
-#X connect 10 0 8 0;
-#X connect 11 0 17 0;
-#X connect 12 0 17 0;
-#X connect 13 0 17 0;
-#X connect 14 0 17 0;
+#X connect 4 0 15 0;
+#X connect 7 0 8 0;
+#X connect 9 0 7 0;
+#X connect 10 0 16 0;
+#X connect 11 0 16 0;
+#X connect 12 0 16 0;
+#X connect 13 0 16 0;
 #X restore 35 191 pd more-on-clustering;
-#X text 174 162 << A small example of how to order sounds by timbre.
-;
-#X text 193 191 << How to save cluster information.;
 #X text 162 244 << Methods designed for concatenative synthesis. They
 may also be useful for other matching applications., f 54;
 #X msg 581 63 output_knn_matches \$1;
@@ -427,10 +403,10 @@ members of the winning cluster., f 49;
 #X obj 35 99 s \$0-tID;
 #X obj 581 85 s \$0-tID;
 #X obj 581 235 s \$0-tID;
-#X obj 579 434 s \$0-tID;
-#X obj 579 545 s \$0-tID;
-#X obj 579 645 s \$0-tID;
-#N canvas 506 189 1004 665 order-by-timbre 0;
+#X obj 579 438 s \$0-tID;
+#X obj 579 548 s \$0-tID;
+#X obj 579 649 s \$0-tID;
+#N canvas 506 189 1004 599 order-by-timbre 0;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-timbreOrder 20 float 2;
 #X coords 0 59 20 0 200 140 1 0 0;
@@ -493,11 +469,11 @@ ordering \, the reference instance changes at every step. First \,
 the nearest instance to the given reference instance is found \, then
 the nearest instance to that instance is found \, and so on. This creates
 smoother timbre transitions throughout the entire instance ordering
-\, and is the default setting., f 49;
-#X text 399 25 See the timbre-ordering.pd example in the examples package
-for more detailed information about timbre orderings \, including how
-to weight multi-feature lists.;
+\, and is the default setting., f 65;
 #X msg 519 427 \$1 19757;
+#X text 399 25 See the timbre-ordering example in the examples package
+for more detailed information about timbre orderings \, including how
+to weight multi-feature lists., f 46;
 #X connect 4 0 23 0;
 #X connect 5 0 6 0;
 #X connect 6 0 23 1;
@@ -515,7 +491,7 @@ to weight multi-feature lists.;
 #X connect 23 0 27 0;
 #X connect 26 0 6 1;
 #X connect 27 0 28 0;
-#X connect 28 0 42 0;
+#X connect 28 0 41 0;
 #X connect 29 0 3 0;
 #X connect 29 0 3 1;
 #X connect 30 0 31 0;
@@ -525,7 +501,7 @@ to weight multi-feature lists.;
 #X connect 36 0 1 0;
 #X connect 37 0 38 0;
 #X connect 38 0 39 0;
-#X connect 42 0 29 0;
+#X connect 41 0 29 0;
 #X restore 35 162 pd order-by-timbre;
 #X text 153 48 Choose a distance metric. \; 0 is Euclidean distance
 (default) \; 1 is Manhattan distance. \; 2 is Pearson Correlation Coefficient
@@ -539,10 +515,6 @@ For instance \, after ordering a 47-component BFCC vector by variance
 will be the ones with the most variance. Specify this range using the
 "attribute_range" message. Like "normalize" \, this is not an operation
 to try during real time performance., f 42;
-#X text 647 547 Manually order the attributes. In conjunction with
-attribute_range \, this is useful for exporting specific subsets of
-attributes \, or doing distance calculation based on subsets of attributes
-;
 #X obj 35 687 s \$0-tID;
 #X msg 35 665 worst_match <feature data>;
 #X text 252 619 If you prepend an input feature list with "worst_match"
@@ -573,31 +545,48 @@ fourth outlet.;
 #X connect 3 0 2 0;
 #X connect 6 0 0 0;
 #X restore 35 281 pd naming-attributes;
-#X connect 0 0 28 0;
-#X connect 2 0 25 0;
-#X connect 3 0 4 0;
-#X connect 4 0 30 0;
-#X connect 6 0 0 0;
-#X connect 9 0 26 0;
-#X connect 20 0 29 0;
-#X connect 21 0 20 0;
-#X connect 23 0 32 0;
-#X connect 24 0 27 0;
-#X connect 36 0 31 0;
-#X connect 37 0 33 0;
-#X connect 41 0 40 0;
-#X restore 812 119 pd arcane-parameters;
-#X text 592 44 Open this sub-patch for a description of the object
+#X text 647 547 Manually order the attributes. In conjunction with
+attribute_range \, this is useful for exporting specific subsets of
+attributes \, or doing distance calculation based on subsets of attributes.
 ;
+#X text 174 162 << A small example of how to order sounds by timbre
+;
+#X text 193 191 << How to save cluster information;
+#X text 199 332 Specify a restricted range of attributes to use in
+the distance calculation, f 41;
+#X text 688 144 Normalize all feature attributes to the 0-1 range.
+If the range of some attributes is much larger than others \, they
+will have more of an influence on the distance calculation \, which
+may skew things in an undesireable way. Normalization evens the playing
+field. In a feature vector including spectral centroid and spectral
+flatness rate \, for example \, normalization is crucial since the
+range of centroid values is in the tens of thousands \, while that
+of flatness is 1.0. But beware of the finer points: for example \,
+noisy attributes with a small magnitude (like the highest MFCCs) might
+have undue influence in a normalized set and are best omitted from
+a database used for classification. Note: if you have thousands rather
+than hundreds of instances \, this calculation will take several seconds.
+This is something to be performed before any real time classification
+is going on., f 73;
+#X text 719 625 Go back to regular attribute order;
+#X connect 0 0 23 0;
+#X connect 2 0 20 0;
+#X connect 3 0 4 0;
+#X connect 4 0 25 0;
+#X connect 5 0 0 0;
+#X connect 6 0 21 0;
+#X connect 15 0 24 0;
+#X connect 16 0 15 0;
+#X connect 18 0 27 0;
+#X connect 19 0 22 0;
+#X connect 31 0 26 0;
+#X connect 32 0 28 0;
+#X connect 35 0 34 0;
+#X restore 812 119 pd arcane-parameters;
 #X msg 55 57 open ./audio/training.wav \, start;
 #X msg 75 77 open ./audio/testing.wav \, start;
 #X text 146 104 Test with the given training/testing recordings. Turn
 on the "train" or "id" spigots below to get started., f 38;
-#X text 364 535 First outlet reports the index of the nearest match
-instance \, or \, if clustering has been performed \, the index of
-its associated cluster., f 41;
-#X text 364 615 During training \, the first outlet reports the number
-of training instances that have been received., f 33;
 #X text 839 476 3rd inlet has specific functionality for concatenative
 synthesis, f 25;
 #X obj 55 642 spigot;
@@ -651,7 +640,7 @@ order-by-timbre], f 38;
 #X obj 66 201 route num_instances instance_list attribute_list cluster_membership
 clusters_list cluster_list order min_values max_values min_k_values
 max_k_values min_feature_length max_feature_length similarity_matrix
-attribute_info;
+attribute_info, f 97;
 #X obj 456 443 print min_k_values;
 #X obj 496 423 print max_k_values;
 #X connect 0 0 16 0;
@@ -680,30 +669,44 @@ We'll use the first 25 BFCCs., f 31;
 #X text 39 739 Updated for timbreID version 0.9.0;
 #X text 39 759 June 2021;
 #X text 608 120 Many more details inside >>;
-#X connect 0 0 34 1;
-#X connect 1 0 36 0;
+#X text 456 256 Perform hierarchical clustering to find a given number
+of clusters (e.g. \, instruments). See the [pd arcane-parameters] subpatch
+above for manual clustering., f 83;
+#X text 548 354 Wipe all instances to start over;
+#X text 364 535 First outlet reports the index of the nearest match
+instance \, or \, if clustering has been performed \, the index of
+its associated cluster, f 41;
+#X text 364 615 During training \, the first outlet reports the number
+of training instances that have been received, f 33;
+#X text 709 669 Second outlet reports the distance to the nearest match
+, f 30;
+#X text 592 44 Open this subpatch for a description of the object;
+#X text 637 200 Read & write feature database (binary format);
+#X text 545 310 Go back to reporting raw instance indices;
+#X connect 0 0 26 1;
+#X connect 1 0 28 0;
 #X connect 2 0 1 1;
-#X connect 3 0 10 0;
+#X connect 3 0 9 0;
 #X connect 4 0 5 0;
-#X connect 4 0 21 0;
+#X connect 4 0 18 0;
 #X connect 4 0 5 1;
-#X connect 7 0 39 0;
-#X connect 9 0 39 0;
-#X connect 13 0 3 0;
-#X connect 13 1 6 0;
-#X connect 13 2 24 0;
-#X connect 13 3 40 0;
-#X connect 16 0 39 0;
-#X connect 19 0 4 0;
-#X connect 21 0 22 0;
-#X connect 21 1 22 0;
-#X connect 22 0 41 0;
-#X connect 28 0 4 0;
-#X connect 29 0 4 0;
-#X connect 34 0 35 0;
-#X connect 37 0 13 0;
-#X connect 38 0 13 1;
-#X connect 41 0 1 0;
-#X connect 41 0 34 0;
-#X connect 43 0 39 0;
-#X connect 44 0 39 0;
+#X connect 7 0 31 0;
+#X connect 8 0 31 0;
+#X connect 12 0 3 0;
+#X connect 12 1 6 0;
+#X connect 12 2 20 0;
+#X connect 12 3 32 0;
+#X connect 13 0 31 0;
+#X connect 16 0 4 0;
+#X connect 18 0 19 0;
+#X connect 18 1 19 0;
+#X connect 19 0 33 0;
+#X connect 22 0 4 0;
+#X connect 23 0 4 0;
+#X connect 26 0 27 0;
+#X connect 29 0 12 0;
+#X connect 30 0 12 1;
+#X connect 33 0 1 0;
+#X connect 33 0 26 0;
+#X connect 35 0 31 0;
+#X connect 36 0 31 0;
