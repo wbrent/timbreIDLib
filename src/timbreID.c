@@ -1637,7 +1637,7 @@ static void timbreID_reorderAttributes(t_timbreID *x)
 }
 
 
-static void timbreID_featureList(t_timbreID *x, t_floatarg idx)
+static void timbreID_featureList(t_timbreID *x, t_floatarg idx, t_floatarg normRange)
 {
     t_instanceIdx idxInt;
 
@@ -1655,13 +1655,21 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx)
 
         thisFeatureLength = x->x_instances[idxInt].length;
 
+        normRange = (normRange < 0) ? 0 : normRange;
+        normRange = (normRange > 1) ? 1 : normRange;
+
         // create local memory
         listOut = (t_atom *)t_getbytes(thisFeatureLength * sizeof(t_atom));
 
         for(i=0; i<thisFeatureLength; i++)
         {
             if(x->x_normalize)
-                SETFLOAT(listOut+i, (x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal)*x->x_attributeData[i].normData.normScalar);
+            {
+                if (normRange)
+                    SETFLOAT(listOut+i, ((x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal) * x->x_attributeData[i].normData.normScalar * 2.0) - 1.0);
+                else
+                    SETFLOAT(listOut+i, (x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal)*x->x_attributeData[i].normData.normScalar);
+            }
             else
                 SETFLOAT(listOut+i, x->x_instances[idxInt].data[i]);
         }
@@ -1675,7 +1683,7 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx)
 }
 
 
-static void timbreID_instanceList(t_timbreID *x, t_floatarg idx)
+static void timbreID_instanceList(t_timbreID *x, t_floatarg idx, t_floatarg normRange)
 {
     t_instanceIdx idxInt;
 
@@ -1691,13 +1699,21 @@ static void timbreID_instanceList(t_timbreID *x, t_floatarg idx)
 
         thisFeatureLength = x->x_instances[idxInt].length;
 
+        normRange = (normRange < 0) ? 0 : normRange;
+        normRange = (normRange > 1) ? 1 : normRange;
+
         // create local memory
         listOut = (t_atom *)t_getbytes(thisFeatureLength * sizeof(t_atom));
 
         for(i=0; i<thisFeatureLength; i++)
         {
             if(x->x_normalize)
-                SETFLOAT(listOut+i, (x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal)*x->x_attributeData[i].normData.normScalar);
+            {
+                if (normRange)
+                    SETFLOAT(listOut+i, ((x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal) * x->x_attributeData[i].normData.normScalar * 2.0) - 1.0);
+                else
+                    SETFLOAT(listOut+i, (x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal)*x->x_attributeData[i].normData.normScalar);
+            }
             else
                 SETFLOAT(listOut+i, x->x_instances[idxInt].data[i]);
         }
@@ -1711,7 +1727,7 @@ static void timbreID_instanceList(t_timbreID *x, t_floatarg idx)
 }
 
 
-static void timbreID_attributeList(t_timbreID *x, t_floatarg idx)
+static void timbreID_attributeList(t_timbreID *x, t_floatarg idx, t_floatarg normRange)
 {
     t_attributeIdx idxInt;
 
@@ -1727,6 +1743,9 @@ static void timbreID_attributeList(t_timbreID *x, t_floatarg idx)
 
         attributeListLength = x->x_numInstances;
 
+        normRange = (normRange < 0) ? 0 : normRange;
+        normRange = (normRange > 1) ? 1 : normRange;
+
         // create local memory
         listOut = (t_atom *)t_getbytes(attributeListLength * sizeof(t_atom));
 
@@ -1740,7 +1759,12 @@ static void timbreID_attributeList(t_timbreID *x, t_floatarg idx)
             else
             {
                 if(x->x_normalize)
-                    SETFLOAT(listOut+i, (x->x_instances[i].data[idxInt] - x->x_attributeData[idxInt].normData.minVal)*x->x_attributeData[idxInt].normData.normScalar);
+                {
+                    if (normRange)
+                        SETFLOAT(listOut+i, ((x->x_instances[i].data[idxInt] - x->x_attributeData[idxInt].normData.minVal) * x->x_attributeData[idxInt].normData.normScalar * 2.0) - 1.0);
+                    else
+                        SETFLOAT(listOut+i, (x->x_instances[i].data[idxInt] - x->x_attributeData[idxInt].normData.minVal)*x->x_attributeData[idxInt].normData.normScalar);
+                }
                 else
                     SETFLOAT(listOut+i, x->x_instances[i].data[idxInt]);
             }
@@ -1894,7 +1918,7 @@ static void timbreID_maxValues(t_timbreID *x)
 }
 
 
-static void timbreID_mink(t_timbreID *x, t_float k)
+static void timbreID_mink(t_timbreID *x, t_floatarg k)
 {
     t_sampIdx i;
     t_attributeIdx j, kInt;
@@ -1943,7 +1967,7 @@ static void timbreID_mink(t_timbreID *x, t_float k)
 }
 
 
-static void timbreID_maxk(t_timbreID *x, t_float k)
+static void timbreID_maxk(t_timbreID *x, t_floatarg k)
 {
     t_sampIdx i;
     t_attributeIdx j, kInt;
@@ -2202,7 +2226,7 @@ static void timbreID_read(t_timbreID *x, t_symbol *s)
 }
 
 
-static void timbreID_writeText(t_timbreID *x, t_symbol *s)
+static void timbreID_writeText(t_timbreID *x, t_symbol *s, t_floatarg normRange)
 {
     FILE *filePtr;
     t_instanceIdx i;
@@ -2219,6 +2243,9 @@ static void timbreID_writeText(t_timbreID *x, t_symbol *s)
         pd_error(x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
     }
+
+    normRange = (normRange < 0) ? 0 : normRange;
+    normRange = (normRange > 1) ? 1 : normRange;
 
     for(i=0; i<x->x_numInstances; i++)
     {
@@ -2237,7 +2264,12 @@ static void timbreID_writeText(t_timbreID *x, t_symbol *s)
                 break;
 
             if(x->x_normalize)
-                thisFeatureData = (*(featurePtr+thisAttribute) - x->x_attributeData[thisAttribute].normData.minVal)*x->x_attributeData[thisAttribute].normData.normScalar;
+            {
+                if (normRange)
+                    thisFeatureData = ((*(featurePtr+thisAttribute) - x->x_attributeData[thisAttribute].normData.minVal) * x->x_attributeData[thisAttribute].normData.normScalar * 2.0) - 1;
+                else
+                    thisFeatureData = (*(featurePtr+thisAttribute) - x->x_attributeData[thisAttribute].normData.minVal)*x->x_attributeData[thisAttribute].normData.normScalar;
+            }
             else
                 thisFeatureData = *(featurePtr+thisAttribute);
 
@@ -2574,7 +2606,7 @@ static void timbreID_OCTAVE(t_timbreID *x, t_symbol *file_symbol, t_symbol *var_
 }
 
 
-static void timbreID_FANN(t_timbreID *x, t_symbol *s, t_float normRange)
+static void timbreID_FANN(t_timbreID *x, t_symbol *s, t_floatarg normRange)
 {
     FILE *filePtr;
     t_instanceIdx i, j;
@@ -2597,13 +2629,16 @@ static void timbreID_FANN(t_timbreID *x, t_symbol *s, t_float normRange)
     fprintf(filePtr, "%i ", x->x_numClusters);
     fprintf(filePtr, "\n");
 
+    normRange = (normRange < 0) ? 0 : normRange;
+    normRange = (normRange > 1) ? 1 : normRange;
+
     for(i=0; i<x->x_numInstances; i++)
     {
         for(j=0; j<x->x_minFeatureLength; j++)
         {
-            if(x->x_normalize)
+            if (x->x_normalize)
             {
-                if(normRange)
+                if (normRange)
                     fprintf(filePtr, "%f ", ((x->x_instances[i].data[j] - x->x_attributeData[j].normData.minVal)*x->x_attributeData[j].normData.normScalar*2.0)-1.0);
                 else
                     fprintf(filePtr, "%f ", (x->x_instances[i].data[j] - x->x_attributeData[j].normData.minVal)*x->x_attributeData[j].normData.normScalar);
@@ -3201,6 +3236,7 @@ void timbreID_setup(void)
         (t_method)timbreID_featureList,
         gensym("feature_list"),
         A_DEFFLOAT,
+        A_DEFFLOAT,
         0
     );
 
@@ -3210,6 +3246,7 @@ void timbreID_setup(void)
         (t_method)timbreID_instanceList,
         gensym("instance_list"),
         A_DEFFLOAT,
+        A_DEFFLOAT,
         0
     );
 
@@ -3217,6 +3254,7 @@ void timbreID_setup(void)
         timbreID_class,
         (t_method)timbreID_attributeList,
         gensym("attribute_list"),
+        A_DEFFLOAT,
         A_DEFFLOAT,
         0
     );
@@ -3303,6 +3341,7 @@ void timbreID_setup(void)
         (t_method)timbreID_writeText,
         gensym("write_text"),
         A_SYMBOL,
+        A_DEFFLOAT,
         0
     );
 

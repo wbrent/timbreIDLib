@@ -139,7 +139,7 @@ Change the number of nearest neighbors searched in the KNN algorithm
 (default is 1). If knn is set to a value slightly higher than the number
 of training examples you give per instrument \, the confidence measure
 reported from timbreID's 3rd outlet will be much more meaningful.;
-#N canvas 418 126 971 714 file-formats 0;
+#N canvas 418 126 971 763 file-formats 0;
 #X obj 482 454 s \$0-tID;
 #X obj 49 452 s \$0-tID;
 #X obj 49 277 s \$0-tID;
@@ -147,7 +147,6 @@ reported from timbreID's 3rd outlet will be much more meaningful.;
 #X obj 49 652 s \$0-tID;
 #X msg 49 611 OCTAVE ./data/octave-db.txt variableName;
 #X msg 482 413 MATLAB ./data/matlab-db.mat variableName;
-#X msg 49 222 write_text ./data/feature-db.txt;
 #X msg 79 247 read_text ./data/feature-db.txt;
 #X msg 49 67 write ./data/feature-db.timid;
 #X msg 79 92 read ./data/feature-db.timid;
@@ -164,25 +163,25 @@ below is an example.;
 #X msg 49 397 ARFF ./data/arff-db.arff relation-name 0 9 feature1-name
 10 24 feature2-name;
 #X obj 482 564 s \$0-tID;
-#X msg 482 523 FANN ./data/fann-training.txt;
 #X text 480 489 Write a training database file for use with the FANN
 library for neural networks: http://leenissen.dk/fann/wp/;
 #X text 48 18 [timbreID]'s default binary file format is .timid. This
 will write and read much faster than the text format \, so it's the
 best choice for large databases (i.e. \, 1000s of instances);
-#X text 492 109 Note that as of [timbreID] version 0.7 \, the text
-file format for databases has changed. There is no longer a text header
+#X text 532 69 Note that as of [timbreID] version 0.7 \, the text file
+format for databases has changed. There is no longer a text header
 at the top of the file indicating the number of instances and feature
 length. It's just the raw feature instances \, with attributes delimited
 by spaces and terminating with a carriage return.;
-#X text 491 199 Also note that "write_text" obeys the "attribute_order"
+#X text 531 159 Also note that "write_text" obeys the "attribute_order"
 \, "attribute_range" \, and "normalize" settings \, so you can export
 specifically chosen attributes from a normalized database in order
 to use the data in other environments (for plotting 3D coordinates
 \, for instance).;
 #X text 481 377 Write a MATLAB matrix file \, that can be loaded with
 the command: load -ascii 'filename';
-#X text 556 555 This method uses the current cluster index of each
+#X msg 482 523 FANN ./data/fann-training.txt 1;
+#X text 556 605 The FANN method uses the current cluster index of each
 training instance to generate the label data used for neural net training.
 For this situation \, use the "manual_cluster" method or a manually
 created text file specifying clusters which can be read in using "read_clusters_text".
@@ -190,14 +189,21 @@ It would normally not make sense to use the results of automatic clustering
 via "cluster" when preparing a FANN training database \, as that would
 train a net to classify input according to whatever [timbreID]'s clustering
 algorithm came up with.;
+#X msg 49 222 write_text ./data/feature-db.txt 1;
+#X text 297 209 "write_text" arguments \; 1) the file name to be written
+\; 2) an optional boolean flag to output normalized instance data in
+the -1 to +1 range rather than the default 0 to 1 range., f 32;
+#X text 556 555 Arguments: 1) the file name to be written \, 2) an
+optional boolean flag to output normalized instance data in the -1
+to +1 range rather than the default 0 to 1 range.;
 #X connect 5 0 4 0;
 #X connect 6 0 0 0;
 #X connect 7 0 2 0;
-#X connect 8 0 2 0;
+#X connect 8 0 3 0;
 #X connect 9 0 3 0;
-#X connect 10 0 3 0;
-#X connect 14 0 1 0;
-#X connect 16 0 15 0;
+#X connect 13 0 1 0;
+#X connect 20 0 14 0;
+#X connect 22 0 2 0;
 #X restore 35 132 pd file-formats;
 #N canvas 369 206 940 574 requesting-info 0;
 #X floatatom 32 141 5 0 0 0 - - -;
@@ -215,21 +221,19 @@ algorithm came up with.;
 #X text 484 160 Query the maximum and minimum instance lengths in the
 database;
 #X msg 511 228 min_feature_length;
-#X text 77 135 Request a specific instance's full feature list;
+#X text 29 121 Request a specific instance's full feature list;
 #X msg 32 410 similarity_matrix 0 19 1;
-#X msg 32 160 instance_list \$1;
 #X floatatom 32 231 5 0 0 0 - - -;
 #X obj 32 270 s \$0-tID;
-#X text 77 225 Request a list of a specific attribute for all instances
+#X text 70 230 Request a list of a specific attribute for all instances
 ;
-#X msg 32 250 attribute_list \$1;
 #X obj 482 501 s \$0-tID;
 #X msg 482 470 max_k_values 5;
 #X msg 598 470 min_k_values 3;
 #X text 481 422 Get a list of the K largest or smallest values for
 all attributes across all database instances. A separate list is output
 for each attribute \, starting with the attribute ID.;
-#X text 130 330 Find out how many instances are in the database, f
+#X text 90 353 Find out how many instances are in the database, f
 48;
 #X text 562 95 Print information about [timbreID]'s internal memory
 and settings to Pd's post window, f 44;
@@ -245,7 +249,15 @@ sent out as N lists with N elements in each (where N is the number
 of instances in the requested range). Refer to the plotting/similarity-matrix.pd
 example in the accompanying examples package to see how to graph a
 similarity matrix using GEM., f 49;
-#X connect 0 0 16 0;
+#X msg 32 160 instance_list \$1;
+#X msg 32 250 attribute_list \$1;
+#X text 154 142 Arguments \; 1) instance index \; 2) an optional boolean
+flag to output normalized instance data in the -1 to +1 range rather
+than the default 0 to 1 range., f 43;
+#X text 154 252 Arguments \; 1) attribute index \; 2) an optional boolean
+flag to output normalized instance data in the -1 to +1 range rather
+than the default 0 to 1 range., f 43;
+#X connect 0 0 28 0;
 #X connect 1 0 7 0;
 #X connect 2 0 7 0;
 #X connect 3 0 5 0;
@@ -253,11 +265,11 @@ similarity matrix using GEM., f 49;
 #X connect 11 0 10 0;
 #X connect 13 0 10 0;
 #X connect 15 0 9 0;
-#X connect 16 0 6 0;
-#X connect 17 0 20 0;
-#X connect 20 0 18 0;
-#X connect 22 0 21 0;
-#X connect 23 0 21 0;
+#X connect 16 0 29 0;
+#X connect 20 0 19 0;
+#X connect 21 0 19 0;
+#X connect 28 0 6 0;
+#X connect 29 0 17 0;
 #X restore 35 221 pd requesting-info;
 #N canvas 227 96 956 589 concatenative 0;
 #X msg 32 312 search_center 30;
