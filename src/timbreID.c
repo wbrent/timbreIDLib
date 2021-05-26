@@ -67,11 +67,13 @@ typedef struct _timbreID
     t_object x_obj;
     t_symbol *x_objSymbol;
     t_instance *x_instances;
+    t_instance *x_classRefs;
     t_cluster *x_clusters;
     t_attributeData *x_attributeData;
     t_attributeIdx x_maxFeatureLength;
     t_attributeIdx x_minFeatureLength;
     t_instanceIdx x_numInstances;
+    t_instanceIdx x_numClassRefs;
     t_instanceIdx x_numClusters;
     t_distMetric x_distMetric;
     t_instanceIdx x_k;
@@ -153,6 +155,12 @@ static t_float timbreID_getInputDist(t_timbreID *x, t_instanceIdx instanceID)
         if(thisAttribute>x->x_instances[instanceID].length)
         {
             pd_error(x, "%s: attribute %i out of range for database instance %i.", x->x_objSymbol->s_name, thisAttribute, instanceID);
+
+            // free local memory before exiting
+            t_freebytes(vec1Buffer, vecLen * sizeof(t_float));
+            t_freebytes(vec2Buffer, vecLen * sizeof(t_float));
+            t_freebytes(vecWeights, vecLen * sizeof(t_float));
+
             return(FLT_MAX);
         }
 
@@ -237,6 +245,12 @@ static t_float timbreID_getDist(t_timbreID *x, t_instance instance1, t_instance 
         if(thisAttribute>(instance1.length-1) || thisAttribute>(instance2.length-1))
         {
             pd_error(x, "%s: attribute %i does not exist for both feature vectors. cannot compute distance.", x->x_objSymbol->s_name, thisAttribute);
+
+            // free local memory before exiting
+            t_freebytes(vec1Buffer, vecLen * sizeof(t_float));
+            t_freebytes(vec2Buffer, vecLen * sizeof(t_float));
+            t_freebytes(vecWeights, vecLen * sizeof(t_float));
+
             return(FLT_MAX);
         }
 
@@ -283,6 +297,58 @@ static t_float timbreID_getDist(t_timbreID *x, t_instance instance1, t_instance 
     t_freebytes(vecWeights, vecLen * sizeof(t_float));
 
     return(dist);
+}
+
+
+// this gives the distance between an input feature vector and a defined class reference
+static t_float timbreID_getClassRefDist(t_timbreID *x, t_attributeIdx inputLen, t_float *input, t_instance classRef)
+{
+    t_attributeIdx i, classLen;
+    t_float dist;
+    t_float *weights;
+
+    classLen = classRef.length;
+    dist = 0.0;
+
+    weights = (t_float *)t_getbytes (classLen * sizeof (t_float));
+
+    for(i=0; i < classLen; i++)
+    {
+        if(i >= inputLen)
+        {
+            pd_error(x, "%s: attribute %i does not exist for both feature vectors. cannot compute distance.", x->x_objSymbol->s_name, i);
+
+            // free local memory before exiting
+            t_freebytes (weights, classLen * sizeof (t_float));
+
+            return(FLT_MAX);
+        }
+        else
+            weights[i] = 1.0;
+    }
+
+    switch(x->x_distMetric)
+    {
+        case euclidean:
+            dist = tIDLib_euclidDist(classLen, input, classRef.data, weights, false);
+            break;
+        case taxi:
+            dist = tIDLib_taxiDist(classLen, input, classRef.data, weights);
+            break;
+        case correlation:
+            dist = tIDLib_corr(classLen, input, classRef.data);
+            // bash to the 0-2 range, then flip sign so that lower is better. this keeps things consistent with other distance metrics.
+            dist += 1;
+            dist *= -1;
+            break;
+        default:
+            break;
+    };
+
+    // free local memory
+    t_freebytes (weights, classLen * sizeof (t_float));
+
+    return (dist);
 }
 
 
@@ -893,6 +959,7 @@ static void timbreID_print(t_timbreID *x)
     post("%s: normalization: %i", x->x_objSymbol->s_name, x->x_normalize);
     post("%s: distance metric: %i", x->x_objSymbol->s_name, x->x_distMetric);
     post("%s: no. of clusters: %i", x->x_objSymbol->s_name, x->x_numClusters);
+    post("%s: no. of defined reference classes: %i", x->x_objSymbol->s_name, x->x_numClassRefs);
     post("%s: KNN: %i", x->x_objSymbol->s_name, x->x_k);
     post("%s: output KNN matches: %i", x->x_objSymbol->s_name, x->x_outputKnnMatches);
     post("%s: relative ordering: %i", x->x_objSymbol->s_name, x->x_relativeOrdering);
@@ -1637,11 +1704,30 @@ static void timbreID_reorderAttributes(t_timbreID *x)
 }
 
 
-static void timbreID_featureList(t_timbreID *x, t_floatarg idx, t_floatarg normRange)
+static void timbreID_featureList(t_timbreID *x, t_floatarg idx, t_floatarg normFlag)
 {
     t_instanceIdx idxInt;
+    t_bool normalize, normRange;
 
     post("%s WARNING: \"feature_list\" method name is deprecated, use \"instance_list\" instead", x->x_objSymbol->s_name);
+
+    switch ((int) normFlag)
+    {
+        case 0:
+            normalize = false;
+            normRange = false;
+            break;
+        case 1:
+            normalize = true;
+            normRange = false;
+            break;
+        case 2:
+            normalize = true;
+            normRange = true;
+            break;
+        default:
+            break;
+    }
 
     idxInt = (idx<0)?0:idx;
 
@@ -1655,6 +1741,9 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx, t_floatarg normR
 
         thisFeatureLength = x->x_instances[idxInt].length;
 
+        normalize = (normalize < 0) ? 0 : normalize;
+        normalize = (normalize > 1) ? 1 : normalize;
+
         normRange = (normRange < 0) ? 0 : normRange;
         normRange = (normRange > 1) ? 1 : normRange;
 
@@ -1663,8 +1752,18 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx, t_floatarg normR
 
         for(i=0; i<thisFeatureLength; i++)
         {
-            if(x->x_normalize)
+            if (normalize)
             {
+                if (!x->x_normalize)
+                {
+                    pd_error(x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
+
+                    // free local memory before exit
+                    t_freebytes (listOut, thisFeatureLength * sizeof (t_atom));
+
+                    return;
+                }
+
                 if (normRange)
                     SETFLOAT(listOut+i, ((x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal) * x->x_attributeData[i].normData.normScalar * 2.0) - 1.0);
                 else
@@ -1683,9 +1782,28 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx, t_floatarg normR
 }
 
 
-static void timbreID_instanceList(t_timbreID *x, t_floatarg idx, t_floatarg normRange)
+static void timbreID_instanceList(t_timbreID *x, t_floatarg idx, t_floatarg normFlag)
 {
     t_instanceIdx idxInt;
+    t_bool normalize, normRange;
+
+    switch ((int) normFlag)
+    {
+        case 0:
+            normalize = false;
+            normRange = false;
+            break;
+        case 1:
+            normalize = true;
+            normRange = false;
+            break;
+        case 2:
+            normalize = true;
+            normRange = true;
+            break;
+        default:
+            break;
+    }
 
     idxInt = (idx<0)?0:idx;
 
@@ -1699,6 +1817,9 @@ static void timbreID_instanceList(t_timbreID *x, t_floatarg idx, t_floatarg norm
 
         thisFeatureLength = x->x_instances[idxInt].length;
 
+        normalize = (normalize < 0) ? 0 : normalize;
+        normalize = (normalize > 1) ? 1 : normalize;
+
         normRange = (normRange < 0) ? 0 : normRange;
         normRange = (normRange > 1) ? 1 : normRange;
 
@@ -1707,8 +1828,18 @@ static void timbreID_instanceList(t_timbreID *x, t_floatarg idx, t_floatarg norm
 
         for(i=0; i<thisFeatureLength; i++)
         {
-            if(x->x_normalize)
+            if (normalize)
             {
+                if (!x->x_normalize)
+                {
+                    pd_error(x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
+
+                    // free local memory before exit
+                    t_freebytes (listOut, thisFeatureLength * sizeof (t_atom));
+
+                    return;
+                }
+
                 if (normRange)
                     SETFLOAT(listOut+i, ((x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal) * x->x_attributeData[i].normData.normScalar * 2.0) - 1.0);
                 else
@@ -1727,9 +1858,28 @@ static void timbreID_instanceList(t_timbreID *x, t_floatarg idx, t_floatarg norm
 }
 
 
-static void timbreID_attributeList(t_timbreID *x, t_floatarg idx, t_floatarg normRange)
+static void timbreID_attributeList(t_timbreID *x, t_floatarg idx, t_floatarg normFlag)
 {
     t_attributeIdx idxInt;
+    t_bool normalize, normRange;
+
+    switch ((int) normFlag)
+    {
+        case 0:
+            normalize = false;
+            normRange = false;
+            break;
+        case 1:
+            normalize = true;
+            normRange = false;
+            break;
+        case 2:
+            normalize = true;
+            normRange = true;
+            break;
+        default:
+            break;
+    }
 
     idxInt = (idx<0)?0:idx;
 
@@ -1742,6 +1892,9 @@ static void timbreID_attributeList(t_timbreID *x, t_floatarg idx, t_floatarg nor
         t_symbol *selector;
 
         attributeListLength = x->x_numInstances;
+
+        normalize = (normalize < 0) ? 0 : normalize;
+        normalize = (normalize > 1) ? 1 : normalize;
 
         normRange = (normRange < 0) ? 0 : normRange;
         normRange = (normRange > 1) ? 1 : normRange;
@@ -1758,8 +1911,18 @@ static void timbreID_attributeList(t_timbreID *x, t_floatarg idx, t_floatarg nor
             }
             else
             {
-                if(x->x_normalize)
+                if (normalize)
                 {
+                    if (!x->x_normalize)
+                    {
+                        pd_error(x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
+
+                        // free local memory before exit
+                        t_freebytes (listOut, attributeListLength * sizeof (t_atom));
+
+                        return;
+                    }
+
                     if (normRange)
                         SETFLOAT(listOut+i, ((x->x_instances[i].data[idxInt] - x->x_attributeData[idxInt].normData.minVal) * x->x_attributeData[idxInt].normData.normScalar * 2.0) - 1.0);
                     else
@@ -1893,9 +2056,34 @@ static void timbreID_similarityMatrix(t_timbreID *x, t_floatarg startInstance, t
 }
 
 
+static void timbreID_minValues(t_timbreID *x)
+{
+    if (x->x_normalize)
+    {
+        t_attributeIdx i;
+        t_atom *listOut;
+        t_symbol *selector;
+
+        // create local memory
+        listOut = (t_atom *)t_getbytes(x->x_maxFeatureLength * sizeof(t_atom));
+
+        for(i=0; i<x->x_maxFeatureLength; i++)
+            SETFLOAT(listOut+i, x->x_attributeData[i].normData.minVal);
+
+        selector = gensym("min_values");
+        outlet_anything(x->x_listOut, selector, x->x_maxFeatureLength, listOut);
+
+        // free local memory
+        t_freebytes(listOut, x->x_maxFeatureLength*sizeof(t_atom));
+    }
+    else
+        pd_error(x, "%s: feature database not normalized. minimum values not calculated yet.", x->x_objSymbol->s_name);
+}
+
+
 static void timbreID_maxValues(t_timbreID *x)
 {
-    if(x->x_normalize)
+    if (x->x_normalize)
     {
         t_attributeIdx i;
         t_atom *listOut;
@@ -1918,13 +2106,14 @@ static void timbreID_maxValues(t_timbreID *x)
 }
 
 
-static void timbreID_mink(t_timbreID *x, t_floatarg k)
+static void timbreID_mink(t_timbreID *x, t_floatarg k, t_floatarg normFlag)
 {
     t_sampIdx i;
     t_attributeIdx j, kInt;
     t_float *attVals;
     t_symbol *selector;
     t_atom *outputList;
+    t_bool normalize, normRange;
 
     if (k < 0 || k >= x->x_numInstances)
     {
@@ -1933,6 +2122,24 @@ static void timbreID_mink(t_timbreID *x, t_floatarg k)
     }
     else
         kInt = k;
+
+    switch ((int) normFlag)
+    {
+        case 0:
+            normalize = false;
+            normRange = false;
+            break;
+        case 1:
+            normalize = true;
+            normRange = false;
+            break;
+        case 2:
+            normalize = true;
+            normRange = true;
+            break;
+        default:
+            break;
+    }
 
     attVals = (t_float *)t_getbytes (x->x_numInstances * sizeof(t_float));
     outputList = (t_atom *)t_getbytes ((kInt + 1) * sizeof (t_atom));
@@ -1951,8 +2158,24 @@ static void timbreID_mink(t_timbreID *x, t_floatarg k)
 
         for (i = 0; i < kInt; i++)
         {
-            if (x->x_normalize)
-                SETFLOAT (outputList + 1 + i, (attVals[i] - x->x_attributeData[j].normData.minVal)*x->x_attributeData[j].normData.normScalar);
+            if (normalize)
+            {
+                if (!x->x_normalize)
+                {
+                    pd_error(x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
+
+                    // free local memory before exit
+                    t_freebytes (attVals, x->x_numInstances * sizeof (t_float));
+                    t_freebytes (outputList, (kInt + 1) * sizeof (t_atom));
+
+                    return;
+                }
+
+                if (normRange)
+                    SETFLOAT (outputList + 1 + i, ((attVals[i] - x->x_attributeData[j].normData.minVal) * x->x_attributeData[j].normData.normScalar * 2.0) - 1.0);
+                else
+                    SETFLOAT (outputList + 1 + i, (attVals[i] - x->x_attributeData[j].normData.minVal) * x->x_attributeData[j].normData.normScalar);
+            }
             else
                 SETFLOAT (outputList + 1 + i, attVals[i]);
         }
@@ -1967,13 +2190,14 @@ static void timbreID_mink(t_timbreID *x, t_floatarg k)
 }
 
 
-static void timbreID_maxk(t_timbreID *x, t_floatarg k)
+static void timbreID_maxk(t_timbreID *x, t_floatarg k, t_floatarg normFlag)
 {
     t_sampIdx i;
     t_attributeIdx j, kInt;
     t_float *attVals;
     t_symbol *selector;
     t_atom *outputList;
+    t_bool normalize, normRange;
 
     if (k < 0 || k >= x->x_numInstances)
     {
@@ -1982,6 +2206,24 @@ static void timbreID_maxk(t_timbreID *x, t_floatarg k)
     }
     else
         kInt = k;
+
+    switch ((int) normFlag)
+    {
+        case 0:
+            normalize = false;
+            normRange = false;
+            break;
+        case 1:
+            normalize = true;
+            normRange = false;
+            break;
+        case 2:
+            normalize = true;
+            normRange = true;
+            break;
+        default:
+            break;
+    }
 
     attVals = (t_float *)t_getbytes (x->x_numInstances * sizeof(t_float));
     outputList = (t_atom *)t_getbytes ((kInt + 1) * sizeof (t_atom));
@@ -2000,8 +2242,24 @@ static void timbreID_maxk(t_timbreID *x, t_floatarg k)
 
         for (i = 0; i < kInt; i++)
         {
-            if (x->x_normalize)
-                SETFLOAT (outputList + 1 + i, (attVals[(x->x_numInstances - 1) - i] - x->x_attributeData[j].normData.minVal)*x->x_attributeData[j].normData.normScalar);
+            if (normalize)
+            {
+                if (!x->x_normalize)
+                {
+                    pd_error(x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
+
+                    // free local memory before exit
+                    t_freebytes (attVals, x->x_numInstances * sizeof (t_float));
+                    t_freebytes (outputList, (kInt + 1) * sizeof (t_atom));
+
+                    return;
+                }
+
+                if (normRange)
+                    SETFLOAT (outputList + 1 + i, ((attVals[(x->x_numInstances - 1) - i] - x->x_attributeData[j].normData.minVal) * x->x_attributeData[j].normData.normScalar * 2.0) - 1.0);
+                else
+                    SETFLOAT (outputList + 1 + i, (attVals[(x->x_numInstances - 1) - i] - x->x_attributeData[j].normData.minVal) * x->x_attributeData[j].normData.normScalar);
+            }
             else
                 SETFLOAT (outputList + 1 + i, attVals[(x->x_numInstances - 1) - i]);
         }
@@ -2016,28 +2274,211 @@ static void timbreID_maxk(t_timbreID *x, t_floatarg k)
 }
 
 
-static void timbreID_minValues(t_timbreID *x)
+static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
 {
-    if(x->x_normalize)
+    t_symbol *commandName;
+
+    if (x->x_numInstances == 0)
     {
-        t_attributeIdx i;
-        t_atom *listOut;
+        pd_error(x, "%s: no training instances have been loaded. cannot define a class reference.", x->x_objSymbol->s_name);
+        return;
+    }
+
+    commandName = atom_getsymbol(argv);
+
+    if (!strcmp(commandName->s_name, "define"))
+    {
+        t_instanceIdx classIdx, i;
+        t_attributeIdx numAttributes, j;
+        t_float *attVals;
+
+        // within this "define" command, could offer the option of using min/max K values approach vs making average vectors based on all instances in each cluster (would require clustering in advance).
+
+        // store the class index
+        classIdx = x->x_numClassRefs;
+
+        // the number of attributes in this definition is half the number of remaining arguments after the "define" symbol
+        numAttributes = (argc - 1) * 0.5;
+        // post("numAttributes: %i", numAttributes);
+
+        // for the second class onward, confirm that the attribute length is the same as the first class.
+        // if not, return with an error before we do any memory management below
+        if (x->x_numClassRefs > 0 && numAttributes != x->x_classRefs[0].length)
+        {
+            pd_error(x, "%s: all class references must have the same number of attributes. failed to add an additional class reference.", x->x_objSymbol->s_name);
+            return;
+        }
+
+        // add an instance to the classRefs database
+        x->x_classRefs = (t_instance *)t_resizebytes (x->x_classRefs, x->x_numClassRefs * sizeof (t_instance), (x->x_numClassRefs + 1) * sizeof (t_instance));
+
+        // update the number of class references
+        x->x_numClassRefs++;
+
+        // store the number of attributes in the .length field
+        x->x_classRefs[classIdx].length = numAttributes;
+
+        // get memory for the actual data
+        x->x_classRefs[classIdx].data = (t_float *)t_getbytes (numAttributes * sizeof (t_float));
+
+        // get local memory to store each attribute column
+        attVals = (t_float *)t_getbytes (x->x_numInstances * sizeof(t_float));
+
+        // go through each attribute and:
+            // get the average of the min/max K values of the specified attribute
+        for (j = 0; j < numAttributes; j++)
+        {
+            t_float pct, kSum;
+            t_attributeIdx thisAttIdx;
+            t_instanceIdx kInstances;
+
+            thisAttIdx = atom_getfloat (argv + 1 + (j * 2));
+            pct = atom_getfloat (argv + 1 + (j * 2 + 1));
+            // post("thisAttIdx[%i]: %i, pct[%i]: %f", j, thisAttIdx, j, pct);
+
+            // get this attribute column
+            for (i = 0; i < x->x_numInstances; i++)
+                attVals[i] = x->x_instances[i].data[thisAttIdx];
+
+            // sort it
+            tIDLib_bubbleSort(x->x_numInstances, attVals);
+
+            // convert pct into a rounded K value
+            kInstances = (fabs(pct) / 100.0) * x->x_numInstances + 0.5;
+            // post("kInstances[%i]: %i", j, kInstances);
+
+            // initialize result, where we'll store the average
+            kSum = 0.0;
+
+            // if pct is negative, run mink
+            // if pct is positive, run maxk
+            if (pct < 0)
+            {
+                for (i = 0; i < kInstances; i++)
+                {
+                    if (x->x_normalize)
+                        kSum += (attVals[i] - x->x_attributeData[thisAttIdx].normData.minVal) * x->x_attributeData[thisAttIdx].normData.normScalar;
+                    else
+                        kSum += attVals[i];
+                }
+            }
+            else
+            {
+                for (i = 0; i < kInstances; i++)
+                {
+                    if (x->x_normalize)
+                        kSum += (attVals[(x->x_numInstances - 1) - i] - x->x_attributeData[thisAttIdx].normData.minVal) * x->x_attributeData[thisAttIdx].normData.normScalar;
+                    else
+                        kSum += attVals[(x->x_numInstances - 1) - i];
+                }
+            }
+
+            // divide the running sum in kSum by K to get the average of the min K values
+            x->x_classRefs[classIdx].data[j] = kSum / kInstances;
+            // post("avg[%i]: %f", j, x->x_classRefs[classIdx].data[j]);
+        }
+
+        // free the attVals buffer
+        t_freebytes (attVals, x->x_numInstances * sizeof (t_float));
+
+        post("%s: defined class reference %i.", x->x_objSymbol->s_name, classIdx);
+    }
+    else if (!strcmp(commandName->s_name, "clear"))
+    {
+        t_instanceIdx i;
+
+        // free the class reference memory per instance
+        for (i = 0; i < x->x_numClassRefs; i++)
+            t_freebytes (x->x_classRefs[i].data, x->x_classRefs[i].length * sizeof (t_float));
+
+        // resize the class ref database to 0 bytes
+        x->x_classRefs = (t_instance *)t_resizebytes (x->x_classRefs, x->x_numClassRefs * sizeof (t_instance), 0);
+
+        x->x_numClassRefs = 0;
+
+        post("%s: cleared all class reference vectors.", x->x_objSymbol->s_name);
+    }
+    else if (!strcmp(commandName->s_name, "id"))
+    {
+        t_attributeIdx vecLen;
+        t_instanceIdx i, winningIdx;
+        t_float *inputVector;
+        t_float winningDist;
+
+        if (x->x_numClassRefs == 0)
+        {
+            pd_error(x, "%s: no class references have been defined.", x->x_objSymbol->s_name);
+            return;
+        }
+
+        //determine the length of the input vector (one less than argc to remove the "id" command)
+        vecLen = argc - 1;
+
+        // get memory for the input vector
+        inputVector = (t_float *)t_getbytes (vecLen * sizeof (t_float));
+
+        // fill the inputVector memory with the input data
+        // we can't normalize the input vector here since we don't know which attributes are in the class reference. timbreID help file must state clearly that incoming "class_reference id" vectors must be normalized ahead of time
+        for (i = 0; i < vecLen; i++)
+            inputVector[i] = atom_getfloat(argv + 1 + i);
+
+        winningDist = FLT_MAX;
+        winningIdx = 0;
+
+        // compare input vector with all defined class references
+        for (i = 0; i < x->x_numClassRefs; i++)
+        {
+            t_float thisDistance;
+
+            thisDistance = timbreID_getClassRefDist(x, vecLen, inputVector, x->x_classRefs[i]);
+
+            if (thisDistance < winningDist)
+            {
+                winningDist = thisDistance;
+                winningIdx = i;
+            }
+        }
+
+        // output the winning distance
+        outlet_float(x->x_nearestDist, winningDist);
+
+        // output the winning index
+        outlet_float(x->x_id, winningIdx);
+
+        // free the inputVector buffer
+        t_freebytes (inputVector, vecLen * sizeof (t_float));
+    }
+    else if (!strcmp(commandName->s_name, "get"))
+    {
+        t_instanceIdx i;
+        t_attributeIdx j, classVecLen;
         t_symbol *selector;
+        t_atom *listOut;
 
-        // create local memory
-        listOut = (t_atom *)t_getbytes(x->x_maxFeatureLength * sizeof(t_atom));
+        classVecLen = x->x_classRefs[0].length;
 
-        for(i=0; i<x->x_maxFeatureLength; i++)
-            SETFLOAT(listOut+i, x->x_attributeData[i].normData.minVal);
+        // make local memory to output the list
+        listOut = t_getbytes ((classVecLen + 1) * sizeof (t_atom));
 
-        selector = gensym("min_values");
-        outlet_anything(x->x_listOut, selector, x->x_maxFeatureLength, listOut);
+        // fill the list with data from each class reference and output
+        for (i = 0; i < x->x_numClassRefs; i++)
+        {
+            SETFLOAT(listOut, i);
+
+            for (j = 0; j < classVecLen; j++)
+                SETFLOAT(listOut + 1 + j, x->x_classRefs[i].data[j]);
+
+            selector = gensym ("class_reference");
+            outlet_anything(x->x_listOut, selector, classVecLen + 1, listOut);
+        }
 
         // free local memory
-        t_freebytes(listOut, x->x_maxFeatureLength*sizeof(t_atom));
+        t_freebytes (listOut, (classVecLen + 1) * sizeof (t_atom));
     }
     else
-        pd_error(x, "%s: feature database not normalized. minimum values not calculated yet.", x->x_objSymbol->s_name);
+    {
+        pd_error(x, "%s: no such method (%s) for class_reference.", x->x_objSymbol->s_name, commandName->s_name);
+    }
 }
 
 
@@ -2913,6 +3354,7 @@ static void *timbreID_new(void)
     x->x_objSymbol = gensym("timbreID");
 
     x->x_instances = (t_instance *)t_getbytes(0);
+    x->x_classRefs = (t_instance *)t_getbytes(0);
     x->x_clusters = (t_cluster *)t_getbytes(0);
     x->x_attributeData = (t_attributeData *)t_getbytes(0);
 
@@ -2920,6 +3362,7 @@ static void *timbreID_new(void)
     x->x_minFeatureLength = INT_MAX;
     x->x_numClusters=0;
     x->x_numInstances = 0;
+    x->x_numClassRefs = 0;
     x->x_distMetric = euclidean;
     x->x_k = 1;
     x->x_outputKnnMatches = false;
@@ -2950,6 +3393,12 @@ static void timbreID_free(t_timbreID *x)
         t_freebytes(x->x_instances[i].data, x->x_instances[i].length*sizeof(t_float));
 
     t_freebytes(x->x_instances, x->x_numInstances*sizeof(t_instance));
+
+    // free the class reference memory per instance
+    for(i=0; i<x->x_numClassRefs; i++)
+        t_freebytes(x->x_classRefs[i].data, x->x_classRefs[i].length*sizeof(t_float));
+
+    t_freebytes(x->x_classRefs, x->x_numClassRefs*sizeof(t_instance));
 
     // free the cluster memory
     for(i=0; i<x->x_numInstances; i++)
@@ -3288,6 +3737,7 @@ void timbreID_setup(void)
         (t_method)timbreID_maxk,
         gensym("max_k_values"),
         A_DEFFLOAT,
+        A_DEFFLOAT,
         0
     );
 
@@ -3296,6 +3746,15 @@ void timbreID_setup(void)
         (t_method)timbreID_mink,
         gensym("min_k_values"),
         A_DEFFLOAT,
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        timbreID_class,
+        (t_method)timbreID_classReference,
+        gensym("class_reference"),
+        A_GIMME,
         0
     );
 

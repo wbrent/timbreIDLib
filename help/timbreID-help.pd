@@ -117,24 +117,24 @@ between 0 and 1.0. This is more meaningful when clusters are specified
 examples given per cluster.;
 #X connect 0 0 1 0;
 #X restore 786 623 pd outlet-3;
-#N canvas 279 133 1156 737 arcane-parameters 0;
+#N canvas 279 133 1156 737 arcane-parameters 1;
 #X msg 35 78 dist_metric \$1;
-#X text 34 509 Specify a list of weights. Suppose you have a feature
+#X text 34 519 Specify a list of weights. Suppose you have a feature
 vector composed of spectral centroid and spectral flux \, and want
 the latter feature to have half as much impact as the former during
 distance calculation. This is the way to play with the balance.;
-#X msg 35 585 weights 1 0.5;
-#X obj 581 193 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X msg 35 595 weights 1 0.5;
+#X obj 581 193 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X msg 581 213 normalize \$1;
 #X obj 35 48 hradio 15 1 0 3 empty empty empty 0 -8 0 10 -262144 -1
 -1 0;
-#X msg 35 419 knn 7;
+#X msg 35 439 knn 7;
 #X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
 0;
 #X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
 0;
-#X text 115 401 This is only relevant if clustering has been performed.
+#X text 115 421 This is only relevant if clustering has been performed.
 Change the number of nearest neighbors searched in the KNN algorithm
 (default is 1). If knn is set to a value slightly higher than the number
 of training examples you give per instrument \, the confidence measure
@@ -228,8 +228,6 @@ database;
 #X text 70 230 Request a list of a specific attribute for all instances
 ;
 #X obj 482 501 s \$0-tID;
-#X msg 482 470 max_k_values 5;
-#X msg 598 470 min_k_values 3;
 #X text 481 422 Get a list of the K largest or smallest values for
 all attributes across all database instances. A separate list is output
 for each attribute \, starting with the attribute ID.;
@@ -249,15 +247,20 @@ sent out as N lists with N elements in each (where N is the number
 of instances in the requested range). Refer to the plotting/similarity-matrix.pd
 example in the accompanying examples package to see how to graph a
 similarity matrix using GEM., f 49;
+#X text 154 252 Arguments \; 1) attribute index \; 2) optional normalization
+flag: 0 = unnormalized \, 1 = normalized 0 to 1 range \, 2 = normalized
+-1 to 1 range \;, f 43;
+#X text 154 142 Arguments \; 1) instance index \; 2) optional normalization
+flag: 0 = unnormalized \, 1 = normalized 0 to 1 range \, 2 = normalized
+-1 to 1 range \;, f 43;
+#X text 574 502 Arguments \; 1) k (number of values to output) \; 2)
+optional normalization flag: 0 = unnormalized \, 1 = normalized 0 to
+1 range \, 2 = normalized -1 to 1 range \;, f 56;
 #X msg 32 160 instance_list \$1;
 #X msg 32 250 attribute_list \$1;
-#X text 154 142 Arguments \; 1) instance index \; 2) an optional boolean
-flag to output normalized instance data in the -1 to +1 range rather
-than the default 0 to 1 range., f 43;
-#X text 154 252 Arguments \; 1) attribute index \; 2) an optional boolean
-flag to output normalized instance data in the -1 to +1 range rather
-than the default 0 to 1 range., f 43;
-#X connect 0 0 28 0;
+#X msg 598 470 min_k_values 3;
+#X msg 482 470 max_k_values 5;
+#X connect 0 0 29 0;
 #X connect 1 0 7 0;
 #X connect 2 0 7 0;
 #X connect 3 0 5 0;
@@ -265,11 +268,11 @@ than the default 0 to 1 range., f 43;
 #X connect 11 0 10 0;
 #X connect 13 0 10 0;
 #X connect 15 0 9 0;
-#X connect 16 0 29 0;
-#X connect 20 0 19 0;
-#X connect 21 0 19 0;
-#X connect 28 0 6 0;
-#X connect 29 0 17 0;
+#X connect 16 0 30 0;
+#X connect 29 0 6 0;
+#X connect 30 0 17 0;
+#X connect 31 0 19 0;
+#X connect 32 0 19 0;
 #X restore 35 221 pd requesting-info;
 #N canvas 227 96 956 589 concatenative 0;
 #X msg 32 312 search_center 30;
@@ -408,10 +411,10 @@ the K nearest neighbors in addition to the winning match. In the case
 of clustered data \, this will only output the neighbors that are not
 members of the winning cluster., f 49;
 #X msg 579 525 attribute_order 1 2 0;
-#X msg 35 329 attribute_range 0 9;
-#X obj 35 605 s \$0-tID;
-#X obj 35 439 s \$0-tID;
-#X obj 35 349 s \$0-tID;
+#X msg 35 359 attribute_range 0 9;
+#X obj 35 615 s \$0-tID;
+#X obj 35 459 s \$0-tID;
+#X obj 35 379 s \$0-tID;
 #X obj 35 99 s \$0-tID;
 #X obj 581 85 s \$0-tID;
 #X obj 581 235 s \$0-tID;
@@ -564,7 +567,7 @@ attributes \, or doing distance calculation based on subsets of attributes.
 #X text 174 162 << A small example of how to order sounds by timbre
 ;
 #X text 193 191 << How to save cluster information;
-#X text 199 332 Specify a restricted range of attributes to use in
+#X text 199 362 Specify a restricted range of attributes to use in
 the distance calculation, f 41;
 #X text 688 144 Normalize all feature attributes to the 0-1 range.
 If the range of some attributes is much larger than others \, they
@@ -581,6 +584,24 @@ than hundreds of instances \, this calculation will take several seconds.
 This is something to be performed before any real time classification
 is going on., f 73;
 #X text 719 625 Go back to regular attribute order;
+#N canvas 522 275 874 317 class-reference-vectors 1;
+#X obj 62 251 s \$0-tID;
+#X msg 62 48 class_reference define 0 20 1 20;
+#X msg 82 108 class_reference clear;
+#X msg 72 78 class_reference define 0 -20 1 -20;
+#X msg 122 178 class_reference get;
+#X msg 109 140 class_reference id <normalized vector>;
+#X text 381 132 NOTE: must input a pre-normalized vector. use [featureNorm]
+if necessary \, or if retrieving from [timbreID] via instance_list
+\, make sure to use the optional normalization flag of 1;
+#X text 300 31 NOTE: if normalization == TRUE when defining a class_reference
+\, the result will use 0-1 normalized data for all attributes.;
+#X text 189 213 Get all class references.;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X restore 35 311 pd class-reference-vectors;
 #X connect 0 0 23 0;
 #X connect 2 0 20 0;
 #X connect 3 0 4 0;
@@ -607,7 +628,7 @@ synthesis, f 25;
 #X obj 692 432 r \$0-tID;
 #X obj 753 462 r \$0-id;
 #X obj 400 410 s \$0-tID;
-#N canvas 710 204 823 671 outlet-4 0;
+#N canvas 710 204 852 671 outlet-4 0;
 #X obj 66 39 inlet;
 #X obj 66 623 print num_instances;
 #X text 96 87 Several methods produce output at the fourth outlet \,
@@ -647,30 +668,32 @@ order-by-timbre], f 38;
 #X obj 166 583 print attribute_list;
 #X obj 536 403 print min_feature_length;
 #X obj 576 383 print max_feature_length;
-#X obj 616 363 print similarity_matrix;
-#X obj 656 343 print attribute_info;
-#X obj 66 201 route num_instances instance_list attribute_list cluster_membership
-clusters_list cluster_list order min_values max_values min_k_values
-max_k_values min_feature_length max_feature_length similarity_matrix
-attribute_info, f 97;
 #X obj 456 443 print min_k_values;
 #X obj 496 423 print max_k_values;
-#X connect 0 0 16 0;
-#X connect 16 0 1 0;
-#X connect 16 1 3 0;
-#X connect 16 2 11 0;
-#X connect 16 3 4 0;
-#X connect 16 4 5 0;
-#X connect 16 5 6 0;
-#X connect 16 6 9 0;
-#X connect 16 7 7 0;
-#X connect 16 8 8 0;
-#X connect 16 9 17 0;
-#X connect 16 10 18 0;
-#X connect 16 11 12 0;
-#X connect 16 12 13 0;
-#X connect 16 13 14 0;
-#X connect 16 14 15 0;
+#X obj 616 363 print class_reference;
+#X obj 66 201 route num_instances instance_list attribute_list cluster_membership
+clusters_list cluster_list order min_values max_values min_k_values
+max_k_values min_feature_length max_feature_length class_reference
+similarity_matrix attribute_info, f 97;
+#X obj 656 343 print similarity_matrix;
+#X obj 696 323 print attribute_info;
+#X connect 0 0 17 0;
+#X connect 17 0 1 0;
+#X connect 17 1 3 0;
+#X connect 17 2 11 0;
+#X connect 17 3 4 0;
+#X connect 17 4 5 0;
+#X connect 17 5 6 0;
+#X connect 17 6 9 0;
+#X connect 17 7 7 0;
+#X connect 17 8 8 0;
+#X connect 17 9 14 0;
+#X connect 17 10 15 0;
+#X connect 17 11 12 0;
+#X connect 17 12 13 0;
+#X connect 17 13 16 0;
+#X connect 17 14 18 0;
+#X connect 17 15 19 0;
 #X restore 836 583 pd outlet-4;
 #X obj 55 491 list split 25;
 #X text 109 415 You can train on any combination of audio features.
