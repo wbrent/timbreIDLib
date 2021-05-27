@@ -2594,6 +2594,8 @@ static void timbreID_read(t_timbreID *x, t_symbol *s)
     FILE *filePtr;
     t_instanceIdx i, maxLength, minLength;
     char fileNameBuf[MAXPDSTRING];
+    int cTest;
+    t_bool txtFlag;
 
     canvas_makefilename(x->x_canvas, s->s_name, fileNameBuf, MAXPDSTRING);
 
@@ -2603,6 +2605,28 @@ static void timbreID_read(t_timbreID *x, t_symbol *s)
     {
         pd_error(x, "%s: failed to open %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
+    }
+
+    // test to see if it's a .timid or .txt file. if any fgetc() results are > 127, it's not a text file.
+    txtFlag = true;
+
+    while ((cTest = fgetc(filePtr)) != EOF)
+    {
+        if (cTest > 127)
+            txtFlag = false;
+    }
+
+    if (txtFlag)
+    {
+        pd_error(x, "%s: data in file %s is plain text (.txt), not binary (.timid). use read_text instead.", x->x_objSymbol->s_name, fileNameBuf);
+        fclose(filePtr);
+        return;
+    }
+    else
+    {
+        // if we're safe, close and re-open so we can get the binary data.
+        fclose(filePtr);
+        filePtr = fopen(fileNameBuf, "rb");
     }
 
     maxLength = 0;
@@ -3149,6 +3173,8 @@ static void timbreID_readClusters(t_timbreID *x, t_symbol *s)
     FILE *filePtr;
     t_instanceIdx i, numClusters;
     char fileNameBuf[MAXPDSTRING];
+    int cTest;
+    t_bool txtFlag;
 
     canvas_makefilename(x->x_canvas, s->s_name, fileNameBuf, MAXPDSTRING);
 
@@ -3158,6 +3184,28 @@ static void timbreID_readClusters(t_timbreID *x, t_symbol *s)
     {
         pd_error(x, "%s: failed to open %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
+    }
+
+    // test to see if it's a .clu or .txt file. if any fgetc() results are > 127, it's not a text file.
+    txtFlag = true;
+
+    while ((cTest = fgetc(filePtr)) != EOF)
+    {
+        if (cTest > 127)
+            txtFlag = false;
+    }
+
+    if (txtFlag)
+    {
+        pd_error(x, "%s: data in file %s is plain text (.txt), not binary (.clu). use read_clusters_text instead.", x->x_objSymbol->s_name, fileNameBuf);
+        fclose(filePtr);
+        return;
+    }
+    else
+    {
+        // if we're safe, close and re-open so we can get the binary data.
+        fclose(filePtr);
+        filePtr = fopen(fileNameBuf, "rb");
     }
 
     // read header indicating number of clusters
