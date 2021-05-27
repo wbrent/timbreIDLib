@@ -20,36 +20,38 @@ things to behave properly;
 #X connect 3 0 0 0;
 #X restore 217 300 pd other-settings;
 #X obj 57 72 adc~;
-#X text 662 457 Updated for timbreID version 0.7;
 #X msg 173 243 window 2000;
 #X text 275 237 Change analysis window size, f 16;
-#X obj 648 306 timbreID;
+#X obj 648 296 timbreID;
 #X text 161 170 Bang repeatedly to keep refreshing...;
-#X text 481 241 This feature can be sent to the timbreID external in
+#X text 481 236 This feature can be sent to the timbreID external in
 order to identify timbres in real time. For more on using audio features
 for classification \, see the timbreID helpfile:;
 #X obj 137 190 metro 100;
 #X text 180 382 Creation argument is window size in samples, f 23
 ;
-#X text 662 477 July 2017;
 #X floatatom 57 449 10 0 0 0 - - -;
 #X floatatom 167 419 10 0 0 0 - - -;
 #X obj 57 387 peakSample~ 1024;
-#X text 481 141 Audio buffering and windowing are taken care of by
+#X text 481 152 Audio buffering and windowing are taken care of by
 the external \, so there is no need for tabreceive~ or block~. You
 can set the window size with a creation argument \, or change it with
 the "window" message. Window size is not required to be a power of
 two.;
-#X text 481 74 [peakSample~] reports the value and index of the largest
-sample magnitude (regardless of sign) in the most recent N-sample window
-of audio.;
 #X text 105 115 Bang to output peak sample value and location;
-#X obj 663 499 declare -lib timbreID/timbreIDLib;
-#X connect 0 0 17 0;
-#X connect 1 0 12 0;
-#X connect 4 0 17 0;
-#X connect 5 0 17 0;
-#X connect 7 0 17 0;
-#X connect 12 0 17 0;
-#X connect 17 0 15 0;
-#X connect 17 1 16 0;
+#X obj 663 489 declare -lib timbreID/timbreIDLib;
+#X text 662 467 June 2021;
+#X text 662 447 Updated for timbreIDLib version 0.9.0;
+#X text 481 74 [peakSample~] reports the value and index of the sample
+with the largest magnitude in the most recent N-sample window of audio.
+Note that this is not peak amplitude \, as the resulting sample value
+will sometimes be negative. For peak amplitude \, use [abs] on the
+output of the first outlet.;
+#X connect 0 0 15 0;
+#X connect 1 0 11 0;
+#X connect 4 0 15 0;
+#X connect 5 0 15 0;
+#X connect 6 0 15 0;
+#X connect 11 0 15 0;
+#X connect 15 0 13 0;
+#X connect 15 1 14 0;
