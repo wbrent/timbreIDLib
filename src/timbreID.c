@@ -2297,15 +2297,15 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
         // store the class index
         classIdx = x->x_numClassRefs;
 
-        // the number of attributes in this definition is half the number of remaining arguments after the "define" symbol
-        numAttributes = (argc - 1) * 0.5;
+        // the number of attributes in this definition is the number of remaining arguments after the "define" symbol
+        numAttributes = argc - 1;
         // post("numAttributes: %i", numAttributes);
 
-        // for the second class onward, confirm that the attribute length is the same as the first class.
+        // confirm that the definition specifies a K percent for all attributes
         // if not, return with an error before we do any memory management below
-        if (x->x_numClassRefs > 0 && numAttributes != x->x_classRefs[0].length)
+        if (numAttributes != x->x_minFeatureLength)
         {
-            pd_error(x, "%s: all class references must have the same number of attributes. failed to add an additional class reference.", x->x_objSymbol->s_name);
+            pd_error(x, "%s: class reference definition must provide a K percent value for all attributes. failed to define class reference.", x->x_objSymbol->s_name);
             return;
         }
 
@@ -2329,16 +2329,13 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
         for (j = 0; j < numAttributes; j++)
         {
             t_float pct, kSum;
-            t_attributeIdx thisAttIdx;
             t_instanceIdx kInstances;
 
-            thisAttIdx = atom_getfloat (argv + 1 + (j * 2));
-            pct = atom_getfloat (argv + 1 + (j * 2 + 1));
-            // post("thisAttIdx[%i]: %i, pct[%i]: %f", j, thisAttIdx, j, pct);
+            pct = atom_getfloat (argv + 1 + j);
 
             // get this attribute column
             for (i = 0; i < x->x_numInstances; i++)
-                attVals[i] = x->x_instances[i].data[thisAttIdx];
+                attVals[i] = x->x_instances[i].data[j];
 
             // sort it
             tIDLib_bubbleSort(x->x_numInstances, attVals);
@@ -2357,7 +2354,7 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
                 for (i = 0; i < kInstances; i++)
                 {
                     if (x->x_normalize)
-                        kSum += (attVals[i] - x->x_attributeData[thisAttIdx].normData.minVal) * x->x_attributeData[thisAttIdx].normData.normScalar;
+                        kSum += (attVals[i] - x->x_attributeData[j].normData.minVal) * x->x_attributeData[j].normData.normScalar;
                     else
                         kSum += attVals[i];
                 }
@@ -2367,7 +2364,7 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
                 for (i = 0; i < kInstances; i++)
                 {
                     if (x->x_normalize)
-                        kSum += (attVals[(x->x_numInstances - 1) - i] - x->x_attributeData[thisAttIdx].normData.minVal) * x->x_attributeData[thisAttIdx].normData.normScalar;
+                        kSum += (attVals[(x->x_numInstances - 1) - i] - x->x_attributeData[j].normData.minVal) * x->x_attributeData[j].normData.normScalar;
                     else
                         kSum += attVals[(x->x_numInstances - 1) - i];
                 }
@@ -2477,7 +2474,7 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
     }
     else
     {
-        pd_error(x, "%s: no such method (%s) for class_reference.", x->x_objSymbol->s_name, commandName->s_name);
+        pd_error(x, "%s: no such command (%s) for class_reference.", x->x_objSymbol->s_name, commandName->s_name);
     }
 }
 
