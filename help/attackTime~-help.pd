@@ -44,15 +44,13 @@ size (default: 2000ms);
 #X connect 11 0 0 0;
 #X connect 16 0 0 0;
 #X restore 182 289 pd other-settings;
-#X text 787 596 Updated for timbreID version 0.7;
-#X obj 763 538 timbreID;
-#X text 596 480 This feature can be sent to the timbreID external in
+#X obj 763 548 timbreID;
+#X text 596 490 This feature can be sent to the timbreID external in
 order to identify timbres in real time. For more on using audio features
 for classification \, see the timbreID helpfile:;
-#X text 787 616 July 2017;
 #N canvas 0 50 450 300 (subpatch) 0;
-#X array \$0-attackSegment 150 float 0;
-#X coords 0 1 149 -1 200 140 1 0 0;
+#X array \$0-attackSegment 3383 float 0;
+#X coords 0 1 3382 -1 200 140 1 0 0;
 #X restore 326 170 graph;
 #X text 151 157 When an onset is found \, bang to output attack time
 in milliseconds, f 18;
@@ -109,10 +107,10 @@ in milliseconds, f 18;
 #X connect 7 0 1 0;
 #X connect 8 0 7 0;
 #X restore 71 185 pd onsets;
-#N canvas 579 85 606 431 sample-buffer 0;
-#X obj 78 38 inlet~;
-#X obj 78 230 outlet~;
-#X obj 298 38 inlet;
+#N canvas 579 96 606 431 sample-buffer 0;
+#X obj 38 78 inlet~;
+#X obj 38 270 outlet~;
+#X obj 108 78 inlet;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-sampleBuffer-graph 88264 float 0;
 #X coords 0 1 88263 -1 200 140 1 0 0;
@@ -133,19 +131,29 @@ in milliseconds, f 18;
 #X connect 4 0 7 0;
 #X connect 5 0 1 0;
 #X connect 5 1 2 0;
-#X restore 146 169 pd do-plotting;
-#X obj 146 125 sampleBuffer~ 88264;
-#X text 110 298 This uses [sampleBuffer~] to grab the same audio contained
+#X restore 108 239 pd do-plotting;
+#X obj 108 195 sampleBuffer~ 88264;
+#X obj 177 51 loadbang;
+#X obj 177 74 samplerate~;
+#X obj 177 97 * 2;
+#X obj 177 120 + 64;
+#X text 110 328 This uses [sampleBuffer~] to grab the same audio contained
 by [attackTime~]'s internal buffer \, based on max_search_range. max_search_range
 is 2000ms by default \, so the buffer is two full seconds of samples
-\, plus a block of samples = 88264;
+\, plus a block of samples = 88264 at a 44.1kHz sampling rate.;
+#X msg 177 143 window \$1;
 #X connect 0 0 1 0;
 #X connect 0 0 5 0;
 #X connect 2 0 5 0;
 #X connect 5 0 4 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 8 0 9 0;
+#X connect 9 0 11 0;
+#X connect 11 0 5 0;
 #X restore 71 234 pd sample-buffer;
 #X obj 71 361 attackTime~ 4096;
-#N canvas 0 81 378 323 synth-burst 0;
+#N canvas 0 96 378 323 synth-burst 0;
 #X obj 176 19 inlet;
 #X obj 106 249 outlet~;
 #X obj 106 99 *~;
@@ -165,24 +173,18 @@ is 2000ms by default \, so the buffer is two full seconds of samples
 #X connect 6 0 7 0;
 #X connect 6 0 7 1;
 #X connect 8 0 2 1;
-#X restore 71 87 pd synth-burst;
+#X restore 71 97 pd synth-burst;
 #X msg 71 27 5;
 #X msg 111 27 20;
 #X msg 151 27 37;
 #X floatatom 71 69 5 0 0 1 ms - -;
 #X msg 37 27 2;
-#X text 596 370 Look inside [pd other-settings] for more information
+#X text 596 380 Look inside [pd other-settings] for more information
 regarding analysis parameters.;
 #X msg 191 27 70;
-#X text 596 24 When [attackTime~] receives a bang \, it locates the
-peak sample in the current analysis window \, and searches back through
-its internal buffer to find the point where sample magnitude remains
-near zero for several consecutive samples. The number of samples between
-the attack onset and attack peak is used to calculate the attack time
-in milliseconds. Attack time is an important timbre feature.;
 #X text 212 361 Creation argument sets analysis window size in samples
 ;
-#X text 596 124 [attackTime~] does not contain an onset detector \,
+#X text 596 134 [attackTime~] does not contain an onset detector \,
 so you must use either [bonk~] \, [bark~] \, or even [maxSampleDelta~]
 to identify onsets. Use onset identification to determine the precise
 moment to analyze for attack time. It makes sense to keep the window
@@ -198,25 +200,34 @@ finds enough consecutive samples below the magnitude threshold) \,
 it returns an attack time of -1 to signal failure. This method is only
 appropriate for measuring sound events that are separated by near silence.
 ;
-#X text 596 410 Audio buffering is taken care of by the external \,
+#X text 596 420 Audio buffering is taken care of by the external \,
 so there is no need for [block~]. You can set the window size with
 a creation argument \, or change it with the "window" message. Window
 size is not required to be a power of two.;
 #X obj 21 635 declare -lib timbreID/timbreIDLib;
-#X connect 3 0 18 0;
-#X connect 10 0 12 0;
-#X connect 11 0 12 1;
-#X connect 16 0 17 0;
-#X connect 16 1 17 1;
-#X connect 16 1 18 0;
-#X connect 17 0 18 0;
-#X connect 18 0 0 0;
-#X connect 18 1 10 0;
-#X connect 18 2 11 0;
-#X connect 19 0 16 0;
-#X connect 20 0 23 0;
-#X connect 21 0 23 0;
-#X connect 22 0 23 0;
-#X connect 23 0 19 0;
-#X connect 24 0 23 0;
-#X connect 26 0 23 0;
+#X text 787 596 Updated for timbreIDLib version 0.9.0;
+#X text 787 616 June 2021;
+#X text 596 24 When [attackTime~] receives a bang \, it locates the
+peak sample in the current analysis window \, and searches back through
+its internal buffer to find the attack onset (defined as the point
+where sample magnitude remains near zero for several consecutive samples).
+The number of samples between the attack onset and attack peak is used
+to calculate the attack time in milliseconds. Attack time is an important
+timbre feature.;
+#X connect 3 0 16 0;
+#X connect 8 0 10 0;
+#X connect 9 0 10 1;
+#X connect 14 0 15 0;
+#X connect 14 1 15 1;
+#X connect 14 1 16 0;
+#X connect 15 0 16 0;
+#X connect 16 0 0 0;
+#X connect 16 1 8 0;
+#X connect 16 2 9 0;
+#X connect 17 0 14 0;
+#X connect 18 0 21 0;
+#X connect 19 0 21 0;
+#X connect 20 0 21 0;
+#X connect 21 0 17 0;
+#X connect 22 0 21 0;
+#X connect 24 0 21 0;
