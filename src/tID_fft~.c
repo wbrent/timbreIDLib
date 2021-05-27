@@ -131,6 +131,9 @@ static void tID_fft_tilde_bang(t_tID_fft_tilde *x)
                     imagMax = thisImag;
             }
 
+            realMax = (realMax == 0.0) ? 1.0 : realMax;
+            imagMax = (imagMax == 0.0) ? 1.0 : imagMax;
+
             realMax = 1.0/realMax;
             imagMax = 1.0/imagMax;
         }
@@ -174,6 +177,9 @@ static void tID_fft_tilde_bang(t_tID_fft_tilde *x)
                 if(thisImag>imagMax)
                     imagMax = thisImag;
             }
+
+            realMax = (realMax == 0.0) ? 1.0 : realMax;
+            imagMax = (imagMax == 0.0) ? 1.0 : imagMax;
 
             realMax = 1.0/realMax;
             imagMax = 1.0/imagMax;

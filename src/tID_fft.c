@@ -194,6 +194,9 @@ static void tID_fft_analyze(t_tID_fft *x, t_floatarg start, t_floatarg n)
                         imagMax = thisImag;
                 }
 
+                realMax = (realMax == 0.0) ? 1.0 : realMax;
+                imagMax = (imagMax == 0.0) ? 1.0 : imagMax;
+
                 realMax = 1.0/realMax;
                 imagMax = 1.0/imagMax;
             }
@@ -237,6 +240,9 @@ static void tID_fft_analyze(t_tID_fft *x, t_floatarg start, t_floatarg n)
                     if(thisImag>imagMax)
                         imagMax = thisImag;
                 }
+
+                realMax = (realMax == 0.0) ? 1.0 : realMax;
+                imagMax = (imagMax == 0.0) ? 1.0 : imagMax;
 
                 realMax = 1.0/realMax;
                 imagMax = 1.0/imagMax;
