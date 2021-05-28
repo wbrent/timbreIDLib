@@ -31,8 +31,8 @@ typedef struct _tID_fft_tilde
     t_sampIdx x_zeroPadHalf;
     double x_lastDspTime;
     t_sample *x_signalBuffer;
-    t_float *x_fftwIn;
-    t_float *x_fftwInZeroPad;
+    t_sample *x_fftwIn;
+    t_sample *x_fftwInZeroPad;
     fftwf_complex *x_fftwOut;
     fftwf_complex *x_fftwOutZeroPad;
     fftwf_plan x_fftwPlan;
@@ -236,7 +236,7 @@ static void tID_fft_tilde_window(t_tID_fft_tilde *x, t_floatarg w)
     windowHalf = window*0.5;
 
     x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window+x->x_n) * sizeof(t_sample), (window+x->x_n) * sizeof(t_sample));
-    x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, x->x_window * sizeof(t_float), window * sizeof(t_float));
+    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, x->x_window * sizeof(t_sample), window * sizeof(t_sample));
     x->x_listOutReal = (t_atom *)t_resizebytes(x->x_listOutReal, (x->x_windowHalf+1) * sizeof(t_atom), (windowHalf+1) * sizeof(t_atom));
     x->x_listOutImag = (t_atom *)t_resizebytes(x->x_listOutImag, (x->x_windowHalf+1) * sizeof(t_atom), (windowHalf+1) * sizeof(t_atom));
 
@@ -329,7 +329,7 @@ static void tID_fft_tilde_zeroPad(t_tID_fft_tilde *x, t_floatarg z)
     x->x_zeroPadHalf = x->x_zeroPad * 0.5;
 
     // resize zeroPad FFTW input buffer
-    x->x_fftwInZeroPad = (t_float *)t_resizebytes(x->x_fftwInZeroPad, oldZeroPad * sizeof(t_float), x->x_zeroPad * sizeof(t_float));
+    x->x_fftwInZeroPad = (t_sample *)t_resizebytes(x->x_fftwInZeroPad, oldZeroPad * sizeof(t_sample), x->x_zeroPad * sizeof(t_sample));
 
     // free the zeroPad FFTW output buffer, and re-malloc according to new window
     fftwf_free(x->x_fftwOutZeroPad);
@@ -413,8 +413,8 @@ static void *tID_fft_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_lastDspTime = clock_getlogicaltime();
 
     x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window+x->x_n) * sizeof(t_sample));
-    x->x_fftwIn = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
-    x->x_fftwInZeroPad = (t_float *)t_getbytes(x->x_zeroPad * sizeof(t_float));
+    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
+    x->x_fftwInZeroPad = (t_sample *)t_getbytes(x->x_zeroPad * sizeof(t_sample));
     x->x_listOutReal = (t_atom *)t_getbytes((x->x_windowHalf+1)*sizeof(t_atom));
     x->x_listOutImag = (t_atom *)t_getbytes((x->x_windowHalf+1)*sizeof(t_atom));
     x->x_listOutRealZeroPad = (t_atom *)t_getbytes((x->x_zeroPadHalf+1)*sizeof(t_atom));
@@ -522,8 +522,8 @@ static void tID_fft_tilde_free(t_tID_fft_tilde *x)
     t_freebytes(x->x_listOutImagZeroPad, (x->x_zeroPadHalf+1)*sizeof(t_atom));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_float));
-    t_freebytes(x->x_fftwInZeroPad, (x->x_zeroPad)*sizeof(t_float));
+    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_sample));
+    t_freebytes(x->x_fftwInZeroPad, (x->x_zeroPad)*sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_free(x->x_fftwOutZeroPad);
     fftwf_destroy_plan(x->x_fftwPlan);

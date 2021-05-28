@@ -36,7 +36,7 @@ typedef struct _chroma
     t_float x_resolution;
     t_float x_microtune;
     t_float *x_pitchClasses;
-    t_float *x_fftwIn;
+    t_sample *x_fftwIn;
     fftwf_complex *x_fftwOut;
     fftwf_plan x_fftwPlan;
     t_float *x_blackman;
@@ -74,7 +74,7 @@ static void chroma_resizeWindow(t_chroma *x, t_sampIdx oldWindow, t_sampIdx wind
     x->x_window = window;
     x->x_windowHalf = windowHalf;
 
-    x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
 
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
@@ -765,7 +765,7 @@ static void chroma_free(t_chroma *x)
     t_freebytes(x->x_binRanges, PBINRANGEBUFSIZE*sizeof(t_binIdx));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_float));
+    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
 

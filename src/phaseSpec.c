@@ -25,7 +25,7 @@ typedef struct _phaseSpec
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
     t_windowFunction x_windowFunction;
-    t_float *x_fftwIn;
+    t_sample *x_fftwIn;
     fftwf_complex *x_fftwOut;
     fftwf_plan x_fftwPlan;
     t_float *x_blackman;
@@ -63,7 +63,7 @@ static void phaseSpec_resizeWindow(t_phaseSpec *x, t_sampIdx oldWindow, t_sampId
     x->x_window = window;
     x->x_windowHalf = windowHalf;
 
-    x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
 
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
@@ -361,7 +361,7 @@ static void *phaseSpec_new(t_symbol *s, int argc, t_atom *argv)
 static void phaseSpec_free(t_phaseSpec *x)
 {
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_float));
+    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
 

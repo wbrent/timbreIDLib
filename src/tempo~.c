@@ -66,8 +66,8 @@ typedef struct _tempo_tilde
     t_uShortInt x_tempoBufferSize;
     t_float *x_tempoBuffer;
     t_sample *x_signalBuffer;
-    t_float *x_fftwInForwardWindow;
-    t_float *x_fftwInBackWindow;
+    t_sample *x_fftwInForwardWindow;
+    t_sample *x_fftwInBackWindow;
     t_float *x_onsetsBuffer;
     fftwf_complex *x_fftwOutForwardWindow;
     fftwf_complex *x_fftwOutBackWindow;
@@ -433,8 +433,8 @@ static void tempo_tilde_window(t_tempo_tilde *x, t_floatarg w)
     windowHalf = window*0.5;
 
     x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window*2) * sizeof(t_sample), (window*2) * sizeof(t_sample));
-    x->x_fftwInForwardWindow = (t_float *)t_resizebytes(x->x_fftwInForwardWindow, x->x_window*sizeof(t_float), window*sizeof(t_float));
-    x->x_fftwInBackWindow = (t_float *)t_resizebytes(x->x_fftwInBackWindow, x->x_window*sizeof(t_float), window*sizeof(t_float));
+    x->x_fftwInForwardWindow = (t_sample *)t_resizebytes(x->x_fftwInForwardWindow, x->x_window*sizeof(t_sample), window*sizeof(t_sample));
+    x->x_fftwInBackWindow = (t_sample *)t_resizebytes(x->x_fftwInBackWindow, x->x_window*sizeof(t_sample), window*sizeof(t_sample));
 
     x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, x->x_window*sizeof(t_float), window*sizeof(t_float));
     x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, x->x_window*sizeof(t_float), window*sizeof(t_float));
@@ -836,8 +836,8 @@ static void *tempo_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_onsetsBufDur = ((x->x_onsetsBufSize*x->x_hop)/x->x_sr)*1000.0;
 
     x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window*2) * sizeof(t_sample));
-    x->x_fftwInForwardWindow = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
-    x->x_fftwInBackWindow = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+    x->x_fftwInForwardWindow = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
+    x->x_fftwInBackWindow = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
     x->x_onsetsBuffer = (t_float *)t_getbytes(x->x_onsetsBufSize * sizeof(t_float));
     x->x_listOut = (t_atom *)t_getbytes(x->x_onsetsBufSize*sizeof(t_atom));
 
@@ -971,8 +971,8 @@ static void tempo_tilde_free(t_tempo_tilde *x)
     t_freebytes(x->x_onsetsBuffer, x->x_onsetsBufSize*sizeof(t_float));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwInForwardWindow, (x->x_window)*sizeof(t_float));
-    t_freebytes(x->x_fftwInBackWindow, (x->x_window)*sizeof(t_float));
+    t_freebytes(x->x_fftwInForwardWindow, (x->x_window)*sizeof(t_sample));
+    t_freebytes(x->x_fftwInBackWindow, (x->x_window)*sizeof(t_sample));
     fftwf_free(x->x_fftwOutForwardWindow);
     fftwf_free(x->x_fftwOutBackWindow);
     fftwf_destroy_plan(x->x_fftwPlanForwardWindow);

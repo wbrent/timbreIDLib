@@ -29,7 +29,7 @@ typedef struct _phaseSpec_tilde
     t_uShortInt x_overlap;
     double x_lastDspTime;
     t_sample *x_signalBuffer;
-    t_float *x_fftwIn;
+    t_sample *x_fftwIn;
     fftwf_complex *x_fftwOut;
     fftwf_plan x_fftwPlan;
     t_float *x_blackman;
@@ -123,7 +123,7 @@ static void phaseSpec_tilde_window(t_phaseSpec_tilde *x, t_floatarg w)
     windowHalf = window*0.5;
 
     x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window+x->x_n) * sizeof(t_sample), (window+x->x_n) * sizeof(t_sample));
-    x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, x->x_window * sizeof(t_float), window * sizeof(t_float));
+    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, x->x_window * sizeof(t_sample), window * sizeof(t_sample));
     x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, (x->x_windowHalf+1) * sizeof(t_atom), (windowHalf+1) * sizeof(t_atom));
 
     x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, x->x_window*sizeof(t_float), window*sizeof(t_float));
@@ -241,7 +241,7 @@ static void *phaseSpec_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_lastDspTime = clock_getlogicaltime();
 
     x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window+x->x_n) * sizeof(t_sample));
-    x->x_fftwIn = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
     x->x_listOut = (t_atom *)t_getbytes((x->x_windowHalf+1)*sizeof(t_atom));
 
      for(i=0; i<(x->x_window+x->x_n); i++)
@@ -341,7 +341,7 @@ static void phaseSpec_tilde_free(t_phaseSpec_tilde *x)
     t_freebytes(x->x_listOut, (x->x_windowHalf+1)*sizeof(t_atom));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_float));
+    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
 

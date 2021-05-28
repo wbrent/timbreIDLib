@@ -27,7 +27,7 @@ typedef struct _specRolloff
     t_sampIdx x_windowHalf;
     t_windowFunction x_windowFunction;
     t_bool x_powerSpectrum;
-    t_float *x_fftwIn;
+    t_sample *x_fftwIn;
     fftwf_complex *x_fftwOut;
     fftwf_plan x_fftwPlan;
     t_float *x_blackman;
@@ -66,7 +66,7 @@ static void specRolloff_resizeWindow(t_specRolloff *x, t_sampIdx oldWindow, t_sa
     x->x_window = window;
     x->x_windowHalf = windowHalf;
 
-    x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
     x->x_binFreqs = (t_float *)t_resizebytes(x->x_binFreqs, (oldWindowHalf+1)*sizeof(t_float), (x->x_windowHalf+1)*sizeof(t_float));
 
     fftwf_free(x->x_fftwOut);
@@ -517,7 +517,7 @@ static void *specRolloff_new(t_symbol *s, int argc, t_atom *argv)
 static void specRolloff_free(t_specRolloff *x)
 {
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_float));
+    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
 

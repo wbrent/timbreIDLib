@@ -305,8 +305,8 @@ static void *dct_new(t_symbol *s, int argc, t_atom *argv)
     x->x_windowFunction = blackman;
     x->x_normalize = true;
 
-    x->x_dctIn = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
-    x->x_dctOut = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
+    x->x_dctIn = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+    x->x_dctOut = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
     x->x_listOut = (t_atom *)t_getbytes(x->x_window*sizeof(t_atom));
 
     // DCT plan. FFTW_REDFT10 is the DCT-II

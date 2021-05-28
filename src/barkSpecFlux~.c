@@ -32,8 +32,8 @@ typedef struct _barkSpecFlux_tilde
     t_bool x_logSpectrum;
     double x_lastDspTime;
     t_sample *x_signalBuffer;
-    t_float *x_fftwInForwardWindow;
-    t_float *x_fftwInBackWindow;
+    t_sample *x_fftwInForwardWindow;
+    t_sample *x_fftwInBackWindow;
     fftwf_complex *x_fftwOutForwardWindow;
     fftwf_complex *x_fftwOutBackWindow;
     fftwf_plan x_fftwPlanForwardWindow;
@@ -321,8 +321,8 @@ static void barkSpecFlux_tilde_window(t_barkSpecFlux_tilde *x, t_floatarg w)
     windowHalf = window*0.5;
 
     x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window*2+x->x_n) * sizeof(t_sample), (window*2+x->x_n) * sizeof(t_sample));
-    x->x_fftwInForwardWindow = (t_float *)t_resizebytes(x->x_fftwInForwardWindow, x->x_window*sizeof(t_float), window*sizeof(t_float));
-    x->x_fftwInBackWindow = (t_float *)t_resizebytes(x->x_fftwInBackWindow, x->x_window*sizeof(t_float), window*sizeof(t_float));
+    x->x_fftwInForwardWindow = (t_sample *)t_resizebytes(x->x_fftwInForwardWindow, x->x_window*sizeof(t_sample), window*sizeof(t_sample));
+    x->x_fftwInBackWindow = (t_sample *)t_resizebytes(x->x_fftwInBackWindow, x->x_window*sizeof(t_sample), window*sizeof(t_sample));
 
     x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, x->x_window*sizeof(t_float), window*sizeof(t_float));
     x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, x->x_window*sizeof(t_float), window*sizeof(t_float));
@@ -599,8 +599,8 @@ static void *barkSpecFlux_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_mode = mFlux;
 
     x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window*2+x->x_n) * sizeof(t_sample));
-    x->x_fftwInForwardWindow = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
-    x->x_fftwInBackWindow = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+    x->x_fftwInForwardWindow = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
+    x->x_fftwInBackWindow = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
 
      for(i=0; i<(x->x_window*2+x->x_n); i++)
         x->x_signalBuffer[i] = 0.0;
@@ -715,8 +715,8 @@ static void barkSpecFlux_tilde_free(t_barkSpecFlux_tilde *x)
     t_freebytes(x->x_signalBuffer, (x->x_window*2+x->x_n)*sizeof(t_sample));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwInForwardWindow, (x->x_window)*sizeof(t_float));
-    t_freebytes(x->x_fftwInBackWindow, (x->x_window)*sizeof(t_float));
+    t_freebytes(x->x_fftwInForwardWindow, (x->x_window)*sizeof(t_sample));
+    t_freebytes(x->x_fftwInBackWindow, (x->x_window)*sizeof(t_sample));
     fftwf_free(x->x_fftwOutForwardWindow);
     fftwf_free(x->x_fftwOutBackWindow);
     fftwf_destroy_plan(x->x_fftwPlanForwardWindow);

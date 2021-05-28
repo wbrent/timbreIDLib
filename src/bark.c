@@ -70,7 +70,7 @@ typedef struct _bark
     t_float *x_hamming;
     t_float *x_hann;
 
-    t_float *x_fftwIn;
+    t_sample *x_fftwIn;
     fftwf_complex *x_fftwOut;
     fftwf_plan x_fftwPlan;
 
@@ -560,7 +560,7 @@ static void *bark_new(t_symbol *s, int argc, t_atom *argv)
     x->x_specBandAvg = false;
     x->x_filterAvg = false;
 
-    x->x_fftwIn = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
 
     for(i=0; i<x->x_window; i++)
         x->x_fftwIn[i] = 0.0;
@@ -825,7 +825,7 @@ static void bark_free(t_bark *x)
     t_filterIdx i;
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_fftwIn, x->x_window*sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
 

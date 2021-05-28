@@ -27,8 +27,8 @@ typedef struct _tID_fft
     t_windowFunction x_windowFunction;
     t_sampIdx x_zeroPad;
     t_sampIdx x_zeroPadHalf;
-    t_float *x_fftwIn;
-    t_float *x_fftwInZeroPad;
+    t_sample *x_fftwIn;
+    t_sample *x_fftwInZeroPad;
     fftwf_complex *x_fftwOut;
     fftwf_complex *x_fftwOutZeroPad;
     fftwf_plan x_fftwPlan;
@@ -73,7 +73,7 @@ static void tID_fft_resizeWindow(t_tID_fft *x, t_sampIdx oldWindow, t_sampIdx wi
     x->x_window = window;
     x->x_windowHalf = windowHalf;
 
-    x->x_fftwIn = (t_float *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
 
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
@@ -378,7 +378,7 @@ static void tID_fft_zeroPad(t_tID_fft *x, t_floatarg z)
     x->x_zeroPadHalf = x->x_zeroPad * 0.5;
 
     // resize zeroPad FFTW input buffer
-    x->x_fftwInZeroPad = (t_float *)t_resizebytes(x->x_fftwInZeroPad, oldZeroPad * sizeof(t_float), x->x_zeroPad * sizeof(t_float));
+    x->x_fftwInZeroPad = (t_sample *)t_resizebytes(x->x_fftwInZeroPad, oldZeroPad * sizeof(t_sample), x->x_zeroPad * sizeof(t_sample));
 
     // free the zeroPad FFTW output buffer, and re-malloc according to new window
     fftwf_free(x->x_fftwOutZeroPad);
@@ -470,7 +470,7 @@ static void *tID_fft_new(t_symbol *s, int argc, t_atom *argv)
     x->x_normalize = false;
 
     x->x_fftwIn = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
-    x->x_fftwInZeroPad = (t_float *)t_getbytes(x->x_zeroPad * sizeof(t_float));
+    x->x_fftwInZeroPad = (t_sample *)t_getbytes(x->x_zeroPad * sizeof(t_sample));
     x->x_listOutReal = (t_atom *)t_getbytes((x->x_windowHalf+1)*sizeof(t_atom));
     x->x_listOutImag = (t_atom *)t_getbytes((x->x_windowHalf+1)*sizeof(t_atom));
     x->x_listOutRealZeroPad = (t_atom *)t_getbytes((x->x_zeroPadHalf+1)*sizeof(t_atom));
@@ -511,8 +511,8 @@ static void tID_fft_free(t_tID_fft *x)
     t_freebytes(x->x_listOutImagZeroPad, (x->x_zeroPadHalf+1)*sizeof(t_atom));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_float));
-    t_freebytes(x->x_fftwInZeroPad, (x->x_zeroPad)*sizeof(t_float));
+    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_sample));
+    t_freebytes(x->x_fftwInZeroPad, (x->x_zeroPad)*sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_free(x->x_fftwOutZeroPad);
     fftwf_destroy_plan(x->x_fftwPlan);

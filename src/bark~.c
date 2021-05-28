@@ -74,7 +74,7 @@ typedef struct _bark_tilde
 
     double x_lastDspTime;
     t_sample *x_signalBuffer;
-    t_float *x_fftwIn;
+    t_sample *x_fftwIn;
     fftwf_complex *x_fftwOut;
     fftwf_plan x_fftwPlan;
     t_float *x_mask;
@@ -519,7 +519,7 @@ static void *bark_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_clock = clock_new(x, (t_method)bark_tilde_clear_hit);
 
     x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window+x->x_n) * sizeof(t_sample));
-    x->x_fftwIn = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
 
     for(i=0; i<x->x_window+x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
@@ -796,7 +796,7 @@ static void bark_tilde_free(t_bark_tilde *x)
     t_filterIdx i;
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_fftwIn, x->x_window*sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
 

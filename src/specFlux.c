@@ -28,8 +28,8 @@ typedef struct _specFlux
     t_bool x_normalize;
     t_bool x_powerSpectrum;
     t_bool x_logSpectrum;
-    t_float *x_fftwInForwardWindow;
-    t_float *x_fftwInBackWindow;
+    t_sample *x_fftwInForwardWindow;
+    t_sample *x_fftwInBackWindow;
     fftwf_complex *x_fftwOutForwardWindow;
     fftwf_complex *x_fftwOutBackWindow;
     fftwf_plan x_fftwPlanForwardWindow;
@@ -79,8 +79,8 @@ static void specFlux_resizeWindow(t_specFlux *x, t_sampIdx oldWindow, t_sampIdx 
         x->x_separation = x->x_window*0.5;
     }
 
-    x->x_fftwInForwardWindow = (t_float *)t_resizebytes(x->x_fftwInForwardWindow, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_fftwInBackWindow = (t_float *)t_resizebytes(x->x_fftwInBackWindow, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_fftwInForwardWindow = (t_sample *)t_resizebytes(x->x_fftwInForwardWindow, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
+    x->x_fftwInBackWindow = (t_sample *)t_resizebytes(x->x_fftwInBackWindow, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
 
     fftwf_free(x->x_fftwOutForwardWindow);
     fftwf_free(x->x_fftwOutBackWindow);
@@ -735,8 +735,8 @@ static void *specFlux_new(t_symbol *s, int argc, t_atom *argv)
     x->x_squaredDiff = false;
     x->x_mode = mFlux;
 
-    x->x_fftwInForwardWindow = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
-    x->x_fftwInBackWindow = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+    x->x_fftwInForwardWindow = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
+    x->x_fftwInBackWindow = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
 
     x->x_listOut = (t_atom *)t_getbytes((x->x_windowHalf+1)*sizeof(t_atom));
 
@@ -776,8 +776,8 @@ static void specFlux_free(t_specFlux *x)
     t_freebytes(x->x_listOut, (x->x_windowHalf+1)*sizeof(t_atom));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwInForwardWindow, (x->x_window)*sizeof(t_float));
-    t_freebytes(x->x_fftwInBackWindow, (x->x_window)*sizeof(t_float));
+    t_freebytes(x->x_fftwInForwardWindow, (x->x_window)*sizeof(t_sample));
+    t_freebytes(x->x_fftwInBackWindow, (x->x_window)*sizeof(t_sample));
     fftwf_free(x->x_fftwOutForwardWindow);
     fftwf_free(x->x_fftwOutBackWindow);
     fftwf_destroy_plan(x->x_fftwPlanForwardWindow);
