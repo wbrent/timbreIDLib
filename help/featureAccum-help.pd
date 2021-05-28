@@ -25,7 +25,7 @@ clears memory.;
 0;
 #X obj 60 561 s \$0-facc-graph;
 #X msg 209 348 print;
-#X text 596 635 Updated for timbreID version 0.7.6;
+#X text 596 635 Updated for timbreIDLib version 0.7.6;
 #X text 596 655 August 2018;
 #X obj 183 459 list length;
 #X obj 183 480 change;

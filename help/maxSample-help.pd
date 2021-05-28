@@ -58,7 +58,7 @@
 read from., f 33;
 #X text 107 143 Analyze a window starting at sample 44100 that is 2000
 samples long (samples 44100 - 46099), f 48;
-#X text 652 557 Updated for timbreID version 0.7;
+#X text 652 557 Updated for timbreIDLib version 0.7;
 #X msg 98 123 analyze 44100 2000;
 #X obj 59 483 maxSample \$0-sample;
 #X obj 269 522 nbx 5 32 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 32

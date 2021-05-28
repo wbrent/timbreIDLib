@@ -61,7 +61,7 @@
 #X text 219 60 Bang to output slope;
 #X obj 221 189 s \$0-analyze;
 #X obj 142 267 r \$0-analyze;
-#X text 680 558 Updated for timbreID version 0.7;
+#X text 680 558 Updated for timbreIDLib version 0.7;
 #N canvas 574 81 879 725 other-settings 0;
 #X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
 -1 1;

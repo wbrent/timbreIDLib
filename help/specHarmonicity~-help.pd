@@ -58,7 +58,7 @@ fundamental. (default: OFF);
 #X connect 17 0 4 0;
 #X connect 18 0 4 0;
 #X restore 350 423 pd other-settings;
-#X text 786 639 Updated for timbreID version 0.7;
+#X text 786 639 Updated for timbreIDLib version 0.7;
 #X obj 742 532 timbreID;
 #X text 595 471 This feature can be sent to the timbreID external in
 order to identify timbres in real time. For more on using audio features

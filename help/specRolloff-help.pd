@@ -84,7 +84,7 @@ to read from \, and a spectral energy concentration target., f 55
 #X obj 703 84 specRolloff~;
 #X text 513 58 See the real-time version for more information on spectral
 rolloff in general.;
-#X text 714 512 Updated for timbreID version 0.7.6;
+#X text 714 512 Updated for timbreIDLib version 0.7.6;
 #X text 714 532 August 2018;
 #N canvas 351 117 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;

@@ -66,7 +66,7 @@ filterbank spacing in Barks;
 #X obj 121 32 loadbang;
 #X msg 121 54 7;
 #X obj 121 76 bark2freq;
-#X text 675 460 Updated for timbreID version 0.7;
+#X text 675 460 Updated for timbreIDLib version 0.7;
 #X text 449 286 This feature can be sent to the timbreID external in
 order to identify timbres in real time. For more on using audio features
 for classification \, see the timbreID helpfile:;

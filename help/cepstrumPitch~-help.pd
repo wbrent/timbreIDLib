@@ -54,7 +54,7 @@ calculation (default: ON);
 #X connect 16 0 4 0;
 #X connect 18 0 4 0;
 #X restore 237 300 pd other-settings;
-#X text 677 599 Updated for timbreID version 0.7;
+#X text 677 599 Updated for timbreIDLib version 0.7;
 #X msg 193 243 window 2000;
 #X text 275 243 Change analysis window size;
 #X text 172 153 Bang repeatedly to keep refreshing..., f 21;

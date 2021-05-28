@@ -45,7 +45,7 @@ would be the better object for that case.;
 outputs the total concatenated list each time it receives a new analysis
 frame. It acts as a sliding buffer for time-based feature capture \,
 organized by bin number.;
-#X text 24 587 Updated for timbreID version 0.7;
+#X text 24 587 Updated for timbreIDLib version 0.7;
 #X obj 127 104 metro 20;
 #X text 304 355 After the specified number of frames have been accumulated
 \, [binWrangler] outputs a concatenated list containing the columns

@@ -105,7 +105,7 @@ spectrum brightness in general.;
 #X text 334 510 Creation arguments are the name of the sample array
 to read from \, filterbank spacing in Barks \, and boundary point in
 Barks;
-#X text 725 598 Updated for timbreID version 0.7.6;
+#X text 725 598 Updated for timbreIDLib version 0.7.6;
 #X text 725 618 August 2018;
 #N canvas 351 117 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;

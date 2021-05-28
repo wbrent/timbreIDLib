@@ -92,7 +92,7 @@ cepstrum is computed (default: ON);
 #X connect 16 0 7 0;
 #X connect 19 0 7 0;
 #X restore 152 498 pd other-settings;
-#X text 675 572 Updated for timbreID version 0.7;
+#X text 675 572 Updated for timbreIDLib version 0.7;
 #X obj 107 433 r \$0-scrub-bar;
 #X obj 655 116 r \$0-scrub-bar;
 #X text 245 436 Move through the soundfile with the slider above,

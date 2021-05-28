@@ -101,7 +101,7 @@ spectrum centroid in general.;
 to read from \, and filterbank spacing in Barks;
 #X text 117 153 Analyze a window starting at sample 44100 that is 2000
 samples long (samples 44100 - 46099).;
-#X text 661 503 Updated for timbreID version 0.7.6;
+#X text 661 503 Updated for timbreIDLib version 0.7.6;
 #X text 661 523 August 2018;
 #N canvas 351 117 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;

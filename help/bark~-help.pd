@@ -198,7 +198,7 @@ instance.;
 #X obj 53 276 readsf~;
 #X msg 376 470 thresh 7.5 9;
 #X msg 415 548 debounce 1000;
-#X text 568 21 Updated for timbreID version 0.7;
+#X text 568 21 Updated for timbreIDLib version 0.7;
 #X text 111 418 Creation arguments are window size in samples \, hop
 in samples \, and filter spacing in Barks.;
 #X msg 53 220 open ./audio/satie.wav \, start;

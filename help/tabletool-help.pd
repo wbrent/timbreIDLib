@@ -1113,7 +1113,7 @@ is reported at the left outlet., f 43;
 #X connect 24 1 25 0;
 #X restore 202 363 pd analysis;
 #X obj 551 435 declare -lib timbreID/timbreIDLib;
-#X text 550 392 Updated for timbreID version 0.9.0;
+#X text 550 392 Updated for timbreIDLib version 0.9.0;
 #X text 550 412 June 2021;
 #X connect 14 0 15 0;
 #X connect 15 0 13 0;

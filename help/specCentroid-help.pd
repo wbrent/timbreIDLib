@@ -80,7 +80,7 @@ read from., f 33;
 samples long (samples 44100 - 46099);
 #X obj 59 483 specCentroid \$0-sample;
 #X msg 98 123 analyze 44100 2000;
-#X text 699 530 Updated for timbreID version 0.7.6;
+#X text 699 530 Updated for timbreIDLib version 0.7.6;
 #X text 699 550 August 2018;
 #N canvas 351 117 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;

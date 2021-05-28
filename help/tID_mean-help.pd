@@ -31,7 +31,7 @@ the spectro-temporal characteristics of sounds with different durations.
 0;
 #X obj 496 189 tID_mean;
 #X obj 605 301 tID_std;
-#X text 632 396 Updated for timbreID version 0.7;
+#X text 632 396 Updated for timbreIDLib version 0.7;
 #X text 632 416 July 2017;
 #X obj 633 440 declare -lib timbreID/timbreIDLib;
 #X connect 1 0 9 0;

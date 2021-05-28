@@ -60,7 +60,7 @@ energy in the unfiltered bins (default: OFF);
 #X connect 11 0 4 0;
 #X connect 15 0 4 0;
 #X restore 216 300 pd other-settings;
-#X text 681 476 Updated for timbreID version 0.7;
+#X text 681 476 Updated for timbreIDLib version 0.7;
 #X obj 631 328 timbreID;
 #X obj 55 442 nbx 7 32 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 32
 -262144 -1 -1 0 256;

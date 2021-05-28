@@ -150,7 +150,7 @@ energy in the unfiltered bins (default: OFF);
 #X obj 51 513 r \$0-analyze;
 #X text 259 389 Use the slider above to move through the audio file
 , f 29;
-#X text 649 662 Updated for timbreID version 0.7.6;
+#X text 649 662 Updated for timbreIDLib version 0.7.6;
 #X text 649 682 August 2018;
 #N canvas 351 117 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;

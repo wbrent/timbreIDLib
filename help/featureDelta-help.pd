@@ -105,7 +105,7 @@ you to get either positive-only \, negative-only \, or all delta values.
 If "direction" is positive- or negative-only \, other values are reported
 as zero., f 73;
 #X obj 60 480 featureDelta 3 diff both;
-#X text 654 555 Updated for timbreID version 0.8.2;
+#X text 654 555 Updated for timbreIDLib version 0.8.2;
 #X text 654 575 January 2020;
 #X text 420 474 Creation arguments are the length of the feature \,
 a symbol indicating the desired mode ("diff" \, "abs" \, or "squared"

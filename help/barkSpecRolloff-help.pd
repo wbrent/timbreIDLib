@@ -105,7 +105,7 @@ to read from \, filterbank spacing in Barks \, and concentration threshold
 #X msg 206 346 concentration 0.7;
 #X text 357 339 Change the concentration threshold (0 - 1.0), f 26
 ;
-#X text 709 591 Updated for timbreID version 0.7.6;
+#X text 709 591 Updated for timbreIDLib version 0.7.6;
 #X text 709 611 August 2018;
 #N canvas 351 117 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;

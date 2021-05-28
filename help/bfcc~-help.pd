@@ -64,7 +64,7 @@ things to behave properly;
 #X connect 21 0 6 0;
 #X restore 217 300 pd other-settings;
 #X obj 57 72 adc~;
-#X text 55 495 Updated for timbreID version 0.7;
+#X text 55 495 Updated for timbreIDLib version 0.7;
 #X msg 173 243 window 2000;
 #X text 255 243 Change analysis window size;
 #X text 196 374 Creation arguments are window size in samples and filterbank

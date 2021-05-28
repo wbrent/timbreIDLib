@@ -38,7 +38,7 @@ for classification \, see the timbreID helpfile:;
 #X obj 98 77 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
 ;
 #X obj 120 77 *~;
-#X obj 148 77 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 148 77 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 120 43 osc~ 440;
 #X text 116 144 Bang to output zero crossings;
@@ -55,8 +55,8 @@ so there is no need for [block~]. You can set the window size with
 a creation argument \, or change it with the "window" message. Window
 size is not required to be a power of two.;
 #X obj 637 445 declare -lib timbreID/timbreIDLib;
-#X text 636 402 Updated for timbreID version 0.9;
-#X text 636 422 May 2021;
+#X text 636 422 June 2021;
+#X text 636 402 Updated for timbreIDLib version 0.9.0;
 #X connect 0 0 18 0;
 #X connect 3 0 18 0;
 #X connect 6 0 18 0;

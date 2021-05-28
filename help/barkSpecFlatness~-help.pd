@@ -58,7 +58,7 @@ energy in the unfiltered bins (default: OFF);
 #X connect 14 0 4 0;
 #X restore 227 262 pd other-settings;
 #X obj 55 391 barkSpecFlatness~ 1024 0.5;
-#X text 650 453 Updated for timbreID version 0.7;
+#X text 650 453 Updated for timbreIDLib version 0.7;
 #X text 433 249 This feature can be sent to the timbreID external in
 order to identify timbres in real time. For more on using audio features
 for classification \, see the timbreID helpfile:;

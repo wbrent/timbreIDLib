@@ -26,7 +26,7 @@ the timbreID library that Bark- and mel-based objects use.;
 \, and frequency as 700 * (exp(mel/1127) - 1), f 55;
 #X obj 83 185 bin2freq 1024 44100;
 #X obj 83 275 freq2bin 1024 44100;
-#X text 723 431 Updated for timbreID version 0.7.6;
+#X text 723 431 Updated for timbreIDLib version 0.7.6;
 #X text 723 451 August 2018;
 #X text 81 369 Frequency is calculated as bin*R/N \, and bin number
 is calculated as freq*N/R (not rounded), f 43;

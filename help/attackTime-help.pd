@@ -70,7 +70,7 @@ size (default: 2000ms);
 #X restore 155 269 pd waveform;
 #X text 259 477 Creation argument is the name of the sample array to
 read from., f 33;
-#X text 662 567 Updated for timbreID version 0.7;
+#X text 662 567 Updated for timbreIDLib version 0.7;
 #X msg 59 133 analyze 44100 2000;
 #X text 662 587 July 2017;
 #X obj 59 483 attackTime \$0-sample;

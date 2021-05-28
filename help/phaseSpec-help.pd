@@ -93,7 +93,7 @@ samples long (samples 44100 - 46099).;
 #X restore 317 47 graph;
 #X text 546 36 pi;
 #X text 543 179 -pi;
-#X text 627 592 Updated for timbreID version 0.7.6;
+#X text 627 592 Updated for timbreIDLib version 0.7.6;
 #X text 627 612 August 2018;
 #X msg 107 455 analyze \$1 64;
 #N canvas 351 117 1043 508 chain_messages 0;

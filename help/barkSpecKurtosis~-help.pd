@@ -59,7 +59,7 @@ things to behave properly;
 #X text 263 290 Change analysis window size;
 #X text 281 427 Creation arguments are window size in samples \, and
 filterbank spacing in Barks;
-#X text 705 460 Updated for timbreID version 0.7;
+#X text 705 460 Updated for timbreIDLib version 0.7;
 #X text 472 239 This feature can be sent to the timbreID external in
 order to identify timbres in real time. For more on using audio features
 for classification \, see the timbreID helpfile:;

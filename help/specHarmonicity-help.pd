@@ -132,7 +132,7 @@ harmonicity in general., f 33;
 used in algorithm when "input_fund" setting is ON.;
 #X msg 117 338 analyze \$1 4096;
 #X msg 298 363 list \$2-sample 4096 \$1 44100 0;
-#X text 665 651 Updated for timbreID version 0.7.6;
+#X text 665 651 Updated for timbreIDLib version 0.7.6;
 #X text 665 671 August 2018;
 #N canvas 351 117 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;

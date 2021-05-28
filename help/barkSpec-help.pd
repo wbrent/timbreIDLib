@@ -117,7 +117,7 @@ spectrum in general., f 33;
 #X text 257 400 Move through the soundfile with the slider above;
 #X text 103 339 Analyze a window starting at sample 44100 that is 2000
 samples long (samples 44100 - 46099).;
-#X text 667 640 Updated for timbreID version 0.7.6;
+#X text 667 640 Updated for timbreIDLib version 0.7.6;
 #X text 667 660 August 2018;
 #N canvas 351 117 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;

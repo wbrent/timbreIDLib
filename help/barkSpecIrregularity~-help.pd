@@ -80,7 +80,7 @@ things to behave properly;
 , f 30;
 #X text 108 289 Bang to output irregularity;
 #X obj 48 210 +~;
-#X text 585 605 Updated for timbreID version 0.7;
+#X text 585 605 Updated for timbreIDLib version 0.7;
 #X obj 47 598 nbx 7 32 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 32
 -262144 -1 -1 0 256;
 #X text 306 533 Creation arguments are window size in samples \, filterbank

@@ -20,7 +20,7 @@ things to behave properly;
 #X connect 3 0 0 0;
 #X restore 217 300 pd other-settings;
 #X obj 57 72 adc~;
-#X text 658 453 Updated for timbreID version 0.7;
+#X text 658 453 Updated for timbreIDLib version 0.7;
 #X msg 173 243 window 2000;
 #X text 279 237 Change analysis window size, f 17;
 #X obj 648 266 timbreID;

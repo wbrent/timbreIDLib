@@ -155,8 +155,8 @@ from window to window.;
 \, or spectral decay only. This affects the output of both outlets
 , f 34;
 #X obj 890 654 declare -lib timbreID/timbreIDLib;
-#X text 889 631 May 2021;
-#X text 889 611 Updated for timbreID version 0.9.0;
+#X text 889 631 June 2021;
+#X text 889 611 Updated for timbreIDLib version 0.9.0;
 #N canvas 603 273 983 497 attack-detection 0;
 #X obj 33 399 select 1;
 #X obj 33 440 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1

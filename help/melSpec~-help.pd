@@ -63,7 +63,7 @@ either sum or average the energy in each filter. (default: sum);
 #X connect 19 0 6 0;
 #X restore 217 300 pd other-settings;
 #X obj 57 72 adc~;
-#X text 55 499 Updated for timbreID version 0.7;
+#X text 55 499 Updated for timbreIDLib version 0.7;
 #X msg 173 243 window 2000;
 #X text 275 236 Change analysis window size, f 17;
 #X obj 648 536 timbreID;

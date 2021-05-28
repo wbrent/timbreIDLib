@@ -84,7 +84,7 @@ samples long (samples 44100 - 46099).;
 #X text 278 441 Creation arguments are the name of the sample array
 to read from \, and a boundary frequency to determine the ratio of
 high spectral content., f 47;
-#X text 661 523 Updated for timbreID version 0.7.6;
+#X text 661 523 Updated for timbreIDLib version 0.7.6;
 #X text 661 543 August 2018;
 #N canvas 351 117 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;

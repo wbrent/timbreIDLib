@@ -130,7 +130,7 @@ read from, f 33;
 #X msg 134 411 analyze \$1 256;
 #X text 626 401 See the real-time version for more information on spectral
 slope in general., f 31;
-#X text 641 657 Updated for timbreID version 0.7.6;
+#X text 641 657 Updated for timbreIDLib version 0.7.6;
 #X text 641 677 August 2018;
 #N canvas 425 213 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;

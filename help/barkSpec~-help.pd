@@ -107,7 +107,7 @@ for classification \, see the timbreID helpfile:;
 #X connect 6 0 5 0;
 #X connect 7 0 3 0;
 #X restore 57 437 pd plotting;
-#X text 55 504 Updated for timbreID version 0.7;
+#X text 55 504 Updated for timbreIDLib version 0.7;
 #X text 55 524 July 2017;
 #X obj 56 548 declare -lib timbreID/timbreIDLib;
 #X connect 0 0 6 0;

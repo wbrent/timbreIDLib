@@ -132,7 +132,7 @@ FFT in general., f 33;
 #X coords 0 8 512 -8 200 140 1 0 0;
 #X restore 573 47 graph;
 #X obj 634 595 declare -lib timbreID/timbreIDLib;
-#X text 633 550 Updated for timbreID version 0.8.0;
+#X text 633 550 Updated for timbreIDLib version 0.8.0;
 #X text 633 570 June 2019;
 #X connect 0 0 18 0;
 #X connect 5 0 18 0;

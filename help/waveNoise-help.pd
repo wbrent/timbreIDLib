@@ -69,7 +69,7 @@ before measuring to filter out this information out if it's not needed.
 noisiness in general.;
 #X obj 59 483 waveNoise \$0-sample;
 #X text 720 527 Updated for timbreIDLib version 0.9.0;
-#X text 720 547 May 2021;
+#X text 720 547 June 2021;
 #X connect 0 0 18 0;
 #X connect 3 0 9 0;
 #X connect 6 0 18 0;

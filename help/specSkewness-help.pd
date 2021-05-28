@@ -80,7 +80,7 @@ samples long (samples 44100 - 46099);
 skewness in general.;
 #X obj 704 85 specSkewness~;
 #X obj 59 483 specSkewness \$0-sample;
-#X text 717 520 Updated for timbreID version 0.7.6;
+#X text 717 520 Updated for timbreIDLib version 0.7.6;
 #X text 717 540 August 2018;
 #N canvas 351 117 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;

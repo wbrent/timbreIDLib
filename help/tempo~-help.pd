@@ -261,7 +261,7 @@ data comes into the table;
 #X connect 19 1 17 0;
 #X restore 174 465 pd plot-onsets-data;
 #X floatatom 94 525 10 0 0 1 confidence-% - -;
-#X text 620 609 Updated for timbreID version 0.7.6;
+#X text 620 609 Updated for timbreIDLib version 0.7.6;
 #X text 437 344 While you can use the raw tempo results appearing at
 the 3rd outlet \, a safer bet is the tempo reported at the 1st outlet.
 This tempo is the mode of the most recent N raw tempo results rounded

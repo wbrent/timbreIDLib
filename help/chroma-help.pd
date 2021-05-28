@@ -207,7 +207,7 @@ below \, we need to divide the index by 2 or 3;
 to read from \, low and high frequency bounds in MIDI units \, and
 a pitch tolerance in MIDI units., f 51;
 #X obj 50 596 chroma \$0-sample 50 5000 0.1;
-#X text 635 606 Updated for timbreID version 0.8.0;
+#X text 635 606 Updated for timbreIDLib version 0.8.0;
 #X connect 0 0 24 0;
 #X connect 9 0 24 0;
 #X connect 10 0 20 0;

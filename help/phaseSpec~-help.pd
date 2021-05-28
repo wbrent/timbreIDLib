@@ -64,7 +64,7 @@ the "window" message. Window size is not required to be a power of
 two.;
 #X text 712 299 pi;
 #X text 709 442 -pi;
-#X text 40 511 Updated for timbreID version 0.7.6;
+#X text 40 511 Updated for timbreIDLib version 0.7.6;
 #X text 40 531 August 2018;
 #X text 105 125 Bang to output spectrum phases as a list;
 #X obj 137 200 metro 30;

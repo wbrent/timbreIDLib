@@ -49,7 +49,7 @@ things to behave properly;
 #X connect 8 0 4 0;
 #X restore 216 299 pd other-settings;
 #X msg 207 234 boundary 9000;
-#X text 645 403 Updated for timbreID version 0.7;
+#X text 645 403 Updated for timbreIDLib version 0.7;
 #X obj 601 304 timbreID;
 #X text 434 239 This feature can be sent to the timbreID external in
 order to identify timbres in real time. For more on using audio features

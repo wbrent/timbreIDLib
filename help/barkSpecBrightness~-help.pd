@@ -65,7 +65,7 @@ energy in the unfiltered bins (default: OFF);
 #X obj 55 408 barkSpecBrightness~ 1024 0.5 8.5;
 #X msg 207 235 boundary 10;
 #X text 206 217 Set boundary point in Barks;
-#X text 651 466 Updated for timbreID version 0.7;
+#X text 651 466 Updated for timbreIDLib version 0.7;
 #X text 299 402 Creation arguments are window size in samples \, filterbank
 spacing in Barks \, and boundary point in Barks;
 #X obj 601 298 timbreID;

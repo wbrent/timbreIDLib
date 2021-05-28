@@ -32,7 +32,7 @@ things to behave properly;
 #X connect 6 0 4 0;
 #X connect 8 0 4 0;
 #X restore 268 376 pd other-settings;
-#X text 657 490 Updated for timbreID version 0.7;
+#X text 657 490 Updated for timbreIDLib version 0.7;
 #X obj 651 358 timbreID;
 #X text 484 293 This feature can be sent to the timbreID external in
 order to identify timbres in real time. For more on using audio features

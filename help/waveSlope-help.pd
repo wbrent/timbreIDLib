@@ -54,7 +54,7 @@ Scrub-bar -2 -8 0 12 -191407 -1 -1 0 1;
 samples long (samples 44100 - 46099);
 #X msg 134 411 analyze \$1 1024;
 #X obj 490 527 r \$0-scrub-bar;
-#X text 623 651 Updated for timbreID version 0.7;
+#X text 623 651 Updated for timbreIDLib version 0.7;
 #N canvas 590 90 654 440 other-settings 0;
 #X obj 44 62 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
 ;

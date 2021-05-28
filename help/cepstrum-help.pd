@@ -121,7 +121,7 @@ read from., f 33;
 #X msg 94 379 analyze 44100 2000;
 #X text 103 339 Analyze a window starting at sample 44100 that is 2000
 samples long (samples 44100 - 46099).;
-#X text 636 614 Updated for timbreID version 0.7.6;
+#X text 636 614 Updated for timbreIDLib version 0.7.6;
 #X text 636 634 August 2018;
 #N canvas 397 274 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;

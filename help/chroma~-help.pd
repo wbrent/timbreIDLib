@@ -137,7 +137,7 @@ below \, we need to divide the index by 2 or 3;
 and high frequency bounds in MIDI units \, and a pitch tolerance in
 MIDI units., f 30;
 #X obj 57 387 chroma~ 4096 50 5000 0.1;
-#X text 32 507 Updated for timbreID version 0.8.0;
+#X text 32 507 Updated for timbreIDLib version 0.8.0;
 #X connect 0 0 22 0;
 #X connect 2 0 11 0;
 #X connect 5 0 22 0;

@@ -194,8 +194,8 @@ at all from moment to moment.;
 \, or spectral decay only. This affects the output of both outlets
 , f 34;
 #X obj 42 555 declare -lib timbreID/timbreIDLib;
-#X text 41 513 Updated for timbreID version 0.9.0;
-#X text 41 533 May 2021;
+#X text 41 513 Updated for timbreIDLib version 0.9.0;
+#X text 41 533 June 2021;
 #X connect 0 0 15 0;
 #X connect 1 0 15 0;
 #X connect 2 0 1 1;

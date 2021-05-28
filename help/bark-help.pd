@@ -199,7 +199,7 @@ frequencies only \, you might want to try "filter_range 30 49" \, for
 instance.;
 #X restore 528 545 pd filter_range-details;
 #X msg 320 425 thresh -1 6.5;
-#X text 536 668 Updated for timbreID version 0.7;
+#X text 536 668 Updated for timbreIDLib version 0.7;
 #X text 42 36 bark is a non-real-time onset detector that makes use
 of the perceptually determined Bark frequency scale to achieve its
 weighting of the frequency spectrum. It uses a spectral differencing

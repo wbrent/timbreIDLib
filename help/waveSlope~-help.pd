@@ -12,7 +12,7 @@
 #X obj 176 192 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X text 127 126 Bang to output slope;
-#X text 765 555 Updated for timbreID version 0.7;
+#X text 765 555 Updated for timbreIDLib version 0.7;
 #N canvas 673 234 654 397 other-settings 0;
 #X obj 53 54 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
 ;

@@ -107,7 +107,7 @@ spectrum irregularity in general.;
 1;
 #X text 300 340 Change between Jensen (0) and Krimphoff (1) algorithm
 , f 28;
-#X text 719 605 Updated for timbreID version 0.7.6;
+#X text 719 605 Updated for timbreIDLib version 0.7.6;
 #X text 719 625 August 2018;
 #N canvas 351 117 1043 508 chain_messages 0;
 #X msg 563 139 chain_fftData <data>;
