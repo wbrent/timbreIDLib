@@ -131,8 +131,8 @@ void timbreIDLib_setup(void)
     timbreID_setup();
     waveSlope_setup();
     waveSlope_tilde_setup();
-    waveDirChange_setup();
-    waveDirChange_tilde_setup();
+    waveNoise_setup();
+    waveNoise_tilde_setup();
     zeroCrossing_setup();
     zeroCrossing_tilde_setup();
 }

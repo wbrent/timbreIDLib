@@ -1,6 +1,6 @@
 /*
 
-waveDirChange~
+waveNoise~
 
 Copyright 2009 William Brent
 
@@ -15,9 +15,9 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *waveDirChange_tilde_class;
+static t_class *waveNoise_tilde_class;
 
-typedef struct _waveDirChange_tilde
+typedef struct _waveNoise_tilde
 {
     t_object x_obj;
     t_symbol *x_objSymbol;
@@ -32,12 +32,12 @@ typedef struct _waveDirChange_tilde
     t_outlet *x_changes;
     t_float x_f;
 
-} t_waveDirChange_tilde;
+} t_waveNoise_tilde;
 
 
-/* ------------------------ waveDirChange~ -------------------------------- */
+/* ------------------------ waveNoise~ -------------------------------- */
 
-static void waveDirChange_tilde_bang(t_waveDirChange_tilde *x)
+static void waveNoise_tilde_bang(t_waveNoise_tilde *x)
 {
     t_sampIdx i, j, window, bangSample;
     t_float changes, *flagsBuf, minVal, maxVal;
@@ -73,7 +73,7 @@ static void waveDirChange_tilde_bang(t_waveDirChange_tilde *x)
 }
 
 
-static void waveDirChange_tilde_window(t_waveDirChange_tilde *x, t_floatarg w)
+static void waveNoise_tilde_window(t_waveNoise_tilde *x, t_floatarg w)
 {
     t_sampIdx i, window;
 
@@ -102,7 +102,7 @@ static void waveDirChange_tilde_window(t_waveDirChange_tilde *x, t_floatarg w)
 }
 
 
-static void waveDirChange_tilde_overlap(t_waveDirChange_tilde *x, t_floatarg o)
+static void waveNoise_tilde_overlap(t_waveNoise_tilde *x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr/x->x_overlap;
     x->x_overlap = (o<1)?1:o;
@@ -111,7 +111,7 @@ static void waveDirChange_tilde_overlap(t_waveDirChange_tilde *x, t_floatarg o)
 }
 
 
-static void waveDirChange_tilde_print(t_waveDirChange_tilde *x)
+static void waveNoise_tilde_print(t_waveNoise_tilde *x)
 {
     post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr/x->x_overlap));
     post("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -120,9 +120,9 @@ static void waveDirChange_tilde_print(t_waveDirChange_tilde *x)
 }
 
 
-static void *waveDirChange_tilde_new(t_symbol *s, int argc, t_atom *argv)
+static void *waveNoise_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_waveDirChange_tilde *x = (t_waveDirChange_tilde *)pd_new(waveDirChange_tilde_class);
+    t_waveNoise_tilde *x = (t_waveNoise_tilde *)pd_new(waveNoise_tilde_class);
     t_sampIdx i;
 
     x->x_changes = outlet_new(&x->x_obj, &s_float);
@@ -170,12 +170,12 @@ static void *waveDirChange_tilde_new(t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static t_int *waveDirChange_tilde_perform(t_int *w)
+static t_int *waveNoise_tilde_perform(t_int *w)
 {
     t_uShortInt n;
     t_sampIdx i;
 
-    t_waveDirChange_tilde *x = (t_waveDirChange_tilde *)(w[1]);
+    t_waveNoise_tilde *x = (t_waveNoise_tilde *)(w[1]);
 
     t_sample *in = (t_float *)(w[2]);
     n = w[3];
@@ -194,10 +194,10 @@ static t_int *waveDirChange_tilde_perform(t_int *w)
 }
 
 
-static void waveDirChange_tilde_dsp(t_waveDirChange_tilde *x, t_signal **sp)
+static void waveNoise_tilde_dsp(t_waveNoise_tilde *x, t_signal **sp)
 {
     dsp_add(
-        waveDirChange_tilde_perform,
+        waveNoise_tilde_perform,
         3,
         x,
         sp[0]->s_vec,
@@ -227,7 +227,7 @@ static void waveDirChange_tilde_dsp(t_waveDirChange_tilde *x, t_signal **sp)
     };
 };
 
-static void waveDirChange_tilde_free(t_waveDirChange_tilde *x)
+static void waveNoise_tilde_free(t_waveNoise_tilde *x)
 {
     // free the input buffer memory
     t_freebytes(x->x_signalBuffer, (x->x_window+x->x_n)*sizeof(t_sample));
@@ -237,56 +237,56 @@ static void waveDirChange_tilde_free(t_waveDirChange_tilde *x)
 
 }
 
-void waveDirChange_tilde_setup(void)
+void waveNoise_tilde_setup(void)
 {
-    waveDirChange_tilde_class =
+    waveNoise_tilde_class =
     class_new(
-        gensym("waveDirChange~"),
-        (t_newmethod)waveDirChange_tilde_new,
-        (t_method)waveDirChange_tilde_free,
-        sizeof(t_waveDirChange_tilde),
+        gensym("waveNoise~"),
+        (t_newmethod)waveNoise_tilde_new,
+        (t_method)waveNoise_tilde_free,
+        sizeof(t_waveNoise_tilde),
         CLASS_DEFAULT,
         A_GIMME,
         0
     );
 
     class_addcreator(
-        (t_newmethod)waveDirChange_tilde_new,
-        gensym("timbreIDLib/waveDirChange~"),
+        (t_newmethod)waveNoise_tilde_new,
+        gensym("timbreIDLib/waveNoise~"),
         A_GIMME,
         0
     );
 
-    CLASS_MAINSIGNALIN(waveDirChange_tilde_class, t_waveDirChange_tilde, x_f);
+    CLASS_MAINSIGNALIN(waveNoise_tilde_class, t_waveNoise_tilde, x_f);
 
-    class_addbang(waveDirChange_tilde_class, waveDirChange_tilde_bang);
+    class_addbang(waveNoise_tilde_class, waveNoise_tilde_bang);
 
     class_addmethod(
-        waveDirChange_tilde_class,
-        (t_method)waveDirChange_tilde_print,
+        waveNoise_tilde_class,
+        (t_method)waveNoise_tilde_print,
         gensym("print"),
         0
     );
 
     class_addmethod(
-        waveDirChange_tilde_class,
-        (t_method)waveDirChange_tilde_window,
+        waveNoise_tilde_class,
+        (t_method)waveNoise_tilde_window,
         gensym("window"),
         A_DEFFLOAT,
         0
     );
 
     class_addmethod(
-        waveDirChange_tilde_class,
-        (t_method)waveDirChange_tilde_overlap,
+        waveNoise_tilde_class,
+        (t_method)waveNoise_tilde_overlap,
         gensym("overlap"),
         A_DEFFLOAT,
         0
     );
 
     class_addmethod(
-        waveDirChange_tilde_class,
-        (t_method)waveDirChange_tilde_dsp,
+        waveNoise_tilde_class,
+        (t_method)waveNoise_tilde_dsp,
         gensym("dsp"),
         0
     );

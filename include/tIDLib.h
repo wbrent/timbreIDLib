@@ -333,8 +333,8 @@ void tabletool_setup(void);
 void timbreID_setup(void);
 void waveSlope_setup(void);
 void waveSlope_tilde_setup(void);
-void waveDirChange_setup(void);
-void waveDirChange_tilde_setup(void);
+void waveNoise_setup(void);
+void waveNoise_tilde_setup(void);
 void zeroCrossing_setup(void);
 void zeroCrossing_tilde_setup(void);
 /* ---------------- END external setup function declarations ---------------------- */

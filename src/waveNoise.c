@@ -1,6 +1,6 @@
 /*
 
-waveDirChange
+waveNoise
 
 Copyright 2009 William Brent
 
@@ -15,9 +15,9 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *waveDirChange_class;
+static t_class *waveNoise_class;
 
-typedef struct _waveDirChange
+typedef struct _waveNoise
 {
     t_object x_obj;
     t_symbol *x_objSymbol;
@@ -28,12 +28,12 @@ typedef struct _waveDirChange
     t_symbol *x_arrayName;
     t_sampIdx x_arrayPoints;
     t_outlet *x_changes;
-} t_waveDirChange;
+} t_waveNoise;
 
 
-/* ------------------------ waveDirChange -------------------------------- */
+/* ------------------------ waveNoise -------------------------------- */
 
-static void waveDirChange_analyze(t_waveDirChange *x, t_floatarg start, t_floatarg n)
+static void waveNoise_analyze(t_waveNoise *x, t_floatarg start, t_floatarg n)
 {
     t_garray *a;
 
@@ -110,7 +110,7 @@ static void waveDirChange_analyze(t_waveDirChange *x, t_floatarg start, t_floata
 
 
 // analyze the whole damn array
-static void waveDirChange_bang(t_waveDirChange *x)
+static void waveNoise_bang(t_waveNoise *x)
 {
     t_garray *a;
 
@@ -123,12 +123,12 @@ static void waveDirChange_bang(t_waveDirChange *x)
         t_sampIdx window, startSamp;
         startSamp = 0;
         window = x->x_arrayPoints;
-        waveDirChange_analyze(x, startSamp, window);
+        waveNoise_analyze(x, startSamp, window);
     }
 }
 
 
-static void waveDirChange_set(t_waveDirChange *x, t_symbol *s)
+static void waveNoise_set(t_waveNoise *x, t_symbol *s)
 {
     t_garray *a;
 
@@ -141,14 +141,14 @@ static void waveDirChange_set(t_waveDirChange *x, t_symbol *s)
 }
 
 
-static void waveDirChange_print(t_waveDirChange *x)
+static void waveNoise_print(t_waveNoise *x)
 {
     post("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
 }
 
 
-static void waveDirChange_samplerate(t_waveDirChange *x, t_floatarg sr)
+static void waveNoise_samplerate(t_waveNoise *x, t_floatarg sr)
 {
     if(sr<MINSAMPLERATE)
         x->x_sr = MINSAMPLERATE;
@@ -157,9 +157,9 @@ static void waveDirChange_samplerate(t_waveDirChange *x, t_floatarg sr)
 }
 
 
-static void *waveDirChange_new(t_symbol *s, int argc, t_atom *argv)
+static void *waveNoise_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_waveDirChange *x = (t_waveDirChange *)pd_new(waveDirChange_class);
+    t_waveNoise *x = (t_waveNoise *)pd_new(waveNoise_class);
 //	t_garray *a;
 
     x->x_changes = outlet_new(&x->x_obj, &s_float);
@@ -206,38 +206,38 @@ static void *waveDirChange_new(t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void waveDirChange_free(t_waveDirChange *x)
+static void waveNoise_free(t_waveNoise *x)
 {
     // free the input buffer memory
     t_freebytes(x->x_analysisBuffer, x->x_window*sizeof(t_sample));
 }
 
 
-void waveDirChange_setup(void)
+void waveNoise_setup(void)
 {
-    waveDirChange_class =
+    waveNoise_class =
     class_new(
-        gensym("waveDirChange"),
-        (t_newmethod)waveDirChange_new,
-        (t_method)waveDirChange_free,
-        sizeof(t_waveDirChange),
+        gensym("waveNoise"),
+        (t_newmethod)waveNoise_new,
+        (t_method)waveNoise_free,
+        sizeof(t_waveNoise),
         CLASS_DEFAULT,
         A_GIMME,
         0
     );
 
     class_addcreator(
-        (t_newmethod)waveDirChange_new,
-        gensym("timbreIDLib/waveDirChange"),
+        (t_newmethod)waveNoise_new,
+        gensym("timbreIDLib/waveNoise"),
         A_GIMME,
         0
     );
 
-    class_addbang(waveDirChange_class, waveDirChange_bang);
+    class_addbang(waveNoise_class, waveNoise_bang);
 
     class_addmethod(
-        waveDirChange_class,
-        (t_method)waveDirChange_analyze,
+        waveNoise_class,
+        (t_method)waveNoise_analyze,
         gensym("analyze"),
         A_DEFFLOAT,
         A_DEFFLOAT,
@@ -245,23 +245,23 @@ void waveDirChange_setup(void)
     );
 
     class_addmethod(
-        waveDirChange_class,
-        (t_method)waveDirChange_set,
+        waveNoise_class,
+        (t_method)waveNoise_set,
         gensym("set"),
         A_SYMBOL,
         0
     );
 
     class_addmethod(
-        waveDirChange_class,
-        (t_method)waveDirChange_print,
+        waveNoise_class,
+        (t_method)waveNoise_print,
         gensym("print"),
         0
     );
 
     class_addmethod(
-        waveDirChange_class,
-        (t_method)waveDirChange_samplerate,
+        waveNoise_class,
+        (t_method)waveNoise_samplerate,
         gensym("samplerate"),
         A_DEFFLOAT,
         0

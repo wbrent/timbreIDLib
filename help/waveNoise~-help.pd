@@ -1,4 +1,4 @@
-#N canvas 248 204 992 600 10;
+#N canvas 248 204 1010 651 10;
 #X declare -lib timbreID/timbreIDLib;
 #X floatatom 110 504 10 0 0 0 - - -;
 #X text 253 286 Change window size.;
@@ -17,26 +17,24 @@ things to behave properly;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X restore 285 334 pd other-settings;
-#X obj 801 381 timbreID;
-#X text 745 278 This feature can be sent to the timbreID external in
+#X obj 801 401 timbreID;
+#X text 745 298 This feature can be sent to the timbreID external in
 order to identify timbres in real time. For more on using audio features
 for classification \, see the timbreID helpfile:, f 28;
 #X msg 255 304 window 2000;
 #X obj 110 43 noise~;
 #X obj 110 77 *~;
 #X floatatom 250 504 10 0 0 0 - - -;
-#X text 755 521 Updated for timbreID version 0.7.6;
-#X text 755 541 August 2018;
 #X obj 380 505 list prepend 0;
 #X obj 380 526 s \$0-samples;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array \$0-samples 128 float 0;
 #X coords 0 1 127 -1 200 300 1 0 0;
-#X restore 520 278 graph;
+#X restore 520 298 graph;
 #X obj 160 54 *~ 0.75;
 #X obj 167 82 hsl 128 15 45 100 0 0 empty empty noise-level 8 8 0 10
 -262144 -1 -1 0 1;
-#X obj 150 242 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 150 242 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X text 174 241 Bang repeatedly to keep refreshing...;
 #X obj 150 261 metro 100;
@@ -45,43 +43,45 @@ for classification \, see the timbreID helpfile:, f 28;
 #X obj 380 448 r~ \$0-signal;
 #X obj 110 132 s~ \$0-signal;
 #X obj 164 102 dbtorms;
-#X obj 110 481 waveDirChange~ 128;
 #X obj 250 481 zeroCrossing~ 128;
 #X obj 380 484 sampleBuffer~ 128;
 #X obj 160 33 osc~ 440;
-#X text 515 24 Similar to zero crossing \, another time-domain measure
-of noisiness is the number of times a signal changes direction \, regardless
-of whether the samples are on the positive or negative side. [waveDirChange~]
-measures direction changes within the window of audio that is captured
-when it receives a bang. Its creation argument is window size in samples.
-Here \, [waveDirChange~] output is compared with that of [zeroCrossing~]
-when measuring a 440Hz sinusoid mixed with white noise. Try raising
-the noise level to see what happens. For relatively low level noise
-\, the zero crossing measure stays fixed at about 3 crossings per window
-\, but the direction change measure is much higher because random noise
-causes kinks and corners all along the waveform.;
-#X text 515 185 Audio buffering is taken care of by the external \,
+#X text 515 205 Audio buffering is taken care of by the external \,
 so there is no need for [block~]. You can set the window size with
 a creation argument \, or change it with the "window" message. Window
 size is not required to be a power of two.;
-#X obj 757 565 declare -lib timbreID/timbreIDLib;
-#X connect 2 0 25 0;
-#X connect 5 0 27 0;
-#X connect 8 0 27 0;
+#X obj 757 585 declare -lib timbreID/timbreIDLib;
+#X text 755 561 June 2021;
+#X text 755 541 Updated for timbreIDLib version 0.9.0;
+#X text 515 24 Similar to zero crossing \, another time-domain measure
+of noisiness is the number of times a signal changes direction \, regardless
+of whether the samples are on the positive or negative side. [waveNoise~]
+measures direction changes within the window of audio that is captured
+when it receives a bang. Its creation argument is window size in samples.
+Here \, [waveNoise~] output is compared with that of [zeroCrossing~]
+when measuring a 440Hz sinusoid mixed with white noise. Try raising
+the noise level to see what happens. For relatively low level noise
+\, the zero crossing measure stays fixed at about 3 crossings per window
+\, but the noisiness measure is much higher because random noise causes
+kinks all along the waveform.;
+#X obj 110 481 waveNoise~ 128;
+#X connect 2 0 23 0;
+#X connect 5 0 33 0;
+#X connect 8 0 33 0;
 #X connect 9 0 10 0;
 #X connect 10 0 2 0;
-#X connect 14 0 15 0;
-#X connect 17 0 2 1;
-#X connect 18 0 26 0;
-#X connect 19 0 21 0;
-#X connect 21 0 27 0;
-#X connect 21 0 28 0;
-#X connect 21 0 29 0;
-#X connect 22 0 27 0;
-#X connect 23 0 28 0;
-#X connect 24 0 29 0;
-#X connect 26 0 10 1;
-#X connect 27 0 0 0;
-#X connect 28 0 11 0;
-#X connect 29 0 14 0;
-#X connect 30 0 17 0;
+#X connect 12 0 13 0;
+#X connect 15 0 2 1;
+#X connect 16 0 24 0;
+#X connect 17 0 19 0;
+#X connect 19 0 25 0;
+#X connect 19 0 26 0;
+#X connect 19 0 33 0;
+#X connect 20 0 33 0;
+#X connect 21 0 25 0;
+#X connect 22 0 26 0;
+#X connect 24 0 10 1;
+#X connect 25 0 11 0;
+#X connect 26 0 12 0;
+#X connect 27 0 15 0;
+#X connect 33 0 0 0;

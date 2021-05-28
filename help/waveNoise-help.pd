@@ -58,22 +58,22 @@ read from., f 33;
 #X text 107 143 Analyze a window starting at sample 44100 that is 2000
 samples long (samples 44100 - 46099), f 48;
 #X msg 98 123 analyze 44100 2000;
-#X obj 59 483 waveDirChange \$0-sample;
-#X text 720 527 Updated for timbreID version 0.7.6;
-#X text 720 547 August 2018;
-#X obj 704 85 waveDirChange~;
-#X text 514 59 See the real-time version for more information on waveform
-direction change in general.;
 #X text 514 148 Note that with a real signal \, low level noise will
 produce lots of direction changes. Use a basic amplitude threshold
 before measuring to filter out this information out if it's not needed.
 ;
 #X msg 155 291 analyze \$1 128;
 #X obj 721 571 declare -lib timbreID/timbreIDLib;
-#X connect 0 0 13 0;
+#X obj 704 85 waveNoise~;
+#X text 514 59 See the real-time version for more information on waveform
+noisiness in general.;
+#X obj 59 483 waveNoise \$0-sample;
+#X text 720 527 Updated for timbreIDLib version 0.9.0;
+#X text 720 547 May 2021;
+#X connect 0 0 18 0;
 #X connect 3 0 9 0;
-#X connect 6 0 13 0;
-#X connect 9 0 19 0;
-#X connect 12 0 13 0;
-#X connect 13 0 2 0;
-#X connect 19 0 13 0;
+#X connect 6 0 18 0;
+#X connect 9 0 14 0;
+#X connect 12 0 18 0;
+#X connect 14 0 18 0;
+#X connect 18 0 2 0;
