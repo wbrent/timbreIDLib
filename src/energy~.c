@@ -1,6 +1,6 @@
 /*
 
-peakSample~
+energy~
 
 Copyright 2009 William Brent
 
@@ -15,9 +15,9 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *peakSample_tilde_class;
+static t_class *energy_tilde_class;
 
-typedef struct _peakSample_tilde
+typedef struct _energy_tilde
 {
     t_object x_obj;
     t_symbol *x_objSymbol;
@@ -25,23 +25,24 @@ typedef struct _peakSample_tilde
     t_float x_n;
     t_uShortInt x_overlap;
     t_sampIdx x_window;
-    t_sampIdx x_normalize;
+    t_bool x_normalize;
+    t_bool x_power;
+    t_bool x_db;
     double x_lastDspTime;
     t_sample *x_signalBuffer;
     t_float *x_analysisBuffer;
-    t_outlet *x_peakIdx;
-    t_outlet *x_peak;
+    t_outlet *x_energyOutlet;
     t_float x_f;
 
-} t_peakSample_tilde;
+} t_energy_tilde;
 
 
-/* ------------------------ peakSample~ -------------------------------- */
+/* ------------------------ energy~ -------------------------------- */
 
-static void peakSample_tilde_bang(t_peakSample_tilde *x)
+static void energy_tilde_bang(t_energy_tilde *x)
 {
-    t_sampIdx i, j, window, bangSample, peakIdx;
-    t_float peakVal;
+    t_sampIdx i, j, window, bangSample;
+    t_float energyResult;
     double currentTime;
 
     window = x->x_window;
@@ -56,14 +57,15 @@ static void peakSample_tilde_bang(t_peakSample_tilde *x)
     for(i=0, j=bangSample; i<window; i++, j++)
         x->x_analysisBuffer[i] = x->x_signalBuffer[j];
 
-    tIDLib_peakSample(window, x->x_analysisBuffer, &peakIdx, &peakVal);
+    energyResult = 0.0;
 
-    outlet_float(x->x_peakIdx, peakIdx);
-    outlet_float(x->x_peak, peakVal);
+    energyResult = tIDLib_sigEnergy (window, x->x_analysisBuffer, x->x_normalize, !x->x_power, x->x_db);
+
+    outlet_float(x->x_energyOutlet, energyResult);
 }
 
 
-static void peakSample_tilde_window(t_peakSample_tilde *x, t_floatarg w)
+static void energy_tilde_window(t_energy_tilde *x, t_floatarg w)
 {
     t_sampIdx i, window;
 
@@ -92,7 +94,7 @@ static void peakSample_tilde_window(t_peakSample_tilde *x, t_floatarg w)
 }
 
 
-static void peakSample_tilde_overlap(t_peakSample_tilde *x, t_floatarg o)
+static void energy_tilde_overlap(t_energy_tilde *x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr/x->x_overlap;
     x->x_overlap = (o<1)?1:o;
@@ -100,23 +102,60 @@ static void peakSample_tilde_overlap(t_peakSample_tilde *x, t_floatarg o)
     post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
 }
 
+static void energy_tilde_normalize(t_energy_tilde *x, t_floatarg n)
+{
+    n = (n < 0) ? 0 : n;
+    x->x_normalize = (n > 1) ? 1 : n;
 
-static void peakSample_tilde_print(t_peakSample_tilde *x)
+    post("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
+}
+
+static void energy_tilde_power(t_energy_tilde *x, t_floatarg p)
+{
+    p = (p < 0) ? 0 : p;
+    x->x_power = (p > 1) ? 1 : p;
+
+    post("%s power: %i", x->x_objSymbol->s_name, x->x_power);
+
+    if (x->x_power && x->x_db)
+    {
+        x->x_db = false;
+        post("%s WARNING: cannot output power in dB units. de-activating \"db\" option.", x->x_objSymbol->s_name);
+    }
+}
+
+static void energy_tilde_db(t_energy_tilde *x, t_floatarg d)
+{
+    d = (d < 0) ? 0 : d;
+    x->x_db = (d > 1) ? 1 : d;
+
+    if (x->x_db && x->x_power)
+    {
+        x->x_db = false;
+        post("%s WARNING: cannot output power in dB units. de-activating \"db\" option.", x->x_objSymbol->s_name);
+    }
+    else
+        post("%s dB: %i", x->x_objSymbol->s_name, x->x_db);
+}
+
+static void energy_tilde_print(t_energy_tilde *x)
 {
     post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr/x->x_overlap));
     post("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
     post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
     post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
+    post("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
+    post("%s power: %i", x->x_objSymbol->s_name, x->x_power);
+    post("%s dB: %i", x->x_objSymbol->s_name, x->x_db);
 }
 
 
-static void *peakSample_tilde_new(t_symbol *s, int argc, t_atom *argv)
+static void *energy_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_peakSample_tilde *x = (t_peakSample_tilde *)pd_new(peakSample_tilde_class);
+    t_energy_tilde *x = (t_energy_tilde *)pd_new(energy_tilde_class);
     t_sampIdx i;
 
-    x->x_peak = outlet_new(&x->x_obj, &s_float);
-    x->x_peakIdx = outlet_new(&x->x_obj, &s_float);
+    x->x_energyOutlet = outlet_new(&x->x_obj, &s_float);
 
     // store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
     x->x_objSymbol = s;
@@ -147,6 +186,9 @@ static void *peakSample_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_n = BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
     x->x_lastDspTime = clock_getlogicaltime();
+    x->x_normalize = true;
+    x->x_db = false;
+    x->x_power = false;
 
     x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window+x->x_n) * sizeof(t_sample));
     x->x_analysisBuffer = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
@@ -161,12 +203,12 @@ static void *peakSample_tilde_new(t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static t_int *peakSample_tilde_perform(t_int *w)
+static t_int *energy_tilde_perform(t_int *w)
 {
     t_uShortInt n;
     t_sampIdx i;
 
-    t_peakSample_tilde *x = (t_peakSample_tilde *)(w[1]);
+    t_energy_tilde *x = (t_energy_tilde *)(w[1]);
 
     t_sample *in = (t_float *)(w[2]);
     n = w[3];
@@ -185,10 +227,10 @@ static t_int *peakSample_tilde_perform(t_int *w)
 }
 
 
-static void peakSample_tilde_dsp(t_peakSample_tilde *x, t_signal **sp)
+static void energy_tilde_dsp(t_energy_tilde *x, t_signal **sp)
 {
     dsp_add(
-        peakSample_tilde_perform,
+        energy_tilde_perform,
         3,
         x,
         sp[0]->s_vec,
@@ -218,7 +260,7 @@ static void peakSample_tilde_dsp(t_peakSample_tilde *x, t_signal **sp)
     };
 };
 
-static void peakSample_tilde_free(t_peakSample_tilde *x)
+static void energy_tilde_free(t_energy_tilde *x)
 {
     // free the input buffer memory
     t_freebytes(x->x_signalBuffer, (x->x_window+x->x_n)*sizeof(t_sample));
@@ -228,56 +270,80 @@ static void peakSample_tilde_free(t_peakSample_tilde *x)
 
 }
 
-void peakSample_tilde_setup(void)
+void energy_tilde_setup(void)
 {
-    peakSample_tilde_class =
+    energy_tilde_class =
     class_new(
-        gensym("peakSample~"),
-        (t_newmethod)peakSample_tilde_new,
-        (t_method)peakSample_tilde_free,
-        sizeof(t_peakSample_tilde),
+        gensym("energy~"),
+        (t_newmethod)energy_tilde_new,
+        (t_method)energy_tilde_free,
+        sizeof(t_energy_tilde),
         CLASS_DEFAULT,
         A_GIMME,
         0
     );
 
     class_addcreator(
-        (t_newmethod)peakSample_tilde_new,
-        gensym("timbreIDLib/peakSample~"),
+        (t_newmethod)energy_tilde_new,
+        gensym("timbreIDLib/energy~"),
         A_GIMME,
         0
     );
 
-    CLASS_MAINSIGNALIN(peakSample_tilde_class, t_peakSample_tilde, x_f);
+    CLASS_MAINSIGNALIN(energy_tilde_class, t_energy_tilde, x_f);
 
-    class_addbang(peakSample_tilde_class, peakSample_tilde_bang);
+    class_addbang(energy_tilde_class, energy_tilde_bang);
 
     class_addmethod(
-        peakSample_tilde_class,
-        (t_method)peakSample_tilde_print,
+        energy_tilde_class,
+        (t_method)energy_tilde_print,
         gensym("print"),
         0
     );
 
     class_addmethod(
-        peakSample_tilde_class,
-        (t_method)peakSample_tilde_window,
+        energy_tilde_class,
+        (t_method)energy_tilde_window,
         gensym("window"),
         A_DEFFLOAT,
         0
     );
 
     class_addmethod(
-        peakSample_tilde_class,
-        (t_method)peakSample_tilde_overlap,
+        energy_tilde_class,
+        (t_method)energy_tilde_overlap,
         gensym("overlap"),
         A_DEFFLOAT,
         0
     );
 
     class_addmethod(
-        peakSample_tilde_class,
-        (t_method)peakSample_tilde_dsp,
+        energy_tilde_class,
+        (t_method)energy_tilde_normalize,
+        gensym("normalize"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        energy_tilde_class,
+        (t_method)energy_tilde_power,
+        gensym("power"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        energy_tilde_class,
+        (t_method)energy_tilde_db,
+        gensym("db"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod(
+        energy_tilde_class,
+        (t_method)energy_tilde_dsp,
         gensym("dsp"),
         0
     );

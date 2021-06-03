@@ -1,0 +1,78 @@
+#N canvas 185 144 904 483 10;
+#X declare -lib timbreID/timbreIDLib;
+#X floatatom 70 414 10 0 0 0 - - -;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#N canvas 676 230 678 432 other-settings 0;
+#X obj 54 365 outlet;
+#X msg 174 308 print;
+#X msg 54 68 overlap 2;
+#X text 135 56 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X msg 84 128 normalize \$1;
+#X obj 84 108 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 114 168 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 208 115 Normalize the energy total according to the current
+window size. This helps in comparing energy measurements taken with
+mixed window sizes. (default: ON);
+#X obj 144 228 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 144 248 db \$1;
+#X msg 114 188 power \$1;
+#X text 208 187 Output energy as power instead of RMS (default: OFF)
+;
+#X text 208 228 Report result in dB units instead of linear. 100 dB
+represents unity \, in keeping with Pd conventions for [env~] and [sigmund~].
+This option is only valid when "power" mode is not active. (default:
+OFF);
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 4 0;
+#X connect 6 0 10 0;
+#X connect 8 0 9 0;
+#X connect 9 0 0 0;
+#X connect 10 0 0 0;
+#X restore 181 289 pd other-settings;
+#X obj 592 320 timbreID;
+#X text 425 255 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 170 361 Creation argument is window size in samples;
+#X msg 135 233 window 2000;
+#X text 425 175 Audio buffering is taken care of by the external \,
+so there is no need for [block~]. You can set the window size with
+a creation argument \, or change it with the "window" message. Window
+size is not required to be a power of two.;
+#X obj 637 445 declare -lib timbreID/timbreIDLib;
+#X text 636 422 June 2021;
+#X text 636 402 Updated for timbreIDLib version 0.9.0;
+#X obj 70 361 energy~ 1024;
+#X obj 70 111 *~;
+#X floatatom 136 48 5 0 100 1 linear-gain - -;
+#X obj 136 70 / 100;
+#X text 116 144 Output signal energy continuously;
+#X text 133 215 Change window size;
+#X obj 98 167 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 118 167 metro 100;
+#X obj 70 43 sig~ 1;
+#X text 425 74 As an alternative to Pd's built-in [env~] object \,
+timbreIDLib's [energy~] and [energy] objects report signal energy in
+units of power \, RMS \, or dB. This may be useful in situations where
+it is important to control analysis timing with bangs that are used
+to trigger other timbreIDLib feature extraction objects.;
+#X connect 3 0 12 0;
+#X connect 7 0 12 0;
+#X connect 12 0 0 0;
+#X connect 13 0 12 0;
+#X connect 14 0 15 0;
+#X connect 15 0 13 1;
+#X connect 18 0 19 0;
+#X connect 19 0 12 0;
+#X connect 20 0 13 0;

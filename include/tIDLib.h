@@ -222,7 +222,7 @@ void tIDLib_hannWindow(t_float *wPtr, t_sampIdx n);
 
 
 /* ---------------- dsp utility functions ---------------------- */
-t_float tIDLib_ampDB(t_sampIdx n, t_sample *input);
+t_float tIDLib_sigEnergy(t_sampIdx n, t_sample *input, t_bool normalize, t_bool rms, t_bool db);
 void tIDLib_peakSample(t_sampIdx n, t_float *input, t_sampIdx *peakIdx, t_float *peakVal);
 t_sampIdx tIDLib_findAttackStartSamp(t_sampIdx n, t_float *input, t_float sampDeltaThresh, t_uShortInt numSampsThresh);
 t_float tIDLib_zeroCrossingRate(t_sampIdx n, t_sample *input, t_bool normalize);
@@ -275,6 +275,8 @@ void chroma_setup(void);
 void chroma_tilde_setup(void);
 void dct_setup(void);
 void dct_tilde_setup(void);
+void energy_setup(void);
+void energy_tilde_setup(void);
 void featureAccum_setup(void);
 void featureDelta_setup(void);
 void featureNorm_setup(void);

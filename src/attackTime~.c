@@ -62,9 +62,6 @@ static void attackTime_tilde_bang(t_attackTime_tilde *x)
     for(i=0, j=startSample; i<window; i++, j++)
         x->x_analysisBuffer[i] = x->x_signalBuffer[j];
 
-    peakSampIdx = 0;
-    attackTime=peakSampVal=0.0;
-
     tIDLib_peakSample(window, x->x_analysisBuffer, &peakSampIdx, &peakSampVal);
 
     peakSampIdx += startSample; // add startSample back so we can find the peak sample index relative to x_signalBuffer
@@ -82,6 +79,8 @@ static void attackTime_tilde_bang(t_attackTime_tilde *x)
             j--;
         }
     }
+
+    attackTime = 0.0;
 
     // send searchBuffer to routine to find the point where sample magnitude is below x_sampMagThresh for at least x_numSampsThresh samples
     attackStartIdx = tIDLib_findAttackStartSamp(x->x_maxSearchRange, x->x_searchBuffer, x->x_sampMagThresh, x->x_numSampsThresh);

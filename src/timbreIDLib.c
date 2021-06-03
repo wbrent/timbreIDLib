@@ -73,6 +73,8 @@ void timbreIDLib_setup(void)
     chroma_tilde_setup();
     dct_setup();
     dct_tilde_setup();
+    energy_setup();
+    energy_tilde_setup();
     featureAccum_setup();
     featureDelta_setup();
     featureNorm_setup();

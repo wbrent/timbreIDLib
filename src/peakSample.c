@@ -45,7 +45,7 @@ static void peakSample_analyze(t_peakSample *x, t_floatarg start, t_floatarg n)
     else
     {
         t_sampIdx i, j, oldWindow, window, startSamp, endSamp, peakIdx;
-        t_float peak;
+        t_float peakVal;
 
         startSamp = (start<0)?0:start;
 
@@ -91,25 +91,10 @@ static void peakSample_analyze(t_peakSample *x, t_floatarg start, t_floatarg n)
         for(i=0, j=startSamp; j<=endSamp; i++, j++)
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
-        peak=-FLT_MAX;
-        peakIdx = ULONG_MAX;
-
-        for(i=0; i<x->x_window; i++)
-        {
-            t_float thisSample;
-
-            thisSample = fabs(x->x_analysisBuffer[i]);
-
-            if(thisSample>peak)
-            {
-                peak = thisSample;
-                peakIdx = i;
-            }
-        }
+        tIDLib_peakSample(window, x->x_analysisBuffer, &peakIdx, &peakVal);
 
         outlet_float(x->x_peakIdx, peakIdx);
-        // output actual sample at peakIdx, since peak has lost its sign
-        outlet_float(x->x_peak, x->x_analysisBuffer[peakIdx]);
+        outlet_float(x->x_peak, peakVal);
     }
 }
 

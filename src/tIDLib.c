@@ -1074,38 +1074,42 @@ void tIDLib_hannWindow(t_float *wPtr, t_sampIdx n)
 
 
 /* ---------------- dsp utility functions ---------------------- */
-t_float tIDLib_ampDB(t_sampIdx n, t_sample *input)
+t_float tIDLib_sigEnergy(t_sampIdx n, t_sample *input, t_bool normalize, t_bool rms, t_bool db)
 {
-    t_float rms, dB;
+    t_float power;
     t_sampIdx i;
 
-    rms = 0.0;
+    power = 0.0;
 
-    for(i=0; i<n; i++, input++)
-        rms += *input * *input;
+    for (i = 0; i < n; i++, input++)
+        power += *input * *input;
 
-    rms /= n;
-    rms = sqrt(rms);
+    if (normalize)
+        power /= n;
 
-    // from Pd source: d_arithmetic.c
-    dB = rmstodb(rms);
+    if (rms)
+        power = sqrt (power);
 
-    return(dB);
+    if (db && rms)
+        power = rmstodb(power);
+
+    return (power);
 }
 
+// NOTE: this returns a signed sample value, not the peak amplitude
 void tIDLib_peakSample(t_sampIdx n, t_float *input, t_sampIdx *peakIdx, t_float *peakVal)
 {
     t_sampIdx i;
 
-    *peakVal = -FLT_MAX;
+    *peakVal = 0.0;
     *peakIdx = ULONG_MAX;
 
-    for(i=0; i<n; i++, input++)
+    for (i = 0; i < n; i++, input++)
     {
-        if(fabs(*input) > *peakVal)
+        if (fabs (*input) > fabs (*peakVal))
         {
             *peakIdx = i;
-            *peakVal = fabs(*input);
+            *peakVal = *input;
         }
     }
 }
