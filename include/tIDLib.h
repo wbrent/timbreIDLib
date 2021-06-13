@@ -9,7 +9,7 @@ timbreID is free software: you can redistribute it and/or modify it under the te
 timbreID is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-version 0.9.0B, May 24, 2021
+version 0.9.0C, June 3, 2021
 
 */
 
@@ -23,7 +23,7 @@ version 0.9.0B, May 24, 2021
 #include <fftw3.h>
 #include "m_pd.h"
 
-#define TIDVERSION "0.9.0B"
+#define TIDVERSION "0.9.0C"
 
 // choose either FFTW_MEASURE or FFTW_ESTIMATE here.
 #define FFTWPLANNERFLAG FFTW_ESTIMATE
@@ -277,6 +277,8 @@ void dct_setup(void);
 void dct_tilde_setup(void);
 void energy_setup(void);
 void energy_tilde_setup(void);
+void energyEntropy_setup(void);
+void energyEntropy_tilde_setup(void);
 void featureAccum_setup(void);
 void featureDelta_setup(void);
 void featureNorm_setup(void);

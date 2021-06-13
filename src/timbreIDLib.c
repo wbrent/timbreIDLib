@@ -75,6 +75,8 @@ void timbreIDLib_setup(void)
     dct_tilde_setup();
     energy_setup();
     energy_tilde_setup();
+    energyEntropy_setup();
+    energyEntropy_tilde_setup();
     featureAccum_setup();
     featureDelta_setup();
     featureNorm_setup();
