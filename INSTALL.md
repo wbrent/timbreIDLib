@@ -1,32 +1,32 @@
-### Using timbreIDLib ###
+# Using timbreIDLib
 
-timbreIDLib is a library that contains many different Pd objects. If you have the compiled timbreIDLib binary, you can use it in Pd by either:
+timbreIDLib is a library that contains many different Pd objects. If you already have the compiled timbreIDLib binary, you can use it in Pd by either:
 
   <ol>
-    <li> telling Pd to load the timbreIDLib binary file at startup via Pd's "Preferences/Startup" dialog</li>
     <li> using the [declare] object to load timbreIDLib as needed per patch</li>
+    <li> telling Pd to load the timbreIDLib binary file globally at startup via Pd's "Preferences/Startup" dialog</li>
   </ol>
 
-For method 1, make a new startup path in the Startup dialog, and provide the path to the timbreIDLib binary. Note that you must not list the extension of the timbreIDLib file (i.e., pd_linux, pd_darwin, or dll). For example:
+For method 1, assuming timbreIDLib is installed to the default Externals Install Directory, you can simply use the [declare] object in your patch like this:
+
+  > [declare -lib timbreIDLib]
+
+For method 2, make a new startup path in the Startup dialog, and provide the path to the timbreIDLib binary. Note that you must not list the extension of the timbreIDLib file (i.e., pd_linux, pd_darwin, or dll). For example:
 
 > /home/yourname/pd_libs/timbreIDLib
 
-When using Pd's Startup dialog on Windows, note that you still specify the path with forward slashes, and spaces in the path are ok. There is still no need to append the library file extension (dll). For instance:
+When using Pd's Startup dialog on Windows, note that you can specify the path with forward slashes, and spaces in the path are ok. There is still no need to append the library file extension (dll). For instance:
 
 > C:/Users/Your Name/Documents/Pd/externals/timbreIDLib
 
 Once you have specified the path to timbreIDLib in the Startup dialog, you must quit and restart Pd.
-
-For method 2, assuming timbreIDLib is installed to the default Externals Install Directory, you can simply use the [declare] object in your patch like this:
-
-> [declare -lib timbreIDLib]
 
 If timbreIDLib is loaded successfully (using either method), you will see a message in Pd's post window stating the timbreIDLib version number.
 
 
 
 
-### Notes on FFTW ###
+# Notes on FFTW
 
 As of version 0.7, timbreIDLib uses the FFTW library available at http://www.fftw.org.
 
@@ -55,7 +55,7 @@ On Linux and Macintosh, the FFTW library files should be installed to /usr/local
 
 
 
-### Building timbreIDLib From Source ###
+# Building timbreIDLib From Source
 
 As of timbreIDLib 0.7.8, pd-lib-builder is used for building:
 
