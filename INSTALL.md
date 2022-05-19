@@ -17,9 +17,9 @@ When using Pd's Startup dialog on Windows, note that you still specify the path 
 
 Once you have specified the path to timbreIDLib in the Startup dialog, you must quit and restart Pd.
 
-For method 2, assuming timbreIDLib is installed to the default Externals Install Directory, you can simply use the [declare] object like this:
+For method 2, assuming timbreIDLib is installed to the default Externals Install Directory, you can simply use the [declare] object in your patch like this:
 
-[declare -lib timbreIDLib]
+> [declare -lib timbreIDLib]
 
 If timbreIDLib is loaded successfully (using either method), you will see a message in Pd's post window stating the timbreIDLib version number.
 
