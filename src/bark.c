@@ -244,7 +244,7 @@ static void bark_debounce(t_bark *x, t_floatarg db)
         post("%s debounce time: %0.2f ms, %i samples", x->x_objSymbol->s_name, x->x_debounceTime, x->x_debounceSamp);
     }
     else
-        error("%s debounce time must be >= 0 ms", x->x_objSymbol->s_name);
+        pd_error(x, "%s debounce time must be >= 0 ms", x->x_objSymbol->s_name);
 }
 
 static void bark_spew(t_bark *x, t_floatarg spew)
@@ -376,7 +376,7 @@ static void bark_samplerate(t_bark *x, t_floatarg sr)
 
     if(sr<MINSAMPLERATE)
     {
-        error("%s samplerate must be at least %i. default value of %i used instead.", x->x_objSymbol->s_name, MINSAMPLERATE, SAMPLERATEDEFAULT);
+        pd_error(x, "%s: samplerate must be at least %i. default value of %i used instead.", x->x_objSymbol->s_name, MINSAMPLERATE, SAMPLERATEDEFAULT);
         x->x_sr = SAMPLERATEDEFAULT;
     }
     else
@@ -516,7 +516,7 @@ static void *bark_new(t_symbol *s, int argc, t_atom *argv)
             break;
 
         case 0:
-            error("%s: no array specified.", x->x_objSymbol->s_name);
+            pd_error(x, "%s: no array specified.", x->x_objSymbol->s_name);
             x->x_arrayName = gensym("NOARRAYSPECIFIED");
             x->x_window = WINDOWSIZEDEFAULT;
             x->x_hop = WINDOWSIZEDEFAULT*0.25;
@@ -1012,4 +1012,3 @@ void bark_setup(void)
         0
     );
 }
-
