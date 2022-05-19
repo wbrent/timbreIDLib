@@ -1096,6 +1096,50 @@ t_float tIDLib_sigEnergy(t_sampIdx n, t_sample *input, t_bool normalize, t_bool 
     return (power);
 }
 
+t_float tIDLib_sigEnergyEntropy(t_sampIdx subWindowSize, t_sampIdx subWindowsPerMidTermWindow, t_sample *input)
+{
+    t_sampIdx i, j;
+    t_float energySum, H;
+    t_float energySubFrames[subWindowsPerMidTermWindow];
+
+    energySum = 0.0;
+
+    for (i = 0; i < subWindowsPerMidTermWindow; i++)
+    {
+        t_sampIdx startSamp;
+
+        startSamp = i * subWindowSize;
+
+        // get the energy for subwindow i in this mid-term window
+        energySubFrames[i] = tIDLib_sigEnergy(subWindowSize, input + startSamp, false, false, false);
+
+        energySum += energySubFrames[i];
+    }
+
+    H = 0.0;
+
+    for (i = 0; i < subWindowsPerMidTermWindow; i++)
+    {
+        t_float e, logProduct, normEnergy;
+
+        normEnergy = energySubFrames[i] / energySum;
+
+        // protect against NANs
+        if (normEnergy > 0.0)
+            logProduct = normEnergy * log2(normEnergy);
+        else
+            logProduct = 0.0;
+
+        H += logProduct;
+    }
+
+    // remember to negate at the end per eq 4.7
+    H *= -1.0;
+
+    // return a dummy value for now
+    return H;
+}
+
 // NOTE: this returns a signed sample value, not the peak amplitude
 void tIDLib_peakSample(t_sampIdx n, t_float *input, t_sampIdx *peakIdx, t_float *peakVal)
 {

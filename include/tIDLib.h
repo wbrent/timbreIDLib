@@ -9,7 +9,7 @@ timbreID is free software: you can redistribute it and/or modify it under the te
 timbreID is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-version 0.9.0C, June 3, 2021
+version 0.9.0D, July 26, 2021
 
 */
 
@@ -23,7 +23,7 @@ version 0.9.0C, June 3, 2021
 #include <fftw3.h>
 #include "m_pd.h"
 
-#define TIDVERSION "0.9.0C"
+#define TIDVERSION "0.9.0D"
 
 // choose either FFTW_MEASURE or FFTW_ESTIMATE here.
 #define FFTWPLANNERFLAG FFTW_ESTIMATE
@@ -69,7 +69,6 @@ typedef t_uShortInt t_filterIdx; // can be small because min bark spacing allowe
 typedef t_uInt t_attributeIdx; // gets us over 4 billion attributes. should be plenty
 // indices to instances in database. members of a cluster. non-negative only
 typedef t_uInt t_instanceIdx; // again, gets us over 4 billion instances
-
 
 typedef enum
 {
@@ -223,6 +222,7 @@ void tIDLib_hannWindow(t_float *wPtr, t_sampIdx n);
 
 /* ---------------- dsp utility functions ---------------------- */
 t_float tIDLib_sigEnergy(t_sampIdx n, t_sample *input, t_bool normalize, t_bool rms, t_bool db);
+t_float tIDLib_sigEnergyEntropy(t_sampIdx subWindowSize, t_sampIdx subWindowsPerMidTermWindow, t_sample *input);
 void tIDLib_peakSample(t_sampIdx n, t_float *input, t_sampIdx *peakIdx, t_float *peakVal);
 t_sampIdx tIDLib_findAttackStartSamp(t_sampIdx n, t_float *input, t_float sampDeltaThresh, t_uShortInt numSampsThresh);
 t_float tIDLib_zeroCrossingRate(t_sampIdx n, t_sample *input, t_bool normalize);
