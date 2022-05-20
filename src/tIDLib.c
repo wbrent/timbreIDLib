@@ -780,6 +780,7 @@ void tIDLib_createFilterbank(t_float *filterFreqs, t_filter **filterbank, t_filt
             // some special cases for very narrow filter widths
             switch(filterWidth)
             {
+                // TODO: can't declare local variables in a switch? why this "code will never be executed" warning?
                 t_binIdx fj, k;
 
                 case 1:
@@ -1074,7 +1075,7 @@ void tIDLib_hannWindow(t_float *wPtr, t_sampIdx n)
 
 
 /* ---------------- dsp utility functions ---------------------- */
-t_float tIDLib_sigEnergy(t_sampIdx n, t_sample *input, t_bool normalize, t_bool rms, t_bool db)
+t_float tIDLib_sigEnergy (t_sampIdx n, t_sample* input, t_bool normalize, t_bool rms, t_bool db)
 {
     t_float power;
     t_sampIdx i;
@@ -1091,14 +1092,14 @@ t_float tIDLib_sigEnergy(t_sampIdx n, t_sample *input, t_bool normalize, t_bool 
         power = sqrt (power);
 
     if (db && rms)
-        power = rmstodb(power);
+        power = rmstodb (power);
 
     return (power);
 }
 
-t_float tIDLib_sigEnergyEntropy(t_sampIdx subWindowSize, t_sampIdx subWindowsPerMidTermWindow, t_sample *input)
+t_float tIDLib_sigEnergyEntropy (t_sampIdx subWindowSize, t_sampIdx subWindowsPerMidTermWindow, t_sample* input)
 {
-    t_sampIdx i, j;
+    t_sampIdx i;
     t_float energySum, H;
     t_float energySubFrames[subWindowsPerMidTermWindow];
 
@@ -1111,7 +1112,7 @@ t_float tIDLib_sigEnergyEntropy(t_sampIdx subWindowSize, t_sampIdx subWindowsPer
         startSamp = i * subWindowSize;
 
         // get the energy for subwindow i in this mid-term window
-        energySubFrames[i] = tIDLib_sigEnergy(subWindowSize, input + startSamp, false, false, false);
+        energySubFrames[i] = tIDLib_sigEnergy (subWindowSize, input + startSamp, false, false, false);
 
         energySum += energySubFrames[i];
     }
@@ -1120,13 +1121,13 @@ t_float tIDLib_sigEnergyEntropy(t_sampIdx subWindowSize, t_sampIdx subWindowsPer
 
     for (i = 0; i < subWindowsPerMidTermWindow; i++)
     {
-        t_float e, logProduct, normEnergy;
+        t_float logProduct, normEnergy;
 
         normEnergy = energySubFrames[i] / energySum;
 
         // protect against NANs
         if (normEnergy > 0.0)
-            logProduct = normEnergy * log2(normEnergy);
+            logProduct = normEnergy * log2 (normEnergy);
         else
             logProduct = 0.0;
 
@@ -1136,12 +1137,11 @@ t_float tIDLib_sigEnergyEntropy(t_sampIdx subWindowSize, t_sampIdx subWindowsPer
     // remember to negate at the end per eq 4.7
     H *= -1.0;
 
-    // return a dummy value for now
     return H;
 }
 
 // NOTE: this returns a signed sample value, not the peak amplitude
-void tIDLib_peakSample(t_sampIdx n, t_float *input, t_sampIdx *peakIdx, t_float *peakVal)
+void tIDLib_peakSample (t_sampIdx n, t_float* input, t_sampIdx* peakIdx, t_float* peakVal)
 {
     t_sampIdx i;
 
@@ -1158,33 +1158,33 @@ void tIDLib_peakSample(t_sampIdx n, t_float *input, t_sampIdx *peakIdx, t_float 
     }
 }
 
-t_sampIdx tIDLib_findAttackStartSamp(t_sampIdx n, t_float *input, t_float sampMagThresh, t_uShortInt numSampsThresh)
+t_sampIdx tIDLib_findAttackStartSamp (t_sampIdx n, t_float* input, t_float sampMagThresh, t_uShortInt numSampsThresh)
 {
     t_sampIdx i, j, startSamp;
 
     startSamp = ULONG_MAX;
 
-    i=n;
+    i = n;
 
-    while(i--)
+    while (i--)
     {
-        if(fabs(input[i]) <= sampMagThresh)
+        if (fabs (input[i]) <= sampMagThresh)
         {
             t_uShortInt sampCount;
 
             sampCount = 1;
-            j=i;
+            j = i;
 
-            while(j--)
+            while (j--)
             {
-                if(fabs(input[j]) <= sampMagThresh)
+                if (fabs(input[j]) <= sampMagThresh)
                 {
                     sampCount++;
 
-                    if(sampCount>=numSampsThresh)
+                    if (sampCount >= numSampsThresh)
                     {
                         startSamp = j;
-                        return(startSamp);
+                        return (startSamp);
                     }
                 }
                 else
@@ -1193,11 +1193,11 @@ t_sampIdx tIDLib_findAttackStartSamp(t_sampIdx n, t_float *input, t_float sampMa
         }
     }
 
-    return(startSamp);
+    return (startSamp);
 }
 
 // this could also return the location of the zero crossing
-t_float tIDLib_zeroCrossingRate (t_sampIdx n, t_sample *input, t_bool normalize)
+t_float tIDLib_zeroCrossingRate (t_sampIdx n, t_sample* input, t_bool normalize)
 {
     t_float crossings;
     t_sampIdx i;
@@ -1205,7 +1205,7 @@ t_float tIDLib_zeroCrossingRate (t_sampIdx n, t_sample *input, t_bool normalize)
     crossings = 0.0;
 
     for (i = 1; i < n; i++)
-        crossings += abs(tIDLib_signum(input[i]) - tIDLib_signum(input[i-1]));
+        crossings += abs (tIDLib_signum (input[i]) - tIDLib_signum (input[i-1]));
 
     if (normalize)
         crossings *= 1.0 / (t_float)(2 * n);
@@ -1216,9 +1216,9 @@ t_float tIDLib_zeroCrossingRate (t_sampIdx n, t_sample *input, t_bool normalize)
 }
 
 // for chroma objects
-t_uInt tIDLib_getPitchBinRanges (t_binIdx *binRanges, t_float thisPitch, t_float loFreq, t_float hiFreq, t_float pitchTolerance, t_sampIdx n, t_float sr)
+t_uInt tIDLib_getPitchBinRanges (t_binIdx* binRanges, t_float thisPitch, t_float loFreq, t_float hiFreq, t_float pitchTolerance, t_sampIdx n, t_float sr)
 {
-    t_attributeIdx i, j;
+    t_attributeIdx i;
     t_uInt cardinality;
 
     cardinality = 0;
@@ -1228,16 +1228,14 @@ t_uInt tIDLib_getPitchBinRanges (t_binIdx *binRanges, t_float thisPitch, t_float
         binRanges[i] = ULONG_MAX;
 
     // find the octave of this pitch that is above x_loFreq
-    while (mtof(thisPitch) < loFreq)
+    while (mtof (thisPitch) < loFreq)
         thisPitch += 12.0;
 
     i = 0;
 
     // store all the bin ranges of octaves of thisPitch within x_loFreq and x_hiFreq
-    while (mtof(thisPitch) < hiFreq)
+    while (mtof (thisPitch) < hiFreq)
     {
-        t_uShortInt;
-
         binRanges[i] = tIDLib_freq2bin (mtof (thisPitch - pitchTolerance), n, sr);
         binRanges[i+1] = tIDLib_freq2bin (mtof (thisPitch + pitchTolerance), n, sr);
 
@@ -1252,72 +1250,72 @@ t_uInt tIDLib_getPitchBinRanges (t_binIdx *binRanges, t_float thisPitch, t_float
     return (cardinality);
 }
 
-void tIDLib_power(t_binIdx n, void *fftw_out, t_float *powBuf)
+void tIDLib_power (t_binIdx n, void* fftw_out, t_float* powBuf)
 {
-    fftwf_complex *fftw_out_local = (fftwf_complex *)fftw_out;
+    fftwf_complex* fftw_out_local = (fftwf_complex *)fftw_out;
 
-    while(n--)
+    while (n--)
         powBuf[n] = (fftw_out_local[n][0] * fftw_out_local[n][0]) + (fftw_out_local[n][1] * fftw_out_local[n][1]);
 
 }
 
-void tIDLib_mag(t_binIdx n, t_float *input)
+void tIDLib_mag (t_binIdx n, t_float* input)
 {
-    while(n--)
+    while (n--)
     {
-        *input = sqrt(*input);
+        *input = sqrt (*input);
         input++;
     }
 }
 
 // for normalizing spectra so sum of energy==1
-void tIDLib_normal(t_binIdx n, t_float *input)
+void tIDLib_normal (t_binIdx n, t_float* input)
 {
     t_float sum, normScalar;
     t_binIdx i;
 
     sum = normScalar = 0.0;
 
-    for(i=0; i<n; i++)
+    for (i = 0; i < n; i++)
         sum += input[i];
 
-    sum = (sum==0.0)?1.0:sum;
+    sum = (sum == 0.0) ? 1.0 : sum;
 
-    normScalar = 1.0/sum;
+    normScalar = 1.0 / sum;
 
-    while(n--)
+    while (n--)
         *input++ *= normScalar;
 }
 
 // for normalizing bipolar waveforms so that peak amplitude==1
-void tIDLib_normalPeak(t_binIdx n, t_float *input)
+void tIDLib_normalPeak (t_binIdx n, t_float* input)
 {
     t_float max, normScalar;
     t_binIdx i;
 
     max = normScalar = 0.0;
 
-    for(i=0; i<n; i++)
-        if(fabs(input[i])>max)
-            max = fabs(input[i]);
+    for (i = 0; i < n; i++)
+        if (fabs (input[i]) > max)
+            max = fabs (input[i]);
 
-    max = (max==0.0)?1.0:max;
+    max = (max == 0.0) ? 1.0 : max;
 
-    normScalar = 1.0/max;
+    normScalar = 1.0 / max;
 
-    while(n--)
+    while (n--)
         *input++ *= normScalar;
 }
 
-void tIDLib_log(t_binIdx n, t_float *input)
+void tIDLib_log (t_binIdx n, t_float* input)
 {
     while (n--)
     {
         // if to protect against log(0)
-        if(*input==0.0)
+        if (*input == 0.0)
             *input = 0.0;
         else
-            *input = log(*input);
+            *input = log (*input);
 
         input++;
     };

@@ -95,7 +95,7 @@ static void energyEntropy_analyze(t_energyEntropy *x, t_floatarg start, t_floata
 
         energyEntropyResult = 0.0;
 
-        // energyEntropyResult = tIDLib_sigenergyEntropy (window, x->x_analysisBuffer, x->x_normalize, !x->x_power, x->x_db);
+        // energyEntropyResult = tIDLib_sigEnergyEntropy (x->x_subWindowSize, x->x_subWindowsPerMidTermWindow, x->x_analysisBuffer);
 
         outlet_float(x->x_entropyOutlet, energyEntropyResult);
     }

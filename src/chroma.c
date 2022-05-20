@@ -537,7 +537,6 @@ static void chroma_pitchTol(t_chroma *x, t_floatarg tol)
 static void chroma_freqRange(t_chroma *x, t_floatarg loFreq, t_floatarg hiFreq)
 {
     t_float nyquist;
-    t_uChar i;
 
     nyquist = x->x_sr*0.5;
 

@@ -1,37 +1,19 @@
-#N canvas 180 291 889 646 10;
+#N canvas 207 206 883 653 10;
 #X declare -lib timbreID/timbreIDLib;
-#X floatatom 70 414 10 0 0 0 - - -;
-#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
-#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
-#X obj 592 320 timbreID;
-#X text 425 255 This feature can be sent to the timbreID external in
+#X obj 568 397 timbreID;
+#X text 425 335 This feature can be sent to the timbreID external in
 order to identify timbres in real time. For more on using audio features
 for classification \, see the timbreID helpfile:;
-#X text 425 175 Audio buffering is taken care of by the external \,
-so there is no need for [block~]. You can set the window size with
-a creation argument \, or change it with the "window" message. Window
-size is not required to be a power of two.;
-#X obj 637 445 declare -lib timbreID/timbreIDLib;
-#X text 636 422 June 2021;
-#X text 636 402 Updated for timbreIDLib version 0.9.0;
-#X obj 98 167 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X text 220 361 Creation arguments:;
-#X text 230 381 sub-window size in samples;
-#X text 230 401 number of sub-windows per mid-term window;
-#X text 116 144 Output energy entropy continuously;
-#X text 425 74 **** Description ****;
-#N canvas 0 50 450 250 (subpatch) 0;
-#X array entropy 30 float 0;
-#X coords 0 4.25 29 0 200 140 1 0 0;
-#X restore 438 473 graph;
-#X obj 70 450 t f b;
-#X obj 70 473 tabwrite entropy;
-#X obj 146 442 f;
-#X obj 185 429 + 1;
-#X obj 185 452 % 30;
+#X obj 607 593 declare -lib timbreID/timbreIDLib;
+#X text 606 550 Updated for timbreIDLib version 0.9.0;
+#X obj 98 197 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 169 366 Creation arguments:;
+#X text 116 174 Output energy entropy continuously;
 #N canvas 676 230 639 420 settings 0;
 #X obj 54 365 outlet;
 #X msg 164 248 print;
@@ -48,15 +30,15 @@ windows, f 65;
 #X connect 2 0 0 0;
 #X connect 6 0 0 0;
 #X connect 7 0 0 0;
-#X restore 181 289 pd settings;
-#N canvas 775 289 610 288 set-analysis-timing 0;
+#X restore 181 269 pd settings;
+#N canvas 768 235 610 288 set-analysis-timing 0;
 #X obj 55 26 loadbang;
 #X obj 55 49 t b b;
 #X obj 115 95 samplerate~;
 #X obj 55 158 * 1000;
-#X floatatom 75 181 5 0 0 0 - - -;
-#X obj 27 47 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X floatatom 75 181 5 0 0 0 - - - 0;
+#X obj 27 47 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 55 101 * 16;
 #X msg 55 78 1024;
 #X obj 55 211 outlet;
@@ -66,9 +48,10 @@ With the creation arguments used in this help patch \, this results
 in a mid-term window that is about 372ms long at a sampling rate of
 44.1kHz.;
 #X obj 55 135 /;
-#X text 218 113 Here \, the analysis timing is creates an overlap factor
-of 4 for the mid-term windows in order to get more updates per second.
-;
+#X text 218 113 Here \, because we're using 1024 (a quarter of the
+current sub-window size) in the timing calculation \, we create an
+overlap factor of 4 for the mid-term windows in order to get more updates
+per second.;
 #X connect 0 0 1 0;
 #X connect 1 0 7 0;
 #X connect 1 1 2 0;
@@ -79,23 +62,23 @@ of 4 for the mid-term windows in order to get more updates per second.
 #X connect 6 0 10 0;
 #X connect 7 0 6 0;
 #X connect 10 0 3 0;
-#X restore 178 167 pd set-analysis-timing;
-#X obj 118 167 metro;
+#X restore 178 197 pd set-analysis-timing;
+#X obj 118 197 metro;
 #N canvas 825 124 895 509 audio-input 0;
 #X obj 144 439 *~;
 #X obj 144 469 dac~;
-#X floatatom 110 140 5 0 100 1 dB - -;
+#X floatatom 110 140 5 0 100 1 dB - - 0;
 #X obj 63 346 dbtorms;
-#X obj 110 120 bng 15 250 50 0 empty empty stop 17 7 0 10 -262144 -1
--1;
+#X obj 110 120 bng 15 250 50 0 empty empty stop 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 63 369 pack f 40;
 #X obj 63 392 line~;
 #X msg 227 264 stop;
 #X obj 147 297 readsf~;
 #X obj 397 297 readsf~;
 #X obj 647 297 readsf~;
-#X obj 180 120 vradio 15 1 0 3 empty empty empty 0 -8 0 10 -262144
--1 -1 2;
+#X obj 180 120 vradio 15 1 0 3 empty empty empty 0 -8 0 10 #fcfcfc
+#000000 #000000 0;
 #X obj 317 449 outlet~;
 #X msg 467 264 stop;
 #X msg 717 264 stop;
@@ -106,11 +89,15 @@ of 4 for the mid-term windows in order to get more updates per second.
 #X text 200 118 compressed speech;
 #X text 200 133 drum loop;
 #X text 200 148 percussion samples;
-#X msg 147 224 open ../doc/sound/voice.wav \, start;
 #X msg 647 224 open ./audio/testing.wav \, start;
 #X msg 397 224 open ./audio/drum-loop-2.wav \, start;
 #X obj 39 64 loadbang;
 #X msg 39 87 90;
+#X msg 505 449 open /Users/brent/Dropbox/TEACHING/AU/ATEC-651/audio/music-speech.wav
+\, start;
+#X msg 521 419 open ../doc/sound/voice.wav \, start;
+#X msg 147 224 open /Users/brent/Dropbox/TEACHING/AU/ATEC-651/audio/music-speech.wav
+\, start;
 #X connect 0 0 1 0;
 #X connect 0 0 1 1;
 #X connect 2 0 3 0;
@@ -123,46 +110,86 @@ of 4 for the mid-term windows in order to get more updates per second.
 #X connect 7 0 8 0;
 #X connect 8 0 0 1;
 #X connect 8 0 12 0;
-#X connect 8 1 22 0;
+#X connect 8 1 28 0;
 #X connect 9 0 0 1;
 #X connect 9 0 12 0;
-#X connect 9 1 24 0;
+#X connect 9 1 23 0;
 #X connect 10 0 0 1;
 #X connect 10 0 12 0;
-#X connect 10 1 23 0;
+#X connect 10 1 22 0;
 #X connect 11 0 15 0;
 #X connect 13 0 9 0;
 #X connect 14 0 10 0;
 #X connect 15 0 16 0;
 #X connect 15 1 17 0;
 #X connect 15 2 18 0;
-#X connect 16 0 22 0;
+#X connect 16 0 28 0;
 #X connect 16 1 13 0;
 #X connect 16 1 14 0;
-#X connect 17 0 24 0;
+#X connect 17 0 23 0;
 #X connect 17 1 7 0;
 #X connect 17 1 14 0;
-#X connect 18 0 23 0;
+#X connect 18 0 22 0;
 #X connect 18 1 13 0;
 #X connect 18 1 7 0;
-#X connect 22 0 8 0;
-#X connect 23 0 10 0;
-#X connect 24 0 9 0;
-#X connect 25 0 26 0;
-#X connect 26 0 2 0;
-#X coords 0 -1 1 1 225 70 1 100 100;
-#X restore 69 50 pd audio-input;
-#X obj 70 361 energyEntropy~ 4096 16;
-#X connect 0 0 16 0;
-#X connect 9 0 23 0;
-#X connect 16 0 17 0;
-#X connect 16 1 18 0;
-#X connect 18 0 19 0;
-#X connect 18 0 17 1;
-#X connect 19 0 20 0;
-#X connect 20 0 18 1;
-#X connect 21 0 25 0;
-#X connect 22 0 23 1;
-#X connect 23 0 25 0;
+#X connect 22 0 10 0;
+#X connect 23 0 9 0;
 #X connect 24 0 25 0;
-#X connect 25 0 0 0;
+#X connect 25 0 2 0;
+#X connect 28 0 8 0;
+#X coords 0 -1 1 1 225 70 1 100 100;
+#X restore 70 80 pd audio-input;
+#X obj 70 341 energyEntropy~ 4096 16;
+#X text 606 570 June 2022;
+#N canvas 647 219 546 317 plotting 0;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array entropy 30 float 0;
+#X coords 0 4 29 0 200 140 1 0 0;
+#X restore 260 120 graph;
+#X obj 51 152 t f b;
+#X obj 51 175 tabwrite entropy;
+#X obj 157 144 f;
+#X obj 196 131 + 1;
+#X obj 196 154 % 30;
+#X obj 51 82 inlet;
+#X connect 1 0 2 0;
+#X connect 1 1 3 0;
+#X connect 3 0 4 0;
+#X connect 3 0 2 1;
+#X connect 4 0 5 0;
+#X connect 5 0 3 1;
+#X connect 6 0 1 0;
+#X coords 0 -1 1 1 220 170 2 250 100;
+#X restore 70 446 pd plotting;
+#X floatatom 90 394 10 0 0 0 - - - 0;
+#X text 111 38 Click one of the radio buttons to play a test signal
+, f 30;
+#X text 179 406 2) number of sub-windows per mid-term window, f 26
+;
+#X text 179 386 1) sub-window size (samples);
+#X text 425 54 Energy entropy is a measure of abrupt changes in the
+energy of an audio signal. It operates at two levels of time resolution:
+larger mid-term windows \, and smaller sub-windows within each mid-term
+window. Each bang to [energyEntropy~] will cause it to output the entropy
+of the most recently available larger mid-term window (i.e. \, a sequence
+of sub-windows). The entropy value will be lower if there are abrupt
+changes in the energy envelope of the mid-term window. Here \, you
+can compare the entropy of three signals: compressed speech (very few
+abrupt energy changes) \, a drum loop (plenty of abrupt changes) \,
+and percussion samples separated by silence (even more abrupt changes).
+As expected \, compressed speech produces the highest entropy values.
+;
+#X text 425 225 Note that lower entropy values are produced for abrupt
+changes of any type: loud to quiet \, or vice-versa. Steady low-level
+noise will produce a consistent high entropy value \, but if a sudden
+short 100ms sine wave is added to the mix \, the entropy value will
+dip - even though the actual signal energy at that moment increases.
+Therefore \, this feature can be used to locate sudden energy changes
+in either direction.;
+#X connect 6 0 11 0;
+#X connect 9 0 13 0;
+#X connect 10 0 11 1;
+#X connect 11 0 13 0;
+#X connect 12 0 13 0;
+#X connect 13 0 16 0;
+#X connect 13 0 15 0;

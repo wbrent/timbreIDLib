@@ -295,7 +295,7 @@ static void tabletool_mink(t_tabletool *x, t_float k)
         // safety check that k < x->x_arrayPoints
         if (k < 0 || k >= x->x_arrayPoints)
         {
-            pd_error (x, "%s: k must be less than the number of values in %s (%i).", x->x_objSymbol->s_name, x->x_arrayName->s_name, x->x_arrayPoints);
+            pd_error (x, "%s: k must be less than the number of values in %s (%lu).", x->x_objSymbol->s_name, x->x_arrayName->s_name, x->x_arrayPoints);
             return;
         }
 
@@ -336,7 +336,7 @@ static void tabletool_maxk(t_tabletool *x, t_float k)
         // safety check that k < x->x_arrayPoints
         if (k < 0 || k >= x->x_arrayPoints)
         {
-            pd_error (x, "%s: k must be less than the number of values in %s (%i).", x->x_objSymbol->s_name, x->x_arrayName->s_name, x->x_arrayPoints);
+            pd_error (x, "%s: k must be less than the number of values in %s (%lu).", x->x_objSymbol->s_name, x->x_arrayName->s_name, x->x_arrayPoints);
             return;
         }
 

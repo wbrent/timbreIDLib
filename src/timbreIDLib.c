@@ -18,21 +18,21 @@ typedef struct timbreIDLib
     t_object t_ob;
 } t_timbreIDLib;
 
-t_class *timbreIDLib_class;
+t_class* timbreIDLib_class;
 
 
-static void *timbreIDLib_new(void)
+static void* timbreIDLib_new (void)
 {
-    t_timbreIDLib *x = (t_timbreIDLib *)pd_new(timbreIDLib_class);
+    t_timbreIDLib* x = (t_timbreIDLib *)pd_new (timbreIDLib_class);
 
     return (x);
 }
 
-void timbreIDLib_setup(void)
+void timbreIDLib_setup (void)
 {
-    timbreIDLib_class = class_new(gensym("timbreIDLib"), timbreIDLib_new, 0, sizeof(t_timbreIDLib), CLASS_PD, 0);
+    timbreIDLib_class = class_new (gensym ("timbreIDLib"), timbreIDLib_new, 0, sizeof (t_timbreIDLib), CLASS_PD, 0);
 
-    post("timbreID version %s", TIDVERSION);
+    post ("timbreID version %s", TIDVERSION);
 
     attackTime_setup();
     attackTime_tilde_setup();

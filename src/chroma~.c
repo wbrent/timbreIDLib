@@ -326,7 +326,6 @@ static void chroma_tilde_pitchTol (t_chroma_tilde *x, t_floatarg tol)
 static void chroma_tilde_freqRange (t_chroma_tilde *x, t_floatarg loFreq, t_floatarg hiFreq)
 {
     t_float nyquist;
-    t_uChar i;
 
     nyquist = x->x_sr * 0.5;
 
