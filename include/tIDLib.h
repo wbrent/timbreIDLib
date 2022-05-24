@@ -23,7 +23,7 @@ version 0.9.0E, May 24, 2022
 #include <fftw3.h>
 #include "m_pd.h"
 
-#define TIDVERSION "0.9.0D"
+#define TIDVERSION "0.9.0E"
 
 // choose either FFTW_MEASURE or FFTW_ESTIMATE here.
 #define FFTWPLANNERFLAG FFTW_ESTIMATE
