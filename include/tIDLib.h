@@ -9,7 +9,7 @@ timbreID is free software: you can redistribute it and/or modify it under the te
 timbreID is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-version 0.9.0D, July 26, 2021
+version 0.9.0E, May 24, 2022
 
 */
 
@@ -120,7 +120,7 @@ typedef enum
 
 typedef struct filter
 {
-    t_float *filter;
+    t_float* filter;
     t_binIdx filterSize;
     t_binIdx indices[2];
     t_float filterFreqs[2];
@@ -136,7 +136,7 @@ typedef struct knnInfo
 
 typedef struct instance
 {
-    t_float *data;
+    t_float* data;
     t_attributeIdx length;
     t_instanceIdx clusterMembership;
     t_knnInfo knnInfo;
@@ -144,7 +144,7 @@ typedef struct instance
 
 typedef struct cluster
 {
-    t_instanceIdx *members;
+    t_instanceIdx* members;
     t_instanceIdx numMembers;
     t_uInt votes;
 } t_cluster;
@@ -162,7 +162,7 @@ typedef struct attributeData
     t_normData normData;
     t_float weight;
     t_attributeIdx order;
-    t_symbol *name;
+    t_symbol* name;
 } t_attributeData;
 
 
