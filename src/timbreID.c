@@ -1711,6 +1711,9 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx, t_floatarg normF
 
     post("%s WARNING: \"feature_list\" method name is deprecated, use \"instance_list\" instead", x->x_objSymbol->s_name);
 
+    normalize = false;
+    normRange = false;
+    
     switch ((int) normFlag)
     {
         case 0:
@@ -1787,6 +1790,9 @@ static void timbreID_instanceList(t_timbreID *x, t_floatarg idx, t_floatarg norm
     t_instanceIdx idxInt;
     t_bool normalize, normRange;
 
+    normalize = false;
+    normRange = false;
+    
     switch ((int) normFlag)
     {
         case 0:
@@ -1862,6 +1868,9 @@ static void timbreID_attributeList(t_timbreID *x, t_floatarg idx, t_floatarg nor
 {
     t_attributeIdx idxInt;
     t_bool normalize, normRange;
+
+    normalize = false;
+    normRange = false;
 
     switch ((int) normFlag)
     {
@@ -2123,6 +2132,9 @@ static void timbreID_mink(t_timbreID *x, t_floatarg k, t_floatarg normFlag)
     else
         kInt = k;
 
+    normalize = false;
+    normRange = false;
+
     switch ((int) normFlag)
     {
         case 0:
@@ -2206,6 +2218,9 @@ static void timbreID_maxk(t_timbreID *x, t_floatarg k, t_floatarg normFlag)
     }
     else
         kInt = k;
+
+    normalize = false;
+    normRange = false;
 
     switch ((int) normFlag)
     {
@@ -2865,7 +2880,8 @@ static void timbreID_ARFF(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
     t_instanceIdx i, j, attRangeLow, attRangeHi, argCount;
     t_float *featurePtr;
     t_symbol *filenameSymbol, *relationSymbol, *attSymbol;
-    char *fileName, *relation, *attName, fileNameBuf[MAXPDSTRING];
+    const char *fileName, *relation, *attName;
+    char fileNameBuf[MAXPDSTRING];
 
     attRangeLow = 0;
     attRangeHi = 0;
