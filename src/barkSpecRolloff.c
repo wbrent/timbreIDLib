@@ -135,6 +135,8 @@ static void barkSpecRolloff_analyze(t_barkSpecRolloff *x, t_floatarg start, t_fl
         for(i=0, j=startSamp; j<=endSamp; i++, j++)
             x->x_fftwIn[i] = x->x_vec[j].w_float;
 
+        windowFuncPtr = x->x_blackman;
+
         switch(x->x_windowFunction)
         {
             case rectangular:
@@ -832,4 +834,3 @@ void barkSpecRolloff_setup(void)
         0
     );
 }
-

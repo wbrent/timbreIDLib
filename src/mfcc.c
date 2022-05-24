@@ -142,6 +142,8 @@ static void mfcc_analyze(t_mfcc *x, t_floatarg start, t_floatarg n)
         for(i=0, j=startSamp; j<=endSamp; i++, j++)
             x->x_fftwIn[i] = x->x_vec[j].w_float;
 
+        windowFuncPtr = x->x_blackman;
+
         switch(x->x_windowFunction)
         {
             case rectangular:

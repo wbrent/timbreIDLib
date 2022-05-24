@@ -130,6 +130,8 @@ static void specFlatness_analyze(t_specFlatness *x, t_floatarg start, t_floatarg
         for(i=0, j=startSamp; j<=endSamp; i++, j++)
             x->x_fftwIn[i] = x->x_vec[j].w_float;
 
+        windowFuncPtr = x->x_blackman;
+
         switch(x->x_windowFunction)
         {
             case rectangular:

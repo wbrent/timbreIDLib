@@ -683,6 +683,8 @@ static void bark_analyze(t_bark *x, t_floatarg startTime, t_floatarg endTime)
             totalGrowth = 0.0;
             totalVel = 0.0;
 
+            windowFuncPtr = x->x_blackman;
+
             switch(x->x_windowFunction)
             {
                 case rectangular:

@@ -166,6 +166,8 @@ static void specFlux_analyze(t_specFlux *x, t_floatarg start, t_floatarg n)
         for(i=0, j=startSampBack; j<=endSampBack; i++, j++)
             x->x_fftwInBackWindow[i] = x->x_vec[j].w_float;
 
+        windowFuncPtr = x->x_blackman;
+
         switch(x->x_windowFunction)
         {
             case rectangular:

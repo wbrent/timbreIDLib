@@ -137,6 +137,8 @@ static void tempo_tilde_analyze(t_tempo_tilde *x)
     for(i=0, j=0; i<window; i++, j++)
         x->x_fftwInBackWindow[i] = x->x_signalBuffer[window - x->x_hop + j];
 
+    windowFuncPtr = x->x_blackman;
+
     switch(x->x_windowFunction)
     {
         case rectangular:

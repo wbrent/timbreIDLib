@@ -610,6 +610,8 @@ static t_int *bark_tilde_perform(t_int *w)
          totalGrowth = 0.0;
          totalVel = 0.0;
 
+        windowFuncPtr = x->x_blackman;
+
         switch(x->x_windowFunction)
         {
             case rectangular:
@@ -1003,4 +1005,3 @@ void bark_tilde_setup(void)
         0
     );
 }
-

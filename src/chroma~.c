@@ -74,6 +74,8 @@ static void chroma_tilde_bang (t_chroma_tilde *x)
     for (i = 0, j = bangSample; i < window; i++, j++)
         x->x_fftwIn[i] = x->x_signalBuffer[j];
 
+    windowFuncPtr = x->x_blackman;
+
     switch (x->x_windowFunction)
     {
         case rectangular:

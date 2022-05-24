@@ -130,6 +130,8 @@ static void specBrightness_analyze(t_specBrightness *x, t_floatarg start, t_floa
         for(i=0, j=startSamp; j<=endSamp; i++, j++)
             x->x_fftwIn[i] = x->x_vec[j].w_float;
 
+        windowFuncPtr = x->x_blackman;
+
         switch(x->x_windowFunction)
         {
             case rectangular:

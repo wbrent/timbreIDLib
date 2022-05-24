@@ -78,6 +78,8 @@ static void specFlux_tilde_bang(t_specFlux_tilde *x)
     for(i=0, j=bangSample; i<window; i++, j++)
         x->x_fftwInBackWindow[i] = x->x_signalBuffer[window - x->x_separation + j];
 
+    windowFuncPtr = x->x_blackman;
+
     switch(x->x_windowFunction)
     {
         case rectangular:

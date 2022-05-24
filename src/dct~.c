@@ -62,6 +62,8 @@ static void dct_tilde_bang(t_dct_tilde *x)
     for(i=0, j=bangSample; i<window; i++, j++)
         x->x_dctIn[i] = x->x_signalBuffer[j];
 
+    windowFuncPtr = x->x_blackman;
+
     switch(x->x_windowFunction)
     {
         case rectangular:

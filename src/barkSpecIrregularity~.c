@@ -80,6 +80,8 @@ static void barkSpecIrregularity_tilde_bang(t_barkSpecIrregularity_tilde *x)
     for(i=0, j=bangSample; i<window; i++, j++)
         x->x_fftwIn[i] = x->x_signalBuffer[j];
 
+    windowFuncPtr = x->x_blackman;
+
     switch(x->x_windowFunction)
     {
         case rectangular:
