@@ -1,5 +1,5 @@
 #N canvas 292 117 958 543 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 190 204 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X text 252 235 Bang repeatedly...;
@@ -93,7 +93,7 @@ and see how kurtosis reflects the changes.;
 #X obj 56 437 barkSpecKurtosis~ 1024 0.5;
 #X text 187 187 Bang to output kurtosis;
 #X text 705 480 July 2017;
-#X obj 705 502 declare -lib timbreID/timbreIDLib;
+#X obj 705 502 declare -lib timbreIDLib;
 #X connect 0 0 26 0;
 #X connect 2 0 24 0;
 #X connect 6 0 26 0;

@@ -1,5 +1,5 @@
 #N canvas 295 113 907 543 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 98 159 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X text 160 190 Bang repeatedly...;
@@ -90,7 +90,7 @@ band pass filtered with a center frequency of 7 Barks and low Q (allowing
 plenty of energy above and below 7 Barks to pass through as well).
 Despite the low filter Q \, the centroid reliably hovers near 7 Barks.
 ;
-#X obj 677 505 declare -lib timbreID/timbreIDLib;
+#X obj 677 505 declare -lib timbreIDLib;
 #X connect 0 0 8 0;
 #X connect 2 0 21 0;
 #X connect 6 0 8 0;

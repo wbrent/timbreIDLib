@@ -1,5 +1,5 @@
 #N canvas 292 117 950 543 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 98 189 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X text 160 220 Bang repeatedly...;
@@ -91,7 +91,7 @@ a high spread. Try changing the Q of the filtered noise at left. The
 spread will be greater with a lower Q.;
 #X text 95 172 Bang to output spread;
 #X text 695 480 July 2017;
-#X obj 697 501 declare -lib timbreID/timbreIDLib;
+#X obj 697 501 declare -lib timbreIDLib;
 #X connect 0 0 18 0;
 #X connect 2 0 17 0;
 #X connect 6 0 18 0;

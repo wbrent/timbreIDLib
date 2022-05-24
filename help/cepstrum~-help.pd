@@ -1,5 +1,5 @@
 #N canvas 191 96 960 589 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -104,7 +104,7 @@ relatives mel-cepstrum and Bark-cepstrum are often used as compact
 feature vectors to describe timbre.;
 #X text 52 527 July 2017;
 #X obj 137 190 metro 20;
-#X obj 53 547 declare -lib timbreID/timbreIDLib;
+#X obj 53 547 declare -lib timbreIDLib;
 #X connect 0 0 13 0;
 #X connect 2 0 20 0;
 #X connect 5 0 13 0;

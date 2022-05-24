@@ -1,5 +1,5 @@
 #N canvas 300 196 947 591 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -109,7 +109,7 @@ for classification \, see the timbreID helpfile:;
 #X restore 57 437 pd plotting;
 #X text 55 504 Updated for timbreIDLib version 0.7;
 #X text 55 524 July 2017;
-#X obj 56 548 declare -lib timbreID/timbreIDLib;
+#X obj 56 548 declare -lib timbreIDLib;
 #X connect 0 0 6 0;
 #X connect 2 0 17 0;
 #X connect 5 0 6 0;

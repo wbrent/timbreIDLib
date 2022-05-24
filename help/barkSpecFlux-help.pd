@@ -1,5 +1,5 @@
 #N canvas 213 96 963 714 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 58 592 nbx 7 32 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 32
 -262144 -1 -1 0 256;
 #X obj 157 259 hsl 400 15 0 128000 0 0 empty empty Scrub -2 -8 0 12
@@ -233,9 +233,9 @@ The length of this list will change depending on filterbank spacing.
 #X text 371 421 Change modes to report flux \, spectral growth only
 \, or spectral decay only. This affects the output of both outlets
 , f 34;
-#X obj 721 684 declare -lib timbreID/timbreIDLib;
+#X obj 721 684 declare -lib timbreIDLib;
 #X text 720 643 Updated for timbreIDLib version 0.9.0;
-#X text 720 663 June 2021;
+#X text 720 663 June 2022;
 #X connect 1 0 7 0;
 #X connect 4 0 15 0;
 #X connect 7 0 9 0;

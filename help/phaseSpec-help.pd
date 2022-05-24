@@ -1,5 +1,5 @@
 #N canvas 234 81 874 668 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 50 310 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -144,7 +144,7 @@ calculations.;
 #X obj 598 438 phaseSpec~;
 #X text 596 389 See the real-time version for more information on phase
 spectrum in general., f 33;
-#X obj 628 635 declare -lib timbreID/timbreIDLib;
+#X obj 628 635 declare -lib timbreIDLib;
 #X connect 0 0 23 0;
 #X connect 8 0 23 0;
 #X connect 9 0 23 0;

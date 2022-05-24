@@ -1,5 +1,5 @@
 #N canvas 208 96 1106 818 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 104 642 tgl 15 0 empty empty train 17 7 0 12 -262144 -1 -1 0
 1;
 #X obj 183 642 spigot;
@@ -730,8 +730,8 @@ similarity_matrix attribute_info, f 97;
 We'll use the first 25 BFCCs., f 31;
 #X msg 400 189 write ./data/feature-db.timid;
 #X msg 436 214 read ./data/feature-db.timid;
-#X obj 39 785 declare -lib timbreID/timbreIDLib;
-#X text 39 759 June 2021;
+#X obj 39 785 declare -lib timbreIDLib;
+#X text 39 759 June 2022;
 #X text 608 120 Many more details inside >>;
 #X text 456 256 Perform hierarchical clustering to find a given number
 of clusters (e.g. \, instruments). See the [pd arcane-parameters] subpatch

@@ -1,5 +1,5 @@
 #N canvas 228 104 937 526 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 137 171 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
@@ -42,7 +42,7 @@ sample value in the most recent N-sample window of audio.;
 so there is no need for [block~]. You can set the window size with
 a creation argument \, or change it with the "window" message. Window
 size is not required to be a power of two.;
-#X obj 659 495 declare -lib timbreID/timbreIDLib;
+#X obj 659 495 declare -lib timbreIDLib;
 #X connect 0 0 17 0;
 #X connect 1 0 12 0;
 #X connect 4 0 17 0;

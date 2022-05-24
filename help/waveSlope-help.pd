@@ -1,5 +1,5 @@
 #N canvas 279 191 884 737 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 51 289 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -113,7 +113,7 @@ slope in general., f 33;
 erratic slope reports that constantly change between positive and negative
 values. A basic amplitude threshold before analysis can be used to
 filter this information out if it's not needed.;
-#X obj 625 695 declare -lib timbreID/timbreIDLib;
+#X obj 625 695 declare -lib timbreIDLib;
 #X connect 0 0 17 0;
 #X connect 9 0 12 0;
 #X connect 10 0 17 0;

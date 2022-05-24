@@ -1,5 +1,5 @@
 #N canvas 306 81 952 583 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -109,7 +109,7 @@ filterbank.;
 #X connect 4 0 5 0;
 #X connect 7 0 3 0;
 #X restore 57 437 pd plotting;
-#X obj 57 535 declare -lib timbreID/timbreIDLib;
+#X obj 57 535 declare -lib timbreIDLib;
 #X connect 0 0 15 0;
 #X connect 2 0 14 0;
 #X connect 5 0 15 0;

@@ -1,5 +1,5 @@
 #N canvas 134 174 957 589 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -112,7 +112,7 @@ most recent analysis window as two lists: one containing the real components
 \, and the other containing the imaginary components. The length of
 these lists will be one half of the specified window size plus one
 (N/2+1).;
-#X obj 33 549 declare -lib timbreID/timbreIDLib;
+#X obj 33 549 declare -lib timbreIDLib;
 #X text 32 507 Updated for timbreIDLib version 0.8.0;
 #X text 32 527 June 2019;
 #X connect 0 0 16 0;

@@ -1,5 +1,5 @@
 #N canvas 280 111 957 589 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 108 142 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -86,7 +86,7 @@ changing the frequency of the oscillator at left by bin number. Note
 the unique phase spectrum that occurs at the Nyquist bin. Also note
 that the choice of window (Blackman \, Hann \, etc) has a big impact
 on phase information.;
-#X obj 41 555 declare -lib timbreID/timbreIDLib;
+#X obj 41 555 declare -lib timbreIDLib;
 #X connect 0 0 24 0;
 #X connect 2 0 19 0;
 #X connect 5 0 24 0;

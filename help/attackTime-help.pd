@@ -1,5 +1,5 @@
 #N canvas 129 96 927 680 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 59 612 nbx 5 32 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 32
 -262144 -1 -1 1.15646 256;
 #X msg 155 291 analyze \$1 1024;
@@ -155,7 +155,7 @@ time in general.;
 #X text 297 557 Outlet 1: attack time in milliseconds;
 #X text 297 577 Outlet 2: attack onset starting sample index;
 #X text 297 597 Outlet 3: attack onset peak sample index;
-#X obj 705 639 declare -lib timbreID/timbreIDLib;
+#X obj 705 639 declare -lib timbreIDLib;
 #X msg 59 133 analyze 27264 2000;
 #X text 58 43 Analyze a window starting at sample 27264 that is 2000
 samples long (samples 27264 - 28363). [attackTime] assumes that the

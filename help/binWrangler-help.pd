@@ -1,5 +1,5 @@
 #N canvas 233 93 762 662 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X msg 124 266 clear;
 #X msg 150 322 length 7;
 #X text 304 556 To clear memory \, send the "clear" message. Note that
@@ -54,7 +54,7 @@ memory. To see this behavior \, click the "Analyze" toggle at left
 (DSP must be on). It automatically shuts off after 5 frames of analysis
 are taken.;
 #X text 24 607 July 2017;
-#X obj 26 629 declare -lib timbreID/timbreIDLib;
+#X obj 26 629 declare -lib timbreIDLib;
 #X obj 52 550 featureNorm;
 #X obj 52 530 featureDelta;
 #X connect 0 0 22 0;

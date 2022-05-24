@@ -1,5 +1,5 @@
 #N canvas 187 83 874 631 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 50 310 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -101,7 +101,7 @@ discrete cosine transform in general., f 33;
 #X obj 50 546 dct \$0-sample;
 #X text 92 344 Analyze a window starting at sample 44100 that is 2000
 samples long (samples 44100 - 46099).;
-#X obj 608 593 declare -lib timbreID/timbreIDLib;
+#X obj 608 593 declare -lib timbreIDLib;
 #X connect 0 0 21 0;
 #X connect 5 0 21 0;
 #X connect 10 0 21 0;

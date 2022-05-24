@@ -1,5 +1,5 @@
 #N canvas 280 81 879 483 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 119 162 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X floatatom 70 414 10 0 0 0 - - -;
@@ -57,7 +57,7 @@ two.;
 #X text 210 361 Creation argument is window size in samples;
 #X msg 135 233 window 2000;
 #X text 616 426 July 2017;
-#X obj 617 447 declare -lib timbreID/timbreIDLib;
+#X obj 617 447 declare -lib timbreIDLib;
 #X connect 0 0 6 0;
 #X connect 3 0 6 0;
 #X connect 4 0 3 0;

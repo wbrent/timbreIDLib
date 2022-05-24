@@ -1,5 +1,5 @@
 #N canvas 238 232 810 471 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-table-1 32 float 1;
 #A 0 -0.900007 -0.207146 -0.0857167 -0.00476378 0.0761891 -0.4 -0.385714
@@ -1112,9 +1112,9 @@ is reported at the left outlet., f 43;
 #X connect 24 0 27 0;
 #X connect 24 1 25 0;
 #X restore 202 363 pd analysis;
-#X obj 551 435 declare -lib timbreID/timbreIDLib;
+#X obj 551 435 declare -lib timbreIDLib;
 #X text 550 392 Updated for timbreIDLib version 0.9.0;
-#X text 550 412 June 2021;
+#X text 550 412 June 2022;
 #X connect 14 0 15 0;
 #X connect 15 0 13 0;
 #X connect 15 1 12 0;

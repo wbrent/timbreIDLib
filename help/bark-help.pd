@@ -1,5 +1,5 @@
 #N canvas 323 81 815 754 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #N canvas 280 230 729 390 init 0;
 #X msg 32 174 \; pd dsp 1 \;;
 #X obj 69 27 loadbang;
@@ -378,7 +378,7 @@ have the [tabletool] external \, you can get the peak value with the
 #X obj 43 341 bark \$0-sample 2048 128 0.5;
 #X obj 117 308 r \$0-bark;
 #X text 536 688 July 2017;
-#X obj 594 720 declare -lib timbreID/timbreIDLib;
+#X obj 594 720 declare -lib timbreIDLib;
 #X connect 2 0 23 0;
 #X connect 3 0 23 0;
 #X connect 7 0 23 0;

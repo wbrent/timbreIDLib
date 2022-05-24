@@ -1,5 +1,5 @@
 #N canvas 201 144 830 725 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-bark-output 50 float 0;
 #X coords 0 10 49 0 200 140 1 0 0;
@@ -211,7 +211,7 @@ band of the filterbank, f 39;
 #X text 51 627 Outlet 2: total energy growth;
 #X text 51 647 Outlet 3: growth list per Bark band;
 #X text 568 41 July 2017;
-#X obj 569 67 declare -lib timbreID/timbreIDLib;
+#X obj 569 67 declare -lib timbreIDLib;
 #X connect 1 0 27 0;
 #X connect 8 0 2 0;
 #X connect 8 1 4 0;

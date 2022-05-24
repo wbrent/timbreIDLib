@@ -1,5 +1,5 @@
 #N canvas 292 117 907 620 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 88 243 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X text 150 274 Bang repeatedly...;
@@ -94,7 +94,7 @@ at left \, you can get a sense of the range of values. Setting the
 cutoff halfway up the Bark scale (about 12 Barks) results in a skewness
 near zero \, because the filtered result has a very flat Bark spectrum.
 ;
-#X obj 637 575 declare -lib timbreID/timbreIDLib;
+#X obj 637 575 declare -lib timbreIDLib;
 #X connect 0 0 20 0;
 #X connect 2 0 19 0;
 #X connect 6 0 20 0;

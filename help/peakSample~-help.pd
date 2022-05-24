@@ -1,5 +1,5 @@
 #N canvas 222 104 938 528 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 137 171 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
@@ -39,8 +39,8 @@ can set the window size with a creation argument \, or change it with
 the "window" message. Window size is not required to be a power of
 two.;
 #X text 105 115 Bang to output peak sample value and location;
-#X obj 663 489 declare -lib timbreID/timbreIDLib;
-#X text 662 467 June 2021;
+#X obj 663 489 declare -lib timbreIDLib;
+#X text 662 467 June 2022;
 #X text 662 447 Updated for timbreIDLib version 0.9.0;
 #X text 481 74 [peakSample~] reports the value and index of the sample
 with the largest magnitude in the most recent N-sample window of audio.

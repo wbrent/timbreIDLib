@@ -1,5 +1,5 @@
 #N canvas 202 178 1047 716 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X floatatom 50 574 10 0 0 0 - - -;
 #X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
 0;
@@ -252,7 +252,7 @@ either a very harmonic sawtooth signal \, or a signal concocted to
 be inharmonic. The "input_fund" feature is disabled by default \, but
 you can enable it to use pitch tracking output from [sigmund~].;
 #X obj 67 266 *~ 0.05;
-#X obj 787 682 declare -lib timbreID/timbreIDLib;
+#X obj 787 682 declare -lib timbreIDLib;
 #X connect 3 0 23 0;
 #X connect 10 0 22 0;
 #X connect 11 0 10 1;

@@ -1,5 +1,5 @@
 #N canvas 252 172 988 678 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 137 171 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
@@ -95,7 +95,7 @@ choose to set a threshold for recognizing pitch peaks via the "thresh"
 message. If no peaks exceed the threshold \, [cepstrumPitch~] outputs
 -1500 like [sigmund~]'s "pitch" function. The only output is pitch
 in MIDI units.;
-#X obj 678 641 declare -lib timbreID/timbreIDLib;
+#X obj 678 641 declare -lib timbreIDLib;
 #X connect 0 0 9 0;
 #X connect 1 0 19 0;
 #X connect 4 0 9 0;

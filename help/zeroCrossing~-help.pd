@@ -1,5 +1,5 @@
 #N canvas 185 144 904 483 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 119 162 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X floatatom 70 414 10 0 0 0 - - -;
@@ -54,8 +54,8 @@ to use a basic amplitude threshold before measuring crossings.;
 so there is no need for [block~]. You can set the window size with
 a creation argument \, or change it with the "window" message. Window
 size is not required to be a power of two.;
-#X obj 637 445 declare -lib timbreID/timbreIDLib;
-#X text 636 422 June 2021;
+#X obj 637 445 declare -lib timbreIDLib;
+#X text 636 422 June 2022;
 #X text 636 402 Updated for timbreIDLib version 0.9.0;
 #X connect 0 0 18 0;
 #X connect 3 0 18 0;

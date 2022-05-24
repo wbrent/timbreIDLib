@@ -1,5 +1,5 @@
 #N canvas 280 81 886 483 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 119 201 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X floatatom 50 433 10 0 0 0 - - -;
@@ -72,7 +72,7 @@ the envelope tapers to 0 toward the low frequencies. By filtering white
 noise with either a low- or high-pass filter at left \, you can get
 a sense of the range of values. Unfiltered white noise will have a
 skew value near zero.;
-#X obj 628 445 declare -lib timbreID/timbreIDLib;
+#X obj 628 445 declare -lib timbreIDLib;
 #X connect 0 0 16 0;
 #X connect 4 0 16 0;
 #X connect 10 0 16 0;

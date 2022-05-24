@@ -1,5 +1,5 @@
 #N canvas 311 132 939 547 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 143 128 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X text 178 163 Change window size.;
@@ -91,7 +91,7 @@ the Bark spectrum band of the filterbank being used \, and results
 depend on filterbank spacing.;
 #X text 140 110 Bang to output rolloff;
 #X text 681 496 July 2017;
-#X obj 682 517 declare -lib timbreID/timbreIDLib;
+#X obj 682 517 declare -lib timbreIDLib;
 #X connect 0 0 15 0;
 #X connect 2 0 15 0;
 #X connect 3 0 2 1;

@@ -1,5 +1,5 @@
 #N canvas 225 139 1068 637 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
 0;
 #X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
@@ -93,7 +93,7 @@ release.;
 so there is no need for [block~]. You can set the window size with
 a creation argument \, or change it with the "window" message. Window
 size is not required to be a power of two.;
-#X obj 766 601 declare -lib timbreID/timbreIDLib;
+#X obj 766 601 declare -lib timbreIDLib;
 #X connect 2 0 22 0;
 #X connect 4 0 22 0;
 #X connect 6 0 16 0;

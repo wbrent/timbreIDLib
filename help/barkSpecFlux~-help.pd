@@ -1,5 +1,5 @@
 #N canvas 165 136 1150 681 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 165 155 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 849 514 timbreID;
@@ -154,8 +154,8 @@ from window to window.;
 #X text 371 421 Change modes to report flux \, spectral growth only
 \, or spectral decay only. This affects the output of both outlets
 , f 34;
-#X obj 890 654 declare -lib timbreID/timbreIDLib;
-#X text 889 631 June 2021;
+#X obj 890 654 declare -lib timbreIDLib;
+#X text 889 631 June 2022;
 #X text 889 611 Updated for timbreIDLib version 0.9.0;
 #N canvas 603 273 983 497 attack-detection 0;
 #X obj 33 399 select 1;

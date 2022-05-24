@@ -1,5 +1,5 @@
 #N canvas 213 81 923 675 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 59 74 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X text 80 74 Bang to analyze the entire array.;
@@ -72,7 +72,7 @@ delta in general.;
 analysis window, f 31;
 #X obj 646 91 minSampleDelta~;
 #X obj 59 483 minSampleDelta \$0-sample;
-#X obj 653 629 declare -lib timbreID/timbreIDLib;
+#X obj 653 629 declare -lib timbreIDLib;
 #X connect 0 0 23 0;
 #X connect 3 0 9 0;
 #X connect 6 0 23 0;

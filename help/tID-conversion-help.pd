@@ -1,5 +1,5 @@
 #N canvas 249 138 1011 507 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X floatatom 83 230 10 0 0 0 - - -;
 #X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
 0;
@@ -30,7 +30,7 @@ the timbreID library that Bark- and mel-based objects use.;
 #X text 723 451 August 2018;
 #X text 81 369 Frequency is calculated as bin*R/N \, and bin number
 is calculated as freq*N/R (not rounded), f 43;
-#X obj 724 474 declare -lib timbreID/timbreIDLib;
+#X obj 724 474 declare -lib timbreIDLib;
 #X connect 0 0 20 0;
 #X connect 3 0 19 1;
 #X connect 3 0 20 1;

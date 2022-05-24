@@ -1,5 +1,5 @@
 #N canvas 324 262 941 529 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 159 155 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 569 319 timbreID;
@@ -84,7 +84,7 @@ with equal energy across all Bark bands will have a high flatness value
 #X text 156 134 bang to output flatness;
 #X text 191 197 Change window size;
 #X text 650 473 July 2017;
-#X obj 651 494 declare -lib timbreID/timbreIDLib;
+#X obj 651 494 declare -lib timbreIDLib;
 #X connect 0 0 11 0;
 #X connect 2 0 5 0;
 #X connect 3 0 11 0;

@@ -1,5 +1,5 @@
 #N canvas 214 81 950 631 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-magSpec-graph 129 float 0;
 #X coords 0 0.5 128 0 200 140 1 0 0;
@@ -109,7 +109,7 @@ two.;
 #X obj 64 55 adc~;
 #X obj 64 417 specSlope~ 256;
 #X text 680 572 July 2017;
-#X obj 681 596 declare -lib timbreID/timbreIDLib;
+#X obj 681 596 declare -lib timbreIDLib;
 #X connect 4 0 23 0;
 #X connect 7 0 23 0;
 #X connect 8 0 13 0;

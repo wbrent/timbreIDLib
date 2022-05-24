@@ -57,9 +57,9 @@ static void magSpec_resizeWindow(t_magSpec *x, t_sampIdx oldWindow, t_sampIdx wi
         post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
 
         // TODO: this re-assignment of endSamp isn't necessary since the new window size that triggered a call to this function already took the new window size and end of the array into account
-//        *endSamp = startSamp + window-1;
-//        if(*endSamp >= x->x_arrayPoints)
-//            *endSamp = x->x_arrayPoints-1;
+       *endSamp = startSamp + window-1;
+       if(*endSamp >= x->x_arrayPoints)
+           *endSamp = x->x_arrayPoints-1;
     }
 
     // hang on to these values for next time

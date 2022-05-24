@@ -1,5 +1,5 @@
 #N canvas 308 136 907 481 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 143 127 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X floatatom 107 403 10 0 0 0 - - -;
@@ -64,7 +64,7 @@ two.;
 a boundary frequency to determine the ratio of high spectral content.
 , f 47;
 #X text 645 423 July 2017;
-#X obj 647 445 declare -lib timbreID/timbreIDLib;
+#X obj 647 445 declare -lib timbreIDLib;
 #X connect 0 0 11 0;
 #X connect 3 0 11 0;
 #X connect 4 0 3 1;

@@ -1,5 +1,5 @@
 #N canvas 165 145 1058 671 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X floatatom 71 484 10 0 0 1 ms - -;
 #X obj 5 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
 0;
@@ -204,9 +204,9 @@ appropriate for measuring sound events that are separated by near silence.
 so there is no need for [block~]. You can set the window size with
 a creation argument \, or change it with the "window" message. Window
 size is not required to be a power of two.;
-#X obj 21 635 declare -lib timbreID/timbreIDLib;
+#X obj 21 635 declare -lib timbreIDLib;
 #X text 787 596 Updated for timbreIDLib version 0.9.0;
-#X text 787 616 June 2021;
+#X text 787 616 June 2022;
 #X text 596 24 When [attackTime~] receives a bang \, it locates the
 peak sample in the current analysis window \, and searches back through
 its internal buffer to find the attack onset (defined as the point

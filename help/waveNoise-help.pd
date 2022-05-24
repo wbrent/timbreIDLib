@@ -1,5 +1,5 @@
 #N canvas 196 163 978 604 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 59 74 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X text 80 74 Bang to analyze the entire array.;
@@ -63,13 +63,13 @@ produce lots of direction changes. Use a basic amplitude threshold
 before measuring to filter out this information out if it's not needed.
 ;
 #X msg 155 291 analyze \$1 128;
-#X obj 721 571 declare -lib timbreID/timbreIDLib;
+#X obj 721 571 declare -lib timbreIDLib;
 #X obj 704 85 waveNoise~;
 #X text 514 59 See the real-time version for more information on waveform
 noisiness in general.;
 #X obj 59 483 waveNoise \$0-sample;
 #X text 720 527 Updated for timbreIDLib version 0.9.0;
-#X text 720 547 June 2021;
+#X text 720 547 June 2022;
 #X connect 0 0 18 0;
 #X connect 3 0 9 0;
 #X connect 6 0 18 0;

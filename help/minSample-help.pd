@@ -1,5 +1,5 @@
 #N canvas 240 65 915 635 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 59 74 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X text 80 74 Bang to analyze the entire array.;
@@ -71,7 +71,7 @@ samples long (samples 44100 - 46099), f 48;
 window, f 32;
 #X msg 269 582 \; \$2-waveform xlabel -1 \$1 \;;
 #X obj 269 562 pack f \$0;
-#X obj 653 567 declare -lib timbreID/timbreIDLib;
+#X obj 653 567 declare -lib timbreIDLib;
 #X connect 0 0 19 0;
 #X connect 3 0 19 0;
 #X connect 4 0 10 0;

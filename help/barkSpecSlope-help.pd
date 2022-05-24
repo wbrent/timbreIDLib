@@ -1,5 +1,5 @@
 #N canvas 244 81 884 737 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 51 289 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -205,7 +205,7 @@ of this list will change depending on filterbank spacing., f 30;
 #X connect 8 0 4 0;
 #X connect 13 0 2 0;
 #X restore 226 530 pd chain_messages;
-#X obj 651 705 declare -lib timbreID/timbreIDLib;
+#X obj 651 705 declare -lib timbreIDLib;
 #X connect 0 0 21 0;
 #X connect 10 0 13 0;
 #X connect 11 0 21 0;

@@ -1,5 +1,5 @@
 #N canvas 208 81 948 568 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 133 147 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X floatatom 55 503 10 0 0 0 - - -;
@@ -70,7 +70,7 @@ here \, 65% of the spectral energy for the low pass filtered noise
 is below the reported bin frequency.;
 #X text 657 510 July 2017;
 #X obj 55 457 specRolloff~ 1024 0.65;
-#X obj 658 535 declare -lib timbreID/timbreIDLib;
+#X obj 658 535 declare -lib timbreIDLib;
 #X connect 0 0 25 0;
 #X connect 2 0 13 0;
 #X connect 5 0 25 0;

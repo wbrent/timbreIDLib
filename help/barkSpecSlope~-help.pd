@@ -1,5 +1,5 @@
 #N canvas 225 139 924 631 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-barkSpec-graph 50 float 0;
 #X coords 0 0.5 49 0 200 140 1 0 0;
@@ -130,7 +130,7 @@ you can see the Bark spectrum alonside its slope. When barkSpecSlope~
 receives a bang \, it spits out the Bark spectrum slope for the most
 recent analysis window.;
 #X text 680 578 July 2017;
-#X obj 682 599 declare -lib timbreID/timbreIDLib;
+#X obj 682 599 declare -lib timbreIDLib;
 #X connect 3 0 6 0;
 #X connect 5 0 9 0;
 #X connect 7 0 3 0;

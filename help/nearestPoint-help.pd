@@ -1,5 +1,5 @@
 #N canvas 426 178 675 604 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 266 340 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #N canvas 736 161 304 400 random-point 0;
@@ -56,7 +56,7 @@ the right inlet to see which point in the set is nearest.;
 #X text 42 41 This object exists in order to enable the timbreID timbre-space
 example patches \, but it's bound to be useful in other situations
 too.;
-#X obj 412 569 declare -lib timbreID/timbreIDLib;
+#X obj 412 569 declare -lib timbreIDLib;
 #X connect 0 0 1 0;
 #X connect 1 0 8 1;
 #X connect 3 0 8 0;

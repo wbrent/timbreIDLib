@@ -1,5 +1,5 @@
 #N canvas 268 138 901 476 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X floatatom 496 234 10 0 0 0 - - -;
 #X msg 496 143 927.55 819.1 527.85 497.31 303.98;
 #X text 39 131 Suppose you take 32 spectral centroid measurements over
@@ -33,6 +33,6 @@ the spectro-temporal characteristics of sounds with different durations.
 #X obj 605 301 tID_std;
 #X text 632 396 Updated for timbreIDLib version 0.7;
 #X text 632 416 July 2017;
-#X obj 633 440 declare -lib timbreID/timbreIDLib;
+#X obj 633 440 declare -lib timbreIDLib;
 #X connect 1 0 9 0;
 #X connect 9 0 0 0;

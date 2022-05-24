@@ -1,5 +1,5 @@
 #N canvas 185 144 904 483 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X floatatom 70 414 10 0 0 0 - - -;
 #X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
 0;
@@ -49,8 +49,8 @@ for classification \, see the timbreID helpfile:;
 so there is no need for [block~]. You can set the window size with
 a creation argument \, or change it with the "window" message. Window
 size is not required to be a power of two.;
-#X obj 637 445 declare -lib timbreID/timbreIDLib;
-#X text 636 422 June 2021;
+#X obj 637 445 declare -lib timbreIDLib;
+#X text 636 422 June 2022;
 #X text 636 402 Updated for timbreIDLib version 0.9.0;
 #X obj 70 361 energy~ 1024;
 #X obj 70 111 *~;

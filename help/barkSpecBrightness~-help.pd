@@ -1,5 +1,5 @@
 #N canvas 314 128 904 547 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 143 128 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X text 178 163 Change window size.;
@@ -87,7 +87,7 @@ The third creation argument sets the boundary point in Barks.;
 order to identify timbres in real time. For more on using audio features
 for classification \, see the timbreID helpfile:;
 #X text 651 486 July 2017;
-#X obj 653 511 declare -lib timbreID/timbreIDLib;
+#X obj 653 511 declare -lib timbreIDLib;
 #X connect 0 0 13 0;
 #X connect 2 0 13 0;
 #X connect 3 0 2 1;

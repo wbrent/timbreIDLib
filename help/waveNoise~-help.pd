@@ -1,5 +1,5 @@
 #N canvas 248 204 1010 651 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X floatatom 110 504 10 0 0 0 - - -;
 #X text 253 286 Change window size.;
 #X obj 110 111 +~;
@@ -50,8 +50,8 @@ for classification \, see the timbreID helpfile:, f 28;
 so there is no need for [block~]. You can set the window size with
 a creation argument \, or change it with the "window" message. Window
 size is not required to be a power of two.;
-#X obj 757 585 declare -lib timbreID/timbreIDLib;
-#X text 755 561 June 2021;
+#X obj 757 585 declare -lib timbreIDLib;
+#X text 755 561 June 2022;
 #X text 755 541 Updated for timbreIDLib version 0.9.0;
 #X text 515 24 Similar to zero crossing \, another time-domain measure
 of noisiness is the number of times a signal changes direction \, regardless

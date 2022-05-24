@@ -1,5 +1,5 @@
 #N canvas 333 81 957 589 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -88,7 +88,7 @@ the magnitude spectrum for the most recent analysis window as a list.
 The length of the magnitude spectrum list will be one half of the specified
 window size plus one (N/2+1). magSpec~'s output is normalized to be
 between 0 and 1 by default.;
-#X obj 33 549 declare -lib timbreID/timbreIDLib;
+#X obj 33 549 declare -lib timbreIDLib;
 #X connect 0 0 15 0;
 #X connect 2 0 13 0;
 #X connect 5 0 15 0;

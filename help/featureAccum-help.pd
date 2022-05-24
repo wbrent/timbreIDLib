@@ -1,5 +1,5 @@
 #N canvas 183 84 842 705 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X msg 149 288 clear;
 #X text 382 482 To clear memory \, send the "clear" message. Note that
 changing the expected list length with the "length" message automatically
@@ -88,7 +88,7 @@ buffer for time-based feature capture.;
 mode argument ("concat" \, "sum" \, "mean" \, or "sma"). For backwards
 compatibility \, the default mode is "concat" \, as [featureAccum]
 did not have other modes before timbreID version 0.7.6.;
-#X obj 597 677 declare -lib timbreID/timbreIDLib;
+#X obj 597 677 declare -lib timbreIDLib;
 #X obj 130 623 featureNorm;
 #X text 382 274 [featureAccum] accumulates a database of lists sent
 to its inlet. Its purpose in the timbreID library is to take in several

@@ -1,5 +1,5 @@
 #N canvas 216 122 864 688 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 4 5 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
 0;
 #X obj 4 5 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
@@ -376,7 +376,7 @@ for more information on these and other important settings.;
 #X obj 126 326 r \$0-tempo-msg;
 #X obj 54 381 tempo~ 1024 128;
 #X text 620 629 August 2018;
-#X obj 621 652 declare -lib timbreID/timbreIDLib;
+#X obj 621 652 declare -lib timbreIDLib;
 #X connect 3 0 25 0;
 #X connect 4 0 25 0;
 #X connect 24 0 25 0;

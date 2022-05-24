@@ -1,5 +1,5 @@
 #N canvas 234 81 874 631 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 50 310 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -131,7 +131,7 @@ FFT in general., f 33;
 #X array \$0-fftDataImag-graph 513 float 0;
 #X coords 0 8 512 -8 200 140 1 0 0;
 #X restore 573 47 graph;
-#X obj 634 595 declare -lib timbreID/timbreIDLib;
+#X obj 634 595 declare -lib timbreIDLib;
 #X text 633 550 Updated for timbreIDLib version 0.8.0;
 #X text 633 570 June 2019;
 #X connect 0 0 18 0;

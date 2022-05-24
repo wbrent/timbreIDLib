@@ -1,5 +1,5 @@
 #N canvas 203 96 978 604 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 59 74 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X text 80 74 Bang to analyze the entire array.;
@@ -75,9 +75,9 @@ crossing rate in general.;
 produce lots of zero crossings. Use a basic amplitude threshold before
 measuring crossings to filter out this information out if it's not
 needed.;
-#X obj 703 565 declare -lib timbreID/timbreIDLib;
+#X obj 703 565 declare -lib timbreIDLib;
 #X text 702 520 Updated for timbreIDLib version 0.9.0;
-#X text 702 540 June 2021;
+#X text 702 540 June 2022;
 #X connect 0 0 14 0;
 #X connect 3 0 14 0;
 #X connect 4 0 10 0;

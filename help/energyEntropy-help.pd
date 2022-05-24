@@ -1,5 +1,5 @@
 #N canvas 421 245 978 604 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 59 74 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
 #X text 80 74 Bang to analyze the entire array.;
@@ -64,9 +64,9 @@ windows, f 65;
 #X text 107 143 Analyze a window starting at sample 44100 that is 2000
 samples long (samples 44100 - 46099), f 48;
 #X msg 98 123 analyze 44100 2000;
-#X obj 703 565 declare -lib timbreID/timbreIDLib;
+#X obj 703 565 declare -lib timbreIDLib;
 #X text 702 520 Updated for timbreIDLib version 0.9.0;
-#X text 702 540 June 2021;
+#X text 702 540 June 2022;
 #X text 299 461 Creation arguments are the name of the sample array
 to read from \, sub-window size (samples) \, and number of sub-windows
 per mid-term window., f 33;

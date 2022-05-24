@@ -1,5 +1,5 @@
 #N canvas 213 81 952 595 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 58 73 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X text 79 73 Bang to analyze the entire array.;
@@ -134,7 +134,7 @@ calculations.;
 #X connect 7 0 2 0;
 #X connect 8 0 4 0;
 #X restore 236 342 pd chain_messages;
-#X obj 662 565 declare -lib timbreID/timbreIDLib;
+#X obj 662 565 declare -lib timbreIDLib;
 #X connect 0 0 13 0;
 #X connect 4 0 13 0;
 #X connect 5 0 12 0;

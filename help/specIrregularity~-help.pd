@@ -1,5 +1,5 @@
 #N canvas 290 99 982 581 10;
-#X declare -lib timbreID/timbreIDLib;
+#X declare -lib timbreIDLib;
 #X obj 143 197 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X floatatom 56 523 10 0 0 0 - - -;
@@ -82,7 +82,7 @@ contoured spectra \, it will be low. In 2005 \, McAdams et. al identified
 this measure as important to timbre perception. At left \, the irregularity
 of a sawtooth wave (with a spiky spectrum) is much more than low-pass
 filtered noise.;
-#X obj 706 547 declare -lib timbreID/timbreIDLib;
+#X obj 706 547 declare -lib timbreIDLib;
 #X connect 0 0 26 0;
 #X connect 4 0 26 0;
 #X connect 8 0 26 0;
