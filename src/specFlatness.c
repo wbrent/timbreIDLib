@@ -49,11 +49,11 @@ static void specFlatness_resizeWindow(t_specFlatness *x, t_sampIdx oldWindow, t_
     windowHalf = window * 0.5;
     oldWindowHalf = oldWindow*0.5;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
+        window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
         *endSamp = startSamp + window-1;
         if(*endSamp >= x->x_arrayPoints)
@@ -337,8 +337,8 @@ static void specFlatness_print(t_specFlatness *x)
 
 static void specFlatness_samplerate(t_specFlatness *x, t_floatarg sr)
 {
-    if(sr<MINSAMPLERATE)
-        x->x_sr = MINSAMPLERATE;
+    if(sr<TID_MINSAMPLERATE)
+        x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 }
@@ -438,8 +438,8 @@ static void *specFlatness_new(t_symbol *s, int argc, t_atom *argv)
             break;
     }
 
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_window = TID_WINDOWSIZEDEFAULT;
     x->x_windowHalf = x->x_window*0.5;
     x->x_windowFunction = blackman;
     x->x_powerSpectrum = false;

@@ -14,7 +14,6 @@ You should have received a copy of the GNU General Public License along with thi
 */
 
 #include "tIDLib.h"
-#define DEFAULTBOUND 1200.0
 
 static t_class *specBrightness_tilde_class;
 
@@ -156,10 +155,10 @@ static void specBrightness_tilde_window(t_specBrightness_tilde *x, t_floatarg w)
 
     window = w;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        window = TID_WINDOWSIZEDEFAULT;
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
 
     windowHalf = window*0.5;
@@ -274,56 +273,56 @@ static void *specBrightness_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_objSymbol = s;
 
     // need samplerate in the switch() below, so assigning that here
-    x->x_sr = SAMPLERATEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
 
     switch(argc)
     {
         case 2:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             x->x_freqBoundary = atom_getfloat(argv+1);
             if(x->x_freqBoundary<0)
             {
-                post("%s boundary frequency must be a positive real number and less than Nyquist. Using default boundary of %0.2f Hz instead.", x->x_objSymbol->s_name, DEFAULTBOUND);
-                x->x_freqBoundary = DEFAULTBOUND;
+                post("%s boundary frequency must be a positive real number and less than Nyquist. Using default boundary of %0.2f Hz instead.", x->x_objSymbol->s_name, TID_SPECBRIGHTNESS_DEFAULTBOUND);
+                x->x_freqBoundary = TID_SPECBRIGHTNESS_DEFAULTBOUND;
             }
             else if(x->x_freqBoundary>(x->x_sr*0.5))
             {
-                post("%s boundary frequency must be a positive real number and less than Nyquist. Using default boundary of %0.2f Hz instead.", x->x_objSymbol->s_name, DEFAULTBOUND);
-                x->x_freqBoundary = DEFAULTBOUND;
+                post("%s boundary frequency must be a positive real number and less than Nyquist. Using default boundary of %0.2f Hz instead.", x->x_objSymbol->s_name, TID_SPECBRIGHTNESS_DEFAULTBOUND);
+                x->x_freqBoundary = TID_SPECBRIGHTNESS_DEFAULTBOUND;
             };
             break;
 
         case 1:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
-            x->x_freqBoundary = DEFAULTBOUND;
+            x->x_freqBoundary = TID_SPECBRIGHTNESS_DEFAULTBOUND;
             break;
 
         case 0:
-            x->x_window = WINDOWSIZEDEFAULT;
-            x->x_freqBoundary = DEFAULTBOUND;
+            x->x_window = TID_WINDOWSIZEDEFAULT;
+            x->x_freqBoundary = TID_SPECBRIGHTNESS_DEFAULTBOUND;
             break;
 
         default:
-            post("%s WARNING: Too many arguments supplied. Using default window size of %i and boundary of %0.2f Hz.", x->x_objSymbol->s_name, WINDOWSIZEDEFAULT, DEFAULTBOUND);
-            x->x_window = WINDOWSIZEDEFAULT;
-            x->x_freqBoundary = DEFAULTBOUND;
+            post("%s WARNING: Too many arguments supplied. Using default window size of %i and boundary of %0.2f Hz.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, TID_SPECBRIGHTNESS_DEFAULTBOUND);
+            x->x_window = TID_WINDOWSIZEDEFAULT;
+            x->x_freqBoundary = TID_SPECBRIGHTNESS_DEFAULTBOUND;
             break;
     }
 
     x->x_windowHalf = x->x_window*0.5;
-    x->x_n = BLOCKSIZEDEFAULT;
+    x->x_n = TID_BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
     x->x_windowFunction = blackman;
     x->x_powerSpectrum = false;

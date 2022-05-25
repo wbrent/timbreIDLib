@@ -212,10 +212,10 @@ static void cepstrumPitch_tilde_window(t_cepstrumPitch_tilde *x, t_floatarg w)
 
     window = w;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        window = TID_WINDOWSIZEDEFAULT;
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
 
     windowHalf = window*0.5;
@@ -386,10 +386,10 @@ static void *cepstrumPitch_tilde_new(t_symbol *s, int argc, t_atom *argv)
     {
         case 3:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
             x->x_loFreq = atom_getfloat(argv+1);
             x->x_hiFreq = atom_getfloat(argv+2);
@@ -403,10 +403,10 @@ static void *cepstrumPitch_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
         case 2:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
             x->x_loFreq = atom_getfloat(argv+1);
             x->x_hiFreq = x->x_loFreq+12; // if no upper limit specified, make it an octave higher
@@ -420,24 +420,24 @@ static void *cepstrumPitch_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
         case 1:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
             x->x_loFreq = 50;
             x->x_hiFreq = 500;
             break;
 
         case 0:
-            x->x_window = WINDOWSIZEDEFAULT;
+            x->x_window = TID_WINDOWSIZEDEFAULT;
             x->x_loFreq = 50;
             x->x_hiFreq = 500;
             break;
 
         default:
-            post("%s WARNING: Too many arguments supplied. Using default window size of %i.", x->x_objSymbol->s_name, WINDOWSIZEDEFAULT);
-            x->x_window = WINDOWSIZEDEFAULT;
+            post("%s WARNING: Too many arguments supplied. Using default window size of %i.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT);
+            x->x_window = TID_WINDOWSIZEDEFAULT;
             x->x_loFreq = 50;
             x->x_hiFreq = 500;
             break;
@@ -452,8 +452,8 @@ static void *cepstrumPitch_tilde_new(t_symbol *s, int argc, t_atom *argv)
     }
 
     x->x_windowHalf = x->x_window*0.5;
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_n = BLOCKSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_n = TID_BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
     x->x_windowFunction = rectangular;
     x->x_powerSpectrum = true;

@@ -203,10 +203,10 @@ static void chroma_tilde_window (t_chroma_tilde *x, t_floatarg w)
 
     window = w;
 
-    if (window < MINWINDOWSIZE)
+    if (window < TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
-        post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        window = TID_WINDOWSIZEDEFAULT;
+        post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
 
     windowHalf = window * 0.5;
@@ -458,10 +458,10 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
     {
         case 4:
             x->x_window = atom_getfloat (argv);
-            if (x->x_window < MINWINDOWSIZE)
+            if (x->x_window < TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
             x->x_loFreq = atom_getfloat(argv+1);
             x->x_hiFreq = atom_getfloat(argv+2);
@@ -470,10 +470,10 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
 
         case 3:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
             x->x_loFreq = atom_getfloat(argv+1);
             x->x_hiFreq = atom_getfloat(argv+2);
@@ -482,10 +482,10 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
 
         case 2:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
             x->x_loFreq = atom_getfloat(argv+1);
             x->x_hiFreq = 5000.0;
@@ -494,10 +494,10 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
 
         case 1:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
             x->x_loFreq = 50.0;
             x->x_hiFreq = 5000.0;
@@ -505,7 +505,7 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
             break;
 
         case 0:
-            x->x_window = WINDOWSIZEDEFAULT;
+            x->x_window = TID_WINDOWSIZEDEFAULT;
             x->x_loFreq = 50.0;
             x->x_hiFreq = 5000.0;
             x->x_pitchTolerance = 0.1;
@@ -513,10 +513,10 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
 
         default:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
             x->x_loFreq = atom_getfloat(argv+1);
             x->x_hiFreq = atom_getfloat(argv+2);
@@ -525,7 +525,7 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
             break;
     }
 
-    x->x_sr = SAMPLERATEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
 
     chroma_tilde_freqRange(x, x->x_loFreq, x->x_hiFreq);
 
@@ -534,7 +534,7 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
     x->x_energyThresh = 0.0;
 
     x->x_windowHalf = x->x_window*0.5;
-    x->x_n = BLOCKSIZEDEFAULT;
+    x->x_n = TID_BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
     x->x_windowFunction = blackman;
     x->x_normalize = false;
@@ -542,7 +542,7 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
     x->x_lastDspTime = clock_getlogicaltime();
 
     x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_window+x->x_n) * sizeof (t_sample));
-    x->x_binRanges = (t_binIdx *)t_getbytes (PBINRANGEBUFSIZE*sizeof (t_binIdx));
+    x->x_binRanges = (t_binIdx *)t_getbytes (TID_PBINRANGEBUFSIZE*sizeof (t_binIdx));
     x->x_fftwIn = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
     x->x_listOut = (t_atom *)t_getbytes (x->x_numChroma*sizeof (t_atom));
 
@@ -644,7 +644,7 @@ static void chroma_tilde_free (t_chroma_tilde *x)
     t_freebytes(x->x_pitchClasses, x->x_numChroma*sizeof (t_float));
 
     // free the bin ranges memory
-    t_freebytes(x->x_binRanges, PBINRANGEBUFSIZE*sizeof (t_binIdx));
+    t_freebytes(x->x_binRanges, TID_PBINRANGEBUFSIZE*sizeof (t_binIdx));
 
     // free FFTW stuff
     t_freebytes(x->x_fftwIn, (x->x_window)*sizeof (t_sample));

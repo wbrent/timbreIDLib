@@ -32,7 +32,7 @@ void timbreIDLib_setup (void)
 {
     timbreIDLib_class = class_new (gensym ("timbreIDLib"), timbreIDLib_new, 0, sizeof (t_timbreIDLib), CLASS_PD, 0);
 
-    post ("timbreID version %s", TIDVERSION);
+    post ("timbreIDLib version %s", TID_VERSION);
 
     attackTime_setup();
     attackTime_tilde_setup();

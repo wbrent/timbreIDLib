@@ -129,10 +129,10 @@ static void magSpec_tilde_window(t_magSpec_tilde *x, t_floatarg w)
 
     window = w;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        window = TID_WINDOWSIZEDEFAULT;
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
 
     windowHalf = window*0.5;
@@ -257,26 +257,26 @@ static void *magSpec_tilde_new(t_symbol *s, int argc, t_atom *argv)
     {
         case 1:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
             break;
 
         case 0:
-            x->x_window = WINDOWSIZEDEFAULT;
+            x->x_window = TID_WINDOWSIZEDEFAULT;
             break;
 
         default:
-            post("%s WARNING: Too many arguments supplied. Using default window size of %i.", x->x_objSymbol->s_name, WINDOWSIZEDEFAULT);
-            x->x_window = WINDOWSIZEDEFAULT;
+            post("%s WARNING: Too many arguments supplied. Using default window size of %i.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT);
+            x->x_window = TID_WINDOWSIZEDEFAULT;
             break;
     }
 
     x->x_windowHalf = x->x_window*0.5;
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_n = BLOCKSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_n = TID_BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
     x->x_windowFunction = blackman;
     x->x_normalize = true;

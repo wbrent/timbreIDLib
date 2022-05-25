@@ -34,7 +34,7 @@ static void freq2mel_calculate(t_freq2mel *x, t_float f)
 
     freq = f;
 
-    if(freq>=0.0 && freq<=MAXMELFREQ)
+    if(freq>=0.0 && freq<=TID_MAXMELFREQ)
     {
         t_float melFreq;
 
@@ -43,7 +43,7 @@ static void freq2mel_calculate(t_freq2mel *x, t_float f)
         outlet_float(x->x_melFreq, melFreq);
     }
     else
-        pd_error(x, "%s: frequency must be between 0 and %f Hz", x->x_objSymbol->s_name, MAXMELFREQ);
+        pd_error(x, "%s: frequency must be between 0 and %f Hz", x->x_objSymbol->s_name, TID_MAXMELFREQ);
 }
 
 static void *freq2mel_new(t_symbol *s, int argc, t_atom *argv)

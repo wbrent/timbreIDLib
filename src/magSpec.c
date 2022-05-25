@@ -50,11 +50,11 @@ static void magSpec_resizeWindow(t_magSpec *x, t_sampIdx oldWindow, t_sampIdx wi
     windowHalf = window * 0.5;
     oldWindowHalf = oldWindow*0.5;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
+        window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
         // TODO: this re-assignment of endSamp isn't necessary since the new window size that triggered a call to this function already took the new window size and end of the array into account
        *endSamp = startSamp + window-1;
@@ -256,8 +256,8 @@ static void magSpec_print(t_magSpec *x)
 
 static void magSpec_samplerate(t_magSpec *x, t_floatarg sr)
 {
-    if(sr<MINSAMPLERATE)
-        x->x_sr = MINSAMPLERATE;
+    if(sr<TID_MINSAMPLERATE)
+        x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 }
@@ -370,8 +370,8 @@ static void *magSpec_new(t_symbol *s, int argc, t_atom *argv)
             break;
     }
 
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_window = TID_WINDOWSIZEDEFAULT;
     x->x_windowHalf = x->x_window*0.5;
     x->x_windowFunction = blackman;
     x->x_normalize = true;

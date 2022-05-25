@@ -111,14 +111,14 @@ static void bark_tilde_create_loudness_weighting(t_bark_tilde *x)
         t_binIdx nearIdx;
         t_float nearFreq, diffFreq, diffdB, dBint;
 
-        nearIdx = tIDLib_nearestBinIndex(barkFreqs[i], bark_tilde_weights_freqs, NUMWEIGHTPOINTS);
+        nearIdx = tIDLib_nearestBinIndex(barkFreqs[i], bark_tilde_weights_freqs, TID_NUMWEIGHTPOINTS);
         nearFreq = bark_tilde_weights_freqs[nearIdx];
         diffdB = 0.0;
 
         // this doesn't have to be if/else'd into a greater/less situation.  later on i should write a more general interpolation solution, and maybe move it up to 4 points instead.
         if(barkFreqs[i]>nearFreq)
         {
-            if(nearIdx<=NUMWEIGHTPOINTS-2)
+            if(nearIdx<=TID_NUMWEIGHTPOINTS-2)
             {
                 diffFreq = (barkFreqs[i] - nearFreq)/(bark_tilde_weights_freqs[nearIdx+1] - nearFreq);
                 diffdB = diffFreq * (bark_tilde_weights_dB[nearIdx+1] - bark_tilde_weights_dB[nearIdx]);
@@ -420,10 +420,10 @@ static void *bark_tilde_new(t_symbol *s, int argc, t_atom *argv)
         case 3:
             x->x_window = atom_getfloat(argv);
 
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             x->x_hop = atom_getfloat(argv+1);
@@ -435,20 +435,20 @@ static void *bark_tilde_new(t_symbol *s, int argc, t_atom *argv)
             };
 
             x->x_barkSpacing = atom_getfloat(argv+2);
-            if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+            if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_TID_MAXBARKSPACING)
             {
-                x->x_barkSpacing = BARKSPACINGDEFAULT;
-                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+                x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
             break;
 
         case 2:
             x->x_window = atom_getfloat(argv);
 
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             x->x_hop = atom_getfloat(argv+1);
@@ -459,33 +459,33 @@ static void *bark_tilde_new(t_symbol *s, int argc, t_atom *argv)
                 post("%s WARNING: requested hop is less than 1 sample. Quarter of window size (%i samples) used instead.", x->x_objSymbol->s_name, x->x_hop);
             };
 
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
 
         case 1:
             x->x_window = atom_getfloat(argv);
 
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             x->x_hop = x->x_window*0.25;
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
 
         case 0:
-            x->x_window = WINDOWSIZEDEFAULT;
-            x->x_hop = WINDOWSIZEDEFAULT*0.25;
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            x->x_window = TID_WINDOWSIZEDEFAULT;
+            x->x_hop = TID_WINDOWSIZEDEFAULT*0.25;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
 
         default:
-            post("%s WARNING: Too many arguments supplied. Using default window size of %i, hop of %i, and Bark spacing of %f.", x->x_objSymbol->s_name, WINDOWSIZEDEFAULT, WINDOWSIZEDEFAULT*0.25, BARKSPACINGDEFAULT);
-            x->x_window = WINDOWSIZEDEFAULT;
-            x->x_hop = WINDOWSIZEDEFAULT*0.25;
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            post("%s WARNING: Too many arguments supplied. Using default window size of %i, hop of %i, and Bark spacing of %f.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, TID_WINDOWSIZEDEFAULT*0.25, TID_BARKSPACINGDEFAULT);
+            x->x_window = TID_WINDOWSIZEDEFAULT;
+            x->x_hop = TID_WINDOWSIZEDEFAULT*0.25;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
     }
 
@@ -493,8 +493,8 @@ static void *bark_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_debug = false;
     x->x_spew = false;
     x->x_overlap = 1;
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_n = BLOCKSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_n = TID_BLOCKSIZEDEFAULT;
     x->x_windowFunction = blackman;
     x->x_powerSpectrum = true;
     x->x_normalize = false;

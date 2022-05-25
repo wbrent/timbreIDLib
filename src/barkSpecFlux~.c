@@ -222,10 +222,10 @@ static void barkSpecFlux_tilde_createFilterbank(t_barkSpecFlux_tilde *x, t_float
 
     x->x_barkSpacing = bs;
 
-    if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+    if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_TID_MAXBARKSPACING)
     {
-        x->x_barkSpacing = BARKSPACINGDEFAULT;
-        post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+        x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+        post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
     }
 
     oldNumFilters = x->x_numFilters;
@@ -308,10 +308,10 @@ static void barkSpecFlux_tilde_window(t_barkSpecFlux_tilde *x, t_floatarg w)
 
     window = w;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        window = TID_WINDOWSIZEDEFAULT;
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
 
     if(x->x_separation > window)
@@ -511,17 +511,17 @@ static void *barkSpecFlux_tilde_new(t_symbol *s, int argc, t_atom *argv)
     {
         case 3:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             x->x_barkSpacing = atom_getfloat(argv+1);
-            if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+            if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_TID_MAXBARKSPACING)
             {
-                x->x_barkSpacing = BARKSPACINGDEFAULT;
-                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+                x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
 
             sepFloat = atom_getfloat(argv+2);
@@ -541,17 +541,17 @@ static void *barkSpecFlux_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
         case 2:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             x->x_barkSpacing = atom_getfloat(argv+1);
-            if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+            if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_TID_MAXBARKSPACING)
             {
-                x->x_barkSpacing = BARKSPACINGDEFAULT;
-                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+                x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
 
             x->x_separation = x->x_window*0.5;
@@ -559,34 +559,34 @@ static void *barkSpecFlux_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
         case 1:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
 
             x->x_separation = x->x_window*0.5;
             break;
 
         case 0:
-            x->x_window = WINDOWSIZEDEFAULT;
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            x->x_window = TID_WINDOWSIZEDEFAULT;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             x->x_separation = x->x_window*0.5;
             break;
 
         default:
-            post("%s WARNING: Too many arguments supplied. Using default window size of %i, Bark spacing of %f, and frame separation of %i.", x->x_objSymbol->s_name, WINDOWSIZEDEFAULT, BARKSPACINGDEFAULT, WINDOWSIZEDEFAULT*0.5);
-            x->x_window = WINDOWSIZEDEFAULT;
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            post("%s WARNING: Too many arguments supplied. Using default window size of %i, Bark spacing of %f, and frame separation of %i.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, TID_BARKSPACINGDEFAULT, TID_WINDOWSIZEDEFAULT*0.5);
+            x->x_window = TID_WINDOWSIZEDEFAULT;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             x->x_separation = x->x_window*0.5;
             break;
     }
 
     x->x_windowHalf = x->x_window*0.5;
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_n = BLOCKSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_n = TID_BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
     x->x_windowFunction = blackman;
     x->x_normalize = false;

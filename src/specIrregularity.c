@@ -14,7 +14,6 @@ You should have received a copy of the GNU General Public License along with thi
 */
 
 #include "tIDLib.h"
-#define DEFAULTALGO jensen
 
 static t_class *specIrregularity_class;
 
@@ -56,11 +55,11 @@ static void specIrregularity_resizeWindow(t_specIrregularity *x, t_sampIdx oldWi
 
     windowHalf = window * 0.5;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
+        window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
         *endSamp = startSamp + window-1;
         if(*endSamp >= x->x_arrayPoints)
@@ -420,8 +419,8 @@ static void specIrregularity_print(t_specIrregularity *x)
 
 static void specIrregularity_samplerate(t_specIrregularity *x, t_floatarg sr)
 {
-    if(sr<MINSAMPLERATE)
-        x->x_sr = MINSAMPLERATE;
+    if(sr<TID_MINSAMPLERATE)
+        x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 }
@@ -548,14 +547,14 @@ static void *specIrregularity_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_algorithm = DEFAULTALGO;
+            x->x_algorithm = TID_SPECIRREGULARITY_DEFAULTALGO;
             break;
 
         case 0:
             post("%s: no array specified.", x->x_objSymbol->s_name);
             // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym("NOARRAYSPECIFIED");
-            x->x_algorithm = DEFAULTALGO;
+            x->x_algorithm = TID_SPECIRREGULARITY_DEFAULTALGO;
             break;
 
         default:
@@ -567,12 +566,12 @@ static void *specIrregularity_new(t_symbol *s, int argc, t_atom *argv)
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             post("%s WARNING: Too many arguments supplied. Using Jensen algorithm.", x->x_objSymbol->s_name);
-            x->x_algorithm = DEFAULTALGO;
+            x->x_algorithm = TID_SPECIRREGULARITY_DEFAULTALGO;
             break;
     }
 
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_window = TID_WINDOWSIZEDEFAULT;
     x->x_windowHalf = x->x_window*0.5;
     x->x_windowFunction = blackman;
     x->x_normalize = true;

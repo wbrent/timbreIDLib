@@ -14,7 +14,6 @@ You should have received a copy of the GNU General Public License along with thi
 */
 
 #include "tIDLib.h"
-#define DEFAULTCONCENTRATION 0.85
 
 static t_class *specRolloff_class;
 
@@ -51,11 +50,11 @@ static void specRolloff_resizeWindow(t_specRolloff *x, t_sampIdx oldWindow, t_sa
     windowHalf = window * 0.5;
     oldWindowHalf = oldWindow*0.5;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
+        window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
         *endSamp = startSamp + window-1;
         if(*endSamp >= x->x_arrayPoints)
@@ -351,8 +350,8 @@ static void specRolloff_samplerate(t_specRolloff *x, t_floatarg sr)
 {
     t_sampIdx i;
 
-    if(sr<MINSAMPLERATE)
-        x->x_sr = MINSAMPLERATE;
+    if(sr<TID_MINSAMPLERATE)
+        x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 
@@ -426,7 +425,7 @@ static void *specRolloff_new(t_symbol *s, int argc, t_atom *argv)
     x->x_objSymbol = s;
 
     // x->x_sr is used in argument check, so must be assigned before switch
-    x->x_sr = SAMPLERATEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
 
     switch(argc)
     {
@@ -441,13 +440,13 @@ static void *specRolloff_new(t_symbol *s, int argc, t_atom *argv)
             x->x_concentration = atom_getfloat(argv+1);
             if(x->x_concentration<0)
             {
-                post("%s concentration must be between 0.0 and 1.0. Using default concentration of %0.2f instead.", x->x_objSymbol->s_name, DEFAULTCONCENTRATION);
-                x->x_concentration = DEFAULTCONCENTRATION;
+                post("%s concentration must be between 0.0 and 1.0. Using default concentration of %0.2f instead.", x->x_objSymbol->s_name, TID_SPECROLLOFF_DEFAULTCONCENTRATION);
+                x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;
             }
             else if(x->x_concentration>1.0)
             {
-                post("%s concentration must be between 0.0 and 1.0. Using default concentration of %0.2f instead.", x->x_objSymbol->s_name, DEFAULTCONCENTRATION);
-                x->x_concentration = DEFAULTCONCENTRATION;
+                post("%s concentration must be between 0.0 and 1.0. Using default concentration of %0.2f instead.", x->x_objSymbol->s_name, TID_SPECROLLOFF_DEFAULTCONCENTRATION);
+                x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;
             };
             break;
 
@@ -459,14 +458,14 @@ static void *specRolloff_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_concentration = DEFAULTCONCENTRATION;
+            x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;
             break;
 
         case 0:
             post("%s: no array specified.", x->x_objSymbol->s_name);
             // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym("NOARRAYSPECIFIED");
-            x->x_concentration = DEFAULTCONCENTRATION;
+            x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;
             break;
 
         default:
@@ -477,12 +476,12 @@ static void *specRolloff_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            post("%s WARNING: extra arguments ignored. Using default concentration of %0.2f.", x->x_objSymbol->s_name, DEFAULTCONCENTRATION);
-            x->x_concentration = DEFAULTCONCENTRATION;
+            post("%s WARNING: extra arguments ignored. Using default concentration of %0.2f.", x->x_objSymbol->s_name, TID_SPECROLLOFF_DEFAULTCONCENTRATION);
+            x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;
             break;
     }
 
-    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_window = TID_WINDOWSIZEDEFAULT;
     x->x_windowHalf = x->x_window*0.5;
     x->x_windowFunction = blackman;
     x->x_powerSpectrum = false;

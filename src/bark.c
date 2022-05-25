@@ -107,14 +107,14 @@ static void bark_create_loudness_weighting(t_bark *x)
         t_binIdx nearIdx;
         t_float nearFreq, diffFreq, diffdB, dBint;
 
-        nearIdx = tIDLib_nearestBinIndex(barkFreqs[i], bark_weights_freqs, NUMWEIGHTPOINTS);
+        nearIdx = tIDLib_nearestBinIndex(barkFreqs[i], bark_weights_freqs, TID_NUMWEIGHTPOINTS);
         nearFreq = bark_weights_freqs[nearIdx];
         diffdB = 0;
 
         // this doesn't have to be if/else'd into a greater/less situation.  later on i should write a more general interpolation solution, and maybe move it up to 4 points instead.
         if(barkFreqs[i]>nearFreq)
         {
-            if(nearIdx<=NUMWEIGHTPOINTS-2)
+            if(nearIdx<=TID_NUMWEIGHTPOINTS-2)
             {
                 diffFreq = (barkFreqs[i] - nearFreq)/(bark_weights_freqs[nearIdx+1] - nearFreq);
                 diffdB = diffFreq * (bark_weights_dB[nearIdx+1] - bark_weights_dB[nearIdx]);
@@ -374,10 +374,10 @@ static void bark_samplerate(t_bark *x, t_floatarg sr)
 
     oldNumFilters = x->x_numFilters;
 
-    if(sr<MINSAMPLERATE)
+    if(sr<TID_MINSAMPLERATE)
     {
-        pd_error(x, "%s: samplerate must be at least %i. default value of %i used instead.", x->x_objSymbol->s_name, MINSAMPLERATE, SAMPLERATEDEFAULT);
-        x->x_sr = SAMPLERATEDEFAULT;
+        pd_error(x, "%s: samplerate must be at least %i. default value of %i used instead.", x->x_objSymbol->s_name, TID_MINSAMPLERATE, TID_SAMPLERATEDEFAULT);
+        x->x_sr = TID_SAMPLERATEDEFAULT;
     }
     else
         x->x_sr = sr;
@@ -435,10 +435,10 @@ static void *bark_new(t_symbol *s, int argc, t_atom *argv)
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             x->x_window = atom_getfloat(argv+1);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             x->x_hop = atom_getfloat(argv+2);
@@ -450,10 +450,10 @@ static void *bark_new(t_symbol *s, int argc, t_atom *argv)
             }
 
             x->x_barkSpacing = atom_getfloat(argv+3);
-            if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+            if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_TID_MAXBARKSPACING)
             {
-                x->x_barkSpacing = BARKSPACINGDEFAULT;
-                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+                x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
             break;
 
@@ -466,10 +466,10 @@ static void *bark_new(t_symbol *s, int argc, t_atom *argv)
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             x->x_window = atom_getfloat(argv+1);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             x->x_hop = atom_getfloat(argv+2);
@@ -480,7 +480,7 @@ static void *bark_new(t_symbol *s, int argc, t_atom *argv)
                 post("%s WARNING: requested hop is less than 1 sample. Quarter of window size (%i samples) used instead.", x->x_objSymbol->s_name, x->x_hop);
             }
 
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
 
         case 2:
@@ -492,14 +492,14 @@ static void *bark_new(t_symbol *s, int argc, t_atom *argv)
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             x->x_window = atom_getfloat(argv+1);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             x->x_hop = x->x_window*0.25;
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
 
         case 1:
@@ -510,17 +510,17 @@ static void *bark_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_window = WINDOWSIZEDEFAULT;
-            x->x_hop = WINDOWSIZEDEFAULT*0.25;
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            x->x_window = TID_WINDOWSIZEDEFAULT;
+            x->x_hop = TID_WINDOWSIZEDEFAULT*0.25;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
 
         case 0:
             pd_error(x, "%s: no array specified.", x->x_objSymbol->s_name);
             x->x_arrayName = gensym("NOARRAYSPECIFIED");
-            x->x_window = WINDOWSIZEDEFAULT;
-            x->x_hop = WINDOWSIZEDEFAULT*0.25;
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            x->x_window = TID_WINDOWSIZEDEFAULT;
+            x->x_hop = TID_WINDOWSIZEDEFAULT*0.25;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
 
         default:
@@ -531,10 +531,10 @@ static void *bark_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            post("%s WARNING: Too many arguments supplied. Using default window size of %i, hop of %i, and Bark spacing of %0.2f.", x->x_objSymbol->s_name, WINDOWSIZEDEFAULT, (int)(WINDOWSIZEDEFAULT*0.25), BARKSPACINGDEFAULT);
-            x->x_window = WINDOWSIZEDEFAULT;
-            x->x_hop = WINDOWSIZEDEFAULT*0.25;
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
+            post("%s WARNING: Too many arguments supplied. Using default window size of %i, hop of %i, and Bark spacing of %0.2f.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, (int)(TID_WINDOWSIZEDEFAULT*0.25), TID_BARKSPACINGDEFAULT);
+            x->x_window = TID_WINDOWSIZEDEFAULT;
+            x->x_hop = TID_WINDOWSIZEDEFAULT*0.25;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
     }
 

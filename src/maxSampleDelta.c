@@ -70,10 +70,10 @@ static void maxSampleDelta_analyze(t_maxSampleDelta *x, t_floatarg start, t_floa
             oldWindow = x->x_window;
 
             // window must be at least 4 points long
-            if(window<MINWINDOWSIZE)
+            if(window<TID_MINWINDOWSIZE)
             {
-                window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             // hang on to these values for next time
@@ -162,8 +162,8 @@ static void maxSampleDelta_print(t_maxSampleDelta *x)
 
 static void maxSampleDelta_samplerate(t_maxSampleDelta *x, t_floatarg sr)
 {
-    if(sr<MINSAMPLERATE)
-        x->x_sr = MINSAMPLERATE;
+    if(sr<TID_MINSAMPLERATE)
+        x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 }
@@ -210,8 +210,8 @@ static void *maxSampleDelta_new(t_symbol *s, int argc, t_atom *argv)
             break;
     }
 
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_window = TID_WINDOWSIZEDEFAULT;
 
     x->x_analysisBuffer = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
 

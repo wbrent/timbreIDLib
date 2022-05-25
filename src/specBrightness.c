@@ -14,7 +14,6 @@ You should have received a copy of the GNU General Public License along with thi
 */
 
 #include "tIDLib.h"
-#define DEFAULTBOUND 1200.0
 
 static t_class *specBrightness_class;
 
@@ -52,11 +51,11 @@ static void specBrightness_resizeWindow(t_specBrightness *x, t_sampIdx oldWindow
     windowHalf = window * 0.5;
     oldWindowHalf = oldWindow*0.5;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
+        window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
         *endSamp = startSamp + window-1;
         if(*endSamp >= x->x_arrayPoints)
@@ -329,8 +328,8 @@ static void specBrightness_samplerate(t_specBrightness *x, t_floatarg sr)
 {
     t_sampIdx i;
 
-    if(sr<MINSAMPLERATE)
-        x->x_sr = MINSAMPLERATE;
+    if(sr<TID_MINSAMPLERATE)
+        x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 
@@ -406,7 +405,7 @@ static void *specBrightness_new(t_symbol *s, int argc, t_atom *argv)
     x->x_objSymbol = s;
 
     // x->x_sr is used in argument check, so must be assigned before switch
-    x->x_sr = SAMPLERATEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
 
     switch(argc)
     {
@@ -421,13 +420,13 @@ static void *specBrightness_new(t_symbol *s, int argc, t_atom *argv)
             x->x_freqBoundary = atom_getfloat(argv+1);
             if(x->x_freqBoundary<0)
             {
-                post("%s boundary frequency must be a positive real number and less than Nyquist. Using default boundary of %0.2f Hz instead.", x->x_objSymbol->s_name, DEFAULTBOUND);
-                x->x_freqBoundary = DEFAULTBOUND;
+                post("%s boundary frequency must be a positive real number and less than Nyquist. Using default boundary of %0.2f Hz instead.", x->x_objSymbol->s_name, TID_SPECBRIGHTNESS_DEFAULTBOUND);
+                x->x_freqBoundary = TID_SPECBRIGHTNESS_DEFAULTBOUND;
             }
             else if(x->x_freqBoundary>(x->x_sr*0.5))
             {
-                post("%s boundary frequency must be a positive real number and less than Nyquist. Using default boundary of %0.2f Hz instead.", x->x_objSymbol->s_name, DEFAULTBOUND);
-                x->x_freqBoundary = DEFAULTBOUND;
+                post("%s boundary frequency must be a positive real number and less than Nyquist. Using default boundary of %0.2f Hz instead.", x->x_objSymbol->s_name, TID_SPECBRIGHTNESS_DEFAULTBOUND);
+                x->x_freqBoundary = TID_SPECBRIGHTNESS_DEFAULTBOUND;
             };
             break;
 
@@ -439,14 +438,14 @@ static void *specBrightness_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_freqBoundary = DEFAULTBOUND;
+            x->x_freqBoundary = TID_SPECBRIGHTNESS_DEFAULTBOUND;
             break;
 
         case 0:
             post("%s: no array specified.", x->x_objSymbol->s_name);
             // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym("NOARRAYSPECIFIED");
-            x->x_freqBoundary = DEFAULTBOUND;
+            x->x_freqBoundary = TID_SPECBRIGHTNESS_DEFAULTBOUND;
             break;
 
         default:
@@ -457,12 +456,12 @@ static void *specBrightness_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            post("%s WARNING: extra arguments ignored. Using default boundary of %0.2f Hz.", x->x_objSymbol->s_name, DEFAULTBOUND);
-            x->x_freqBoundary = DEFAULTBOUND;
+            post("%s WARNING: extra arguments ignored. Using default boundary of %0.2f Hz.", x->x_objSymbol->s_name, TID_SPECBRIGHTNESS_DEFAULTBOUND);
+            x->x_freqBoundary = TID_SPECBRIGHTNESS_DEFAULTBOUND;
             break;
     }
 
-    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_window = TID_WINDOWSIZEDEFAULT;
     x->x_windowHalf = x->x_window*0.5;
     x->x_windowFunction = blackman;
     x->x_powerSpectrum = false;

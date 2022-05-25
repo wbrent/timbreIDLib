@@ -951,7 +951,7 @@ static void timbreID_normalize(t_timbreID *x, t_floatarg n)
 
 static void timbreID_print(t_timbreID *x)
 {
-    post("timbreID version %s", TIDVERSION);
+    post("timbreID version %s", TID_VERSION);
     post("%s: no. of instances: %i", x->x_objSymbol->s_name, x->x_numInstances);
     post("%s: max feature length: %i", x->x_objSymbol->s_name, x->x_maxFeatureLength);
     post("%s: min feature length: %i", x->x_objSymbol->s_name, x->x_minFeatureLength);
@@ -2774,7 +2774,7 @@ static void timbreID_readText(t_timbreID *x, t_symbol *s)
     FILE *filePtr;
     t_instanceIdx i, j, numInstances, stringLength, numSpaces, minLength, maxLength;
     t_float *featurePtr;
-    char fileNameBuf[MAXPDSTRING], textLine[MAXTIDTEXTSTRING];
+    char fileNameBuf[MAXPDSTRING], textLine[TID_MAXTEXTSTRING];
 
     canvas_makefilename(x->x_canvas, s->s_name, fileNameBuf, MAXPDSTRING);
 
@@ -2787,7 +2787,7 @@ static void timbreID_readText(t_timbreID *x, t_symbol *s)
     }
 
     numInstances = 0;
-    while(fgets(textLine, MAXTIDTEXTSTRING, filePtr))
+    while(fgets(textLine, TID_MAXTEXTSTRING, filePtr))
         numInstances++;
 
     maxLength = 0;
@@ -2808,7 +2808,7 @@ static void timbreID_readText(t_timbreID *x, t_symbol *s)
     filePtr = fopen(fileNameBuf, "r");
 
     i=0;
-    while(fgets(textLine, MAXTIDTEXTSTRING, filePtr))
+    while(fgets(textLine, TID_MAXTEXTSTRING, filePtr))
     {
         stringLength = strlen(textLine);
 
@@ -3054,7 +3054,7 @@ static void timbreID_OCTAVE(t_timbreID *x, t_symbol *file_symbol, t_symbol *var_
         return;
     }
 
-    fprintf(filePtr, "# Created by timbreID version %s\n", TIDVERSION);
+    fprintf(filePtr, "# Created by timbreID version %s\n", TID_VERSION);
     fprintf(filePtr, "# name: %s\n", var_symbol->s_name);
     fprintf(filePtr, "# type: matrix\n");
     fprintf(filePtr, "# rows: %i\n", x->x_numInstances);
@@ -3298,7 +3298,7 @@ static void timbreID_readClustersText(t_timbreID *x, t_symbol *s)
 {
     FILE *filePtr;
     t_instanceIdx i, j, *featurePtr, stringLength, numSpaces, numClusters;
-    char fileNameBuf[MAXPDSTRING], textLine[MAXTIDTEXTSTRING];
+    char fileNameBuf[MAXPDSTRING], textLine[TID_MAXTEXTSTRING];
 
     canvas_makefilename(x->x_canvas, s->s_name, fileNameBuf, MAXPDSTRING);
 
@@ -3312,7 +3312,7 @@ static void timbreID_readClustersText(t_timbreID *x, t_symbol *s)
 
     // count lines in text file to determine numClusters
     numClusters = 0;
-    while(fgets(textLine, MAXTIDTEXTSTRING, filePtr))
+    while(fgets(textLine, TID_MAXTEXTSTRING, filePtr))
         numClusters++;
 
     if(numClusters>x->x_numInstances)
@@ -3333,7 +3333,7 @@ static void timbreID_readClustersText(t_timbreID *x, t_symbol *s)
     filePtr = fopen(fileNameBuf, "r");
 
     i=0;
-    while(fgets(textLine, MAXTIDTEXTSTRING, filePtr))
+    while(fgets(textLine, TID_MAXTEXTSTRING, filePtr))
     {
         stringLength = strlen(textLine);
 

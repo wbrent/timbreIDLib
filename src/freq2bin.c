@@ -58,12 +58,12 @@ static void freq2bin_setWinSampRate(t_freq2bin *x, t_float n, t_float sr)
     else if(n)
     {
         x->x_n = n;
-          x->x_sr = SAMPLERATEDEFAULT;
+          x->x_sr = TID_SAMPLERATEDEFAULT;
     }
     else
     {
-        x->x_n = WINDOWSIZEDEFAULT;
-        x->x_sr = SAMPLERATEDEFAULT;
+        x->x_n = TID_WINDOWSIZEDEFAULT;
+        x->x_sr = TID_SAMPLERATEDEFAULT;
     }
 }
 

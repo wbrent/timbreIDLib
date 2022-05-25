@@ -43,10 +43,10 @@ typedef struct _dct
 /* ------------------------ dct -------------------------------- */
 static void dct_resizeWindow(t_dct *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
 {
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        window = TID_WINDOWSIZEDEFAULT;
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
         *endSamp = startSamp + window-1;
         if(*endSamp >= x->x_arrayPoints)
@@ -201,8 +201,8 @@ static void dct_print(t_dct *x)
 
 static void dct_samplerate(t_dct *x, t_floatarg sr)
 {
-    if(sr<MINSAMPLERATE)
-        x->x_sr = MINSAMPLERATE;
+    if(sr<TID_MINSAMPLERATE)
+        x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 }
@@ -302,8 +302,8 @@ static void *dct_new(t_symbol *s, int argc, t_atom *argv)
             break;
     }
 
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_window = TID_WINDOWSIZEDEFAULT;
     x->x_windowFunction = blackman;
     x->x_normalize = true;
 

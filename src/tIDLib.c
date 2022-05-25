@@ -597,14 +597,14 @@ t_filterIdx tIDLib_getBarkBoundFreqs (t_float** filterFreqs, t_filterIdx oldSize
 
     if (spacing < 0.1 || spacing > 6.0)
     {
-        spacing = BARKSPACINGDEFAULT;
-        post ("Bark spacing must be between 0.1 and 6.0 Barks. Using default spacing of %f Barks instead.", BARKSPACINGDEFAULT);
+        spacing = TID_BARKSPACINGDEFAULT;
+        post ("Bark spacing must be between 0.1 and 6.0 Barks. Using default spacing of %f Barks instead.", TID_BARKSPACINGDEFAULT);
     }
 
     sumBark = 0.0;
     sizeFilterFreqs = 0;
 
-    while ((tIDLib_bark2freq (sumBark) <= (sr * 0.5)) && (sumBark <= MAXBARKS) )
+    while ((tIDLib_bark2freq (sumBark) <= (sr * 0.5)) && (sumBark <= TID_MAXBARKS) )
     {
         sizeFilterFreqs++;
         sumBark += spacing;
@@ -637,14 +637,14 @@ t_filterIdx tIDLib_getMelBoundFreqs (t_float** filterFreqs, t_filterIdx oldSizeF
 
     if (spacing < 5 || spacing > 1000)
     {
-        spacing = MELSPACINGDEFAULT;
-        post ("mel spacing must be between 5 and 1000 mels. Using default spacing of %f mels instead.", MELSPACINGDEFAULT);
+        spacing = TID_MELSPACINGDEFAULT;
+        post ("mel spacing must be between 5 and 1000 mels. Using default spacing of %f mels instead.", TID_MELSPACINGDEFAULT);
     }
 
     sumMel = 0.0;
     sizeFilterFreqs = 0;
 
-    while ((tIDLib_mel2freq (sumMel) <= (sr * 0.5)) && (sumMel <= MAXMELS) )
+    while ((tIDLib_mel2freq (sumMel) <= (sr * 0.5)) && (sumMel <= TID_MAXMELS) )
     {
         sizeFilterFreqs++;
         sumMel += spacing;
@@ -1223,7 +1223,7 @@ t_uInt tIDLib_getPitchBinRanges (t_binIdx* binRanges, t_float thisPitch, t_float
     cardinality = 0;
 
     // fill buffer with ULONG_MAX so we can see where to stop when using this buffer
-    for (i = 0; i < PBINRANGEBUFSIZE; i++)
+    for (i = 0; i < TID_PBINRANGEBUFSIZE; i++)
         binRanges[i] = ULONG_MAX;
 
     // find the octave of this pitch that is above x_loFreq

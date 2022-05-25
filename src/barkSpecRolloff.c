@@ -14,7 +14,6 @@ You should have received a copy of the GNU General Public License along with thi
 */
 
 #include "tIDLib.h"
-#define DEFAULTCONCENTRATION 0.85
 
 static t_class *barkSpecRolloff_class;
 
@@ -57,12 +56,12 @@ static void barkSpecRolloff_resizeWindow(t_barkSpecRolloff *x, t_sampIdx oldWind
 
     windowHalf = window * 0.5;
 
-    // FFT must be at least MINWINDOWSIZE points long
-    if(window<MINWINDOWSIZE)
+    // FFT must be at least TID_MINWINDOWSIZE points long
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
+        window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
         *endSamp = startSamp + window-1;
         if(*endSamp >= x->x_arrayPoints)
@@ -382,10 +381,10 @@ static void barkSpecRolloff_createFilterbank(t_barkSpecRolloff *x, t_floatarg bs
 
     x->x_barkSpacing = bs;
 
-    if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+    if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_TID_MAXBARKSPACING)
     {
-        x->x_barkSpacing = BARKSPACINGDEFAULT;
-        post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+        x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+        post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
     }
 
     oldNumFilters = x->x_numFilters;
@@ -446,8 +445,8 @@ static void barkSpecRolloff_concentration(t_barkSpecRolloff *x, t_floatarg c)
 
 static void barkSpecRolloff_samplerate(t_barkSpecRolloff *x, t_floatarg sr)
 {
-    if(sr<MINSAMPLERATE)
-        x->x_sr = MINSAMPLERATE;
+    if(sr<TID_MINSAMPLERATE)
+        x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 
@@ -557,10 +556,10 @@ static void *barkSpecRolloff_new(t_symbol *s, int argc, t_atom *argv)
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             x->x_barkSpacing = atom_getfloat(argv+1);
-            if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+            if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_TID_MAXBARKSPACING)
             {
-                x->x_barkSpacing = BARKSPACINGDEFAULT;
-                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+                x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
             x->x_concentration = atom_getfloat(argv+2);
             if(x->x_concentration>1)
@@ -578,12 +577,12 @@ static void *barkSpecRolloff_new(t_symbol *s, int argc, t_atom *argv)
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             x->x_barkSpacing = atom_getfloat(argv+1);
-            if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+            if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_TID_MAXBARKSPACING)
             {
-                x->x_barkSpacing = BARKSPACINGDEFAULT;
-                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+                x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
-            x->x_concentration = DEFAULTCONCENTRATION;
+            x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;
             break;
 
         case 1:
@@ -594,16 +593,16 @@ static void *barkSpecRolloff_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
-            x->x_concentration = DEFAULTCONCENTRATION;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+            x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;
             break;
 
         case 0:
             post("%s: no array specified.", x->x_objSymbol->s_name);
             // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym("NOARRAYSPECIFIED");
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
-            x->x_concentration = DEFAULTCONCENTRATION;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+            x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;
             break;
 
         default:
@@ -613,15 +612,15 @@ static void *barkSpecRolloff_new(t_symbol *s, int argc, t_atom *argv)
                 pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-            post("%s WARNING: Too many arguments supplied. Using default Bark spacing of %0.2f, and a concentration of %0.2f.", x->x_objSymbol->s_name, BARKSPACINGDEFAULT, DEFAULTCONCENTRATION);
+            post("%s WARNING: Too many arguments supplied. Using default Bark spacing of %0.2f, and a concentration of %0.2f.", x->x_objSymbol->s_name, TID_BARKSPACINGDEFAULT, TID_SPECROLLOFF_DEFAULTCONCENTRATION);
             */
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
-            x->x_concentration = DEFAULTCONCENTRATION;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+            x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;
             break;
     }
 
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_window = TID_WINDOWSIZEDEFAULT;
     x->x_windowHalf = x->x_window*0.5;
     x->x_windowFunction = blackman;
     x->x_powerSpectrum = false;

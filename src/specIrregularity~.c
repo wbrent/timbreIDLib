@@ -14,7 +14,6 @@ You should have received a copy of the GNU General Public License along with thi
 */
 
 #include "tIDLib.h"
-#define DEFAULTALGO jensen
 
 static t_class *specIrregularity_tilde_class;
 
@@ -209,10 +208,10 @@ static void specIrregularity_tilde_window(t_specIrregularity_tilde *x, t_floatar
 
     window = w;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        window = TID_WINDOWSIZEDEFAULT;
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
 
     windowHalf = window*0.5;
@@ -336,10 +335,10 @@ static void *specIrregularity_tilde_new(t_symbol *s, int argc, t_atom *argv)
     {
         case 2:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
             if(atom_getfloat(argv+1)>=1)
                 x->x_algorithm = krimphoff;
@@ -349,29 +348,29 @@ static void *specIrregularity_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
         case 1:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
-            x->x_algorithm = DEFAULTALGO;
+            x->x_algorithm = TID_SPECIRREGULARITY_DEFAULTALGO;
             break;
 
         case 0:
-            x->x_window = WINDOWSIZEDEFAULT;
-            x->x_algorithm = DEFAULTALGO;
+            x->x_window = TID_WINDOWSIZEDEFAULT;
+            x->x_algorithm = TID_SPECIRREGULARITY_DEFAULTALGO;
             break;
 
         default:
-            post("%s WARNING: Too many arguments supplied. Using default window size of %i and Jensen algorithm", x->x_objSymbol->s_name, WINDOWSIZEDEFAULT);
-            x->x_window = WINDOWSIZEDEFAULT;
-            x->x_algorithm = DEFAULTALGO;
+            post("%s WARNING: Too many arguments supplied. Using default window size of %i and Jensen algorithm", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT);
+            x->x_window = TID_WINDOWSIZEDEFAULT;
+            x->x_algorithm = TID_SPECIRREGULARITY_DEFAULTALGO;
             break;
     }
 
     x->x_windowHalf = x->x_window*0.5;
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_n = BLOCKSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_n = TID_BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
     x->x_windowFunction = blackman;
     x->x_normalize = true;

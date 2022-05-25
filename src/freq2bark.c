@@ -35,7 +35,7 @@ static void freq2bark_calculate(t_freq2bark *x, t_float f)
 
     freq = f;
 
-    if(freq>=0.0 && freq<=MAXBARKFREQ)
+    if(freq>=0.0 && freq<=TID_MAXBARKFREQ)
     {
         t_float barkFreq;
 
@@ -44,7 +44,7 @@ static void freq2bark_calculate(t_freq2bark *x, t_float f)
         outlet_float(x->x_barkFreq, barkFreq);
     }
     else
-        pd_error(x, "%s: frequency must be between 0 and %f Hz", x->x_objSymbol->s_name, MAXBARKFREQ);
+        pd_error(x, "%s: frequency must be between 0 and %f Hz", x->x_objSymbol->s_name, TID_MAXBARKFREQ);
 }
 
 static void *freq2bark_new(t_symbol *s, int argc, t_atom *argv)

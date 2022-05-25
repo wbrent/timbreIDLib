@@ -58,11 +58,11 @@ static void specFlux_resizeWindow(t_specFlux *x, t_sampIdx oldWindow, t_sampIdx 
     windowHalf = window * 0.5;
     oldWindowHalf = oldWindow*0.5;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
+        window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
         *endSamp = startSamp + window-1;
         if(*endSamp >= x->x_arrayPoints)
@@ -527,8 +527,8 @@ static void specFlux_print(t_specFlux *x)
 
 static void specFlux_samplerate(t_specFlux *x, t_floatarg sr)
 {
-    if(sr<MINSAMPLERATE)
-        x->x_sr = MINSAMPLERATE;
+    if(sr<TID_MINSAMPLERATE)
+        x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 }
@@ -682,15 +682,15 @@ static void *specFlux_new(t_symbol *s, int argc, t_atom *argv)
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             sepFloat = atom_getfloat(argv+1);
-            if(sepFloat > WINDOWSIZEDEFAULT)
+            if(sepFloat > TID_WINDOWSIZEDEFAULT)
             {
                 post("%s WARNING: frame separation cannot be more than current window size. Using half of current window size instead.", x->x_objSymbol->s_name);
-                x->x_separation = WINDOWSIZEDEFAULT*0.5;
+                x->x_separation = TID_WINDOWSIZEDEFAULT*0.5;
             }
             else if(sepFloat < 0)
             {
                 post("%s WARNING: frame separation must be > 0. Using half of current window size instead.", x->x_objSymbol->s_name);
-                x->x_separation = WINDOWSIZEDEFAULT*0.5;
+                x->x_separation = TID_WINDOWSIZEDEFAULT*0.5;
             }
             else
                 x->x_separation = sepFloat;
@@ -704,14 +704,14 @@ static void *specFlux_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_separation = WINDOWSIZEDEFAULT*0.5;
+            x->x_separation = TID_WINDOWSIZEDEFAULT*0.5;
             break;
 
         case 0:
             post("%s: no array specified.", x->x_objSymbol->s_name);
             // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym("NOARRAYSPECIFIED");
-            x->x_separation = WINDOWSIZEDEFAULT*0.5;
+            x->x_separation = TID_WINDOWSIZEDEFAULT*0.5;
             break;
 
         default:
@@ -722,13 +722,13 @@ static void *specFlux_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            post("%s WARNING: Too many arguments supplied. Using default frame separation of %i samples.", x->x_objSymbol->s_name, (t_sampIdx)(WINDOWSIZEDEFAULT*0.5));
-            x->x_separation = WINDOWSIZEDEFAULT*0.5;
+            post("%s WARNING: Too many arguments supplied. Using default frame separation of %i samples.", x->x_objSymbol->s_name, (t_sampIdx)(TID_WINDOWSIZEDEFAULT*0.5));
+            x->x_separation = TID_WINDOWSIZEDEFAULT*0.5;
             break;
     }
 
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_window = TID_WINDOWSIZEDEFAULT;
     x->x_windowHalf = x->x_window*0.5;
     x->x_windowFunction = blackman;
     x->x_normalize = false;

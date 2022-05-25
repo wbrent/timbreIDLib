@@ -420,10 +420,10 @@ static void tempo_tilde_window(t_tempo_tilde *x, t_floatarg w)
 
     window = w;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        window = TID_WINDOWSIZEDEFAULT;
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
 
     if(x->x_hop > window)
@@ -750,10 +750,10 @@ static void *tempo_tilde_new(t_symbol *s, int argc, t_atom *argv)
     {
         case 2:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             hopFloat = atom_getfloat(argv+1);
@@ -773,23 +773,23 @@ static void *tempo_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
         case 1:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<MINWINDOWSIZE)
+            if(x->x_window<TID_MINWINDOWSIZE)
             {
-                x->x_window = WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_window = TID_WINDOWSIZEDEFAULT;
+                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             x->x_hop = x->x_window*0.5;
             break;
 
         case 0:
-            x->x_window = WINDOWSIZEDEFAULT;
+            x->x_window = TID_WINDOWSIZEDEFAULT;
             x->x_hop = x->x_window*0.5;
             break;
 
         default:
-            post("%s WARNING: Too many arguments supplied. Using default window size of %i, and analysis hop of %i.", x->x_objSymbol->s_name, WINDOWSIZEDEFAULT, (t_sampIdx)(WINDOWSIZEDEFAULT*0.5));
-            x->x_window = WINDOWSIZEDEFAULT;
+            post("%s WARNING: Too many arguments supplied. Using default window size of %i, and analysis hop of %i.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, (t_sampIdx)(TID_WINDOWSIZEDEFAULT*0.5));
+            x->x_window = TID_WINDOWSIZEDEFAULT;
             x->x_hop = x->x_window*0.5;
             break;
     }
@@ -802,8 +802,8 @@ static void *tempo_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_belowThreshDefault = 1.0;
     x->x_numHarm = 6;
 
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_n = BLOCKSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_n = TID_BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
 
     x->x_loFreq = 0;

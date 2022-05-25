@@ -14,8 +14,6 @@ You should have received a copy of the GNU General Public License along with thi
 */
 
 #include "tIDLib.h"
-#define SUBWINDOWSPERMIDWINDOWDEFAULT 16
-#define MINSUBWINDOWSPERMIDWINDOW 2
 
 static t_class* energyEntropy_tilde_class;
 
@@ -69,10 +67,10 @@ static void energyEntropy_tilde_subWindow (t_energyEntropy_tilde* x, t_floatarg 
 
     window = w;
 
-    if (window < MINWINDOWSIZE)
+    if (window < TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
-        post ("%s WARNING: sub-window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        window = TID_WINDOWSIZEDEFAULT;
+        post ("%s WARNING: sub-window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
 
     bufLenPre = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
@@ -101,11 +99,11 @@ static void energyEntropy_tilde_midTermWindow (t_energyEntropy_tilde* x, t_float
 
     subsPerMid = w;
 
-    if (subsPerMid < MINSUBWINDOWSPERMIDWINDOW)
+    if (subsPerMid < TID_ENERGYENTROPY_MINSUBWINDOWSPERMIDWINDOW)
     {
-        post ("%s WARNING: cannot use %i sub-windows per mid-term window. Using default of %i sub-windows per mid-term window.", x->x_objSymbol->s_name, subsPerMid, SUBWINDOWSPERMIDWINDOWDEFAULT);
+        post ("%s WARNING: cannot use %i sub-windows per mid-term window. Using default of %i sub-windows per mid-term window.", x->x_objSymbol->s_name, subsPerMid, TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT);
 
-        subsPerMid = SUBWINDOWSPERMIDWINDOWDEFAULT;
+        subsPerMid = TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT;
     }
 
     bufLenPre = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
@@ -161,46 +159,46 @@ static void* energyEntropy_tilde_new (t_symbol* s, int argc, t_atom* argv)
     {
         case 2:
             x->x_subWindowSize = atom_getfloat (argv);
-            if (x->x_subWindowSize < MINWINDOWSIZE)
+            if (x->x_subWindowSize < TID_MINWINDOWSIZE)
             {
-                x->x_subWindowSize = WINDOWSIZEDEFAULT;
-                post ("%s WARNING: sub-window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_subWindowSize = TID_WINDOWSIZEDEFAULT;
+                post ("%s WARNING: sub-window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             x->x_subWindowsPerMidTermWindow = atom_getfloat (argv + 1);
-            if (x->x_subWindowsPerMidTermWindow < MINSUBWINDOWSPERMIDWINDOW)
+            if (x->x_subWindowsPerMidTermWindow < TID_ENERGYENTROPY_MINSUBWINDOWSPERMIDWINDOW)
             {
-                post ("%s WARNING: cannot use %i sub-windows per mid-term window. Using default of %i sub-windows per mid-term window.", x->x_objSymbol->s_name, x->x_subWindowsPerMidTermWindow, SUBWINDOWSPERMIDWINDOWDEFAULT);
-                x->x_subWindowsPerMidTermWindow = SUBWINDOWSPERMIDWINDOWDEFAULT;
+                post ("%s WARNING: cannot use %i sub-windows per mid-term window. Using default of %i sub-windows per mid-term window.", x->x_objSymbol->s_name, x->x_subWindowsPerMidTermWindow, TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT);
+                x->x_subWindowsPerMidTermWindow = TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT;
             }
             break;
 
         case 1:
             x->x_subWindowSize = atom_getfloat (argv);
-            if (x->x_subWindowSize < MINWINDOWSIZE)
+            if (x->x_subWindowSize < TID_MINWINDOWSIZE)
             {
-                x->x_subWindowSize = WINDOWSIZEDEFAULT;
-                post ("%s WARNING: sub-window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+                x->x_subWindowSize = TID_WINDOWSIZEDEFAULT;
+                post ("%s WARNING: sub-window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
-            x->x_subWindowsPerMidTermWindow = SUBWINDOWSPERMIDWINDOWDEFAULT;
+            x->x_subWindowsPerMidTermWindow = TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT;
             break;
 
         case 0:
-            x->x_subWindowSize = WINDOWSIZEDEFAULT;
-            x->x_subWindowsPerMidTermWindow = SUBWINDOWSPERMIDWINDOWDEFAULT;
+            x->x_subWindowSize = TID_WINDOWSIZEDEFAULT;
+            x->x_subWindowsPerMidTermWindow = TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT;
             break;
 
         default:
-            post ("%s WARNING: Too many arguments supplied. Using default sub-window size of %i and %i sub-windows per mid-term window.", x->x_objSymbol->s_name, WINDOWSIZEDEFAULT, SUBWINDOWSPERMIDWINDOWDEFAULT);
-            x->x_subWindowSize = WINDOWSIZEDEFAULT;
-            x->x_subWindowsPerMidTermWindow = SUBWINDOWSPERMIDWINDOWDEFAULT;
+            post ("%s WARNING: Too many arguments supplied. Using default sub-window size of %i and %i sub-windows per mid-term window.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT);
+            x->x_subWindowSize = TID_WINDOWSIZEDEFAULT;
+            x->x_subWindowsPerMidTermWindow = TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT;
             break;
     }
 
 
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_n = BLOCKSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_n = TID_BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
     x->x_lastDspTime = clock_getlogicaltime();
 

@@ -34,13 +34,13 @@ static void mel2freq_calculate(t_mel2freq *x, t_float m)
 
     mel = m;
 
-    if(mel>=0.0 && mel<=MAXMELS)
+    if(mel>=0.0 && mel<=TID_MAXMELS)
     {
         freq = tIDLib_mel2freq(mel);
         outlet_float(x->x_freq, freq);
     }
     else
-        pd_error(x, "%s: mel frequency must be between 0 and %f mels", x->x_objSymbol->s_name, MAXMELS);
+        pd_error(x, "%s: mel frequency must be between 0 and %f mels", x->x_objSymbol->s_name, TID_MAXMELS);
 }
 
 static void *mel2freq_new(t_symbol *s, int argc, t_atom *argv)

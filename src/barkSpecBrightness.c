@@ -14,7 +14,6 @@ You should have received a copy of the GNU General Public License along with thi
 */
 
 #include "tIDLib.h"
-#define DEFAULTBOUNDARY 8.5
 
 static t_class *barkSpecBrightness_class;
 
@@ -59,12 +58,12 @@ static void barkSpecBrightness_resizeWindow(t_barkSpecBrightness *x, t_sampIdx o
 
     windowHalf = window * 0.5;
 
-    // FFT must be at least MINWINDOWSIZE points long
-    if(window<MINWINDOWSIZE)
+    // FFT must be at least TID_MINWINDOWSIZE points long
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
+        window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
         *endSamp = startSamp + window-1;
         if(*endSamp >= x->x_arrayPoints)
@@ -343,10 +342,10 @@ static void barkSpecBrightness_createFilterbank(t_barkSpecBrightness *x, t_float
 
     x->x_barkSpacing = bs;
 
-    if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+    if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_TID_MAXBARKSPACING)
     {
-        x->x_barkSpacing = BARKSPACINGDEFAULT;
-        post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+        x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+        post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
     }
 
     oldNumFilters = x->x_numFilters;
@@ -371,8 +370,8 @@ static void barkSpecBrightness_createFilterbank(t_barkSpecBrightness *x, t_float
 
 static void barkSpecBrightness_boundary(t_barkSpecBrightness *x, t_floatarg b)
 {
-    if(b>MAXBARKS || b<0)
-        post("%s boundary must be between 0 and %0.2f Barks.", x->x_objSymbol->s_name, MAXBARKS);
+    if(b>TID_MAXBARKS || b<0)
+        post("%s boundary must be between 0 and %0.2f Barks.", x->x_objSymbol->s_name, TID_MAXBARKS);
     else
     {
         x->x_barkBoundary = b;
@@ -415,8 +414,8 @@ static void barkSpecBrightness_print(t_barkSpecBrightness *x)
 
 static void barkSpecBrightness_samplerate(t_barkSpecBrightness *x, t_floatarg sr)
 {
-    if(sr<MINSAMPLERATE)
-        x->x_sr = MINSAMPLERATE;
+    if(sr<TID_MINSAMPLERATE)
+        x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 
@@ -526,17 +525,17 @@ static void *barkSpecBrightness_new(t_symbol *s, int argc, t_atom *argv)
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             x->x_barkSpacing = atom_getfloat(argv+1);
-            if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+            if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_TID_MAXBARKSPACING)
             {
-                x->x_barkSpacing = BARKSPACINGDEFAULT;
-                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+                x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
             x->x_barkBoundary = atom_getfloat(argv+2);
-            if(x->x_barkBoundary>MAXBARKS || x->x_barkBoundary<0)
+            if(x->x_barkBoundary>TID_MAXBARKS || x->x_barkBoundary<0)
             {
-                x->x_barkBoundary = DEFAULTBOUNDARY;
+                x->x_barkBoundary = TID_BARKSPECBRIGHTNESS_DEFAULTBOUND;
                 x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
-                post("%s boundary frequency must be between 0 and %0.2f Barks. Using default boundary of %0.2f Barks instead.", x->x_objSymbol->s_name, MAXBARKS, DEFAULTBOUNDARY);
+                post("%s boundary frequency must be between 0 and %0.2f Barks. Using default boundary of %0.2f Barks instead.", x->x_objSymbol->s_name, TID_MAXBARKS, TID_BARKSPECBRIGHTNESS_DEFAULTBOUND);
             }
             else
                 x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
@@ -551,12 +550,12 @@ static void *barkSpecBrightness_new(t_symbol *s, int argc, t_atom *argv)
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             x->x_barkSpacing = atom_getfloat(argv+1);
-            if(x->x_barkSpacing<MINBARKSPACING || x->x_barkSpacing>MAXBARKSPACING)
+            if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_TID_MAXBARKSPACING)
             {
-                x->x_barkSpacing = BARKSPACINGDEFAULT;
-                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, MINBARKSPACING, MAXBARKSPACING, BARKSPACINGDEFAULT);
+                x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+                post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
-            x->x_barkBoundary = DEFAULTBOUNDARY;
+            x->x_barkBoundary = TID_BARKSPECBRIGHTNESS_DEFAULTBOUND;
             x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
             break;
 
@@ -568,8 +567,8 @@ static void *barkSpecBrightness_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
-            x->x_barkBoundary = DEFAULTBOUNDARY;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+            x->x_barkBoundary = TID_BARKSPECBRIGHTNESS_DEFAULTBOUND;
             x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
             break;
 
@@ -577,8 +576,8 @@ static void *barkSpecBrightness_new(t_symbol *s, int argc, t_atom *argv)
             post("%s: no array specified.", x->x_objSymbol->s_name);
             // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym("NOARRAYSPECIFIED");
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
-            x->x_barkBoundary = DEFAULTBOUNDARY;
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+            x->x_barkBoundary = TID_BARKSPECBRIGHTNESS_DEFAULTBOUND;
             x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
             break;
 
@@ -590,15 +589,15 @@ static void *barkSpecBrightness_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            post("%s WARNING: Too many arguments supplied. Using default Bark spacing of %0.2f and boundary of %0.2f.", x->x_objSymbol->s_name, BARKSPACINGDEFAULT, DEFAULTBOUNDARY);
-            x->x_barkSpacing = BARKSPACINGDEFAULT;
-            x->x_barkBoundary = DEFAULTBOUNDARY;
+            post("%s WARNING: Too many arguments supplied. Using default Bark spacing of %0.2f and boundary of %0.2f.", x->x_objSymbol->s_name, TID_BARKSPACINGDEFAULT, TID_BARKSPECBRIGHTNESS_DEFAULTBOUND);
+            x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
+            x->x_barkBoundary = TID_BARKSPECBRIGHTNESS_DEFAULTBOUND;
             x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
             break;
     }
 
-    x->x_sr = SAMPLERATEDEFAULT;
-    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
+    x->x_window = TID_WINDOWSIZEDEFAULT;
     x->x_windowHalf = x->x_window*0.5;
     x->x_windowFunction = blackman;
     x->x_powerSpectrum = false;

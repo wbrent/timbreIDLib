@@ -59,11 +59,11 @@ static void chroma_resizeWindow(t_chroma *x, t_sampIdx oldWindow, t_sampIdx wind
     windowHalf = window * 0.5;
     oldWindowHalf = oldWindow*0.5;
 
-    if(window<MINWINDOWSIZE)
+    if(window<TID_MINWINDOWSIZE)
     {
-        window = WINDOWSIZEDEFAULT;
+        window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, MINWINDOWSIZE, WINDOWSIZEDEFAULT);
+        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
         *endSamp = startSamp + window-1;
         if(*endSamp >= x->x_arrayPoints)
@@ -455,8 +455,8 @@ static void chroma_print(t_chroma *x)
 
 static void chroma_samplerate(t_chroma *x, t_floatarg sr)
 {
-    if(sr<MINSAMPLERATE)
-        x->x_sr = MINSAMPLERATE;
+    if(sr<TID_MINSAMPLERATE)
+        x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 }
@@ -713,7 +713,7 @@ static void *chroma_new(t_symbol *s, int argc, t_atom *argv)
             break;
     }
 
-    x->x_sr = SAMPLERATEDEFAULT;
+    x->x_sr = TID_SAMPLERATEDEFAULT;
 
     chroma_freqRange(x, x->x_loFreq, x->x_hiFreq);
 
@@ -721,14 +721,14 @@ static void *chroma_new(t_symbol *s, int argc, t_atom *argv)
     x->x_pitchTolerance = (x->x_pitchTolerance>0.5)?0.5:x->x_pitchTolerance;
     x->x_energyThresh = 0.0;
 
-    x->x_window = WINDOWSIZEDEFAULT;
+    x->x_window = TID_WINDOWSIZEDEFAULT;
     x->x_windowHalf = x->x_window*0.5;
     x->x_windowFunction = blackman;
     x->x_normalize = false;
     x->x_powerSpectrum = true;
 
     // make the bin ranges memory 20x the window size so that we can find an upper and lower bin for more than 8 octaves of a given pitch class
-    x->x_binRanges = (t_binIdx *)t_getbytes(PBINRANGEBUFSIZE*sizeof(t_binIdx));
+    x->x_binRanges = (t_binIdx *)t_getbytes(TID_PBINRANGEBUFSIZE*sizeof(t_binIdx));
     x->x_fftwIn = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
     x->x_listOut = (t_atom *)t_getbytes(x->x_numChroma*sizeof(t_atom));
 
@@ -763,7 +763,7 @@ static void chroma_free(t_chroma *x)
     t_freebytes(x->x_pitchClasses, x->x_numChroma*sizeof(t_float));
 
     // free the bin ranges memory
-    t_freebytes(x->x_binRanges, PBINRANGEBUFSIZE*sizeof(t_binIdx));
+    t_freebytes(x->x_binRanges, TID_PBINRANGEBUFSIZE*sizeof(t_binIdx));
 
     // free FFTW stuff
     t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_sample));
