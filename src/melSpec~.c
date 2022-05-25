@@ -127,10 +127,10 @@ static void melSpec_tilde_createFilterbank(t_melSpec_tilde *x, t_floatarg ms)
 
     x->x_melSpacing = ms;
 
-    if(x->x_melSpacing<TID_MINMELSPACING || x->x_melSpacing>TID_TID_MAXMELSPACING)
+    if(x->x_melSpacing<TID_MINMELSPACING || x->x_melSpacing>TID_MAXMELSPACING)
     {
         x->x_melSpacing = TID_MELSPACINGDEFAULT;
-        post("%s WARNING: mel spacing must be between %f and %f mels. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINMELSPACING, TID_TID_MAXMELSPACING, TID_MELSPACINGDEFAULT);
+        post("%s WARNING: mel spacing must be between %f and %f mels. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINMELSPACING, TID_MAXMELSPACING, TID_MELSPACINGDEFAULT);
     }
 
     oldNumFilters = x->x_numFilters;
@@ -340,10 +340,10 @@ static void *melSpec_tilde_new(t_symbol *s, int argc, t_atom *argv)
             }
 
             x->x_melSpacing = atom_getfloat(argv+1);
-            if(x->x_melSpacing<TID_MINMELSPACING || x->x_melSpacing>TID_TID_MAXMELSPACING)
+            if(x->x_melSpacing<TID_MINMELSPACING || x->x_melSpacing>TID_MAXMELSPACING)
             {
                 x->x_melSpacing = TID_MELSPACINGDEFAULT;
-                post("%s WARNING: mel spacing must be between %f and %f mels. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINMELSPACING, TID_TID_MAXMELSPACING, TID_MELSPACINGDEFAULT);
+                post("%s WARNING: mel spacing must be between %f and %f mels. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINMELSPACING, TID_MAXMELSPACING, TID_MELSPACINGDEFAULT);
             }
             break;
 
