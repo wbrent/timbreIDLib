@@ -53,13 +53,13 @@ static void dct_tilde_bang(t_dct_tilde *x)
     window = x->x_window;
 
     currentTime = clock_gettimesince(x->x_lastDspTime);
-    bangSample = roundf((currentTime/1000.0)*x->x_sr);
+    bangSample = roundf((currentTime / 1000.0) * x->x_sr);
 
     if (bangSample >= x->x_n)
-        bangSample = x->x_n-1;
+        bangSample = x->x_n - 1;
 
     // construct analysis window using bangSample as the end of the window
-    for(i=0, j=bangSample; i<window; i++, j++)
+    for(i = 0, j = bangSample; i < window; i++, j++)
         x->x_dctIn[i] = x->x_signalBuffer[j];
 
     windowFuncPtr = x->x_blackman;
@@ -86,8 +86,8 @@ static void dct_tilde_bang(t_dct_tilde *x)
     };
 
     // if windowFunction == 0, skip the windowing (rectangular)
-    if(x->x_windowFunction!=rectangular)
-        for(i=0; i<window; i++, windowFuncPtr++)
+    if(x->x_windowFunction != rectangular)
+        for(i = 0; i < window; i++, windowFuncPtr++)
             x->x_dctIn[i] *= *windowFuncPtr;
 
     fftwf_execute(x->x_fftwDctPlan);
@@ -95,7 +95,7 @@ static void dct_tilde_bang(t_dct_tilde *x)
     if(x->x_normalize)
         tIDLib_normalPeak(x->x_window, x->x_dctOut);
 
-    for(i=0; i<window; i++)
+    for(i = 0; i < window; i++)
         SETFLOAT(x->x_listOut+i, x->x_dctOut[i]);
 
      outlet_list(x->x_dct, 0, window, x->x_listOut);
@@ -104,7 +104,7 @@ static void dct_tilde_bang(t_dct_tilde *x)
 
 static void dct_tilde_print(t_dct_tilde *x)
 {
-    post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr/x->x_overlap));
+    post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post("%s block size: %i", x->x_objSymbol->s_name, (t_sampIdx)x->x_n);
     post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
     post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
@@ -119,21 +119,21 @@ static void dct_tilde_window(t_dct_tilde *x, t_floatarg w)
 
     window = w;
 
-    if(window<TID_MINWINDOWSIZE)
+    if(window < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
 
-    x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window+x->x_n) * sizeof(t_sample), (window+x->x_n) * sizeof(t_sample));
+    x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window + x->x_n) * sizeof(t_sample), (window + x->x_n) * sizeof(t_sample));
     x->x_dctIn = (t_float *)t_resizebytes(x->x_dctIn, x->x_window * sizeof(t_float), window * sizeof(t_float));
     x->x_dctOut = (t_float *)t_resizebytes(x->x_dctOut, x->x_window * sizeof(t_float), window * sizeof(t_float));
     x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, x->x_window * sizeof(t_atom), window * sizeof(t_atom));
 
-    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, x->x_window*sizeof(t_float), window*sizeof(t_float));
-    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, x->x_window*sizeof(t_float), window*sizeof(t_float));
-    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, x->x_window*sizeof(t_float), window*sizeof(t_float));
-    x->x_hann = (t_float *)t_resizebytes(x->x_hann, x->x_window*sizeof(t_float), window*sizeof(t_float));
+    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, x->x_window * sizeof(t_float), window * sizeof(t_float));
+    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, x->x_window * sizeof(t_float), window * sizeof(t_float));
+    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, x->x_window * sizeof(t_float), window * sizeof(t_float));
+    x->x_hann = (t_float *)t_resizebytes(x->x_hann, x->x_window * sizeof(t_float), window * sizeof(t_float));
 
     x->x_window = window;
 
@@ -144,14 +144,14 @@ static void dct_tilde_window(t_dct_tilde *x, t_floatarg w)
     x->x_fftwDctPlan = fftwf_plan_r2r_1d(x->x_window, x->x_dctIn, x->x_dctOut, FFTW_REDFT10, FFTWPLANNERFLAG);
 
     // we're supposed to initialize the input array after we create the plan
-     for(i=0; i<x->x_window; i++)
+     for(i = 0; i < x->x_window; i++)
      {
         x->x_dctIn[i] = 0.0;
         x->x_dctOut[i] = 0.0;
     }
 
     // initialize signal buffer
-    for(i=0; i<x->x_window+x->x_n; i++)
+    for(i = 0; i < x->x_window + x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
     // re-init window functions
@@ -166,7 +166,7 @@ static void dct_tilde_window(t_dct_tilde *x, t_floatarg w)
 
 static void dct_tilde_overlap(t_dct_tilde *x, t_floatarg o)
 {
-    // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr/x->x_overlap;
+    // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o<1.0)?1.0:o;
 
     post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
@@ -229,7 +229,7 @@ static void *dct_tilde_new(t_symbol *s, int argc, t_atom *argv)
     {
         case 1:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<TID_MINWINDOWSIZE)
+            if(x->x_window < TID_MINWINDOWSIZE)
             {
                 x->x_window = TID_WINDOWSIZEDEFAULT;
                 post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
@@ -253,18 +253,18 @@ static void *dct_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_normalize = true;
     x->x_lastDspTime = clock_getlogicaltime();
 
-    x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window+x->x_n) * sizeof(t_sample));
+    x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window + x->x_n) * sizeof(t_sample));
     x->x_dctIn = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
-    x->x_dctOut = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-    x->x_listOut = (t_atom *)t_getbytes(x->x_window*sizeof(t_atom));
+    x->x_dctOut = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+    x->x_listOut = (t_atom *)t_getbytes(x->x_window * sizeof(t_atom));
 
-     for(i=0; i<(x->x_window+x->x_n); i++)
+     for(i = 0; i < x->x_window + x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
-      x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_blackman = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_cosine = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hamming = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hann = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
@@ -276,7 +276,7 @@ static void *dct_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_fftwDctPlan = fftwf_plan_r2r_1d(x->x_window, x->x_dctIn, x->x_dctOut, FFTW_REDFT10, FFTWPLANNERFLAG);
 
     // we're supposed to initialize the input array after we create the plan
-     for(i=0; i<x->x_window; i++)
+     for(i = 0; i < x->x_window; i++)
      {
         x->x_dctIn[i] = 0.0;
         x->x_dctOut[i] = 0.0;
@@ -297,16 +297,16 @@ static t_int *dct_tilde_perform(t_int *w)
     n = w[3];
 
      // shift signal buffer contents back.
-    for(i=0; i<x->x_window; i++)
+    for(i = 0; i < x->x_window; i++)
         x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
 
     // write new block to end of signal buffer.
-    for(i=0; i<n; i++)
-        x->x_signalBuffer[x->x_window+i] = in[i];
+    for(i = 0; i < n; i++)
+        x->x_signalBuffer[x->x_window + i] = in[i];
 
     x->x_lastDspTime = clock_getlogicaltime();
 
-    return (w+4);
+    return (w + 4);
 }
 
 
@@ -321,9 +321,9 @@ static void dct_tilde_dsp(t_dct_tilde *x, t_signal **sp)
     );
 
 // compare sr to stored sr and update if different
-    if(sp[0]->s_sr != (x->x_sr*x->x_overlap))
+    if(sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
-        x->x_sr = sp[0]->s_sr/x->x_overlap;
+        x->x_sr = sp[0]->s_sr / x->x_overlap;
         x->x_lastDspTime = clock_getlogicaltime();
     };
 
@@ -332,13 +332,13 @@ static void dct_tilde_dsp(t_dct_tilde *x, t_signal **sp)
     {
         t_sampIdx i;
 
-        x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window+x->x_n) * sizeof(t_sample), (x->x_window+sp[0]->s_n) * sizeof(t_sample));
+        x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window + x->x_n) * sizeof(t_sample), (x->x_window + sp[0]->s_n) * sizeof(t_sample));
 
         x->x_n = sp[0]->s_n;
         x->x_lastDspTime = clock_getlogicaltime();
 
         // init signal buffer
-        for(i=0; i<(x->x_window+x->x_n); i++)
+        for(i = 0; i < x->x_window + x->x_n; i++)
             x->x_signalBuffer[i] = 0.0;
 
         post("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -349,21 +349,21 @@ static void dct_tilde_dsp(t_dct_tilde *x, t_signal **sp)
 static void dct_tilde_free(t_dct_tilde *x)
 {
     // free the input buffer memory
-    t_freebytes(x->x_signalBuffer, (x->x_window+x->x_n)*sizeof(t_sample));
+    t_freebytes(x->x_signalBuffer, (x->x_window + x->x_n) * sizeof(t_sample));
 
     // free the list out memory
-    t_freebytes(x->x_listOut, x->x_window*sizeof(t_atom));
+    t_freebytes(x->x_listOut, x->x_window * sizeof(t_atom));
 
     // free FFTW stuff
-    t_freebytes(x->x_dctIn, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_dctOut, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_dctIn, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_dctOut, x->x_window * sizeof(t_float));
     fftwf_destroy_plan(x->x_fftwDctPlan);
 
     // free the window memory
-    t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hann, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_blackman, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_cosine, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hamming, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hann, x->x_window * sizeof(t_float));
 }
 
 void dct_tilde_setup(void)

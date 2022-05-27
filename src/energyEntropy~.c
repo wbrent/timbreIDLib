@@ -128,7 +128,7 @@ static void energyEntropy_tilde_midTermWindow (t_energyEntropy_tilde* x, t_float
 
 static void energyEntropy_tilde_overlap (t_energyEntropy_tilde* x, t_floatarg o)
 {
-    // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr/x->x_overlap;
+    // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
 
     post ("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);

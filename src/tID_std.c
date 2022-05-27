@@ -40,14 +40,14 @@ static void tID_std_calculate(t_tID_std *x, t_symbol *s, int argc, t_atom *argv)
     else
     {
         // create local memory
-        input = (t_float *)t_getbytes(n*sizeof(t_float));
+        input = (t_float *)t_getbytes(n * sizeof(t_float));
 
-        for(i=0; i<n; i++)
-            input[i] = atom_getfloat(argv+i);
+        for(i = 0; i < n; i++)
+            input[i] = atom_getfloat(argv + i);
 
         sum = 0.0;
 
-        for(i=0; i<n; i++)
+        for(i = 0; i < n; i++)
             sum += input[i];
 
         mean = sum/n;
@@ -55,20 +55,20 @@ static void tID_std_calculate(t_tID_std *x, t_symbol *s, int argc, t_atom *argv)
         sum = 0.0;
 
         // center & square the data
-        for(i=0; i<n; i++)
+        for(i = 0; i < n; i++)
         {
             input[i] -= mean;
             input[i] *= input[i];
             sum += input[i];
         }
 
-        std = sum/(n-1.0);
+        std = sum/(n - 1.0);
         std = sqrt(std);
 
         outlet_float(x->x_std, std);
 
         // free local memory
-        t_freebytes(input, n*sizeof(t_float));
+        t_freebytes(input, n * sizeof(t_float));
     }
 }
 

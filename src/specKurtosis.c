@@ -47,44 +47,44 @@ static void specKurtosis_resizeWindow(t_specKurtosis *x, t_sampIdx oldWindow, t_
     t_sampIdx i, oldWindowHalf, windowHalf;
 
     windowHalf = window * 0.5;
-    oldWindowHalf = oldWindow*0.5;
+    oldWindowHalf = oldWindow * 0.5;
 
-    if(window<TID_MINWINDOWSIZE)
+    if(window < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
         post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
-        *endSamp = startSamp + window-1;
+        *endSamp = startSamp + window - 1;
         if(*endSamp >= x->x_arrayPoints)
-            *endSamp = x->x_arrayPoints-1;
+            *endSamp = x->x_arrayPoints - 1;
     }
 
     // hang on to these values for next time
     x->x_window = window;
     x->x_windowHalf = windowHalf;
 
-    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
-    x->x_binFreqs = (t_float *)t_resizebytes(x->x_binFreqs, (oldWindowHalf+1)*sizeof(t_float), (x->x_windowHalf+1)*sizeof(t_float));
+    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow * sizeof(t_sample), x->x_window * sizeof(t_sample));
+    x->x_binFreqs = (t_float *)t_resizebytes(x->x_binFreqs, (oldWindowHalf + 1) * sizeof(t_float), (x->x_windowHalf + 1) * sizeof(t_float));
 
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
     // set up a new FFTW output buffer
-    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
     // FFTW plan
     x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
 
-    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
 
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
     tIDLib_cosineWindow(x->x_cosine, x->x_window);
     tIDLib_hammingWindow(x->x_hamming, x->x_window);
     tIDLib_hannWindow(x->x_hann, x->x_window);
 
-     for(i=0; i<=x->x_windowHalf; i++)
+     for(i = 0; i <= x->x_windowHalf; i++)
         x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
 }
 
@@ -102,17 +102,17 @@ static void specKurtosis_analyze(t_specKurtosis *x, t_floatarg start, t_floatarg
         t_sampIdx i, j, window, startSamp, endSamp;
         t_float energySum, centroid, spread, kurtosis, *windowFuncPtr;
 
-        startSamp = (start<0)?0:start;
+        startSamp = (start < 0) ? 0 : start;
 
         if(n)
-            endSamp = startSamp + n-1;
+            endSamp = startSamp + n - 1;
         else
-            endSamp = startSamp + x->x_window-1;
+            endSamp = startSamp + x->x_window - 1;
 
         if(endSamp >= x->x_arrayPoints)
-            endSamp = x->x_arrayPoints-1;
+            endSamp = x->x_arrayPoints - 1;
 
-        window = endSamp-startSamp+1;
+        window = endSamp - startSamp + 1;
 
         if(endSamp <= startSamp)
         {
@@ -124,7 +124,7 @@ static void specKurtosis_analyze(t_specKurtosis *x, t_floatarg start, t_floatarg
             specKurtosis_resizeWindow(x, x->x_window, window, startSamp, &endSamp);
 
         // construct analysis window
-        for(i=0, j=startSamp; j<=endSamp; i++, j++)
+        for(i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_fftwIn[i] = x->x_vec[j].w_float;
 
         windowFuncPtr = x->x_blackman;
@@ -151,24 +151,24 @@ static void specKurtosis_analyze(t_specKurtosis *x, t_floatarg start, t_floatarg
         };
 
         // if windowFunction == 0, skip the windowing (rectangular)
-        if(x->x_windowFunction!=rectangular)
-            for(i=0; i<x->x_window; i++, windowFuncPtr++)
+        if(x->x_windowFunction != rectangular)
+            for(i = 0; i < x->x_window; i++, windowFuncPtr++)
                 x->x_fftwIn[i] *= *windowFuncPtr;
 
         fftwf_execute(x->x_fftwPlan);
 
-        tIDLib_power(x->x_windowHalf+1, x->x_fftwOut, x->x_fftwIn);
+        tIDLib_power(x->x_windowHalf + 1, x->x_fftwOut, x->x_fftwIn);
 
         if(!x->x_powerSpectrum)
-            tIDLib_mag(x->x_windowHalf+1, x->x_fftwIn);
+            tIDLib_mag(x->x_windowHalf + 1, x->x_fftwIn);
 
         energySum = 0.0;
-        for(i=0; i<=x->x_windowHalf; i++)
+        for(i = 0; i <= x->x_windowHalf; i++)
             energySum += x->x_fftwIn[i];
 
-        centroid = tIDLib_computeCentroid(x->x_windowHalf+1, x->x_fftwIn, x->x_binFreqs, energySum);
-        spread = tIDLib_computeSpread(x->x_windowHalf+1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
-        kurtosis = tIDLib_computeKurtosis(x->x_windowHalf+1, x->x_fftwIn, x->x_binFreqs, energySum, centroid, spread);
+        centroid = tIDLib_computeCentroid(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum);
+        spread = tIDLib_computeSpread(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
+        kurtosis = tIDLib_computeKurtosis(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid, spread);
 
         outlet_float(x->x_kurtosis, kurtosis);
     }
@@ -181,35 +181,35 @@ static void specKurtosis_chain_fftData(t_specKurtosis *x, t_symbol *s, int argc,
     t_float energySum, centroid, spread, kurtosis;
 
     // incoming fftData list should be 2*(N/2+1) elements long, so windowHalf is:
-    windowHalf = argc-2;
+    windowHalf = argc - 2;
     windowHalf *= 0.5;
 
     // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
-    if(windowHalf!=x->x_windowHalf)
+    if(windowHalf != x->x_windowHalf)
     {
-        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
+        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf * 2, x->x_window);
         return;
     }
 
     // fill the x_fftwOut buffer with the incoming fftData list, for both real and imag elements
-    for(i=0; i<=x->x_windowHalf; i++)
+    for(i = 0; i <= x->x_windowHalf; i++)
     {
-        x->x_fftwOut[i][0] = atom_getfloat(argv+i);
-        x->x_fftwOut[i][1] = atom_getfloat(argv+(x->x_windowHalf+1)+i);
+        x->x_fftwOut[i][0] = atom_getfloat(argv + i);
+        x->x_fftwOut[i][1] = atom_getfloat(argv + (x->x_windowHalf + 1) + i);
     }
 
-    tIDLib_power(x->x_windowHalf+1, x->x_fftwOut, x->x_fftwIn);
+    tIDLib_power(x->x_windowHalf + 1, x->x_fftwOut, x->x_fftwIn);
 
     if(!x->x_powerSpectrum)
-        tIDLib_mag(x->x_windowHalf+1, x->x_fftwIn);
+        tIDLib_mag(x->x_windowHalf + 1, x->x_fftwIn);
 
     energySum = 0.0;
-    for(i=0; i<=x->x_windowHalf; i++)
+    for(i = 0; i <= x->x_windowHalf; i++)
         energySum += x->x_fftwIn[i];
 
-    centroid = tIDLib_computeCentroid(x->x_windowHalf+1, x->x_fftwIn, x->x_binFreqs, energySum);
-    spread = tIDLib_computeSpread(x->x_windowHalf+1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
-    kurtosis = tIDLib_computeKurtosis(x->x_windowHalf+1, x->x_fftwIn, x->x_binFreqs, energySum, centroid, spread);
+    centroid = tIDLib_computeCentroid(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum);
+    spread = tIDLib_computeSpread(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
+    kurtosis = tIDLib_computeKurtosis(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid, spread);
 
     outlet_float(x->x_kurtosis, kurtosis);
 }
@@ -221,26 +221,26 @@ static void specKurtosis_chain_magSpec(t_specKurtosis *x, t_symbol *s, int argc,
     t_float energySum, centroid, spread, kurtosis;
 
     // incoming magSpec list should be N/2+1 elements long, so windowHalf is one less than this
-    windowHalf = argc-1;
+    windowHalf = argc - 1;
 
     // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
-    if(windowHalf!=x->x_windowHalf)
+    if(windowHalf != x->x_windowHalf)
     {
-        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
+        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf * 2, x->x_window);
         return;
     }
 
     // fill the x_fftwIn buffer with the incoming magSpec list
-    for(i=0; i<=x->x_windowHalf; i++)
-        x->x_fftwIn[i] = atom_getfloat(argv+i);
+    for(i = 0; i <= x->x_windowHalf; i++)
+        x->x_fftwIn[i] = atom_getfloat(argv + i);
 
     energySum = 0.0;
-    for(i=0; i<=x->x_windowHalf; i++)
+    for(i = 0; i <= x->x_windowHalf; i++)
         energySum += x->x_fftwIn[i];
 
-    centroid = tIDLib_computeCentroid(x->x_windowHalf+1, x->x_fftwIn, x->x_binFreqs, energySum);
-    spread = tIDLib_computeSpread(x->x_windowHalf+1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
-    kurtosis = tIDLib_computeKurtosis(x->x_windowHalf+1, x->x_fftwIn, x->x_binFreqs, energySum, centroid, spread);
+    centroid = tIDLib_computeCentroid(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum);
+    spread = tIDLib_computeSpread(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
+    kurtosis = tIDLib_computeKurtosis(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid, spread);
 
     outlet_float(x->x_kurtosis, kurtosis);
 }
@@ -292,12 +292,12 @@ static void specKurtosis_samplerate(t_specKurtosis *x, t_floatarg sr)
 {
     t_sampIdx i;
 
-    if(sr<TID_MINSAMPLERATE)
+    if(sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 
-     for(i=0; i<=x->x_windowHalf; i++)
+     for(i = 0; i <= x->x_windowHalf; i++)
         x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
 }
 
@@ -315,8 +315,8 @@ static void specKurtosis_window(t_specKurtosis *x, t_floatarg w)
 
 static void specKurtosis_windowFunction(t_specKurtosis *x, t_floatarg f)
 {
-    f = (f<0)?0:f;
-    f = (f>4)?4:f;
+    f = (f < 0) ? 0 : f;
+    f = (f > 4) ? 4 : f;
     x->x_windowFunction = f;
 
     switch(x->x_windowFunction)
@@ -344,8 +344,8 @@ static void specKurtosis_windowFunction(t_specKurtosis *x, t_floatarg f)
 
 static void specKurtosis_powerSpectrum(t_specKurtosis *x, t_floatarg spec)
 {
-    spec = (spec<0)?0:spec;
-    spec = (spec>1)?1:spec;
+    spec = (spec < 0) ? 0 : spec;
+    spec = (spec > 1) ? 1 : spec;
     x->x_powerSpectrum = spec;
 
     if(x->x_powerSpectrum)
@@ -398,23 +398,23 @@ static void *specKurtosis_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
     x->x_window = TID_WINDOWSIZEDEFAULT;
-    x->x_windowHalf = x->x_window*0.5;
+    x->x_windowHalf = x->x_window * 0.5;
     x->x_windowFunction = blackman;
     x->x_powerSpectrum = false;
 
-    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
-    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
 
     // FFTW plan
     x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
 
-    for(i=0; i<x->x_window; i++)
+    for(i = 0; i < x->x_window; i++)
         x->x_fftwIn[i] = 0.0;
 
-      x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_blackman = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_cosine = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hamming = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hann = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
@@ -422,9 +422,9 @@ static void *specKurtosis_new(t_symbol *s, int argc, t_atom *argv)
     tIDLib_hammingWindow(x->x_hamming, x->x_window);
     tIDLib_hannWindow(x->x_hann, x->x_window);
 
-    x->x_binFreqs = (t_float *)t_getbytes((x->x_windowHalf+1) * sizeof(t_float));
+    x->x_binFreqs = (t_float *)t_getbytes((x->x_windowHalf + 1) * sizeof(t_float));
 
-     for(i=0; i<=x->x_windowHalf; i++)
+     for(i = 0; i <= x->x_windowHalf; i++)
         x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
 
     return (x);
@@ -434,18 +434,18 @@ static void *specKurtosis_new(t_symbol *s, int argc, t_atom *argv)
 static void specKurtosis_free(t_specKurtosis *x)
 {
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_sample));
+    t_freebytes(x->x_fftwIn, (x->x_window) * sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
 
     // free the window memory
-    t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hann, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_blackman, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_cosine, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hamming, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hann, x->x_window * sizeof(t_float));
 
     // free x_binFreqs memory
-    t_freebytes(x->x_binFreqs, (x->x_windowHalf+1)*sizeof(t_float));
+    t_freebytes(x->x_binFreqs, (x->x_windowHalf + 1) * sizeof(t_float));
 }
 
 

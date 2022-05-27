@@ -161,17 +161,17 @@ static void tempo_tilde_analyze(t_tempo_tilde *x)
     };
 
     // if x_windowFunction == 0, skip the windowing (rectangular)
-    if(x->x_windowFunction!=rectangular)
-        for(i=0; i<window; i++, windowFuncPtr++)
+    if(x->x_windowFunction != rectangular)
+        for(i = 0; i < window; i++, windowFuncPtr++)
             x->x_fftwInForwardWindow[i] *= *windowFuncPtr;
 
     fftwf_execute(x->x_fftwPlanForwardWindow);
 
     // put the result of power calc back in x_fftwIn
-    tIDLib_power(windowHalf+1, x->x_fftwOutForwardWindow, x->x_fftwInForwardWindow);
+    tIDLib_power(windowHalf + 1, x->x_fftwOutForwardWindow, x->x_fftwInForwardWindow);
 
     if(!x->x_powerSpectrum)
-        tIDLib_mag(windowHalf+1, x->x_fftwInForwardWindow);
+        tIDLib_mag(windowHalf + 1, x->x_fftwInForwardWindow);
 
     switch(x->x_windowFunction)
     {
@@ -195,17 +195,17 @@ static void tempo_tilde_analyze(t_tempo_tilde *x)
     };
 
     // if x_windowFunction == 0, skip the windowing (rectangular)
-    if(x->x_windowFunction!=rectangular)
-        for(i=0; i<window; i++, windowFuncPtr++)
+    if(x->x_windowFunction != rectangular)
+        for(i = 0; i < window; i++, windowFuncPtr++)
             x->x_fftwInBackWindow[i] *= *windowFuncPtr;
 
     fftwf_execute(x->x_fftwPlanBackWindow);
 
     // put the result of power calc back in x_fftwIn
-    tIDLib_power(windowHalf+1, x->x_fftwOutBackWindow, x->x_fftwInBackWindow);
+    tIDLib_power(windowHalf + 1, x->x_fftwOutBackWindow, x->x_fftwInBackWindow);
 
     if(!x->x_powerSpectrum)
-        tIDLib_mag(windowHalf+1, x->x_fftwInBackWindow);
+        tIDLib_mag(windowHalf + 1, x->x_fftwInBackWindow);
 
 // END SPECTRUM CAPTURE
 
@@ -299,7 +299,7 @@ static void tempo_tilde_analyze(t_tempo_tilde *x)
 
     onsetBufferShiftedSize = x->x_onsetsBufSize-startIdx;
 
-    onsetsBufferShifted = (t_float *)t_getbytes(onsetBufferShiftedSize*sizeof(t_float));
+    onsetsBufferShifted = (t_float *)t_getbytes(onsetBufferShiftedSize * sizeof(t_float));
 
     for(i=startIdx, j=0; i<x->x_onsetsBufSize; i++, j++)
     {
@@ -321,7 +321,7 @@ static void tempo_tilde_analyze(t_tempo_tilde *x)
     {
         maxYValue = -1;
 
-        yValues = (t_float *)t_getbytes(onsetBufferShiftedSize*sizeof(t_float));
+        yValues = (t_float *)t_getbytes(onsetBufferShiftedSize * sizeof(t_float));
 
         // init yValues arrays to zero
         for(i=0; i<onsetBufferShiftedSize; i++)
@@ -393,7 +393,7 @@ static void tempo_tilde_debug(t_tempo_tilde *x, t_floatarg d)
 
 static void tempo_tilde_print(t_tempo_tilde *x)
 {
-    post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr/x->x_overlap));
+    post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
     post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
     post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
@@ -420,7 +420,7 @@ static void tempo_tilde_window(t_tempo_tilde *x, t_floatarg w)
 
     window = w;
 
-    if(window<TID_MINWINDOWSIZE)
+    if(window < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
@@ -429,19 +429,19 @@ static void tempo_tilde_window(t_tempo_tilde *x, t_floatarg w)
     if(x->x_hop > window)
     {
         post("%s change in window size caused frame hop to be less than %i samples apart. Setting frame hop to half of current window size instead.", x->x_objSymbol->s_name, window);
-        x->x_hop = window*0.5;
+        x->x_hop = window * 0.5;
     }
 
-    windowHalf = window*0.5;
+    windowHalf = window * 0.5;
 
     x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window*2) * sizeof(t_sample), (window*2) * sizeof(t_sample));
-    x->x_fftwInForwardWindow = (t_sample *)t_resizebytes(x->x_fftwInForwardWindow, x->x_window*sizeof(t_sample), window*sizeof(t_sample));
-    x->x_fftwInBackWindow = (t_sample *)t_resizebytes(x->x_fftwInBackWindow, x->x_window*sizeof(t_sample), window*sizeof(t_sample));
+    x->x_fftwInForwardWindow = (t_sample *)t_resizebytes(x->x_fftwInForwardWindow, x->x_window * sizeof(t_sample), window * sizeof(t_sample));
+    x->x_fftwInBackWindow = (t_sample *)t_resizebytes(x->x_fftwInBackWindow, x->x_window * sizeof(t_sample), window * sizeof(t_sample));
 
-    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, x->x_window*sizeof(t_float), window*sizeof(t_float));
-    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, x->x_window*sizeof(t_float), window*sizeof(t_float));
-    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, x->x_window*sizeof(t_float), window*sizeof(t_float));
-    x->x_hann = (t_float *)t_resizebytes(x->x_hann, x->x_window*sizeof(t_float), window*sizeof(t_float));
+    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, x->x_window * sizeof(t_float), window * sizeof(t_float));
+    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, x->x_window * sizeof(t_float), window * sizeof(t_float));
+    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, x->x_window * sizeof(t_float), window * sizeof(t_float));
+    x->x_hann = (t_float *)t_resizebytes(x->x_hann, x->x_window * sizeof(t_float), window * sizeof(t_float));
 
     x->x_window = window;
     x->x_windowHalf = windowHalf;
@@ -455,15 +455,15 @@ static void tempo_tilde_window(t_tempo_tilde *x, t_floatarg w)
     fftwf_destroy_plan(x->x_fftwPlanBackWindow);
 
     // allocate new FFTW output buffer memory
-    x->x_fftwOutForwardWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
-    x->x_fftwOutBackWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOutForwardWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
+    x->x_fftwOutBackWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
 
     // create a new plan
     x->x_fftwPlanForwardWindow = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwInForwardWindow, x->x_fftwOutForwardWindow, FFTWPLANNERFLAG);
     x->x_fftwPlanBackWindow = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwInBackWindow, x->x_fftwOutBackWindow, FFTWPLANNERFLAG);
 
      // we're supposed to initialize the input array after we create the plan
-    for(i=0; i<x->x_window; i++)
+    for(i = 0; i < x->x_window; i++)
      {
         x->x_fftwInForwardWindow[i] = 0.0;
         x->x_fftwInBackWindow[i] = 0.0;
@@ -522,8 +522,8 @@ static void tempo_tilde_hop(t_tempo_tilde *x, t_floatarg h)
 
 static void tempo_tilde_overlap(t_tempo_tilde *x, t_floatarg o)
 {
-    // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr/x->x_overlap;
-    x->x_overlap = (o<1)?1:o;
+    // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
+    x->x_overlap = (o < 1) ? 1 : o;
 
     post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
 }
@@ -544,8 +544,8 @@ static void tempo_tilde_squaredDiff(t_tempo_tilde *x, t_floatarg sd)
 
 static void tempo_tilde_windowFunction(t_tempo_tilde *x, t_floatarg f)
 {
-    f = (f<0)?0:f;
-    f = (f>4)?4:f;
+    f = (f < 0) ? 0 : f;
+    f = (f > 4) ? 4 : f;
     x->x_windowFunction = f;
 
     switch(x->x_windowFunction)
@@ -573,8 +573,8 @@ static void tempo_tilde_windowFunction(t_tempo_tilde *x, t_floatarg f)
 
 static void tempo_tilde_powerSpectrum(t_tempo_tilde *x, t_floatarg spec)
 {
-    spec = (spec<0)?0:spec;
-    spec = (spec>1)?1:spec;
+    spec = (spec < 0) ? 0 : spec;
+    spec = (spec > 1) ? 1 : spec;
     x->x_powerSpectrum = spec;
 
     if(x->x_powerSpectrum)
@@ -587,7 +587,7 @@ static void tempo_tilde_powerSpectrum(t_tempo_tilde *x, t_floatarg spec)
 static void tempo_tilde_freqRange(t_tempo_tilde *x, t_floatarg loFreq, t_floatarg hiFreq)
 {
     loFreq = (loFreq<0)?0:loFreq;
-    loFreq = (loFreq>(x->x_sr*0.5))?x->x_sr*0.5:loFreq;
+    loFreq = (loFreq>(x->x_sr * 0.5))?x->x_sr * 0.5:loFreq;
 
     x->x_loFreq = loFreq;
     x->x_hiFreq = hiFreq;
@@ -595,7 +595,7 @@ static void tempo_tilde_freqRange(t_tempo_tilde *x, t_floatarg loFreq, t_floatar
     x->x_loBin = tIDLib_freq2bin(loFreq, x->x_window, x->x_sr);
 
     hiFreq = (hiFreq<0)?0:hiFreq;
-    hiFreq = (hiFreq>(x->x_sr*0.5))?x->x_sr*0.5:hiFreq;
+    hiFreq = (hiFreq>(x->x_sr * 0.5))?x->x_sr * 0.5:hiFreq;
 
     x->x_hiBin = tIDLib_freq2bin(hiFreq, x->x_window, x->x_sr);
 
@@ -750,22 +750,22 @@ static void *tempo_tilde_new(t_symbol *s, int argc, t_atom *argv)
     {
         case 2:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<TID_MINWINDOWSIZE)
+            if(x->x_window < TID_MINWINDOWSIZE)
             {
                 x->x_window = TID_WINDOWSIZEDEFAULT;
                 post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
-            hopFloat = atom_getfloat(argv+1);
+            hopFloat = atom_getfloat(argv + 1);
             if(hopFloat > x->x_window)
             {
                 post("%s WARNING: analysis hop cannot be more than current window size. Using half of current window size instead.", x->x_objSymbol->s_name);
-                x->x_hop = x->x_window*0.5;
+                x->x_hop = x->x_window * 0.5;
             }
             else if(hopFloat < 0)
             {
                 post("%s WARNING: analysis hop must be > 0. Using half of current window size instead.", x->x_objSymbol->s_name);
-                x->x_hop = x->x_window*0.5;
+                x->x_hop = x->x_window * 0.5;
             }
             else
                 x->x_hop = hopFloat;
@@ -773,28 +773,28 @@ static void *tempo_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
         case 1:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<TID_MINWINDOWSIZE)
+            if(x->x_window < TID_MINWINDOWSIZE)
             {
                 x->x_window = TID_WINDOWSIZEDEFAULT;
                 post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
-            x->x_hop = x->x_window*0.5;
+            x->x_hop = x->x_window * 0.5;
             break;
 
         case 0:
             x->x_window = TID_WINDOWSIZEDEFAULT;
-            x->x_hop = x->x_window*0.5;
+            x->x_hop = x->x_window * 0.5;
             break;
 
         default:
             post("%s WARNING: Too many arguments supplied. Using default window size of %i, and analysis hop of %i.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, (t_sampIdx)(TID_WINDOWSIZEDEFAULT*0.5));
             x->x_window = TID_WINDOWSIZEDEFAULT;
-            x->x_hop = x->x_window*0.5;
+            x->x_hop = x->x_window * 0.5;
             break;
     }
 
-    x->x_windowHalf = x->x_window*0.5;
+    x->x_windowHalf = x->x_window * 0.5;
     x->x_loBin = 0;
     x->x_hiBin = x->x_windowHalf;
     x->x_growthThresh = 20.0; // this is percent of max peak found
@@ -807,7 +807,7 @@ static void *tempo_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_overlap = 1;
 
     x->x_loFreq = 0;
-    x->x_hiFreq = x->x_sr*0.5;
+    x->x_hiFreq = x->x_sr * 0.5;
 
     x->x_loTempo = 40;
     x->x_hiTempo = 240;
@@ -841,7 +841,7 @@ static void *tempo_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_fftwInForwardWindow = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
     x->x_fftwInBackWindow = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
     x->x_onsetsBuffer = (t_float *)t_getbytes(x->x_onsetsBufSize * sizeof(t_float));
-    x->x_listOut = (t_atom *)t_getbytes(x->x_onsetsBufSize*sizeof(t_atom));
+    x->x_listOut = (t_atom *)t_getbytes(x->x_onsetsBufSize * sizeof(t_atom));
 
      for(i=0; i<(x->x_window*2); i++)
         x->x_signalBuffer[i] = 0.0;
@@ -849,10 +849,10 @@ static void *tempo_tilde_new(t_symbol *s, int argc, t_atom *argv)
      for(i=0; i<x->x_onsetsBufSize; i++)
         x->x_onsetsBuffer[i] = x->x_belowThreshDefault;
 
-      x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_blackman = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_cosine = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hamming = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hann = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
@@ -861,21 +861,21 @@ static void *tempo_tilde_new(t_symbol *s, int argc, t_atom *argv)
     tIDLib_hannWindow(x->x_hann, x->x_window);
 
     // set up the FFTW output buffer. Is there no function to initialize it?
-    x->x_fftwOutForwardWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
-    x->x_fftwOutBackWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOutForwardWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
+    x->x_fftwOutBackWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
 
     // DFT plan
     x->x_fftwPlanForwardWindow = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwInForwardWindow, x->x_fftwOutForwardWindow, FFTWPLANNERFLAG);
     x->x_fftwPlanBackWindow = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwInBackWindow, x->x_fftwOutBackWindow, FFTWPLANNERFLAG);
 
     // we're supposed to initialize the input array after we create the plan
-     for(i=0; i<x->x_window; i++)
+     for(i = 0; i < x->x_window; i++)
      {
         x->x_fftwInForwardWindow[i] = 0.0;
         x->x_fftwInBackWindow[i] = 0.0;
     }
 
-      x->x_tempoBuffer = (t_float *)t_getbytes(x->x_tempoBufferSize*sizeof(t_float));
+      x->x_tempoBuffer = (t_float *)t_getbytes(x->x_tempoBufferSize * sizeof(t_float));
 
      for(i=0; i<x->x_tempoBufferSize; i++)
         x->x_tempoBuffer[i] = -1;
@@ -899,7 +899,7 @@ static t_int *tempo_tilde_perform(t_int *w)
         x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
 
     // write new block to end of signal buffer.
-    for(i=0; i<n; i++)
+    for(i = 0; i < n; i++)
         x->x_signalBuffer[(x->x_window*2-n)+i] = in[i];
 
     x->x_dspTicks++;
@@ -912,7 +912,7 @@ static t_int *tempo_tilde_perform(t_int *w)
 
     x->x_lastDspTime = clock_getlogicaltime();
 
-    return (w+4);
+    return (w + 4);
 }
 
 
@@ -927,12 +927,12 @@ static void tempo_tilde_dsp(t_tempo_tilde *x, t_signal **sp)
     );
 
 // compare sr to stored sr and update if different
-    if( sp[0]->s_sr != (x->x_sr*x->x_overlap) )
+    if( sp[0]->s_sr != x->x_sr * x->x_overlap )
     {
         t_sampIdx i;
         t_float loTempo, hiTempo;
 
-        x->x_sr = sp[0]->s_sr/x->x_overlap;
+        x->x_sr = sp[0]->s_sr / x->x_overlap;
 
         // reset dspTicks to start fresh at the new samplerate
         x->x_dspTicks = 0;
@@ -969,25 +969,25 @@ static void tempo_tilde_dsp(t_tempo_tilde *x, t_signal **sp)
 static void tempo_tilde_free(t_tempo_tilde *x)
 {
     // free the input buffer memory
-    t_freebytes(x->x_signalBuffer, (x->x_window*2)*sizeof(t_sample));
-    t_freebytes(x->x_onsetsBuffer, x->x_onsetsBufSize*sizeof(t_float));
+    t_freebytes(x->x_signalBuffer, (x->x_window*2) * sizeof(t_sample));
+    t_freebytes(x->x_onsetsBuffer, x->x_onsetsBufSize * sizeof(t_float));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwInForwardWindow, (x->x_window)*sizeof(t_sample));
-    t_freebytes(x->x_fftwInBackWindow, (x->x_window)*sizeof(t_sample));
+    t_freebytes(x->x_fftwInForwardWindow, (x->x_window) * sizeof(t_sample));
+    t_freebytes(x->x_fftwInBackWindow, (x->x_window) * sizeof(t_sample));
     fftwf_free(x->x_fftwOutForwardWindow);
     fftwf_free(x->x_fftwOutBackWindow);
     fftwf_destroy_plan(x->x_fftwPlanForwardWindow);
     fftwf_destroy_plan(x->x_fftwPlanBackWindow);
 
     // free the window memory
-    t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hann, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_blackman, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_cosine, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hamming, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hann, x->x_window * sizeof(t_float));
 
-    t_freebytes(x->x_tempoBuffer, x->x_tempoBufferSize*sizeof(t_float));
-    t_freebytes(x->x_listOut, x->x_onsetsBufSize*sizeof(t_atom));
+    t_freebytes(x->x_tempoBuffer, x->x_tempoBufferSize * sizeof(t_float));
+    t_freebytes(x->x_listOut, x->x_onsetsBufSize * sizeof(t_atom));
 }
 
 void tempo_tilde_setup(void)

@@ -53,36 +53,36 @@ static void cepstrumPitch_resizeWindow(t_cepstrumPitch *x, t_sampIdx oldWindow, 
 
     windowHalf = window * 0.5;
 
-    if(window<TID_MINWINDOWSIZE)
+    if(window < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
         post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
-        *endSamp = startSamp + window-1;
+        *endSamp = startSamp + window - 1;
         if(*endSamp >= x->x_arrayPoints)
-            *endSamp = x->x_arrayPoints-1;
+            *endSamp = x->x_arrayPoints - 1;
     }
 
     // hang on to these values for next time
     x->x_window = window;
     x->x_windowHalf = windowHalf;
 
-    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
+    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow * sizeof(t_sample), x->x_window * sizeof(t_sample));
 
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwForwardPlan);
     fftwf_destroy_plan(x->x_fftwBackwardPlan);
     // set up a new FFTW output buffer
-    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
     // FFTW plan
     x->x_fftwForwardPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
     x->x_fftwBackwardPlan = fftwf_plan_dft_c2r_1d(x->x_window, x->x_fftwOut, x->x_fftwIn, FFTWPLANNERFLAG);
 
-    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
 
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
     tIDLib_cosineWindow(x->x_cosine, x->x_window);
@@ -104,17 +104,17 @@ static void cepstrumPitch_analyze(t_cepstrumPitch *x, t_floatarg start, t_floata
         pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
     else
     {
-        startSamp = (start<0)?0:start;
+        startSamp = (start < 0) ? 0 : start;
 
         if(n)
-            endSamp = startSamp + n-1;
+            endSamp = startSamp + n - 1;
         else
-            endSamp = startSamp + x->x_window-1;
+            endSamp = startSamp + x->x_window - 1;
 
         if(endSamp >= x->x_arrayPoints)
-            endSamp = x->x_arrayPoints-1;
+            endSamp = x->x_arrayPoints - 1;
 
-        window = endSamp-startSamp+1;
+        window = endSamp - startSamp + 1;
         nRecip = 1.0/window;
 
         if(endSamp <= startSamp)
@@ -137,7 +137,7 @@ static void cepstrumPitch_analyze(t_cepstrumPitch *x, t_floatarg start, t_floata
         loFreqBin = (loFreqBin>x->x_windowHalf)?x->x_windowHalf:loFreqBin;
 
         // construct analysis window
-        for(i=0, j=startSamp; j<=endSamp; i++, j++)
+        for(i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_fftwIn[i] = x->x_vec[j].w_float;
 
         windowFuncPtr = x->x_blackman;
@@ -164,26 +164,26 @@ static void cepstrumPitch_analyze(t_cepstrumPitch *x, t_floatarg start, t_floata
         };
 
         // if windowFunction == 0, skip the windowing (rectangular)
-        if(x->x_windowFunction!=rectangular)
-            for(i=0; i<x->x_window; i++, windowFuncPtr++)
+        if(x->x_windowFunction != rectangular)
+            for(i = 0; i < x->x_window; i++, windowFuncPtr++)
                 x->x_fftwIn[i] *= *windowFuncPtr;
 
         fftwf_execute(x->x_fftwForwardPlan);
 
-        tIDLib_power(x->x_windowHalf+1, x->x_fftwOut, x->x_fftwIn);
+        tIDLib_power(x->x_windowHalf + 1, x->x_fftwOut, x->x_fftwIn);
 
         if(!x->x_powerSpectrum)
-            tIDLib_mag(x->x_windowHalf+1, x->x_fftwIn);
+            tIDLib_mag(x->x_windowHalf + 1, x->x_fftwIn);
 
         // add 1.0 to power or magnitude spectrum before taking the log and then IFT. Avoid large negative values from log(negativeNum). MPM (McCleod Pitch Method)
         if(x->x_spectrumOffset)
-            for(i=0; i<x->x_windowHalf+1; i++)
+            for(i = 0; i < x->x_windowHalf + 1; i++)
                 x->x_fftwIn[i] += 1.0;
 
-        tIDLib_log(x->x_windowHalf+1, x->x_fftwIn);
+        tIDLib_log(x->x_windowHalf + 1, x->x_fftwIn);
 
         // copy forward DFT magnitude result into real part of backward DFT complex input buffer, and zero out the imaginary part. fftwOut is only N/2+1 points long, while fftwIn is N points long
-        for(i=0; i<x->x_windowHalf+1; i++)
+        for(i = 0; i < x->x_windowHalf + 1; i++)
         {
             x->x_fftwOut[i][0] = x->x_fftwIn[i];
             x->x_fftwOut[i][1] = 0.0;
@@ -191,12 +191,12 @@ static void cepstrumPitch_analyze(t_cepstrumPitch *x, t_floatarg start, t_floata
 
         fftwf_execute(x->x_fftwBackwardPlan);
 
-        for(i=0; i<x->x_windowHalf+1; i++)
+        for(i = 0; i < x->x_windowHalf + 1; i++)
             x->x_fftwIn[i] *= nRecip;
 
         // optionally square the cepstrum results for power cepstrum
         if(x->x_powerCepstrum)
-            for(i=0; i<x->x_windowHalf+1; i++)
+            for(i = 0; i < x->x_windowHalf + 1; i++)
                 x->x_fftwIn[i] = x->x_fftwIn[i]*x->x_fftwIn[i];
 
         maxVal = 0.0;
@@ -296,7 +296,7 @@ static void cepstrumPitch_print(t_cepstrumPitch *x)
 
 static void cepstrumPitch_samplerate(t_cepstrumPitch *x, t_floatarg sr)
 {
-    if(sr<TID_MINSAMPLERATE)
+    if(sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
@@ -316,8 +316,8 @@ static void cepstrumPitch_window(t_cepstrumPitch *x, t_floatarg w)
 
 static void cepstrumPitch_windowFunction(t_cepstrumPitch *x, t_floatarg f)
 {
-    f = (f<0)?0:f;
-    f = (f>4)?4:f;
+    f = (f < 0) ? 0 : f;
+    f = (f > 4) ? 4 : f;
     x->x_windowFunction = f;
 
     switch(x->x_windowFunction)
@@ -345,8 +345,8 @@ static void cepstrumPitch_windowFunction(t_cepstrumPitch *x, t_floatarg f)
 
 static void cepstrumPitch_powerSpectrum(t_cepstrumPitch *x, t_floatarg spec)
 {
-    spec = (spec<0)?0:spec;
-    spec = (spec>1)?1:spec;
+    spec = (spec < 0) ? 0 : spec;
+    spec = (spec > 1) ? 1 : spec;
     x->x_powerSpectrum = spec;
 
     if(x->x_powerSpectrum)
@@ -428,8 +428,8 @@ static void *cepstrumPitch_new(t_symbol *s, int argc, t_atom *argv)
     {
         case 3:
             x->x_arrayName = atom_getsymbol(argv);
-            x->x_loFreq = atom_getfloat(argv+1);
-            x->x_hiFreq = atom_getfloat(argv+2);
+            x->x_loFreq = atom_getfloat(argv + 1);
+            x->x_hiFreq = atom_getfloat(argv + 2);
             x->x_loFreq = mtof(x->x_loFreq);
             x->x_hiFreq = mtof(x->x_hiFreq);
             x->x_loFreq = (x->x_loFreq<0)?0:x->x_loFreq;
@@ -440,7 +440,7 @@ static void *cepstrumPitch_new(t_symbol *s, int argc, t_atom *argv)
 
         case 2:
             x->x_arrayName = atom_getsymbol(argv);
-            x->x_loFreq = atom_getfloat(argv+1);
+            x->x_loFreq = atom_getfloat(argv + 1);
             x->x_hiFreq = x->x_loFreq+12;
             x->x_loFreq = mtof(x->x_loFreq);
             x->x_hiFreq = mtof(x->x_hiFreq);
@@ -494,17 +494,17 @@ static void *cepstrumPitch_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
     x->x_window = TID_WINDOWSIZEDEFAULT;
-    x->x_windowHalf = x->x_window*0.5;
+    x->x_windowHalf = x->x_window * 0.5;
     x->x_windowFunction = rectangular;
     x->x_powerSpectrum = true;
     x->x_powerCepstrum = false;
     x->x_spectrumOffset = true;
     x->x_thresh = 0.0;
 
-    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
+    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
 
     // set up the FFTW output buffer. Is there no function to initialize it?
-    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
 
     // Forward DFT plan
     x->x_fftwForwardPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
@@ -512,13 +512,13 @@ static void *cepstrumPitch_new(t_symbol *s, int argc, t_atom *argv)
     // Backward DFT plan
     x->x_fftwBackwardPlan = fftwf_plan_dft_c2r_1d(x->x_window, x->x_fftwOut, x->x_fftwIn, FFTWPLANNERFLAG);
 
-    for(i=0; i<x->x_window; i++)
+    for(i = 0; i < x->x_window; i++)
         x->x_fftwIn[i] = 0.0;
 
-      x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_blackman = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_cosine = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hamming = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hann = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
@@ -533,16 +533,16 @@ static void *cepstrumPitch_new(t_symbol *s, int argc, t_atom *argv)
 static void cepstrumPitch_free(t_cepstrumPitch *x)
 {
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_sample));
+    t_freebytes(x->x_fftwIn, (x->x_window) * sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwForwardPlan);
     fftwf_destroy_plan(x->x_fftwBackwardPlan);
 
     // free the window memory
-    t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hann, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_blackman, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_cosine, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hamming, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hann, x->x_window * sizeof(t_float));
 }
 
 

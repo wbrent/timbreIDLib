@@ -108,7 +108,7 @@ static void chroma_tilde_bang (t_chroma_tilde *x)
     tIDLib_power (windowHalf + 1, x->x_fftwOut, x->x_fftwIn);
 
     if (!x->x_powerSpectrum)
-        tIDLib_mag (windowHalf+1, x->x_fftwIn);
+        tIDLib_mag (windowHalf + 1, x->x_fftwIn);
 
     maxEnergySum = 0.0;
 
@@ -176,7 +176,7 @@ static void chroma_tilde_print(t_chroma_tilde *x)
 {
     t_uChar i;
 
-    post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr/x->x_overlap));
+    post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_sampIdx)x->x_n);
     post ("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
@@ -255,7 +255,7 @@ static void chroma_tilde_window (t_chroma_tilde *x, t_floatarg w)
 
 static void chroma_tilde_overlap (t_chroma_tilde *x, t_floatarg o)
 {
-    // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr/x->x_overlap;
+    // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1.0) ? 1.0 : o;
 
     post ("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
@@ -438,7 +438,7 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
     x->x_resolution = 1.0;
     x->x_microtune = 0.0;
 
-      x->x_pitchClasses = (t_float *)t_getbytes (x->x_numChroma*sizeof (t_float));
+      x->x_pitchClasses = (t_float *)t_getbytes (x->x_numChroma * sizeof (t_float));
 
     // these are the lowest MIDI pitches being considered for C through B
     x->x_pitchClasses[0] = 24.0;
@@ -463,38 +463,38 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
                 x->x_window = TID_WINDOWSIZEDEFAULT;
                 post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
-            x->x_loFreq = atom_getfloat(argv+1);
-            x->x_hiFreq = atom_getfloat(argv+2);
-            x->x_pitchTolerance = atom_getfloat(argv+3);
+            x->x_loFreq = atom_getfloat(argv + 1);
+            x->x_hiFreq = atom_getfloat(argv + 2);
+            x->x_pitchTolerance = atom_getfloat(argv + 3);
             break;
 
         case 3:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<TID_MINWINDOWSIZE)
+            if(x->x_window < TID_MINWINDOWSIZE)
             {
                 x->x_window = TID_WINDOWSIZEDEFAULT;
                 post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
-            x->x_loFreq = atom_getfloat(argv+1);
-            x->x_hiFreq = atom_getfloat(argv+2);
+            x->x_loFreq = atom_getfloat(argv + 1);
+            x->x_hiFreq = atom_getfloat(argv + 2);
             x->x_pitchTolerance = 0.1;
             break;
 
         case 2:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<TID_MINWINDOWSIZE)
+            if(x->x_window < TID_MINWINDOWSIZE)
             {
                 x->x_window = TID_WINDOWSIZEDEFAULT;
                 post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
-            x->x_loFreq = atom_getfloat(argv+1);
+            x->x_loFreq = atom_getfloat(argv + 1);
             x->x_hiFreq = 5000.0;
             x->x_pitchTolerance = 0.1;
             break;
 
         case 1:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<TID_MINWINDOWSIZE)
+            if(x->x_window < TID_MINWINDOWSIZE)
             {
                 x->x_window = TID_WINDOWSIZEDEFAULT;
                 post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
@@ -513,14 +513,14 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
 
         default:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<TID_MINWINDOWSIZE)
+            if(x->x_window < TID_MINWINDOWSIZE)
             {
                 x->x_window = TID_WINDOWSIZEDEFAULT;
                 post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
-            x->x_loFreq = atom_getfloat(argv+1);
-            x->x_hiFreq = atom_getfloat(argv+2);
-            x->x_pitchTolerance = atom_getfloat(argv+3);
+            x->x_loFreq = atom_getfloat(argv + 1);
+            x->x_hiFreq = atom_getfloat(argv + 2);
+            x->x_pitchTolerance = atom_getfloat(argv + 3);
             post ("%s WARNING: extra arguments ignored.", x->x_objSymbol->s_name);
             break;
     }
@@ -533,7 +533,7 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
     x->x_pitchTolerance = (x->x_pitchTolerance>0.5)?0.5:x->x_pitchTolerance;
     x->x_energyThresh = 0.0;
 
-    x->x_windowHalf = x->x_window*0.5;
+    x->x_windowHalf = x->x_window * 0.5;
     x->x_n = TID_BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
     x->x_windowFunction = blackman;
@@ -541,18 +541,18 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
     x->x_powerSpectrum = true;
     x->x_lastDspTime = clock_getlogicaltime();
 
-    x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_window+x->x_n) * sizeof (t_sample));
-    x->x_binRanges = (t_binIdx *)t_getbytes (TID_PBINRANGEBUFSIZE*sizeof (t_binIdx));
+    x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_window + x->x_n) * sizeof (t_sample));
+    x->x_binRanges = (t_binIdx *)t_getbytes (TID_PBINRANGEBUFSIZE * sizeof (t_binIdx));
     x->x_fftwIn = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
-    x->x_listOut = (t_atom *)t_getbytes (x->x_numChroma*sizeof (t_atom));
+    x->x_listOut = (t_atom *)t_getbytes (x->x_numChroma * sizeof (t_atom));
 
     for (i = 0; i < (x->x_window + x->x_n); i++)
         x->x_signalBuffer[i] = 0.0;
 
-    x->x_blackman = (t_float *)t_getbytes (x->x_window*sizeof (t_float));
-    x->x_cosine = (t_float *)t_getbytes (x->x_window*sizeof (t_float));
-    x->x_hamming = (t_float *)t_getbytes (x->x_window*sizeof (t_float));
-    x->x_hann = (t_float *)t_getbytes (x->x_window*sizeof (t_float));
+    x->x_blackman = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_cosine = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_hamming = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_hann = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
@@ -561,7 +561,7 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
     tIDLib_hannWindow(x->x_hann, x->x_window);
 
     // set up the FFTW output buffer.
-    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
 
     // DFT plan
     x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
@@ -590,11 +590,11 @@ static t_int *chroma_tilde_perform (t_int *w)
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)
-        x->x_signalBuffer[x->x_window+i] = in[i];
+        x->x_signalBuffer[x->x_window + i] = in[i];
 
     x->x_lastDspTime = clock_getlogicaltime();
 
-    return (w+4);
+    return (w + 4);
 }
 
 
@@ -609,9 +609,9 @@ static void chroma_tilde_dsp (t_chroma_tilde *x, t_signal **sp)
     );
 
 // compare sr to stored sr and update if different
-    if(sp[0]->s_sr != (x->x_sr*x->x_overlap))
+    if(sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
-        x->x_sr = sp[0]->s_sr/x->x_overlap;
+        x->x_sr = sp[0]->s_sr / x->x_overlap;
         x->x_lastDspTime = clock_getlogicaltime();
     };
 
@@ -620,7 +620,7 @@ static void chroma_tilde_dsp (t_chroma_tilde *x, t_signal **sp)
     {
         t_sampIdx i;
 
-        x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_window+x->x_n) * sizeof (t_sample), (x->x_window+sp[0]->s_n) * sizeof (t_sample));
+        x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample), (x->x_window + sp[0]->s_n) * sizeof (t_sample));
 
         x->x_n = sp[0]->s_n;
         x->x_lastDspTime = clock_getlogicaltime();
@@ -637,25 +637,25 @@ static void chroma_tilde_dsp (t_chroma_tilde *x, t_signal **sp)
 static void chroma_tilde_free (t_chroma_tilde *x)
 {
     // free the input buffer memory
-    t_freebytes(x->x_signalBuffer, (x->x_window+x->x_n)*sizeof (t_sample));
+    t_freebytes(x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));
 
     // free the list out and pitch class memory
-    t_freebytes(x->x_listOut, x->x_numChroma*sizeof (t_atom));
-    t_freebytes(x->x_pitchClasses, x->x_numChroma*sizeof (t_float));
+    t_freebytes(x->x_listOut, x->x_numChroma * sizeof (t_atom));
+    t_freebytes(x->x_pitchClasses, x->x_numChroma * sizeof (t_float));
 
     // free the bin ranges memory
-    t_freebytes(x->x_binRanges, TID_PBINRANGEBUFSIZE*sizeof (t_binIdx));
+    t_freebytes(x->x_binRanges, TID_PBINRANGEBUFSIZE * sizeof (t_binIdx));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof (t_sample));
+    t_freebytes(x->x_fftwIn, (x->x_window) * sizeof (t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
 
     // free the window memory
-    t_freebytes(x->x_blackman, x->x_window*sizeof (t_float));
-    t_freebytes(x->x_cosine, x->x_window*sizeof (t_float));
-    t_freebytes(x->x_hamming, x->x_window*sizeof (t_float));
-    t_freebytes(x->x_hann, x->x_window*sizeof (t_float));
+    t_freebytes(x->x_blackman, x->x_window * sizeof (t_float));
+    t_freebytes(x->x_cosine, x->x_window * sizeof (t_float));
+    t_freebytes(x->x_hamming, x->x_window * sizeof (t_float));
+    t_freebytes(x->x_hann, x->x_window * sizeof (t_float));
 }
 
 void chroma_tilde_setup (void)

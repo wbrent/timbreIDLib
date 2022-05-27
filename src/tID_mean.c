@@ -40,14 +40,14 @@ static void tID_mean_calculate(t_tID_mean *x, t_symbol *s, int argc, t_atom *arg
     else
     {
         // create local memory
-        input = (t_float *)t_getbytes(n*sizeof(t_float));
+        input = (t_float *)t_getbytes(n * sizeof(t_float));
 
-        for(i=0; i<n; i++)
-            input[i] = atom_getfloat(argv+i);
+        for(i = 0; i < n; i++)
+            input[i] = atom_getfloat(argv + i);
 
         sum = 0.0;
 
-        for(i=0; i<n; i++)
+        for(i = 0; i < n; i++)
             sum += input[i];
 
         mean = sum/n;
@@ -55,7 +55,7 @@ static void tID_mean_calculate(t_tID_mean *x, t_symbol *s, int argc, t_atom *arg
         outlet_float(x->x_mean, mean);
 
         // free local memory
-        t_freebytes(input, n*sizeof(t_float));
+        t_freebytes(input, n * sizeof(t_float));
     }
 }
 

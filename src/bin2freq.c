@@ -40,7 +40,7 @@ static void bin2freq_calculate(t_bin2freq *x, t_float bin)
     }
     else
     {
-        pd_error(x, "bin2freq: bin number must be between 0 and %lu", (t_binIdx)(x->x_n-1));
+        pd_error(x, "bin2freq: bin number must be between 0 and %lu", (t_binIdx)(x->x_n - 1));
     }
 }
 

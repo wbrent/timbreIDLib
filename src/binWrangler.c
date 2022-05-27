@@ -43,7 +43,7 @@ static void binWrangler_accum(t_binWrangler *x, t_symbol *s, int argc, t_atom *a
     }
     else
         for(i=0; i<x->x_featureLength; i++)
-            x->x_instances[x->x_currentFrame].data[i] = atom_getfloat(argv+i);
+            x->x_instances[x->x_currentFrame].data[i] = atom_getfloat(argv + i);
 
     x->x_currentFrame++;
 
@@ -74,19 +74,19 @@ static void binWrangler_clear(t_binWrangler *x)
 
     // free the database memory
     for(i=0; i<x->x_numFrames; i++)
-        t_freebytes(x->x_instances[i].data, x->x_featureLength*sizeof(float));
+        t_freebytes(x->x_instances[i].data, x->x_featureLength * sizeof(float));
 
-    t_freebytes(x->x_instances, x->x_numFrames*sizeof(t_instance));
+    t_freebytes(x->x_instances, x->x_numFrames * sizeof(t_instance));
 
     x->x_currentFrame = 0;
 
     for(i=0; i<x->x_featureLength*x->x_numFrames; i++)
         SETFLOAT(x->x_listOut+i, 0.0);
 
-    x->x_instances = (t_instance *)t_getbytes(x->x_numFrames*sizeof(t_instance));
+    x->x_instances = (t_instance *)t_getbytes(x->x_numFrames * sizeof(t_instance));
 
     for(i=0; i<x->x_numFrames; i++)
-        x->x_instances[i].data = (float *)t_getbytes(x->x_featureLength*sizeof(float));
+        x->x_instances[i].data = (float *)t_getbytes(x->x_featureLength * sizeof(float));
 
     for(i=0; i<x->x_numFrames; i++)
         for(j=0; j<x->x_featureLength; j++)
@@ -99,13 +99,13 @@ static void binWrangler_numFrames(t_binWrangler *x, t_float num)
 
     num = (num<1)?1:num;
 
-    x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, (x->x_featureLength*x->x_numFrames)*sizeof(t_atom), (x->x_featureLength*num)*sizeof(t_atom));
+    x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, (x->x_featureLength*x->x_numFrames) * sizeof(t_atom), (x->x_featureLength*num) * sizeof(t_atom));
 
     // free the database memory
     for(i=0; i<x->x_numFrames; i++)
-        t_freebytes(x->x_instances[i].data, x->x_featureLength*sizeof(float));
+        t_freebytes(x->x_instances[i].data, x->x_featureLength * sizeof(float));
 
-    t_freebytes(x->x_instances, x->x_numFrames*sizeof(t_instance));
+    t_freebytes(x->x_instances, x->x_numFrames * sizeof(t_instance));
 
     x->x_currentFrame = 0;
     x->x_numFrames = num;
@@ -113,10 +113,10 @@ static void binWrangler_numFrames(t_binWrangler *x, t_float num)
     for(i=0; i<x->x_featureLength*x->x_numFrames; i++)
         SETFLOAT(x->x_listOut+i, 0.0);
 
-    x->x_instances = (t_instance *)t_getbytes(x->x_numFrames*sizeof(t_instance));
+    x->x_instances = (t_instance *)t_getbytes(x->x_numFrames * sizeof(t_instance));
 
     for(i=0; i<x->x_numFrames; i++)
-        x->x_instances[i].data = (float *)t_getbytes(x->x_featureLength*sizeof(float));
+        x->x_instances[i].data = (float *)t_getbytes(x->x_featureLength * sizeof(float));
 
     for(i=0; i<x->x_numFrames; i++)
         for(j=0; j<x->x_featureLength; j++)
@@ -129,15 +129,15 @@ static void binWrangler_length(t_binWrangler *x, t_float len)
 
     len = (len<1)?1:len;
 
-    x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, (x->x_featureLength*x->x_numFrames)*sizeof(t_atom), (len*x->x_numFrames)*sizeof(t_atom));
+    x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, (x->x_featureLength*x->x_numFrames) * sizeof(t_atom), (len*x->x_numFrames) * sizeof(t_atom));
 
     // free the database memory
     for(i=0; i<x->x_numFrames; i++)
-        t_freebytes(x->x_instances[i].data, x->x_featureLength*sizeof(float));
+        t_freebytes(x->x_instances[i].data, x->x_featureLength * sizeof(float));
 
-    t_freebytes(x->x_instances, x->x_numFrames*sizeof(t_instance));
+    t_freebytes(x->x_instances, x->x_numFrames * sizeof(t_instance));
 
-    x->x_instances = (t_instance *)t_getbytes(x->x_numFrames*sizeof(t_instance));
+    x->x_instances = (t_instance *)t_getbytes(x->x_numFrames * sizeof(t_instance));
 
     x->x_featureLength = len;
     x->x_currentFrame = 0;
@@ -146,7 +146,7 @@ static void binWrangler_length(t_binWrangler *x, t_float len)
         SETFLOAT(x->x_listOut+i, 0.0);
 
     for(i=0; i<x->x_numFrames; i++)
-        x->x_instances[i].data = (float *)t_getbytes(x->x_featureLength*sizeof(float));
+        x->x_instances[i].data = (float *)t_getbytes(x->x_featureLength * sizeof(float));
 
     for(i=0; i<x->x_numFrames; i++)
         for(j=0; j<x->x_featureLength; j++)
@@ -179,14 +179,14 @@ static void *binWrangler_new(t_float numFrames, t_float length, t_float spew)
     x->x_spew = spew;
 
 
-    x->x_listOut = (t_atom *)t_getbytes((x->x_featureLength*x->x_numFrames)*sizeof(t_atom));
-    x->x_instances = (t_instance *)t_getbytes(x->x_numFrames*sizeof(t_instance));
+    x->x_listOut = (t_atom *)t_getbytes((x->x_featureLength*x->x_numFrames) * sizeof(t_atom));
+    x->x_instances = (t_instance *)t_getbytes(x->x_numFrames * sizeof(t_instance));
 
     for(i=0; i<x->x_featureLength*x->x_numFrames; i++)
         SETFLOAT(x->x_listOut+i, 0.0);
 
     for(i=0; i<x->x_numFrames; i++)
-        x->x_instances[i].data = (float *)t_getbytes(x->x_featureLength*sizeof(float));
+        x->x_instances[i].data = (float *)t_getbytes(x->x_featureLength * sizeof(float));
 
     for(i=0; i<x->x_numFrames; i++)
         for(j=0; j<x->x_featureLength; j++)
@@ -200,13 +200,13 @@ static void binWrangler_free(t_binWrangler *x)
     t_attributeIdx i;
 
     // free listOut memory
-    t_freebytes(x->x_listOut, (x->x_featureLength*x->x_numFrames)*sizeof(t_atom));
+    t_freebytes(x->x_listOut, (x->x_featureLength*x->x_numFrames) * sizeof(t_atom));
 
     // free the database memory
     for(i=0; i<x->x_currentFrame; i++)
-        t_freebytes(x->x_instances[i].data, x->x_featureLength*sizeof(float));
+        t_freebytes(x->x_instances[i].data, x->x_featureLength * sizeof(float));
 
-    t_freebytes(x->x_instances, x->x_numFrames*sizeof(t_instance));
+    t_freebytes(x->x_instances, x->x_numFrames * sizeof(t_instance));
 
 }
 

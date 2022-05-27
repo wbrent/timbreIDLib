@@ -57,34 +57,34 @@ static void melSpec_resizeWindow(t_melSpec *x, t_sampIdx oldWindow, t_sampIdx wi
     windowHalf = window * 0.5;
 
     // FFT must be at least TID_MINWINDOWSIZE points long
-    if(window<TID_MINWINDOWSIZE)
+    if(window < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
         post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
-        *endSamp = startSamp + window-1;
+        *endSamp = startSamp + window - 1;
         if(*endSamp >= x->x_arrayPoints)
-            *endSamp = x->x_arrayPoints-1;
+            *endSamp = x->x_arrayPoints - 1;
     }
 
     // hang on to these values for next time
     x->x_window = window;
     x->x_windowHalf = windowHalf;
 
-    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
+    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow * sizeof(t_sample), x->x_window * sizeof(t_sample));
 
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
     // set up a new FFTW output buffer
-    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
     // FFTW plan
     x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
 
-    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
 
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
     tIDLib_cosineWindow(x->x_cosine, x->x_window);
@@ -109,17 +109,17 @@ static void melSpec_analyze(t_melSpec *x, t_floatarg start, t_floatarg n)
         t_sampIdx i, j, window, startSamp, endSamp;
         t_float *windowFuncPtr;
 
-        startSamp = (start<0)?0:start;
+        startSamp = (start < 0) ? 0 : start;
 
         if(n)
-            endSamp = startSamp + n-1;
+            endSamp = startSamp + n - 1;
         else
-            endSamp = startSamp + x->x_window-1;
+            endSamp = startSamp + x->x_window - 1;
 
         if(endSamp >= x->x_arrayPoints)
-            endSamp = x->x_arrayPoints-1;
+            endSamp = x->x_arrayPoints - 1;
 
-        window = endSamp-startSamp+1;
+        window = endSamp - startSamp + 1;
 
         if(endSamp <= startSamp)
         {
@@ -131,7 +131,7 @@ static void melSpec_analyze(t_melSpec *x, t_floatarg start, t_floatarg n)
             melSpec_resizeWindow(x, x->x_window, window, startSamp, &endSamp);
 
         // construct analysis window
-        for(i=0, j=startSamp; j<=endSamp; i++, j++)
+        for(i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_fftwIn[i] = x->x_vec[j].w_float;
 
         windowFuncPtr = x->x_blackman;
@@ -158,19 +158,19 @@ static void melSpec_analyze(t_melSpec *x, t_floatarg start, t_floatarg n)
         };
 
         // if windowFunction == 0, skip the windowing (rectangular)
-        if(x->x_windowFunction!=rectangular)
-            for(i=0; i<x->x_window; i++, windowFuncPtr++)
+        if(x->x_windowFunction != rectangular)
+            for(i = 0; i < x->x_window; i++, windowFuncPtr++)
                 x->x_fftwIn[i] *= *windowFuncPtr;
 
         fftwf_execute(x->x_fftwPlan);
 
-        tIDLib_power(x->x_windowHalf+1, x->x_fftwOut, x->x_fftwIn);
+        tIDLib_power(x->x_windowHalf + 1, x->x_fftwOut, x->x_fftwIn);
 
         if(!x->x_powerSpectrum)
-            tIDLib_mag(x->x_windowHalf+1, x->x_fftwIn);
+            tIDLib_mag(x->x_windowHalf + 1, x->x_fftwIn);
 
         if(x->x_specBandAvg)
-            tIDLib_specFilterBands(x->x_windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
+            tIDLib_specFilterBands(x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
         else
             tIDLib_filterbankMultiply(x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
@@ -187,30 +187,30 @@ static void melSpec_chain_fftData(t_melSpec *x, t_symbol *s, int argc, t_atom *a
     t_sampIdx i, windowHalf;
 
     // incoming fftData list should be 2*(N/2+1) elements long, so windowHalf is:
-    windowHalf = argc-2;
+    windowHalf = argc - 2;
     windowHalf *= 0.5;
 
     // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
-    if(windowHalf!=x->x_windowHalf)
+    if(windowHalf != x->x_windowHalf)
     {
-        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
+        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf * 2, x->x_window);
         return;
     }
 
     // fill the x_fftwOut buffer with the incoming fftData list, for both real and imag elements
-    for(i=0; i<=x->x_windowHalf; i++)
+    for(i = 0; i <= x->x_windowHalf; i++)
     {
-        x->x_fftwOut[i][0] = atom_getfloat(argv+i);
-        x->x_fftwOut[i][1] = atom_getfloat(argv+(x->x_windowHalf+1)+i);
+        x->x_fftwOut[i][0] = atom_getfloat(argv + i);
+        x->x_fftwOut[i][1] = atom_getfloat(argv + (x->x_windowHalf + 1) + i);
     }
 
-    tIDLib_power(x->x_windowHalf+1, x->x_fftwOut, x->x_fftwIn);
+    tIDLib_power(x->x_windowHalf + 1, x->x_fftwOut, x->x_fftwIn);
 
     if(!x->x_powerSpectrum)
-        tIDLib_mag(x->x_windowHalf+1, x->x_fftwIn);
+        tIDLib_mag(x->x_windowHalf + 1, x->x_fftwIn);
 
     if(x->x_specBandAvg)
-        tIDLib_specFilterBands(windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
+        tIDLib_specFilterBands(windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
     else
         tIDLib_filterbankMultiply(x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
@@ -226,21 +226,21 @@ static void melSpec_chain_magSpec(t_melSpec *x, t_symbol *s, int argc, t_atom *a
     t_sampIdx i, windowHalf;
 
     // incoming magSpec list should be N/2+1 elements long, so windowHalf is one less than this
-    windowHalf = argc-1;
+    windowHalf = argc - 1;
 
     // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
-    if(windowHalf!=x->x_windowHalf)
+    if(windowHalf != x->x_windowHalf)
     {
-        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
+        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf * 2, x->x_window);
         return;
     }
 
     // fill the x_fftwIn buffer with the incoming magSpec list
-    for(i=0; i<=x->x_windowHalf; i++)
-        x->x_fftwIn[i] = atom_getfloat(argv+i);
+    for(i = 0; i <= x->x_windowHalf; i++)
+        x->x_fftwIn[i] = atom_getfloat(argv + i);
 
     if(x->x_specBandAvg)
-        tIDLib_specFilterBands(x->x_windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
+        tIDLib_specFilterBands(x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
     else
         tIDLib_filterbankMultiply(x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
@@ -276,7 +276,7 @@ static void melSpec_createFilterbank(t_melSpec *x, t_floatarg ms)
 
     x->x_melSpacing = ms;
 
-    if(x->x_melSpacing<TID_MINMELSPACING || x->x_melSpacing>TID_MAXMELSPACING)
+    if(x->x_melSpacing < TID_MINMELSPACING || x->x_melSpacing > TID_MAXMELSPACING)
     {
         x->x_melSpacing = TID_MELSPACINGDEFAULT;
         post("%s WARNING: mel spacing must be between %f and %f mels. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINMELSPACING, TID_MAXMELSPACING, TID_MELSPACINGDEFAULT);
@@ -291,7 +291,7 @@ static void melSpec_createFilterbank(t_melSpec *x, t_floatarg ms)
     tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, oldNumFilters, x->x_numFilters, x->x_window, x->x_sr);
 
     // resize listOut memory
-    x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, oldNumFilters*sizeof(t_atom), x->x_numFilters*sizeof(t_atom));
+    x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, oldNumFilters * sizeof(t_atom), x->x_numFilters * sizeof(t_atom));
 }
 
 
@@ -351,7 +351,7 @@ static void melSpec_print(t_melSpec *x)
 
 static void melSpec_samplerate(t_melSpec *x, t_floatarg sr)
 {
-    if(sr<TID_MINSAMPLERATE)
+    if(sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
@@ -373,8 +373,8 @@ static void melSpec_window(t_melSpec *x, t_floatarg w)
 
 static void melSpec_windowFunction(t_melSpec *x, t_floatarg f)
 {
-    f = (f<0)?0:f;
-    f = (f>4)?4:f;
+    f = (f < 0) ? 0 : f;
+    f = (f > 4) ? 4 : f;
     x->x_windowFunction = f;
 
     switch(x->x_windowFunction)
@@ -402,8 +402,8 @@ static void melSpec_windowFunction(t_melSpec *x, t_floatarg f)
 
 static void melSpec_powerSpectrum(t_melSpec *x, t_floatarg spec)
 {
-    spec = (spec<0)?0:spec;
-    spec = (spec>1)?1:spec;
+    spec = (spec < 0) ? 0 : spec;
+    spec = (spec > 1) ? 1 : spec;
     x->x_powerSpectrum = spec;
 
     if(x->x_powerSpectrum)
@@ -447,8 +447,8 @@ static void *melSpec_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_melSpacing = atom_getfloat(argv+1);
-            if(x->x_melSpacing<TID_MINMELSPACING || x->x_melSpacing>TID_MAXMELSPACING)
+            x->x_melSpacing = atom_getfloat(argv + 1);
+            if(x->x_melSpacing < TID_MINMELSPACING || x->x_melSpacing > TID_MAXMELSPACING)
             {
                 x->x_melSpacing = TID_MELSPACINGDEFAULT;
                 post("%s WARNING: mel spacing must be between %f and %f mels. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINMELSPACING, TID_MAXMELSPACING, TID_MELSPACINGDEFAULT);
@@ -488,7 +488,7 @@ static void *melSpec_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
     x->x_window = TID_WINDOWSIZEDEFAULT;
-    x->x_windowHalf = x->x_window*0.5;
+    x->x_windowHalf = x->x_window * 0.5;
     x->x_windowFunction = blackman;
     x->x_normalize = true;
     x->x_powerSpectrum = false;
@@ -498,21 +498,21 @@ static void *melSpec_new(t_symbol *s, int argc, t_atom *argv)
     x->x_filterAvg = false;
 
 
-    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
+    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
 
     // set up the FFTW output buffer. Is there no function to initialize it?
-    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
 
     // FFTW plan
     x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG); // FFTWPLANNERFLAG may be slower than FFTWPLANNERFLAG but more efficient after the first run?
 
-    for(i=0; i<x->x_window; i++)
+    for(i = 0; i < x->x_window; i++)
         x->x_fftwIn[i] = 0.0;
 
-      x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_blackman = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_cosine = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hamming = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hann = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
@@ -532,7 +532,7 @@ static void *melSpec_new(t_symbol *s, int argc, t_atom *argv)
     tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, 0, x->x_numFilters, x->x_window, x->x_sr);
 
     // create listOut memory
-    x->x_listOut = (t_atom *)t_getbytes(x->x_numFilters*sizeof(t_atom));
+    x->x_listOut = (t_atom *)t_getbytes(x->x_numFilters * sizeof(t_atom));
 
     return (x);
 }
@@ -543,27 +543,27 @@ static void melSpec_free(t_melSpec *x)
     t_filterIdx i;
 
     // free the list out memory
-    t_freebytes(x->x_listOut, (x->x_windowHalf+1)*sizeof(t_atom));
+    t_freebytes(x->x_listOut, (x->x_windowHalf + 1) * sizeof(t_atom));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_sample));
+    t_freebytes(x->x_fftwIn, (x->x_window) * sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
 
     // free the window memory
-    t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hann, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_blackman, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_cosine, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hamming, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hann, x->x_window * sizeof(t_float));
 
     // free filterFreqs memory
-    t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs*sizeof(t_float));
+    t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs * sizeof(t_float));
 
     // free the filterbank memory
     for(i=0; i<x->x_numFilters; i++)
-        t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].filterSize*sizeof(t_float));
+        t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].filterSize * sizeof(t_float));
 
-    t_freebytes(x->x_filterbank, x->x_numFilters*sizeof(t_filter));
+    t_freebytes(x->x_filterbank, x->x_numFilters * sizeof(t_filter));
 }
 
 

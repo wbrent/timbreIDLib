@@ -56,36 +56,36 @@ static void tID_fft_resizeWindow(t_tID_fft *x, t_sampIdx oldWindow, t_sampIdx wi
     t_sampIdx oldWindowHalf, windowHalf;
 
     windowHalf = window * 0.5;
-    oldWindowHalf = oldWindow*0.5;
+    oldWindowHalf = oldWindow * 0.5;
 
-    if(window<TID_MINWINDOWSIZE)
+    if(window < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
         post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
-        *endSamp = startSamp + window-1;
+        *endSamp = startSamp + window - 1;
         if(*endSamp >= x->x_arrayPoints)
-            *endSamp = x->x_arrayPoints-1;
+            *endSamp = x->x_arrayPoints - 1;
     }
 
     // hang on to these values for next time
     x->x_window = window;
     x->x_windowHalf = windowHalf;
 
-    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
+    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow * sizeof(t_sample), x->x_window * sizeof(t_sample));
 
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
     // set up a new FFTW output buffer
-    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
     // FFTW plan
     x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
 
-    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
 
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
     tIDLib_cosineWindow(x->x_cosine, x->x_window);
@@ -93,8 +93,8 @@ static void tID_fft_resizeWindow(t_tID_fft *x, t_sampIdx oldWindow, t_sampIdx wi
     tIDLib_hannWindow(x->x_hann, x->x_window);
 
     // resize x_listOutReal and x_listOutImag
-    x->x_listOutReal = (t_atom *)t_resizebytes(x->x_listOutReal, (oldWindowHalf+1)*sizeof(t_atom), (x->x_windowHalf+1)*sizeof(t_atom));
-    x->x_listOutImag = (t_atom *)t_resizebytes(x->x_listOutImag, (oldWindowHalf+1)*sizeof(t_atom), (x->x_windowHalf+1)*sizeof(t_atom));
+    x->x_listOutReal = (t_atom *)t_resizebytes(x->x_listOutReal, (oldWindowHalf + 1) * sizeof(t_atom), (x->x_windowHalf + 1) * sizeof(t_atom));
+    x->x_listOutImag = (t_atom *)t_resizebytes(x->x_listOutImag, (oldWindowHalf + 1) * sizeof(t_atom), (x->x_windowHalf + 1) * sizeof(t_atom));
 }
 
 
@@ -111,17 +111,17 @@ static void tID_fft_analyze(t_tID_fft *x, t_floatarg start, t_floatarg n)
         t_sampIdx i, j, window, startSamp, endSamp;
         t_float *windowFuncPtr, realMax, imagMax;
 
-        startSamp = (start<0)?0:start;
+        startSamp = (start < 0) ? 0 : start;
 
         if(n)
-            endSamp = startSamp + n-1;
+            endSamp = startSamp + n - 1;
         else
-            endSamp = startSamp + x->x_window-1;
+            endSamp = startSamp + x->x_window - 1;
 
         if(endSamp >= x->x_arrayPoints)
-            endSamp = x->x_arrayPoints-1;
+            endSamp = x->x_arrayPoints - 1;
 
-        window = endSamp-startSamp+1;
+        window = endSamp - startSamp + 1;
 
         if(endSamp <= startSamp)
         {
@@ -133,7 +133,7 @@ static void tID_fft_analyze(t_tID_fft *x, t_floatarg start, t_floatarg n)
             tID_fft_resizeWindow(x, x->x_window, window, startSamp, &endSamp);
 
         // construct analysis window
-        for(i=0, j=startSamp; j<=endSamp; i++, j++)
+        for(i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_fftwIn[i] = x->x_vec[j].w_float;
 
         windowFuncPtr = x->x_blackman;
@@ -160,14 +160,14 @@ static void tID_fft_analyze(t_tID_fft *x, t_floatarg start, t_floatarg n)
         };
 
         // if windowFunction == 0, skip the windowing (rectangular)
-        if(x->x_windowFunction!=rectangular)
-            for(i=0; i<x->x_window; i++, windowFuncPtr++)
+        if(x->x_windowFunction != rectangular)
+            for(i = 0; i < x->x_window; i++, windowFuncPtr++)
                 x->x_fftwIn[i] *= *windowFuncPtr;
 
         if(x->x_zeroPad>0)
         {
             // place windowed signal in x_fftwInZeroPad
-            for(i=0; i<x->x_window; i++)
+            for(i = 0; i < x->x_window; i++)
                 x->x_fftwInZeroPad[i] = x->x_fftwIn[i];
 
             // fill out the remaining space with zeros
@@ -229,7 +229,7 @@ static void tID_fft_analyze(t_tID_fft *x, t_floatarg start, t_floatarg n)
 
             if(x->x_normalize)
             {
-                for(i=0; i<=x->x_windowHalf; i++)
+                for(i = 0; i <= x->x_windowHalf; i++)
                 {
                     t_float thisReal, thisImag;
 
@@ -250,7 +250,7 @@ static void tID_fft_analyze(t_tID_fft *x, t_floatarg start, t_floatarg n)
                 imagMax = 1.0/imagMax;
             }
 
-            for(i=0; i<=x->x_windowHalf; i++)
+            for(i = 0; i <= x->x_windowHalf; i++)
             {
                 if(x->x_normalize)
                 {
@@ -264,8 +264,8 @@ static void tID_fft_analyze(t_tID_fft *x, t_floatarg start, t_floatarg n)
                 }
             }
 
-            outlet_list(x->x_imagOut, 0, x->x_windowHalf+1, x->x_listOutImag);
-            outlet_list(x->x_realOut, 0, x->x_windowHalf+1, x->x_listOutReal);
+            outlet_list(x->x_imagOut, 0, x->x_windowHalf + 1, x->x_listOutImag);
+            outlet_list(x->x_realOut, 0, x->x_windowHalf + 1, x->x_listOutReal);
         }
     }
 }
@@ -320,7 +320,7 @@ static void tID_fft_print(t_tID_fft *x)
 
 static void tID_fft_samplerate(t_tID_fft *x, t_floatarg sr)
 {
-    if(sr<TID_MINSAMPLERATE)
+    if(sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
@@ -340,8 +340,8 @@ static void tID_fft_window(t_tID_fft *x, t_floatarg w)
 
 static void tID_fft_windowFunction(t_tID_fft *x, t_floatarg f)
 {
-    f = (f<0)?0:f;
-    f = (f>4)?4:f;
+    f = (f < 0) ? 0 : f;
+    f = (f > 4) ? 4 : f;
     x->x_windowFunction = f;
 
     switch(x->x_windowFunction)
@@ -465,34 +465,34 @@ static void *tID_fft_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
     x->x_window = TID_WINDOWSIZEDEFAULT;
-    x->x_windowHalf = x->x_window*0.5;
+    x->x_windowHalf = x->x_window * 0.5;
     x->x_windowFunction = blackman;
     x->x_zeroPad = 0;
     x->x_zeroPadHalf = 0;
     x->x_normalize = false;
 
-    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
+    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
     x->x_fftwInZeroPad = (t_sample *)t_getbytes(x->x_zeroPad * sizeof(t_sample));
-    x->x_listOutReal = (t_atom *)t_getbytes((x->x_windowHalf+1)*sizeof(t_atom));
-    x->x_listOutImag = (t_atom *)t_getbytes((x->x_windowHalf+1)*sizeof(t_atom));
-    x->x_listOutRealZeroPad = (t_atom *)t_getbytes((x->x_zeroPadHalf+1)*sizeof(t_atom));
-    x->x_listOutImagZeroPad = (t_atom *)t_getbytes((x->x_zeroPadHalf+1)*sizeof(t_atom));
+    x->x_listOutReal = (t_atom *)t_getbytes((x->x_windowHalf + 1) * sizeof(t_atom));
+    x->x_listOutImag = (t_atom *)t_getbytes((x->x_windowHalf + 1) * sizeof(t_atom));
+    x->x_listOutRealZeroPad = (t_atom *)t_getbytes((x->x_zeroPadHalf+1) * sizeof(t_atom));
+    x->x_listOutImagZeroPad = (t_atom *)t_getbytes((x->x_zeroPadHalf+1) * sizeof(t_atom));
 
     // set up the FFTW output buffer. Is there no function to initialize it?
-    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
     x->x_fftwOutZeroPad = (fftwf_complex *)fftwf_alloc_complex(x->x_zeroPadHalf+1);
 
     // FFTW plan
     x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG); // FFTWPLANNERFLAG may be slower than FFTWPLANNERFLAG but more efficient after the first run?
     x->x_fftwPlanZeroPad = fftwf_plan_dft_r2c_1d(x->x_zeroPad, x->x_fftwInZeroPad, x->x_fftwOutZeroPad, FFTWPLANNERFLAG);
 
-    for(i=0; i<x->x_window; i++)
+    for(i = 0; i < x->x_window; i++)
         x->x_fftwIn[i] = 0.0;
 
-      x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_blackman = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_cosine = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hamming = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hann = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
@@ -507,24 +507,24 @@ static void *tID_fft_new(t_symbol *s, int argc, t_atom *argv)
 static void tID_fft_free(t_tID_fft *x)
 {
     // free the list out memory
-    t_freebytes(x->x_listOutReal, (x->x_windowHalf+1)*sizeof(t_atom));
-    t_freebytes(x->x_listOutImag, (x->x_windowHalf+1)*sizeof(t_atom));
-    t_freebytes(x->x_listOutRealZeroPad, (x->x_zeroPadHalf+1)*sizeof(t_atom));
-    t_freebytes(x->x_listOutImagZeroPad, (x->x_zeroPadHalf+1)*sizeof(t_atom));
+    t_freebytes(x->x_listOutReal, (x->x_windowHalf + 1) * sizeof(t_atom));
+    t_freebytes(x->x_listOutImag, (x->x_windowHalf + 1) * sizeof(t_atom));
+    t_freebytes(x->x_listOutRealZeroPad, (x->x_zeroPadHalf+1) * sizeof(t_atom));
+    t_freebytes(x->x_listOutImagZeroPad, (x->x_zeroPadHalf+1) * sizeof(t_atom));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_sample));
-    t_freebytes(x->x_fftwInZeroPad, (x->x_zeroPad)*sizeof(t_sample));
+    t_freebytes(x->x_fftwIn, (x->x_window) * sizeof(t_sample));
+    t_freebytes(x->x_fftwInZeroPad, (x->x_zeroPad) * sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_free(x->x_fftwOutZeroPad);
     fftwf_destroy_plan(x->x_fftwPlan);
     fftwf_destroy_plan(x->x_fftwPlanZeroPad);
 
     // free the window memory
-    t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hann, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_blackman, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_cosine, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hamming, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hann, x->x_window * sizeof(t_float));
 }
 
 

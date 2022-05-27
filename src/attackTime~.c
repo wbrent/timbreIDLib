@@ -50,12 +50,12 @@ static void attackTime_tilde_bang(t_attackTime_tilde *x)
     window = x->x_window;
 
     currentTime = clock_gettimesince(x->x_lastDspTime);
-    bangSample = roundf((currentTime/1000.0)*x->x_sr);
+    bangSample = roundf((currentTime / 1000.0) * x->x_sr);
 
     if(bangSample >= x->x_n)
-        bangSample = x->x_n-1;
+        bangSample = x->x_n - 1;
 
-    // took a while to get this calculation right, but it seems correct now. remember that bangSample is always between 0 and 63 (or x_n-1), and finding startSample within x_signalBuffer involves a few other steps.
+    // took a while to get this calculation right, but it seems correct now. remember that bangSample is always between 0 and 63 (or x_n - 1), and finding startSample within x_signalBuffer involves a few other steps.
     startSample = (x->x_maxSearchRange+x->x_n) - bangSample - window - 1;
 
     // construct analysis window
@@ -105,7 +105,7 @@ static void attackTime_tilde_bang(t_attackTime_tilde *x)
 
 static void attackTime_tilde_print(t_attackTime_tilde *x)
 {
-    post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr/x->x_overlap));
+    post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
     post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
     post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
@@ -122,8 +122,8 @@ static void attackTime_tilde_maxSearchRange(t_attackTime_tilde *x, t_floatarg ra
     range = (range<5.0)?5.0:range;
     newRange = roundf((range/1000.0)*x->x_sr);
 
-    x->x_searchBuffer = (t_float *)t_resizebytes(x->x_searchBuffer, x->x_maxSearchRange*sizeof(t_float), newRange*sizeof(t_float));
-    x->x_signalBuffer = (t_float *)t_resizebytes(x->x_signalBuffer, (x->x_maxSearchRange+x->x_n)*sizeof(t_float), (newRange+x->x_n)*sizeof(t_float));
+    x->x_searchBuffer = (t_float *)t_resizebytes(x->x_searchBuffer, x->x_maxSearchRange * sizeof(t_float), newRange * sizeof(t_float));
+    x->x_signalBuffer = (t_float *)t_resizebytes(x->x_signalBuffer, (x->x_maxSearchRange+x->x_n) * sizeof(t_float), (newRange+x->x_n) * sizeof(t_float));
 
     x->x_maxSearchRange = newRange;
 
@@ -162,17 +162,17 @@ static void attackTime_tilde_window(t_attackTime_tilde *x, t_floatarg w)
 
     window = w;
 
-    if(window<TID_MINWINDOWSIZE)
+    if(window < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
 
-    x->x_analysisBuffer = (t_float *)t_resizebytes(x->x_analysisBuffer, x->x_window*sizeof(t_float), window*sizeof(t_float));
+    x->x_analysisBuffer = (t_float *)t_resizebytes(x->x_analysisBuffer, x->x_window * sizeof(t_float), window * sizeof(t_float));
 
     x->x_window = window;
 
-     for(i=0; i<x->x_window; i++)
+     for(i = 0; i < x->x_window; i++)
         x->x_analysisBuffer[i] = 0.0;
 
     post("%s window size: %i", x->x_objSymbol->s_name, x->x_window);
@@ -181,8 +181,8 @@ static void attackTime_tilde_window(t_attackTime_tilde *x, t_floatarg w)
 
 static void attackTime_tilde_overlap(t_attackTime_tilde *x, t_floatarg o)
 {
-    // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr/x->x_overlap;
-    x->x_overlap = (o<1)?1:o;
+    // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
+    x->x_overlap = (o < 1) ? 1 : o;
 
     post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
 }
@@ -204,7 +204,7 @@ static void *attackTime_tilde_new(t_symbol *s, int argc, t_atom *argv)
     {
         case 1:
             x->x_window = atom_getfloat(argv);
-            if(x->x_window<TID_MINWINDOWSIZE)
+            if(x->x_window < TID_MINWINDOWSIZE)
             {
                 x->x_window = TID_WINDOWSIZEDEFAULT;
                 post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
@@ -230,16 +230,16 @@ static void *attackTime_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_sampMagThresh = 0.005;
     x->x_maxSearchRange = x->x_sr*2.0; // two seconds
 
-    x->x_signalBuffer = (t_sample *)t_getbytes((x->x_maxSearchRange+x->x_n)*sizeof(t_sample));
-    x->x_analysisBuffer = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-    x->x_searchBuffer = (t_float *)t_getbytes(x->x_maxSearchRange*sizeof(t_float));
+    x->x_signalBuffer = (t_sample *)t_getbytes((x->x_maxSearchRange+x->x_n) * sizeof(t_sample));
+    x->x_analysisBuffer = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+    x->x_searchBuffer = (t_float *)t_getbytes(x->x_maxSearchRange * sizeof(t_float));
 
     // initialize signal buffer
     for(i=0; i<x->x_maxSearchRange+x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
     // initialize analysis buffer
-    for(i=0; i<x->x_window; i++)
+    for(i = 0; i < x->x_window; i++)
         x->x_analysisBuffer[i] = 0.0;
 
      for(i=0; i<x->x_maxSearchRange; i++)
@@ -264,12 +264,12 @@ static t_int *attackTime_tilde_perform(t_int *w)
         x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
 
     // write new block to end of signal buffer.
-    for(i=0; i<n; i++)
+    for(i = 0; i < n; i++)
         x->x_signalBuffer[x->x_maxSearchRange+i] = in[i];
 
     x->x_lastDspTime = clock_getlogicaltime();
 
-    return (w+4);
+    return (w + 4);
 }
 
 
@@ -284,19 +284,19 @@ static void attackTime_tilde_dsp(t_attackTime_tilde *x, t_signal **sp)
     );
 
     // compare sr to stored sr and update if different
-    if( sp[0]->s_sr != (x->x_sr*x->x_overlap) )
+    if( sp[0]->s_sr != x->x_sr * x->x_overlap )
     {
         t_sampIdx i, newRange;
         t_float range;
 
         range = (x->x_maxSearchRange/x->x_sr)*1000.0;
 
-        x->x_sr = sp[0]->s_sr/x->x_overlap;
+        x->x_sr = sp[0]->s_sr / x->x_overlap;
 
         newRange = roundf((range/1000.0)*x->x_sr);
 
-        x->x_searchBuffer = (t_float *)t_resizebytes(x->x_searchBuffer, x->x_maxSearchRange*sizeof(t_float), newRange*sizeof(t_float));
-        x->x_signalBuffer = (t_float *)t_resizebytes(x->x_signalBuffer, (x->x_maxSearchRange+x->x_n)*sizeof(t_float), (newRange+x->x_n)*sizeof(t_float));
+        x->x_searchBuffer = (t_float *)t_resizebytes(x->x_searchBuffer, x->x_maxSearchRange * sizeof(t_float), newRange * sizeof(t_float));
+        x->x_signalBuffer = (t_float *)t_resizebytes(x->x_signalBuffer, (x->x_maxSearchRange+x->x_n) * sizeof(t_float), (newRange+x->x_n) * sizeof(t_float));
 
         x->x_maxSearchRange = newRange;
 
@@ -331,9 +331,9 @@ static void attackTime_tilde_dsp(t_attackTime_tilde *x, t_signal **sp)
 
 static void attackTime_tilde_free(t_attackTime_tilde *x)
 {
-    t_freebytes(x->x_analysisBuffer, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_signalBuffer, (x->x_maxSearchRange+x->x_n)*sizeof(t_sample));
-    t_freebytes(x->x_searchBuffer, x->x_maxSearchRange*sizeof(t_float));
+    t_freebytes(x->x_analysisBuffer, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_signalBuffer, (x->x_maxSearchRange+x->x_n) * sizeof(t_sample));
+    t_freebytes(x->x_searchBuffer, x->x_maxSearchRange * sizeof(t_float));
 }
 
 

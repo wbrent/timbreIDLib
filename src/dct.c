@@ -43,30 +43,30 @@ typedef struct _dct
 /* ------------------------ dct -------------------------------- */
 static void dct_resizeWindow(t_dct *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
 {
-    if(window<TID_MINWINDOWSIZE)
+    if(window < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
-        *endSamp = startSamp + window-1;
+        *endSamp = startSamp + window - 1;
         if(*endSamp >= x->x_arrayPoints)
-            *endSamp = x->x_arrayPoints-1;
+            *endSamp = x->x_arrayPoints - 1;
     }
 
     // hang on to these values for next time
     x->x_window = window;
 
-    x->x_dctIn = (t_float *)t_resizebytes(x->x_dctIn, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_dctOut = (t_float *)t_resizebytes(x->x_dctOut, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_dctIn = (t_float *)t_resizebytes(x->x_dctIn, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_dctOut = (t_float *)t_resizebytes(x->x_dctOut, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
 
     fftwf_destroy_plan(x->x_fftwDctPlan);
     // FFTW plan
     x->x_fftwDctPlan = fftwf_plan_r2r_1d(x->x_window, x->x_dctIn, x->x_dctOut, FFTW_REDFT10, FFTWPLANNERFLAG);
 
-    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
 
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
     tIDLib_cosineWindow(x->x_cosine, x->x_window);
@@ -74,7 +74,7 @@ static void dct_resizeWindow(t_dct *x, t_sampIdx oldWindow, t_sampIdx window, t_
     tIDLib_hannWindow(x->x_hann, x->x_window);
 
     // resize x_listOut
-    x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, oldWindow*sizeof(t_atom), x->x_window*sizeof(t_atom));
+    x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, oldWindow * sizeof(t_atom), x->x_window * sizeof(t_atom));
 }
 
 
@@ -91,17 +91,17 @@ static void dct_analyze(t_dct *x, t_floatarg start, t_floatarg n)
         t_sampIdx i, j, window, startSamp, endSamp;
         t_float *windowFuncPtr;
 
-        startSamp = (start<0)?0:start;
+        startSamp = (start < 0) ? 0 : start;
 
         if(n)
-            endSamp = startSamp + n-1;
+            endSamp = startSamp + n - 1;
         else
-            endSamp = startSamp + x->x_window-1;
+            endSamp = startSamp + x->x_window - 1;
 
         if(endSamp >= x->x_arrayPoints)
-            endSamp = x->x_arrayPoints-1;
+            endSamp = x->x_arrayPoints - 1;
 
-        window = endSamp-startSamp+1;
+        window = endSamp - startSamp + 1;
 
         if(endSamp <= startSamp)
         {
@@ -113,7 +113,7 @@ static void dct_analyze(t_dct *x, t_floatarg start, t_floatarg n)
             dct_resizeWindow(x, x->x_window, window, startSamp, &endSamp);
 
         // construct analysis window
-        for(i=0, j=startSamp; j<=endSamp; i++, j++)
+        for(i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_dctIn[i] = x->x_vec[j].w_float;
 
         windowFuncPtr = x->x_blackman;
@@ -140,8 +140,8 @@ static void dct_analyze(t_dct *x, t_floatarg start, t_floatarg n)
         };
 
         // if windowFunction == 0, skip the windowing (rectangular)
-        if(x->x_windowFunction!=rectangular)
-            for(i=0; i<x->x_window; i++, windowFuncPtr++)
+        if(x->x_windowFunction != rectangular)
+            for(i = 0; i < x->x_window; i++, windowFuncPtr++)
                 x->x_dctIn[i] *= *windowFuncPtr;
 
         fftwf_execute(x->x_fftwDctPlan);
@@ -149,7 +149,7 @@ static void dct_analyze(t_dct *x, t_floatarg start, t_floatarg n)
         if(x->x_normalize)
             tIDLib_normalPeak(x->x_window, x->x_dctOut);
 
-        for(i=0; i<x->x_window; i++)
+        for(i = 0; i < x->x_window; i++)
             SETFLOAT(x->x_listOut+i, x->x_dctOut[i]);
 
         outlet_list(x->x_dct, 0, x->x_window, x->x_listOut);
@@ -201,7 +201,7 @@ static void dct_print(t_dct *x)
 
 static void dct_samplerate(t_dct *x, t_floatarg sr)
 {
-    if(sr<TID_MINSAMPLERATE)
+    if(sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
@@ -221,8 +221,8 @@ static void dct_window(t_dct *x, t_floatarg w)
 
 static void dct_windowFunction(t_dct *x, t_floatarg f)
 {
-    f = (f<0)?0:f;
-    f = (f>4)?4:f;
+    f = (f < 0) ? 0 : f;
+    f = (f > 4) ? 4 : f;
     x->x_windowFunction = f;
 
     switch(x->x_windowFunction)
@@ -307,23 +307,23 @@ static void *dct_new(t_symbol *s, int argc, t_atom *argv)
     x->x_windowFunction = blackman;
     x->x_normalize = true;
 
-    x->x_dctIn = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-    x->x_dctOut = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-    x->x_listOut = (t_atom *)t_getbytes(x->x_window*sizeof(t_atom));
+    x->x_dctIn = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+    x->x_dctOut = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+    x->x_listOut = (t_atom *)t_getbytes(x->x_window * sizeof(t_atom));
 
     // DCT plan. FFTW_REDFT10 is the DCT-II
     x->x_fftwDctPlan = fftwf_plan_r2r_1d(x->x_window, x->x_dctIn, x->x_dctOut, FFTW_REDFT10, FFTWPLANNERFLAG);
 
-    for(i=0; i<x->x_window; i++)
+    for(i = 0; i < x->x_window; i++)
     {
         x->x_dctIn[i] = 0.0;
         x->x_dctOut[i] = 0.0;
     }
 
-      x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_blackman = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_cosine = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hamming = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hann = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
@@ -338,18 +338,18 @@ static void *dct_new(t_symbol *s, int argc, t_atom *argv)
 static void dct_free(t_dct *x)
 {
     // free the list out memory
-    t_freebytes(x->x_listOut, x->x_window*sizeof(t_atom));
+    t_freebytes(x->x_listOut, x->x_window * sizeof(t_atom));
 
     // free FFTW stuff
-    t_freebytes(x->x_dctIn, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_dctOut, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_dctIn, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_dctOut, x->x_window * sizeof(t_float));
     fftwf_destroy_plan(x->x_fftwDctPlan);
 
     // free the window memory
-    t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hann, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_blackman, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_cosine, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hamming, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hann, x->x_window * sizeof(t_float));
 }
 
 

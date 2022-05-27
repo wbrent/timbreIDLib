@@ -63,34 +63,34 @@ static void barkSpecIrregularity_resizeWindow(t_barkSpecIrregularity *x, t_sampI
     windowHalf = window * 0.5;
 
     // FFT must be at least TID_MINWINDOWSIZE points long
-    if(window<TID_MINWINDOWSIZE)
+    if(window < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
         post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
-        *endSamp = startSamp + window-1;
+        *endSamp = startSamp + window - 1;
         if(*endSamp >= x->x_arrayPoints)
-            *endSamp = x->x_arrayPoints-1;
+            *endSamp = x->x_arrayPoints - 1;
     }
 
     // hang on to these values for next time
     x->x_window = window;
     x->x_windowHalf = windowHalf;
 
-    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
+    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, oldWindow * sizeof(t_sample), x->x_window * sizeof(t_sample));
 
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
     // set up a new FFTW output buffer
-    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
     // FFTW plan
     x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
 
-    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
 
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
     tIDLib_cosineWindow(x->x_cosine, x->x_window);
@@ -115,17 +115,17 @@ static void barkSpecIrregularity_analyze(t_barkSpecIrregularity *x, t_floatarg s
         t_sampIdx i, j, window, startSamp, endSamp;
         t_float divisor, irregularity, *windowFuncPtr;
 
-        startSamp = (start<0)?0:start;
+        startSamp = (start < 0) ? 0 : start;
 
         if(n)
-            endSamp = startSamp + n-1;
+            endSamp = startSamp + n - 1;
         else
-            endSamp = startSamp + x->x_window-1;
+            endSamp = startSamp + x->x_window - 1;
 
         if(endSamp >= x->x_arrayPoints)
-            endSamp = x->x_arrayPoints-1;
+            endSamp = x->x_arrayPoints - 1;
 
-        window = endSamp-startSamp+1;
+        window = endSamp - startSamp + 1;
 
         if(endSamp <= startSamp)
         {
@@ -137,7 +137,7 @@ static void barkSpecIrregularity_analyze(t_barkSpecIrregularity *x, t_floatarg s
             barkSpecIrregularity_resizeWindow(x, x->x_window, window, startSamp, &endSamp);
 
         // construct analysis window
-        for(i=0, j=startSamp; j<=endSamp; i++, j++)
+        for(i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_fftwIn[i] = x->x_vec[j].w_float;
 
         windowFuncPtr = x->x_blackman;
@@ -164,19 +164,19 @@ static void barkSpecIrregularity_analyze(t_barkSpecIrregularity *x, t_floatarg s
         };
 
         // if windowFunction == 0, skip the windowing (rectangular)
-        if(x->x_windowFunction!=rectangular)
-            for(i=0; i<x->x_window; i++, windowFuncPtr++)
+        if(x->x_windowFunction != rectangular)
+            for(i = 0; i < x->x_window; i++, windowFuncPtr++)
                 x->x_fftwIn[i] *= *windowFuncPtr;
 
         fftwf_execute(x->x_fftwPlan);
 
-        tIDLib_power(x->x_windowHalf+1, x->x_fftwOut, x->x_fftwIn);
+        tIDLib_power(x->x_windowHalf + 1, x->x_fftwOut, x->x_fftwIn);
 
         if(!x->x_powerSpectrum)
-            tIDLib_mag(x->x_windowHalf+1, x->x_fftwIn);
+            tIDLib_mag(x->x_windowHalf + 1, x->x_fftwIn);
 
         if(x->x_specBandAvg)
-            tIDLib_specFilterBands(x->x_windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
+            tIDLib_specFilterBands(x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
         else
             tIDLib_filterbankMultiply(x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
@@ -234,30 +234,30 @@ static void barkSpecIrregularity_chain_fftData(t_barkSpecIrregularity *x, t_symb
     t_float divisor, irregularity;
 
     // incoming fftData list should be 2*(N/2+1) elements long, so windowHalf is:
-    windowHalf = argc-2;
+    windowHalf = argc - 2;
     windowHalf *= 0.5;
 
     // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
-    if(windowHalf!=x->x_windowHalf)
+    if(windowHalf != x->x_windowHalf)
     {
-        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
+        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf * 2, x->x_window);
         return;
     }
 
     // fill the x_fftwOut buffer with the incoming fftData list, for both real and imag elements
-    for(i=0; i<=x->x_windowHalf; i++)
+    for(i = 0; i <= x->x_windowHalf; i++)
     {
-        x->x_fftwOut[i][0] = atom_getfloat(argv+i);
-        x->x_fftwOut[i][1] = atom_getfloat(argv+(x->x_windowHalf+1)+i);
+        x->x_fftwOut[i][0] = atom_getfloat(argv + i);
+        x->x_fftwOut[i][1] = atom_getfloat(argv + (x->x_windowHalf + 1) + i);
     }
 
-    tIDLib_power(x->x_windowHalf+1, x->x_fftwOut, x->x_fftwIn);
+    tIDLib_power(x->x_windowHalf + 1, x->x_fftwOut, x->x_fftwIn);
 
     if(!x->x_powerSpectrum)
-        tIDLib_mag(x->x_windowHalf+1, x->x_fftwIn);
+        tIDLib_mag(x->x_windowHalf + 1, x->x_fftwIn);
 
     if(x->x_specBandAvg)
-        tIDLib_specFilterBands(windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
+        tIDLib_specFilterBands(windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
     else
         tIDLib_filterbankMultiply(x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
@@ -314,21 +314,21 @@ static void barkSpecIrregularity_chain_magSpec(t_barkSpecIrregularity *x, t_symb
     t_float divisor, irregularity;
 
     // incoming magSpec list should be N/2+1 elements long, so windowHalf is one less than this
-    windowHalf = argc-1;
+    windowHalf = argc - 1;
 
     // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
-    if(windowHalf!=x->x_windowHalf)
+    if(windowHalf != x->x_windowHalf)
     {
-        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
+        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf * 2, x->x_window);
         return;
     }
 
     // fill the x_fftwIn buffer with the incoming magSpec list
-    for(i=0; i<=x->x_windowHalf; i++)
-        x->x_fftwIn[i] = atom_getfloat(argv+i);
+    for(i = 0; i <= x->x_windowHalf; i++)
+        x->x_fftwIn[i] = atom_getfloat(argv + i);
 
     if(x->x_specBandAvg)
-        tIDLib_specFilterBands(x->x_windowHalf+1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
+        tIDLib_specFilterBands(x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
     else
         tIDLib_filterbankMultiply(x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
@@ -393,7 +393,7 @@ static void barkSpecIrregularity_chain_barkSpec(t_barkSpecIrregularity *x, t_sym
 
     // fill the x_fftwIn buffer with the incoming magSpec list
     for(i=0; i<x->x_numFilters; i++)
-        x->x_fftwIn[i] = atom_getfloat(argv+i);
+        x->x_fftwIn[i] = atom_getfloat(argv + i);
 
     divisor=irregularity=0.0;
 
@@ -468,7 +468,7 @@ static void barkSpecIrregularity_createFilterbank(t_barkSpecIrregularity *x, t_f
 
     x->x_barkSpacing = bs;
 
-    if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_MAXBARKSPACING)
+    if(x->x_barkSpacing < TID_MINBARKSPACING || x->x_barkSpacing > TID_MAXBARKSPACING)
     {
         x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
         post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
@@ -544,7 +544,7 @@ static void barkSpecIrregularity_algorithm(t_barkSpecIrregularity *x, t_floatarg
 
 static void barkSpecIrregularity_samplerate(t_barkSpecIrregularity *x, t_floatarg sr)
 {
-    if(sr<TID_MINSAMPLERATE)
+    if(sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
@@ -567,8 +567,8 @@ static void barkSpecIrregularity_window(t_barkSpecIrregularity *x, t_floatarg w)
 
 static void barkSpecIrregularity_windowFunction(t_barkSpecIrregularity *x, t_floatarg f)
 {
-    f = (f<0)?0:f;
-    f = (f>4)?4:f;
+    f = (f < 0) ? 0 : f;
+    f = (f > 4) ? 4 : f;
     x->x_windowFunction = f;
 
     switch(x->x_windowFunction)
@@ -622,8 +622,8 @@ static void barkSpecIrregularity_filter_avg(t_barkSpecIrregularity *x, t_floatar
 
 static void barkSpecIrregularity_powerSpectrum(t_barkSpecIrregularity *x, t_floatarg spec)
 {
-    spec = (spec<0)?0:spec;
-    spec = (spec>1)?1:spec;
+    spec = (spec < 0) ? 0 : spec;
+    spec = (spec > 1) ? 1 : spec;
     x->x_powerSpectrum = spec;
 
     if(x->x_powerSpectrum)
@@ -667,13 +667,13 @@ static void *barkSpecIrregularity_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_barkSpacing = atom_getfloat(argv+1);
-            if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_MAXBARKSPACING)
+            x->x_barkSpacing = atom_getfloat(argv + 1);
+            if(x->x_barkSpacing < TID_MINBARKSPACING || x->x_barkSpacing > TID_MAXBARKSPACING)
             {
                 x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
                 post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
-            if(atom_getfloat(argv+2)>=1)
+            if(atom_getfloat(argv + 2)>=1)
                 x->x_algorithm = krimphoff;
             else
                 x->x_algorithm = jensen;
@@ -687,8 +687,8 @@ static void *barkSpecIrregularity_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_barkSpacing = atom_getfloat(argv+1);
-            if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_MAXBARKSPACING)
+            x->x_barkSpacing = atom_getfloat(argv + 1);
+            if(x->x_barkSpacing < TID_MINBARKSPACING || x->x_barkSpacing > TID_MAXBARKSPACING)
             {
                 x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
                 post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
@@ -732,7 +732,7 @@ static void *barkSpecIrregularity_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
     x->x_window = TID_WINDOWSIZEDEFAULT;
-    x->x_windowHalf = x->x_window*0.5;
+    x->x_windowHalf = x->x_window * 0.5;
     x->x_windowFunction = blackman;
     x->x_normalize = true;
     x->x_powerSpectrum = false;
@@ -741,21 +741,21 @@ static void *barkSpecIrregularity_new(t_symbol *s, int argc, t_atom *argv)
     x->x_specBandAvg = false;
     x->x_filterAvg = false;
 
-    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
+    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
 
     // set up the FFTW output buffer. Is there no function to initialize it?
-    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
 
     // FFTW plan
     x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG); // FFTWPLANNERFLAG may be slower than FFTWPLANNERFLAG but more efficient after the first run?
 
-    for(i=0; i<x->x_window; i++)
+    for(i = 0; i < x->x_window; i++)
         x->x_fftwIn[i] = 0.0;
 
-      x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_blackman = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_cosine = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hamming = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hann = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
@@ -783,24 +783,24 @@ static void barkSpecIrregularity_free(t_barkSpecIrregularity *x)
     t_filterIdx i;
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window)*sizeof(t_sample));
+    t_freebytes(x->x_fftwIn, (x->x_window) * sizeof(t_sample));
     fftwf_free(x->x_fftwOut);
     fftwf_destroy_plan(x->x_fftwPlan);
 
     // free the window memory
-    t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hann, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_blackman, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_cosine, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hamming, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hann, x->x_window * sizeof(t_float));
 
     // free filterFreqs memory
-    t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs*sizeof(t_float));
+    t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs * sizeof(t_float));
 
     // free the filterbank memory
     for(i=0; i<x->x_numFilters; i++)
-        t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].filterSize*sizeof(t_float));
+        t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].filterSize * sizeof(t_float));
 
-    t_freebytes(x->x_filterbank, x->x_numFilters*sizeof(t_filter));
+    t_freebytes(x->x_filterbank, x->x_numFilters * sizeof(t_filter));
 }
 
 

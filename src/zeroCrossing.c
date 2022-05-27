@@ -47,17 +47,17 @@ static void zeroCrossing_analyze(t_zeroCrossing *x, t_floatarg start, t_floatarg
         t_sampIdx i, j, oldWindow, window, startSamp, endSamp;
         t_float crossings;
 
-        startSamp = (start<0)?0:start;
+        startSamp = (start < 0) ? 0 : start;
 
         if(n)
-            endSamp = startSamp + n-1;
+            endSamp = startSamp + n - 1;
         else
-            endSamp = startSamp + x->x_window-1;
+            endSamp = startSamp + x->x_window - 1;
 
         if(endSamp >= x->x_arrayPoints)
-            endSamp = x->x_arrayPoints-1;
+            endSamp = x->x_arrayPoints - 1;
 
-        window = endSamp-startSamp+1;
+        window = endSamp - startSamp + 1;
 
         if(endSamp <= startSamp)
         {
@@ -70,7 +70,7 @@ static void zeroCrossing_analyze(t_zeroCrossing *x, t_floatarg start, t_floatarg
             oldWindow = x->x_window;
 
             // window must be at least 4 points long
-            if(window<TID_MINWINDOWSIZE)
+            if(window < TID_MINWINDOWSIZE)
             {
                 window = TID_WINDOWSIZEDEFAULT;
                 post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
@@ -79,16 +79,16 @@ static void zeroCrossing_analyze(t_zeroCrossing *x, t_floatarg start, t_floatarg
             // hang on to these values for next time
             x->x_window = window;
 
-            endSamp = startSamp + x->x_window-1;
+            endSamp = startSamp + x->x_window - 1;
             if(endSamp > x->x_arrayPoints)
-                endSamp = x->x_arrayPoints-1;
+                endSamp = x->x_arrayPoints - 1;
 
-            x->x_analysisBuffer = (t_float *)t_resizebytes(x->x_analysisBuffer, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+            x->x_analysisBuffer = (t_float *)t_resizebytes(x->x_analysisBuffer, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
 
         }
 
         // construct analysis window
-        for(i=0, j=startSamp; j<=endSamp; i++, j++)
+        for(i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
         crossings=0.0;
@@ -147,7 +147,7 @@ static void zeroCrossing_print(t_zeroCrossing *x)
 
 static void zeroCrossing_samplerate(t_zeroCrossing *x, t_floatarg sr)
 {
-    if(sr<TID_MINSAMPLERATE)
+    if(sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
@@ -198,7 +198,7 @@ static void *zeroCrossing_new(t_symbol *s, int argc, t_atom *argv)
     x->x_window = TID_WINDOWSIZEDEFAULT;
     x->x_normalize = false;
 
-    x->x_analysisBuffer = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
+    x->x_analysisBuffer = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
 
     return (x);
 }
@@ -207,7 +207,7 @@ static void *zeroCrossing_new(t_symbol *s, int argc, t_atom *argv)
 static void zeroCrossing_free(t_zeroCrossing *x)
 {
     // free the input buffer memory
-    t_freebytes(x->x_analysisBuffer, x->x_window*sizeof(t_sample));
+    t_freebytes(x->x_analysisBuffer, x->x_window * sizeof(t_sample));
 }
 
 

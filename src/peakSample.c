@@ -47,17 +47,17 @@ static void peakSample_analyze(t_peakSample *x, t_floatarg start, t_floatarg n)
         t_sampIdx i, j, oldWindow, window, startSamp, endSamp, peakIdx;
         t_float peakVal;
 
-        startSamp = (start<0)?0:start;
+        startSamp = (start < 0) ? 0 : start;
 
         if(n)
-            endSamp = startSamp + n-1;
+            endSamp = startSamp + n - 1;
         else
-            endSamp = startSamp + x->x_window-1;
+            endSamp = startSamp + x->x_window - 1;
 
         if(endSamp >= x->x_arrayPoints)
-            endSamp = x->x_arrayPoints-1;
+            endSamp = x->x_arrayPoints - 1;
 
-        window = endSamp-startSamp+1;
+        window = endSamp - startSamp + 1;
 
         if(endSamp <= startSamp)
         {
@@ -70,7 +70,7 @@ static void peakSample_analyze(t_peakSample *x, t_floatarg start, t_floatarg n)
             oldWindow = x->x_window;
 
             // window must be at least 4 points long
-            if(window<TID_MINWINDOWSIZE)
+            if(window < TID_MINWINDOWSIZE)
             {
                 window = TID_WINDOWSIZEDEFAULT;
                 post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
@@ -79,16 +79,16 @@ static void peakSample_analyze(t_peakSample *x, t_floatarg start, t_floatarg n)
             // hang on to these values for next time
             x->x_window = window;
 
-            endSamp = startSamp + x->x_window-1;
+            endSamp = startSamp + x->x_window - 1;
             if(endSamp > x->x_arrayPoints)
-                endSamp = x->x_arrayPoints-1;
+                endSamp = x->x_arrayPoints - 1;
 
-            x->x_analysisBuffer = (t_float *)t_resizebytes(x->x_analysisBuffer, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+            x->x_analysisBuffer = (t_float *)t_resizebytes(x->x_analysisBuffer, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
 
         }
 
         // construct analysis window
-        for(i=0, j=startSamp; j<=endSamp; i++, j++)
+        for(i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
         tIDLib_peakSample(window, x->x_analysisBuffer, &peakIdx, &peakVal);
@@ -140,7 +140,7 @@ static void peakSample_print(t_peakSample *x)
 
 static void peakSample_samplerate(t_peakSample *x, t_floatarg sr)
 {
-    if(sr<TID_MINSAMPLERATE)
+    if(sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
@@ -191,7 +191,7 @@ static void *peakSample_new(t_symbol *s, int argc, t_atom *argv)
     x->x_sr = TID_SAMPLERATEDEFAULT;
     x->x_window = TID_WINDOWSIZEDEFAULT;
 
-    x->x_analysisBuffer = (t_sample *)t_getbytes(x->x_window*sizeof(t_sample));
+    x->x_analysisBuffer = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
 
     return (x);
 }
@@ -200,7 +200,7 @@ static void *peakSample_new(t_symbol *s, int argc, t_atom *argv)
 static void peakSample_free(t_peakSample *x)
 {
     // free the input buffer memory
-    t_freebytes(x->x_analysisBuffer, x->x_window*sizeof(t_sample));
+    t_freebytes(x->x_analysisBuffer, x->x_window * sizeof(t_sample));
 }
 
 

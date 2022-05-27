@@ -64,15 +64,15 @@ static void barkSpecFlux_resizeWindow(t_barkSpecFlux *x, t_sampIdx oldWindow, t_
 
     windowHalf = window * 0.5;
 
-    if(window<TID_MINWINDOWSIZE)
+    if(window < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         windowHalf = window * 0.5;
         post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
 
-        *endSamp = startSamp + window-1;
+        *endSamp = startSamp + window - 1;
         if(*endSamp >= x->x_arrayPoints)
-            *endSamp = x->x_arrayPoints-1;
+            *endSamp = x->x_arrayPoints - 1;
     }
 
     // hang on to these values for next time
@@ -82,11 +82,11 @@ static void barkSpecFlux_resizeWindow(t_barkSpecFlux *x, t_sampIdx oldWindow, t_
     if(x->x_separation > x->x_window)
     {
         post("%s WARNING: window size change resulted in a separation greater than the current window size. Using default separation of a half window size.", x->x_objSymbol->s_name);
-        x->x_separation = x->x_window*0.5;
+        x->x_separation = x->x_window * 0.5;
     }
 
-    x->x_fftwInForwardWindow = (t_sample *)t_resizebytes(x->x_fftwInForwardWindow, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
-    x->x_fftwInBackWindow = (t_sample *)t_resizebytes(x->x_fftwInBackWindow, oldWindow*sizeof(t_sample), x->x_window*sizeof(t_sample));
+    x->x_fftwInForwardWindow = (t_sample *)t_resizebytes(x->x_fftwInForwardWindow, oldWindow * sizeof(t_sample), x->x_window * sizeof(t_sample));
+    x->x_fftwInBackWindow = (t_sample *)t_resizebytes(x->x_fftwInBackWindow, oldWindow * sizeof(t_sample), x->x_window * sizeof(t_sample));
 
     fftwf_free(x->x_fftwOutForwardWindow);
     fftwf_free(x->x_fftwOutBackWindow);
@@ -94,24 +94,24 @@ static void barkSpecFlux_resizeWindow(t_barkSpecFlux *x, t_sampIdx oldWindow, t_
     fftwf_destroy_plan(x->x_fftwPlanBackWindow);
 
     // set up a new FFTW output buffer
-    x->x_fftwOutForwardWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
-    x->x_fftwOutBackWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOutForwardWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
+    x->x_fftwOutBackWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
 
     // FFTW plan
     x->x_fftwPlanForwardWindow = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwInForwardWindow, x->x_fftwOutForwardWindow, FFTWPLANNERFLAG);
     x->x_fftwPlanBackWindow = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwInBackWindow, x->x_fftwOutBackWindow, FFTWPLANNERFLAG);
 
-    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
-    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow*sizeof(t_float), x->x_window*sizeof(t_float));
+    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+    x->x_hann = (t_float *)t_resizebytes(x->x_hann, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
 
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
     tIDLib_cosineWindow(x->x_cosine, x->x_window);
     tIDLib_hammingWindow(x->x_hamming, x->x_window);
     tIDLib_hannWindow(x->x_hann, x->x_window);
 
-    for(i=0; i<x->x_window; i++)
+    for(i = 0; i < x->x_window; i++)
     {
         x->x_fftwInForwardWindow[i] = 0.0;
         x->x_fftwInBackWindow[i] = 0.0;
@@ -134,17 +134,17 @@ static void barkSpecFlux_analyze(t_barkSpecFlux *x, t_floatarg start, t_floatarg
         pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
     else
     {
-        startSamp = (start<0)?0:start;
+        startSamp = (start < 0) ? 0 : start;
 
         if(n)
-            endSamp = startSamp + n-1;
+            endSamp = startSamp + n - 1;
         else
-            endSamp = startSamp + x->x_window-1;
+            endSamp = startSamp + x->x_window - 1;
 
-        if(endSamp >= x->x_arrayPoints-1)
-            endSamp = x->x_arrayPoints-1;
+        if(endSamp >= x->x_arrayPoints - 1)
+            endSamp = x->x_arrayPoints - 1;
 
-        window = endSamp-startSamp+1;
+        window = endSamp - startSamp + 1;
 
         if(endSamp <= startSamp)
         {
@@ -156,7 +156,7 @@ static void barkSpecFlux_analyze(t_barkSpecFlux *x, t_floatarg start, t_floatarg
             barkSpecFlux_resizeWindow(x, x->x_window, window, startSamp, &endSamp);
 
         // construct forward analysis window
-        for(i=0, j=startSamp; j<=endSamp; i++, j++)
+        for(i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_fftwInForwardWindow[i] = x->x_vec[j].w_float;
 
         // do these sample start/end location calculations AFTER the potential call to resizeWindow(), as x->x_window may have changed
@@ -165,7 +165,7 @@ static void barkSpecFlux_analyze(t_barkSpecFlux *x, t_floatarg start, t_floatarg
         else
             startSampBack = 0;
 
-        endSampBack = startSampBack + x->x_window-1;
+        endSampBack = startSampBack + x->x_window - 1;
 
         // construct back analysis window x->x_separation frames earlier
         for(i=0, j=startSampBack; j<=endSampBack; i++, j++)
@@ -195,20 +195,20 @@ static void barkSpecFlux_analyze(t_barkSpecFlux *x, t_floatarg start, t_floatarg
         };
 
         // if x_windowFunction == 0, skip the windowing (rectangular)
-        if(x->x_windowFunction!=rectangular)
-            for(i=0; i<x->x_window; i++, windowFuncPtr++)
+        if(x->x_windowFunction != rectangular)
+            for(i = 0; i < x->x_window; i++, windowFuncPtr++)
                 x->x_fftwInForwardWindow[i] *= *windowFuncPtr;
 
         fftwf_execute(x->x_fftwPlanForwardWindow);
 
         // put the result of power calc back in x_fftwIn
-        tIDLib_power(x->x_windowHalf+1, x->x_fftwOutForwardWindow, x->x_fftwInForwardWindow);
+        tIDLib_power(x->x_windowHalf + 1, x->x_fftwOutForwardWindow, x->x_fftwInForwardWindow);
 
         if(!x->x_powerSpectrum)
-            tIDLib_mag(x->x_windowHalf+1, x->x_fftwInForwardWindow);
+            tIDLib_mag(x->x_windowHalf + 1, x->x_fftwInForwardWindow);
 
         if(x->x_specBandAvg)
-            tIDLib_specFilterBands(x->x_windowHalf+1, x->x_numFilters, x->x_fftwInForwardWindow, x->x_filterbank, x->x_normalize);
+            tIDLib_specFilterBands(x->x_windowHalf + 1, x->x_numFilters, x->x_fftwInForwardWindow, x->x_filterbank, x->x_normalize);
         else
             tIDLib_filterbankMultiply(x->x_fftwInForwardWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
@@ -234,20 +234,20 @@ static void barkSpecFlux_analyze(t_barkSpecFlux *x, t_floatarg start, t_floatarg
         };
 
         // if x_windowFunction == 0, skip the windowing (rectangular)
-        if(x->x_windowFunction!=rectangular)
-            for(i=0; i<x->x_window; i++, windowFuncPtr++)
+        if(x->x_windowFunction != rectangular)
+            for(i = 0; i < x->x_window; i++, windowFuncPtr++)
                 x->x_fftwInBackWindow[i] *= *windowFuncPtr;
 
         fftwf_execute(x->x_fftwPlanBackWindow);
 
         // put the result of power calc back in x_fftwIn
-        tIDLib_power(x->x_windowHalf+1, x->x_fftwOutBackWindow, x->x_fftwInBackWindow);
+        tIDLib_power(x->x_windowHalf + 1, x->x_fftwOutBackWindow, x->x_fftwInBackWindow);
 
         if(!x->x_powerSpectrum)
-            tIDLib_mag(x->x_windowHalf+1, x->x_fftwInBackWindow);
+            tIDLib_mag(x->x_windowHalf + 1, x->x_fftwInBackWindow);
 
         if(x->x_specBandAvg)
-            tIDLib_specFilterBands(x->x_windowHalf+1, x->x_numFilters, x->x_fftwInBackWindow, x->x_filterbank, x->x_normalize);
+            tIDLib_specFilterBands(x->x_windowHalf + 1, x->x_numFilters, x->x_fftwInBackWindow, x->x_filterbank, x->x_normalize);
         else
             tIDLib_filterbankMultiply(x->x_fftwInBackWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
@@ -314,36 +314,36 @@ static void barkSpecFlux_chain_fftData(t_barkSpecFlux *x, t_symbol *s, int argc,
     windowHalf *= 0.25;
 
     // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
-    if(windowHalf!=x->x_windowHalf)
+    if(windowHalf != x->x_windowHalf)
     {
-        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
+        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf * 2, x->x_window);
         return;
     }
 
     // fill the x_fftwOut buffers with the incoming fftData list, for both real and imag elements
     // for specFlux in particular, the first 2*(N/2+1) elements in the atom list are for the FORWARD window complex results. The second set of 2*(N/2+1) elements are for the BACK window complex results.
-    for(i=0; i<=x->x_windowHalf; i++)
+    for(i = 0; i <= x->x_windowHalf; i++)
     {
-        x->x_fftwOutForwardWindow[i][0] = atom_getfloat(argv+i);
-        x->x_fftwOutForwardWindow[i][1] = atom_getfloat(argv+(x->x_windowHalf+1)+i);
+        x->x_fftwOutForwardWindow[i][0] = atom_getfloat(argv + i);
+        x->x_fftwOutForwardWindow[i][1] = atom_getfloat(argv + (x->x_windowHalf + 1) + i);
         x->x_fftwOutBackWindow[i][0] = atom_getfloat(argv+(x->x_window+2)+i);
         x->x_fftwOutBackWindow[i][1] = atom_getfloat(argv+(x->x_window+x->x_windowHalf+3)+i);
     }
 
     // put the result of power calc back in x_fftwIn
-    tIDLib_power(x->x_windowHalf+1, x->x_fftwOutForwardWindow, x->x_fftwInForwardWindow);
-    tIDLib_power(x->x_windowHalf+1, x->x_fftwOutBackWindow, x->x_fftwInBackWindow);
+    tIDLib_power(x->x_windowHalf + 1, x->x_fftwOutForwardWindow, x->x_fftwInForwardWindow);
+    tIDLib_power(x->x_windowHalf + 1, x->x_fftwOutBackWindow, x->x_fftwInBackWindow);
 
     if(!x->x_powerSpectrum)
     {
-        tIDLib_mag(x->x_windowHalf+1, x->x_fftwInForwardWindow);
-        tIDLib_mag(x->x_windowHalf+1, x->x_fftwInBackWindow);
+        tIDLib_mag(x->x_windowHalf + 1, x->x_fftwInForwardWindow);
+        tIDLib_mag(x->x_windowHalf + 1, x->x_fftwInBackWindow);
     }
 
     if(x->x_specBandAvg)
     {
-        tIDLib_specFilterBands(windowHalf+1, x->x_numFilters, x->x_fftwInForwardWindow, x->x_filterbank, x->x_normalize);
-        tIDLib_specFilterBands(windowHalf+1, x->x_numFilters, x->x_fftwInBackWindow, x->x_filterbank, x->x_normalize);
+        tIDLib_specFilterBands(windowHalf + 1, x->x_numFilters, x->x_fftwInForwardWindow, x->x_filterbank, x->x_normalize);
+        tIDLib_specFilterBands(windowHalf + 1, x->x_numFilters, x->x_fftwInBackWindow, x->x_filterbank, x->x_normalize);
     }
     else
     {
@@ -409,28 +409,28 @@ static void barkSpecFlux_chain_magSpec(t_barkSpecFlux *x, t_symbol *s, int argc,
 
     // for barkSpecFlux magSpec in particular:
     // incoming magSpec list should be 2*(N/2+1) elements long, so windowHalf is:
-    windowHalf = argc-2;
+    windowHalf = argc - 2;
     windowHalf *= 0.5;
 
     // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
-    if(windowHalf!=x->x_windowHalf)
+    if(windowHalf != x->x_windowHalf)
     {
-        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf*2, x->x_window);
+        pd_error(x, "%s: window size of chain_ message (%lu) does not match current window size (%lu)", x->x_objSymbol->s_name, windowHalf * 2, x->x_window);
         return;
     }
 
     // fill the x_fftwIn buffers with the incoming magSpec lists
     // for barkSpecFlux in particular, the first N/2+1 elements in the atom list are for the FORWARD window magnitudes. The second set of N/2+1 elements are for the BACK window magnitudes.
-    for(i=0; i<=x->x_windowHalf; i++)
+    for(i = 0; i <= x->x_windowHalf; i++)
     {
-        x->x_fftwInForwardWindow[i] = atom_getfloat(argv+i);
-        x->x_fftwInBackWindow[i] = atom_getfloat(argv+(x->x_windowHalf+1)+i);
+        x->x_fftwInForwardWindow[i] = atom_getfloat(argv + i);
+        x->x_fftwInBackWindow[i] = atom_getfloat(argv + (x->x_windowHalf + 1) + i);
     }
 
     if(x->x_specBandAvg)
     {
-        tIDLib_specFilterBands(windowHalf+1, x->x_numFilters, x->x_fftwInForwardWindow, x->x_filterbank, x->x_normalize);
-        tIDLib_specFilterBands(windowHalf+1, x->x_numFilters, x->x_fftwInBackWindow, x->x_filterbank, x->x_normalize);
+        tIDLib_specFilterBands(windowHalf + 1, x->x_numFilters, x->x_fftwInForwardWindow, x->x_filterbank, x->x_normalize);
+        tIDLib_specFilterBands(windowHalf + 1, x->x_numFilters, x->x_fftwInBackWindow, x->x_filterbank, x->x_normalize);
     }
     else
     {
@@ -504,7 +504,7 @@ static void barkSpecFlux_chain_barkSpec(t_barkSpecFlux *x, t_symbol *s, int argc
     // fill the x_fftwIn buffer with the incoming magSpec list
     for(i=0; i<x->x_numFilters; i++)
     {
-        x->x_fftwInForwardWindow[i] = atom_getfloat(argv+i);
+        x->x_fftwInForwardWindow[i] = atom_getfloat(argv + i);
         x->x_fftwInBackWindow[i] = atom_getfloat(argv+x->x_numFilters+i);
     }
 
@@ -584,7 +584,7 @@ static void barkSpecFlux_createFilterbank(t_barkSpecFlux *x, t_floatarg bs)
 
     x->x_barkSpacing = bs;
 
-    if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_MAXBARKSPACING)
+    if(x->x_barkSpacing < TID_MINBARKSPACING || x->x_barkSpacing > TID_MAXBARKSPACING)
     {
         x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
         post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
@@ -599,7 +599,7 @@ static void barkSpecFlux_createFilterbank(t_barkSpecFlux *x, t_floatarg bs)
     tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, oldNumFilters, x->x_numFilters, x->x_window, x->x_sr);
 
     // resize listOut memory
-    x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, oldNumFilters*sizeof(t_atom), x->x_numFilters*sizeof(t_atom));
+    x->x_listOut = (t_atom *)t_resizebytes(x->x_listOut, oldNumFilters * sizeof(t_atom), x->x_numFilters * sizeof(t_atom));
 }
 
 
@@ -673,7 +673,7 @@ static void barkSpecFlux_print(t_barkSpecFlux *x)
 
 static void barkSpecFlux_samplerate(t_barkSpecFlux *x, t_floatarg sr)
 {
-    if(sr<TID_MINSAMPLERATE)
+    if(sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
@@ -693,8 +693,8 @@ static void barkSpecFlux_window(t_barkSpecFlux *x, t_floatarg w)
 
 static void barkSpecFlux_windowFunction(t_barkSpecFlux *x, t_floatarg f)
 {
-    f = (f<0)?0:f;
-    f = (f>4)?4:f;
+    f = (f < 0) ? 0 : f;
+    f = (f > 4) ? 4 : f;
     x->x_windowFunction = f;
 
     switch(x->x_windowFunction)
@@ -722,8 +722,8 @@ static void barkSpecFlux_windowFunction(t_barkSpecFlux *x, t_floatarg f)
 
 static void barkSpecFlux_powerSpectrum(t_barkSpecFlux *x, t_floatarg spec)
 {
-    spec = (spec<0)?0:spec;
-    spec = (spec>1)?1:spec;
+    spec = (spec < 0) ? 0 : spec;
+    spec = (spec > 1) ? 1 : spec;
     x->x_powerSpectrum = spec;
 
     if(x->x_powerSpectrum)
@@ -735,8 +735,8 @@ static void barkSpecFlux_powerSpectrum(t_barkSpecFlux *x, t_floatarg spec)
 
 static void barkSpecFlux_logSpectrum(t_barkSpecFlux *x, t_floatarg spec)
 {
-    spec = (spec<0)?0:spec;
-    spec = (spec>1)?1:spec;
+    spec = (spec < 0) ? 0 : spec;
+    spec = (spec > 1) ? 1 : spec;
     x->x_logSpectrum = spec;
 
     if(x->x_logSpectrum)
@@ -830,14 +830,14 @@ static void *barkSpecFlux_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_barkSpacing = atom_getfloat(argv+1);
-            if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_MAXBARKSPACING)
+            x->x_barkSpacing = atom_getfloat(argv + 1);
+            if(x->x_barkSpacing < TID_MINBARKSPACING || x->x_barkSpacing > TID_MAXBARKSPACING)
             {
                 x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
                 post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
 
-            sepFloat = atom_getfloat(argv+2);
+            sepFloat = atom_getfloat(argv + 2);
             if(sepFloat > TID_WINDOWSIZEDEFAULT)
             {
                 post("%s WARNING: frame separation cannot be more than current window size. Using half of current window size instead.", x->x_objSymbol->s_name);
@@ -860,8 +860,8 @@ static void *barkSpecFlux_new(t_symbol *s, int argc, t_atom *argv)
             else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_barkSpacing = atom_getfloat(argv+1);
-            if(x->x_barkSpacing<TID_MINBARKSPACING || x->x_barkSpacing>TID_MAXBARKSPACING)
+            x->x_barkSpacing = atom_getfloat(argv + 1);
+            if(x->x_barkSpacing < TID_MINBARKSPACING || x->x_barkSpacing > TID_MAXBARKSPACING)
             {
                 x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
                 post("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
@@ -905,7 +905,7 @@ static void *barkSpecFlux_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
     x->x_window = TID_WINDOWSIZEDEFAULT;
-    x->x_windowHalf = x->x_window*0.5;
+    x->x_windowHalf = x->x_window * 0.5;
     x->x_windowFunction = blackman;
     x->x_normalize = false;
     x->x_powerSpectrum = false;
@@ -918,27 +918,27 @@ static void *barkSpecFlux_new(t_symbol *s, int argc, t_atom *argv)
     x->x_fftwInForwardWindow = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
     x->x_fftwInBackWindow = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
 
-    x->x_listOut = (t_atom *)t_getbytes(x->x_numFilters*sizeof(t_atom));
+    x->x_listOut = (t_atom *)t_getbytes(x->x_numFilters * sizeof(t_atom));
 
     // set up the FFTW output buffer. Is there no function to initialize it?
-    x->x_fftwOutForwardWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
-    x->x_fftwOutBackWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf+1);
+    x->x_fftwOutForwardWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
+    x->x_fftwOutBackWindow = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
 
     // DFT plan
     x->x_fftwPlanForwardWindow = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwInForwardWindow, x->x_fftwOutForwardWindow, FFTWPLANNERFLAG);
     x->x_fftwPlanBackWindow = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwInBackWindow, x->x_fftwOutBackWindow, FFTWPLANNERFLAG);
 
     // we're supposed to initialize the input array after we create the plan
-    for(i=0; i<x->x_window; i++)
+    for(i = 0; i < x->x_window; i++)
     {
         x->x_fftwInForwardWindow[i] = 0.0;
         x->x_fftwInBackWindow[i] = 0.0;
     }
 
-      x->x_blackman = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_cosine = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hamming = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
-      x->x_hann = (t_float *)t_getbytes(x->x_window*sizeof(t_float));
+      x->x_blackman = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_cosine = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hamming = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_hann = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow(x->x_blackman, x->x_window);
@@ -958,7 +958,7 @@ static void *barkSpecFlux_new(t_symbol *s, int argc, t_atom *argv)
     tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, 0, x->x_numFilters, x->x_window, x->x_sr);
 
     // create listOut memory
-    x->x_listOut = (t_atom *)t_getbytes(x->x_numFilters*sizeof(t_atom));
+    x->x_listOut = (t_atom *)t_getbytes(x->x_numFilters * sizeof(t_atom));
 
     return (x);
 }
@@ -969,30 +969,30 @@ static void barkSpecFlux_free(t_barkSpecFlux *x)
     t_filterIdx i;
 
     // free the list out memory
-    t_freebytes(x->x_listOut, x->x_numFilters*sizeof(t_atom));
+    t_freebytes(x->x_listOut, x->x_numFilters * sizeof(t_atom));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwInForwardWindow, (x->x_window)*sizeof(t_sample));
-    t_freebytes(x->x_fftwInBackWindow, (x->x_window)*sizeof(t_sample));
+    t_freebytes(x->x_fftwInForwardWindow, (x->x_window) * sizeof(t_sample));
+    t_freebytes(x->x_fftwInBackWindow, (x->x_window) * sizeof(t_sample));
     fftwf_free(x->x_fftwOutForwardWindow);
     fftwf_free(x->x_fftwOutBackWindow);
     fftwf_destroy_plan(x->x_fftwPlanForwardWindow);
     fftwf_destroy_plan(x->x_fftwPlanBackWindow);
 
     // free the window memory
-    t_freebytes(x->x_blackman, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_cosine, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hamming, x->x_window*sizeof(t_float));
-    t_freebytes(x->x_hann, x->x_window*sizeof(t_float));
+    t_freebytes(x->x_blackman, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_cosine, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hamming, x->x_window * sizeof(t_float));
+    t_freebytes(x->x_hann, x->x_window * sizeof(t_float));
 
     // free filterFreqs memory
-    t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs*sizeof(t_float));
+    t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs * sizeof(t_float));
 
     // free the filterbank memory
     for(i=0; i<x->x_numFilters; i++)
-        t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].filterSize*sizeof(t_float));
+        t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].filterSize * sizeof(t_float));
 
-    t_freebytes(x->x_filterbank, x->x_numFilters*sizeof(t_filter));
+    t_freebytes(x->x_filterbank, x->x_numFilters * sizeof(t_filter));
 }
 
 

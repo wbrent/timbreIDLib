@@ -33,11 +33,11 @@ typedef struct _featureNorm
 static void featureNorm_allocMem(t_featureNorm *x)
 {
     // grab atom list memory
-    x->x_listOut = (t_atom *)t_getbytes((x->x_featureLength)*sizeof(t_atom));
+    x->x_listOut = (t_atom *)t_getbytes((x->x_featureLength) * sizeof(t_atom));
 
     // grab new memory
-    x->x_minValues = (t_float *)t_getbytes((x->x_featureLength)*sizeof(t_float));
-    x->x_maxValues = (t_float *)t_getbytes((x->x_featureLength)*sizeof(t_float));
+    x->x_minValues = (t_float *)t_getbytes((x->x_featureLength) * sizeof(t_float));
+    x->x_maxValues = (t_float *)t_getbytes((x->x_featureLength) * sizeof(t_float));
 }
 
 static void featureNorm_initMem(t_featureNorm *x)
@@ -56,11 +56,11 @@ static void featureNorm_initMem(t_featureNorm *x)
 static void featureNorm_free(t_featureNorm *x)
 {
     // free listOut memory
-    t_freebytes(x->x_listOut, (x->x_featureLength)*sizeof(t_atom));
+    t_freebytes(x->x_listOut, (x->x_featureLength) * sizeof(t_atom));
 
     // free the min/max values memory
-    t_freebytes(x->x_minValues, (x->x_featureLength)*sizeof(t_float));
-    t_freebytes(x->x_maxValues, (x->x_featureLength)*sizeof(t_float));
+    t_freebytes(x->x_minValues, (x->x_featureLength) * sizeof(t_float));
+    t_freebytes(x->x_maxValues, (x->x_featureLength) * sizeof(t_float));
 }
 
 static void featureNorm_normalize(t_featureNorm *x, t_symbol *s, int argc, t_atom *argv)
@@ -81,7 +81,7 @@ static void featureNorm_normalize(t_featureNorm *x, t_symbol *s, int argc, t_ato
                 {
                     t_float thisAtt, numer, denom;
 
-                    thisAtt = atom_getfloat(argv+i);
+                    thisAtt = atom_getfloat(argv + i);
 
                     thisAtt = (thisAtt<x->x_minValues[i])?x->x_minValues[i]:thisAtt;
                     thisAtt = (thisAtt>x->x_maxValues[i])?x->x_maxValues[i]:thisAtt;
@@ -103,7 +103,7 @@ static void featureNorm_normalize(t_featureNorm *x, t_symbol *s, int argc, t_ato
                 {
                     t_float thisAtt, numer, denom;
 
-                    thisAtt = atom_getfloat(argv+i);
+                    thisAtt = atom_getfloat(argv + i);
 
                     thisAtt = (thisAtt<x->x_minValues[i])?x->x_minValues[i]:thisAtt;
                     thisAtt = (thisAtt>x->x_maxValues[i])?x->x_maxValues[i]:thisAtt;
@@ -140,7 +140,7 @@ static void featureNorm_minValues(t_featureNorm *x, t_symbol *s, int argc, t_ato
     else
     {
         for(i=0; i<x->x_featureLength; i++)
-            x->x_minValues[i] = atom_getfloat(argv+i);
+            x->x_minValues[i] = atom_getfloat(argv + i);
     }
 }
 
@@ -156,7 +156,7 @@ static void featureNorm_maxValues(t_featureNorm *x, t_symbol *s, int argc, t_ato
     else
     {
         for(i=0; i<x->x_featureLength; i++)
-            x->x_maxValues[i] = atom_getfloat(argv+i);
+            x->x_maxValues[i] = atom_getfloat(argv + i);
     }
 }
 
@@ -246,7 +246,7 @@ static void *featureNorm_new(t_symbol *s, int argc, t_atom *argv)
             featureLength = atom_getfloat(argv);
             featureLength = (featureLength<1)?1:featureLength;
             x->x_featureLength = featureLength;
-            x->x_mode = atom_getfloat(argv+1);
+            x->x_mode = atom_getfloat(argv + 1);
             break;
     }
 
