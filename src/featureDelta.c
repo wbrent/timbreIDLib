@@ -58,7 +58,7 @@ static void featureDelta_initMem(t_featureDelta *x)
     t_attributeIdx i;
 
     // clear the atom list
-    for(i=0; i<x->x_featureLength; i++)
+    for(i = 0; i < x->x_featureLength; i++)
     {
         x->x_prevFeature[i] = 0.0;
         SETFLOAT(x->x_listOut+i, 0.0);
@@ -85,7 +85,7 @@ static void featureDelta_delta(t_featureDelta *x, t_symbol *s, int argc, t_atom 
     }
     else
     {
-        for(i=0; i<x->x_featureLength; i++)
+        for(i = 0; i < x->x_featureLength; i++)
         {
             t_float thisDiff;
 
@@ -134,7 +134,7 @@ static void featureDelta_prevFeature(t_featureDelta *x, t_symbol *s, int argc, t
     }
     else
     {
-        for(i=0; i<x->x_featureLength; i++)
+        for(i = 0; i < x->x_featureLength; i++)
             x->x_prevFeature[i] = atom_getfloat(argv + i);
     }
 }

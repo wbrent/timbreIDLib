@@ -49,7 +49,7 @@ static void tabletool_dump(t_tabletool *x)
 
         listOut = (t_atom *)t_getbytes(x->x_arrayPoints * sizeof(t_atom));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             SETFLOAT(listOut+i, x->x_vec[i].w_float);
 
         outlet_list(x->x_list, 0, x->x_arrayPoints, listOut);
@@ -116,7 +116,7 @@ static void tabletool_drip(t_tabletool *x)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             outlet_float(x->x_info, x->x_vec[i].w_float);
      }
 }
@@ -138,7 +138,7 @@ static void tabletool_asSet(t_tabletool *x)
         listOut = (t_atom *)t_getbytes(x->x_arrayPoints * sizeof(t_atom));
         setCount = 0;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
         {
             t_float thisVal;
             t_bool uniqueFlag;
@@ -203,13 +203,13 @@ static void tabletool_range(t_tabletool *x)
 
         min = FLT_MAX;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float < min)
                 min = x->x_vec[i].w_float;
 
         max = -FLT_MAX;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float > max)
                 max = x->x_vec[i].w_float;
 
@@ -236,7 +236,7 @@ static void tabletool_min(t_tabletool *x)
 
         min = FLT_MAX;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float < min)
             {
                 min = x->x_vec[i].w_float;
@@ -265,7 +265,7 @@ static void tabletool_max(t_tabletool *x)
 
         max = -FLT_MAX;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float > max)
             {
                 max = x->x_vec[i].w_float;
@@ -302,7 +302,7 @@ static void tabletool_mink(t_tabletool *x, t_float k)
         tableVals = (t_float *)t_getbytes(x->x_arrayPoints * sizeof(t_float));
         outputList = (t_atom *)t_getbytes(k * sizeof(t_atom));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             tableVals[i] = x->x_vec[i].w_float;
 
         tIDLib_bubbleSort(x->x_arrayPoints, tableVals);
@@ -343,7 +343,7 @@ static void tabletool_maxk(t_tabletool *x, t_float k)
         tableVals = (t_float *)t_getbytes(x->x_arrayPoints * sizeof(t_float));
         outputList = (t_atom *)t_getbytes(k * sizeof(t_atom));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             tableVals[i] = x->x_vec[i].w_float;
 
         tIDLib_bubbleSort(x->x_arrayPoints, tableVals);
@@ -377,7 +377,7 @@ static void tabletool_minMag(t_tabletool *x)
         min = FLT_MAX;
         minVal = 0;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(fabs(x->x_vec[i].w_float) < min)
             {
                 min = fabs(x->x_vec[i].w_float);
@@ -408,7 +408,7 @@ static void tabletool_maxMag(t_tabletool *x)
         max = -FLT_MAX;
         maxVal = 0;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(fabs(x->x_vec[i].w_float) > max)
             {
                 max = fabs(x->x_vec[i].w_float);
@@ -439,7 +439,7 @@ static void tabletool_nearest(t_tabletool *x, t_float val)
         dist = FLT_MAX;
         idx = 0;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(fabs(x->x_vec[i].w_float - val) < dist)
             {
                 dist = fabs(x->x_vec[i].w_float - val);
@@ -469,7 +469,7 @@ static void tabletool_equals(t_tabletool *x, t_float val)
 
         indices = (t_sampIdx *)t_getbytes(0);
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float == val)
             {
                 numMatches++;
@@ -519,7 +519,7 @@ static void tabletool_greater(t_tabletool *x, t_float val)
 
         indices = (t_sampIdx *)t_getbytes(0);
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float > val)
             {
                 numMatches++;
@@ -569,7 +569,7 @@ static void tabletool_less(t_tabletool *x, t_float val)
 
         indices = (t_sampIdx *)t_getbytes(0);
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float < val)
             {
                 numMatches++;
@@ -619,7 +619,7 @@ static void tabletool_between(t_tabletool *x, t_float lowBound, t_float hiBound)
 
         indices = (t_sampIdx *)t_getbytes(0);
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float > lowBound && x->x_vec[i].w_float < hiBound)
             {
                 numMatches++;
@@ -831,7 +831,7 @@ static void tabletool_series(t_tabletool *x, t_float startval, t_float endval, t
         span = end-start;
         inc = 1.0/(x->x_arrayPoints - 1);
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = pow(inc*i, exponent) * span + start;
 
         garray_redraw(a);
@@ -886,7 +886,7 @@ static void tabletool_offset(t_tabletool *x, t_float offset)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float += offset;
 
         garray_redraw(a);
@@ -907,7 +907,7 @@ static void tabletool_scale(t_tabletool *x, t_float scalar)
         t_sampIdx i;
 
         // rescale
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float *= scalar;
 
         garray_redraw(a);
@@ -927,7 +927,7 @@ static void tabletool_pow(t_tabletool *x, t_float power)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = powf(x->x_vec[i].w_float, power);
 
         garray_redraw(a);
@@ -1043,7 +1043,7 @@ static void tabletool_invert(t_tabletool *x)
         max = -FLT_MAX;
         min = FLT_MAX;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
         {
             if(x->x_vec[i].w_float < min)
                 min = x->x_vec[i].w_float;
@@ -1053,7 +1053,7 @@ static void tabletool_invert(t_tabletool *x)
         }
 
         // rescale
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = max - x->x_vec[i].w_float + min;
 
         garray_redraw(a);
@@ -1077,7 +1077,7 @@ static void tabletool_reverse(t_tabletool *x)
         tableVals = (t_float *)t_getbytes(x->x_arrayPoints * sizeof(t_float));
 
         // load table data
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             tableVals[i] = x->x_vec[i].w_float;
 
         for(i=x->x_arrayPoints - 1, j=0; j<x->x_arrayPoints; i--, j++)
@@ -1149,7 +1149,7 @@ static void tabletool_insert(t_tabletool *x, t_float idx, t_float val)
         tableVals = (t_float *)t_getbytes(x->x_arrayPoints * sizeof(t_float));
 
         // load table data
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             tableVals[i] = x->x_vec[i].w_float;
 
         lastIdx = x->x_arrayPoints - 1;
@@ -1196,7 +1196,7 @@ static void tabletool_round(t_tabletool *x, t_float res)
 
         if(res<=0 || res==1.0)
         {
-            for(i=0; i<x->x_arrayPoints; i++)
+            for(i = 0; i < x->x_arrayPoints; i++)
             {
                 x->x_vec[i].w_float += 0.5;
                 x->x_vec[i].w_float = floor(x->x_vec[i].w_float);
@@ -1208,7 +1208,7 @@ static void tabletool_round(t_tabletool *x, t_float res)
 
             resRecip = 1.0/res;
 
-            for(i=0; i<x->x_arrayPoints; i++)
+            for(i = 0; i < x->x_arrayPoints; i++)
             {
                 x->x_vec[i].w_float *= resRecip;
                 x->x_vec[i].w_float += res;
@@ -1234,7 +1234,7 @@ static void tabletool_floor(t_tabletool *x)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = (t_sLongInt)x->x_vec[i].w_float;
 
         garray_redraw(a);
@@ -1254,7 +1254,7 @@ static void tabletool_ceil(t_tabletool *x)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if( fabs(x->x_vec[i].w_float - (t_sLongInt)x->x_vec[i].w_float) > 0 )
                 x->x_vec[i].w_float = 1 + (t_sLongInt)x->x_vec[i].w_float;
 
@@ -1275,7 +1275,7 @@ static void tabletool_mtof(t_tabletool *x)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = mtof(x->x_vec[i].w_float);
 
         garray_redraw(a);
@@ -1295,7 +1295,7 @@ static void tabletool_ftom(t_tabletool *x)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = ftom(x->x_vec[i].w_float);
 
         garray_redraw(a);
@@ -1315,7 +1315,7 @@ static void tabletool_dbtorms(t_tabletool *x)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = dbtorms(x->x_vec[i].w_float);
 
         garray_redraw(a);
@@ -1335,7 +1335,7 @@ static void tabletool_rmstodb(t_tabletool *x)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = rmstodb(x->x_vec[i].w_float);
 
         garray_redraw(a);
@@ -1355,7 +1355,7 @@ static void tabletool_bin2freq(t_tabletool *x, t_float n, t_float sr)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = tIDLib_bin2freq(roundf(x->x_vec[i].w_float), n, sr);
 
         garray_redraw(a);
@@ -1375,7 +1375,7 @@ static void tabletool_freq2bin(t_tabletool *x, t_float n, t_float sr)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = tIDLib_freq2bin(x->x_vec[i].w_float, n, sr);
 
         garray_redraw(a);
@@ -1395,7 +1395,7 @@ static void tabletool_bark2freq(t_tabletool *x)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = tIDLib_bark2freq(x->x_vec[i].w_float);
 
         garray_redraw(a);
@@ -1415,7 +1415,7 @@ static void tabletool_freq2bark(t_tabletool *x)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = tIDLib_freq2bark(x->x_vec[i].w_float);
 
         garray_redraw(a);
@@ -1435,7 +1435,7 @@ static void tabletool_bashBelow(t_tabletool *x, t_float thresh, t_float newVal)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float <= thresh)
                 x->x_vec[i].w_float = newVal;
 
@@ -1456,7 +1456,7 @@ static void tabletool_bashAbove(t_tabletool *x, t_float thresh, t_float newVal)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float >= thresh)
                 x->x_vec[i].w_float = newVal;
 
@@ -1477,7 +1477,7 @@ static void tabletool_clip(t_tabletool *x, t_float lower, t_float upper)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float > upper)
                 x->x_vec[i].w_float = upper;
             else if(x->x_vec[i].w_float < lower)
@@ -1510,7 +1510,7 @@ static void tabletool_smooth(t_tabletool *x)
             threeRecip = 1.0/3.0;
 
             // load table data
-            for(i=0; i<x->x_arrayPoints; i++)
+            for(i = 0; i < x->x_arrayPoints; i++)
                 tableVals[i] = x->x_vec[i].w_float;
 
             x->x_vec[0].w_float = (tableVals[0] + tableVals[1] + tableVals[2])*threeRecip;
@@ -1648,10 +1648,10 @@ static void tabletool_scramble(t_tabletool *x)
 
         randIndices = (t_sampIdx *)t_getbytes(x->x_arrayPoints * sizeof(t_sampIdx));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             indices[i] = i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             tableVals[i] = x->x_vec[i].w_float;
 
         length = x->x_arrayPoints;
@@ -1676,7 +1676,7 @@ static void tabletool_scramble(t_tabletool *x)
             tableVals[i] = tmp;
         }
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
              x->x_vec[i].w_float = tableVals[i];
 
         garray_redraw(a);
@@ -1704,12 +1704,12 @@ static void tabletool_sort(t_tabletool *x)
 
         tableVals = (t_float *)t_getbytes(x->x_arrayPoints * sizeof(t_float));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             tableVals[i] = x->x_vec[i].w_float;
 
         tIDLib_bubbleSort(x->x_arrayPoints, tableVals);
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
              x->x_vec[i].w_float = tableVals[i];
 
         garray_redraw(a);
@@ -1810,7 +1810,7 @@ static void tabletool_replace(t_tabletool *x, t_float searchVal, t_float newVal)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float==searchVal)
                 x->x_vec[i].w_float = newVal;
 
@@ -1912,7 +1912,7 @@ static void tabletool_add(t_tabletool *x, t_symbol *array2)
 
         listOut = (t_atom *)t_getbytes(x->x_arrayPoints * sizeof(t_atom));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
         {
             if(i>=array2pts)
                 SETFLOAT(listOut+i, x->x_vec[i].w_float);
@@ -2122,7 +2122,7 @@ static void tabletool_subtract(t_tabletool *x, t_symbol *array2)
 
         listOut = (t_atom *)t_getbytes(x->x_arrayPoints * sizeof(t_atom));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(i>=array2pts)
                 SETFLOAT(listOut+i, x->x_vec[i].w_float);
             else
@@ -2167,7 +2167,7 @@ static void tabletool_multiply(t_tabletool *x, t_symbol *array2)
 
         listOut = (t_atom *)t_getbytes(x->x_arrayPoints * sizeof(t_atom));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(i>=array2pts)
                 SETFLOAT(listOut+i, x->x_vec[i].w_float);
             else
@@ -2212,7 +2212,7 @@ static void tabletool_divide(t_tabletool *x, t_symbol *array2)
 
         listOut = (t_atom *)t_getbytes(x->x_arrayPoints * sizeof(t_atom));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(i>=array2pts)
                 SETFLOAT(listOut+i, x->x_vec[i].w_float);
             else
@@ -2513,7 +2513,7 @@ static void tabletool_abs(t_tabletool *x)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float < 0.0)
                 x->x_vec[i].w_float *= -1.0;
 
@@ -2534,7 +2534,7 @@ static void tabletool_reciprocal(t_tabletool *x)
     {
         t_sampIdx i;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
         {
             t_float thisVal;
 
@@ -2566,7 +2566,7 @@ static void tabletool_sum(t_tabletool *x)
 
         sum = 0.0;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             sum += x->x_vec[i].w_float;
 
         outlet_float(x->x_info, sum);
@@ -2589,7 +2589,7 @@ static void tabletool_mean(t_tabletool *x)
 
         mean = 0.0;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             mean += x->x_vec[i].w_float;
 
         mean /= x->x_arrayPoints;
@@ -2615,7 +2615,7 @@ static void tabletool_median(t_tabletool *x)
 
         tableVals = (t_float *)t_getbytes(x->x_arrayPoints * sizeof(t_float));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             tableVals[i] = x->x_vec[i].w_float;
 
         tIDLib_bubbleSort(x->x_arrayPoints, tableVals);
@@ -2713,13 +2713,13 @@ static void tabletool_mode(t_tabletool *x)
 
         instanceCounters = (t_sampIdx *)t_getbytes(x->x_arrayPoints * sizeof(t_sampIdx));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             instanceCounters[i] = 0;
 
         maxCount = 0;
         mode = -1;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
         {
             t_float thisVal;
             thisVal = x->x_vec[i].w_float;
@@ -2753,7 +2753,7 @@ static void tabletool_mode(t_tabletool *x)
         // get memory to buffer x_vec
         data = (t_float *)t_getbytes(x->x_arrayPoints * sizeof(t_float));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             data[i] = x->x_vec[i].w_float;
 
         mode = tIDLib_mode(data, x->x_arrayPoints, &maxCount);
@@ -2787,11 +2787,11 @@ static void tabletool_geomean(t_tabletool *x)
         numPointsRecip = 1.0/x->x_arrayPoints;
 
         // take the nth roots first so as not to lose data.
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             nthRoots[i] = pow(x->x_vec[i].w_float, numPointsRecip);
 
         // take the product of nth roots
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             mean *= nthRoots[i];
 
         outlet_float(x->x_info, mean);
@@ -2817,12 +2817,12 @@ static void tabletool_std(t_tabletool *x)
 
         tableVals = (t_float *)t_getbytes(x->x_arrayPoints * sizeof(t_float));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             tableVals[i] = x->x_vec[i].w_float;
 
         sum = 0.0;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             sum += tableVals[i];
 
         mean = sum/x->x_arrayPoints;
@@ -2830,7 +2830,7 @@ static void tabletool_std(t_tabletool *x)
         sum = 0.0;
 
         // center & square the data
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
         {
             tableVals[i] -= mean;
             tableVals[i] *= tableVals[i];
@@ -2864,7 +2864,7 @@ static void tabletool_bestFitLine(t_tabletool *x)
 
         dataBuf = (t_float *)t_getbytes(x->x_arrayPoints * sizeof(t_float));
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             dataBuf[i] = x->x_vec[i].w_float;
 
         slope = tIDLib_fitLineSlope(x->x_arrayPoints, dataBuf);
@@ -2893,13 +2893,13 @@ static void tabletool_normalize(t_tabletool *x, t_float min, t_float max)
 
         smallest = FLT_MAX;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float < smallest)
                 smallest = x->x_vec[i].w_float;
 
         largest = smallest;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float > largest)
                 largest = x->x_vec[i].w_float;
 
@@ -2915,19 +2915,19 @@ static void tabletool_normalize(t_tabletool *x, t_float min, t_float max)
         range_data = 1.0/range_data;
 
         // shift everything >= 0
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float -= smallest;
 
         // scale to 0-1 range
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float *= range_data;
 
         // scale to requested range
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float *= rangeFinal;
 
         // offset downward according to min
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float += min;
 
         garray_redraw(a);
@@ -2950,22 +2950,22 @@ static void tabletool_normalize_sum(t_tabletool *x)
 
         smallest = FLT_MAX;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float < smallest)
                 smallest = x->x_vec[i].w_float;
 
         // shift everything >= 0
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float -= smallest;
 
         sum = 0.0;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             sum += x->x_vec[i].w_float;
 
         sum = 1.0/sum;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float *= sum;
 
         garray_redraw(a);
@@ -3006,13 +3006,13 @@ static void tabletool_fitBounds(t_tabletool *x)
 
         max = -FLT_MAX;
         // find max
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float > max)
                 max = x->x_vec[i].w_float;
 
         min = FLT_MAX;
         // find max
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float < min)
                 min = x->x_vec[i].w_float;
 
@@ -3162,7 +3162,7 @@ static void tabletool_blackman(t_tabletool *x)
 
         tIDLib_blackmanWindow(wPtr, x->x_arrayPoints);
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = *(wPtr+i);
 
         garray_redraw(a);
@@ -3189,7 +3189,7 @@ static void tabletool_cosine(t_tabletool *x)
 
         tIDLib_cosineWindow(wPtr, x->x_arrayPoints);
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = *(wPtr+i);
 
         garray_redraw(a);
@@ -3216,7 +3216,7 @@ static void tabletool_hamming(t_tabletool *x)
 
         tIDLib_hammingWindow(wPtr, x->x_arrayPoints);
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = *(wPtr+i);
 
         garray_redraw(a);
@@ -3243,7 +3243,7 @@ static void tabletool_hann(t_tabletool *x)
 
         tIDLib_hannWindow(wPtr, x->x_arrayPoints);
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float = *(wPtr+i);
 
         garray_redraw(a);
@@ -3268,7 +3268,7 @@ static void tabletool_randFill(t_tabletool *x, t_float min, t_float max)
 
         range = max - min;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
         {
             x->x_vec[i].w_float = rand();
             x->x_vec[i].w_float /= RAND_MAX;
@@ -3304,11 +3304,11 @@ static void tabletool_peaks(t_tabletool *x, t_float threshPct)
         maxPeakVal = -FLT_MAX;
         minPeakVal = FLT_MAX;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float<minVal)
                 minVal = x->x_vec[i].w_float;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             dataBuf[i] = x->x_vec[i].w_float;
 
         tIDLib_peaksValleys(x->x_arrayPoints, dataBuf, flagsBuf, &minPeakVal, &maxPeakVal);
@@ -3317,7 +3317,7 @@ static void tabletool_peaks(t_tabletool *x, t_float threshPct)
 
         thresh = maxPeakRange * (threshPct/100.0);
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
         {
             // 0.5 in the flagsBuf means a half peak, which we'll ignore
             if(flagsBuf[i]>0.5)
@@ -3363,21 +3363,21 @@ static void tabletool_valleys(t_tabletool *x, t_float threshPct)
         maxPeakVal = -FLT_MAX;
         minPeakVal = FLT_MAX;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float>maxVal)
                 maxVal = x->x_vec[i].w_float;
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float<minVal)
                 minVal = x->x_vec[i].w_float;
 
         // invert the data so that valleys become peaks
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             dataBuf[i] = maxVal - x->x_vec[i].w_float + minVal;
 
         // get new minVal after inversion and do the same as in the peaks function
         minVal = FLT_MAX;
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             if(x->x_vec[i].w_float<minVal)
                 minVal = x->x_vec[i].w_float;
 
@@ -3387,7 +3387,7 @@ static void tabletool_valleys(t_tabletool *x, t_float threshPct)
 
         thresh = maxPeakRange * (threshPct/100.0);
 
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
         {
             // 0.5 in the flagsBuf means a half peak, which we'll ignore
             if(flagsBuf[i]>0.5)
@@ -3435,7 +3435,7 @@ static void tabletool_peaksThresh(t_tabletool *x, t_float min, t_float max)
         peakMax = 0;
         peakMaxIdx = 0;
 
-        for(i=0; i<x->x_arrayPoints - 1; i++)
+        for(i = 0; i < x->x_arrayPoints - 1; i++)
         {
             if(x->x_vec[i].w_float > max)
                 peakFlag = true;
@@ -3636,7 +3636,7 @@ static void tabletool_store(t_tabletool *x)
         x->x_originalData = (t_float *)t_getbytes(x->x_arrayPoints * sizeof(t_float));
 
         // load table data
-        for(i=0; i<x->x_arrayPoints; i++)
+        for(i = 0; i < x->x_arrayPoints; i++)
             x->x_originalData[i] = x->x_vec[i].w_float;
 
         x->x_storedFlag = true;
@@ -3659,7 +3659,7 @@ static void tabletool_restore(t_tabletool *x)
             t_sampIdx i;
 
             // load original data
-            for(i=0; i<x->x_arrayPoints; i++)
+            for(i = 0; i < x->x_arrayPoints; i++)
                 x->x_vec[i].w_float = x->x_originalData[i];
 
             garray_redraw(a);
@@ -3694,7 +3694,7 @@ static void tabletool_change(t_tabletool *x)
         {
             t_sampIdx i;
 
-            for(i=0; i<x->x_arrayPoints; i++)
+            for(i = 0; i < x->x_arrayPoints; i++)
             {
                 if(x->x_vec[i].w_float != x->x_originalData[i])
                 {

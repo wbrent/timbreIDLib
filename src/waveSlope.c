@@ -149,8 +149,8 @@ static void waveSlope_samplerate(t_waveSlope *x, t_floatarg sr)
 
 static void waveSlope_normalize(t_waveSlope *x, t_floatarg norm)
 {
-    norm = (norm<0)?0:norm;
-    norm = (norm>1)?1:norm;
+    norm = (norm < 0) ? 0 : norm;
+    norm = (norm > 1) ? 1 : norm;
     x->x_normalize = norm;
 
     if(x->x_normalize)

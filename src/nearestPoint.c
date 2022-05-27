@@ -74,7 +74,7 @@ static void nearestPoint_nearest(t_nearestPoint *x, t_symbol *s, int argc, t_ato
             instanceBuffer = (t_float *)t_getbytes(dimensions * sizeof(t_float));
             weights = (t_float *)t_getbytes(dimensions * sizeof(t_float));
 
-            for(i=0; i<x->x_numInstances; i++)
+            for(i = 0; i < x->x_numInstances; i++)
             {
                 for(j=0; j<dimensions; j++)
                 {
@@ -93,7 +93,7 @@ static void nearestPoint_nearest(t_nearestPoint *x, t_symbol *s, int argc, t_ato
 
             tIDLib_sortKnnInfo(x->x_numMatches, x->x_numInstances, UINT_MAX, x->x_instances);
 
-            for(i=0; i<x->x_numMatches; i++)
+            for(i = 0; i < x->x_numMatches; i++)
             {
                 outlet_float(x->x_nearestDist, x->x_instances[i].knnInfo.safeDist);
                 outlet_float(x->x_nearest, x->x_instances[i].knnInfo.idx);
@@ -149,7 +149,7 @@ static void nearestPoint_clear(t_nearestPoint *x)
 {
     t_instanceIdx i;
 
-    for(i=0; i<x->x_numInstances; i++)
+    for(i = 0; i < x->x_numInstances; i++)
         t_freebytes(x->x_instances[i].data, x->x_dimensions * sizeof(t_float));
 
     x->x_instances = (t_instance *)t_resizebytes(x->x_instances, x->x_numInstances * sizeof(t_instance), 0);
@@ -183,7 +183,7 @@ static void *nearestPoint_new(t_float dim)
     x->x_attributeData = (t_attributeData *)t_getbytes(x->x_dimensions * sizeof(t_attributeData));
 
     // initialize feature input buffer
-    for(i=0; i<x->x_dimensions; i++)
+    for(i = 0; i < x->x_dimensions; i++)
     {
         x->x_attributeData[i].inputData = 0.0;
         x->x_attributeData[i].weight = 1.0;
@@ -199,7 +199,7 @@ static void nearestPoint_free(t_nearestPoint *x)
 {
     t_instanceIdx i;
 
-    for(i=0; i<x->x_numInstances; i++)
+    for(i = 0; i < x->x_numInstances; i++)
         t_freebytes(x->x_instances[i].data, x->x_dimensions * sizeof(t_float));
 
     t_freebytes(x->x_instances, x->x_numInstances * sizeof(t_instance));

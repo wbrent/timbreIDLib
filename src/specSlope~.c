@@ -217,8 +217,8 @@ static void specSlope_tilde_windowFunction(t_specSlope_tilde *x, t_floatarg f)
 
 static void specSlope_tilde_normalize(t_specSlope_tilde *x, t_floatarg norm)
 {
-    norm = (norm<0)?0:norm;
-    norm = (norm>1)?1:norm;
+    norm = (norm < 0) ? 0 : norm;
+    norm = (norm > 1) ? 1 : norm;
     x->x_normalize = norm;
 
     if(x->x_normalize)

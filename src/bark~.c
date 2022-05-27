@@ -100,13 +100,13 @@ static void bark_tilde_create_loudness_weighting(t_bark_tilde *x)
 
     barkSum = x->x_barkSpacing;
 
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
     {
         barkFreqs[i] = tIDLib_bark2freq(barkSum);
         barkSum += x->x_barkSpacing;
     }
 
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
     {
         t_binIdx nearIdx;
         t_float nearFreq, diffFreq, diffdB, dBint;
@@ -214,8 +214,8 @@ static void bark_tilde_minvel(t_bark_tilde *x, t_floatarg mv)
 
 static void bark_tilde_spec_band_avg(t_bark_tilde *x, t_floatarg avg)
 {
-    avg = (avg<0)?0:avg;
-    avg = (avg>1)?1:avg;
+    avg = (avg < 0) ? 0 : avg;
+    avg = (avg > 1) ? 1 : avg;
     x->x_specBandAvg = avg;
 
     if(x->x_specBandAvg)
@@ -227,8 +227,8 @@ static void bark_tilde_spec_band_avg(t_bark_tilde *x, t_floatarg avg)
 
 static void bark_tilde_filter_avg(t_bark_tilde *x, t_floatarg avg)
 {
-    avg = (avg<0)?0:avg;
-    avg = (avg>1)?1:avg;
+    avg = (avg < 0) ? 0 : avg;
+    avg = (avg > 1) ? 1 : avg;
     x->x_filterAvg = avg;
 
     if(x->x_filterAvg)
@@ -360,7 +360,7 @@ static void bark_tilde_filterFreqs(t_bark_tilde *x)
 {
     t_filterIdx i;
 
-    for(i=0; i<x->x_numFilters+2; i++)
+    for(i = 0; i < x->x_numFilters + 2; i++)
         post("%s filterFreq[%i]: %f", x->x_objSymbol->s_name, i, x->x_filterFreqs[i]);
 }
 
@@ -551,8 +551,8 @@ static void *bark_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
 
-    // sizeFilterFreqs-2 is the correct number of filters, since we don't count the start point of the first filter, or the finish point of the last filter
-    x->x_numFilters = x->x_sizeFilterFreqs-2;
+    // sizeFilterFreqs - 2 is the correct number of filters, since we don't count the start point of the first filter, or the finish point of the last filter
+    x->x_numFilters = x->x_sizeFilterFreqs - 2;
 
     tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, 0, x->x_numFilters, x->x_window, x->x_sr);
 
@@ -565,7 +565,7 @@ static void *bark_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_growthList = (t_atom *)t_getbytes(x->x_numFilters * sizeof(t_atom));
     x->x_loudWeights = (t_float *)t_getbytes(x->x_numFilters * sizeof(t_float));
 
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
     {
         x->x_mask[i] = 0.0;
         x->x_growth[i] = 0.0;
@@ -656,17 +656,17 @@ static t_int *bark_tilde_perform(t_int *w)
 
          // optional loudness weighting
          if(x->x_useWeights)
-            for(i=0; i<x->x_numFilters; i++)
+            for(i = 0; i < x->x_numFilters; i++)
                 x->x_fftwIn[i] *= x->x_loudWeights[i];
 
-        for(i=0; i<x->x_numFilters; i++)
+        for(i = 0; i < x->x_numFilters; i++)
             totalVel += x->x_fftwIn[i];
 
         // init growth list to zero
-        for(i=0; i<x->x_numFilters; i++)
+        for(i = 0; i < x->x_numFilters; i++)
             x->x_growth[i] = 0.0;
 
-        for(i=0; i<x->x_numFilters; i++)
+        for(i = 0; i < x->x_numFilters; i++)
         {
             // from p.3 of Puckette/Apel/Zicarelli, 1998
             // salt divisor with + 1.0e-15 in case previous power was zero
@@ -739,7 +739,7 @@ static t_int *bark_tilde_perform(t_int *w)
         }
 
         // update mask
-        for(i=0; i<x->x_numFilters; i++)
+        for(i = 0; i < x->x_numFilters; i++)
         {
             if(x->x_fftwIn[i] > x->x_mask[i])
             {
@@ -830,7 +830,7 @@ static void bark_tilde_free(t_bark_tilde *x)
     t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs * sizeof(t_float));
 
     // free the filterbank memory
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].filterSize * sizeof(t_float));
 
     t_freebytes(x->x_filterbank, x->x_numFilters * sizeof(t_filter));

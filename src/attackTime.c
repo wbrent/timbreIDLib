@@ -190,7 +190,7 @@ static void attackTime_maxSearchRange(t_attackTime *x, t_floatarg range)
 
     x->x_maxSearchRange = newRange;
 
-    for(i=0; i<x->x_maxSearchRange; i++)
+    for(i = 0; i < x->x_maxSearchRange; i++)
         x->x_searchBuffer[i] = 0.0;
 
     post("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange/x->x_sr)*1000.0, x->x_maxSearchRange);

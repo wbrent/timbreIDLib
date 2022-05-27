@@ -127,10 +127,10 @@ static void attackTime_tilde_maxSearchRange(t_attackTime_tilde *x, t_floatarg ra
 
     x->x_maxSearchRange = newRange;
 
-    for(i=0; i<x->x_maxSearchRange; i++)
+    for(i = 0; i < x->x_maxSearchRange; i++)
         x->x_searchBuffer[i] = 0.0;
 
-    for(i=0; i<x->x_maxSearchRange+x->x_n; i++)
+    for(i = 0; i < x->x_maxSearchRange+x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
     post("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange/x->x_sr)*1000.0, x->x_maxSearchRange);
@@ -235,14 +235,14 @@ static void *attackTime_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_searchBuffer = (t_float *)t_getbytes(x->x_maxSearchRange * sizeof(t_float));
 
     // initialize signal buffer
-    for(i=0; i<x->x_maxSearchRange+x->x_n; i++)
+    for(i = 0; i < x->x_maxSearchRange+x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
     // initialize analysis buffer
     for(i = 0; i < x->x_window; i++)
         x->x_analysisBuffer[i] = 0.0;
 
-     for(i=0; i<x->x_maxSearchRange; i++)
+     for(i = 0; i < x->x_maxSearchRange; i++)
         x->x_searchBuffer[i] = 0.0;
 
     return (x);
@@ -260,7 +260,7 @@ static t_int *attackTime_tilde_perform(t_int *w)
     n = w[3];
 
      // shift signal buffer contents back.
-    for(i=0; i<x->x_maxSearchRange; i++)
+    for(i = 0; i < x->x_maxSearchRange; i++)
         x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
 
     // write new block to end of signal buffer.
@@ -300,10 +300,10 @@ static void attackTime_tilde_dsp(t_attackTime_tilde *x, t_signal **sp)
 
         x->x_maxSearchRange = newRange;
 
-        for(i=0; i<x->x_maxSearchRange; i++)
+        for(i = 0; i < x->x_maxSearchRange; i++)
             x->x_searchBuffer[i] = 0.0;
 
-        for(i=0; i<x->x_maxSearchRange+x->x_n; i++)
+        for(i = 0; i < x->x_maxSearchRange+x->x_n; i++)
             x->x_signalBuffer[i] = 0.0;
 
         post("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange/x->x_sr)*1000.0, x->x_maxSearchRange);

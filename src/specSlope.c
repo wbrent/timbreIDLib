@@ -327,8 +327,8 @@ static void specSlope_windowFunction(t_specSlope *x, t_floatarg f)
 
 static void specSlope_normalize(t_specSlope *x, t_floatarg norm)
 {
-    norm = (norm<0)?0:norm;
-    norm = (norm>1)?1:norm;
+    norm = (norm < 0) ? 0 : norm;
+    norm = (norm > 1) ? 1 : norm;
     x->x_normalize = norm;
 
     if(x->x_normalize)

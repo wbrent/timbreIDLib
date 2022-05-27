@@ -105,7 +105,7 @@ static void tempo_tilde_resizeOnsetsBuffer(t_tempo_tilde *x, t_floatarg newSize)
     x->x_onsetsBufSize = newSize;
     x->x_onsetsBufDur = ((x->x_onsetsBufSize*x->x_hop)/x->x_sr)*1000.0;
 
-    for(i=0; i<x->x_onsetsBufSize; i++)
+    for(i = 0; i < x->x_onsetsBufSize; i++)
         x->x_onsetsBuffer[i] = x->x_belowThreshDefault;
 
     post("%s onset buffer size updated: %0.2f ms, %i frames.", x->x_objSymbol->s_name, x->x_onsetsBufDur, x->x_onsetsBufSize);
@@ -247,7 +247,7 @@ static void tempo_tilde_analyze(t_tempo_tilde *x)
     }
 
     // shift the contents backwards
-    for(i=0; i<x->x_onsetsBufSize-1; i++)
+    for(i = 0; i < x->x_onsetsBufSize-1; i++)
         x->x_onsetsBuffer[i] = x->x_onsetsBuffer[i+1];
 
     if(growth>=((x->x_growthThresh/100.0)*x->x_maxOnsetPeakVal))
@@ -703,7 +703,7 @@ static void tempo_tilde_tempoBufferSize(t_tempo_tilde *x, t_floatarg n)
 
     x->x_tempoBufferSize = n;
 
-    for(i=0; i<x->x_tempoBufferSize; i++)
+    for(i = 0; i < x->x_tempoBufferSize; i++)
         x->x_tempoBuffer[i] = -1;
 
     post("%s tempo buffer size: %i", x->x_objSymbol->s_name, x->x_tempoBufferSize);
@@ -714,7 +714,7 @@ static void tempo_tilde_tempoBufferConst(t_tempo_tilde *x, t_floatarg val)
 {
     t_uShortInt i;
 
-    for(i=0; i<x->x_tempoBufferSize; i++)
+    for(i = 0; i < x->x_tempoBufferSize; i++)
         x->x_tempoBuffer[i] = val;
 
     post("%s tempo buffer filled with a constant of %0.2f", x->x_objSymbol->s_name, val);
@@ -725,7 +725,7 @@ static void tempo_tilde_tempoBufferClear(t_tempo_tilde *x)
 {
     t_uShortInt i;
 
-    for(i=0; i<x->x_tempoBufferSize; i++)
+    for(i = 0; i < x->x_tempoBufferSize; i++)
         x->x_tempoBuffer[i] = -1;
 
     post("%s tempo buffer reset", x->x_objSymbol->s_name);
@@ -846,7 +846,7 @@ static void *tempo_tilde_new(t_symbol *s, int argc, t_atom *argv)
      for(i=0; i<(x->x_window*2); i++)
         x->x_signalBuffer[i] = 0.0;
 
-     for(i=0; i<x->x_onsetsBufSize; i++)
+     for(i = 0; i < x->x_onsetsBufSize; i++)
         x->x_onsetsBuffer[i] = x->x_belowThreshDefault;
 
       x->x_blackman = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
@@ -877,7 +877,7 @@ static void *tempo_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
       x->x_tempoBuffer = (t_float *)t_getbytes(x->x_tempoBufferSize * sizeof(t_float));
 
-     for(i=0; i<x->x_tempoBufferSize; i++)
+     for(i = 0; i < x->x_tempoBufferSize; i++)
         x->x_tempoBuffer[i] = -1;
 
     return (x);

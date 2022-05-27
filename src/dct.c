@@ -250,8 +250,8 @@ static void dct_windowFunction(t_dct *x, t_floatarg f)
 
 static void dct_normalize(t_dct *x, t_floatarg norm)
 {
-    norm = (norm<0)?0:norm;
-    norm = (norm>1)?1:norm;
+    norm = (norm < 0) ? 0 : norm;
+    norm = (norm > 1) ? 1 : norm;
     x->x_normalize = norm;
 
     if(x->x_normalize)

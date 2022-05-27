@@ -185,7 +185,7 @@ static void bfcc_analyze(t_bfcc *x, t_floatarg start, t_floatarg n)
         fftwf_execute(x->x_fftwDctPlan);
 
         // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
-        for(i=0; i<x->x_numFilters; i++)
+        for(i = 0; i < x->x_numFilters; i++)
             SETFLOAT(x->x_listOut+i, x->x_bfcc[i]*0.5);
 
         outlet_list(x->x_featureList, 0, x->x_numFilters, x->x_listOut);
@@ -228,7 +228,7 @@ static void bfcc_chain_fftData(t_bfcc *x, t_symbol *s, int argc, t_atom *argv)
     fftwf_execute(x->x_fftwDctPlan);
 
     // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         SETFLOAT(x->x_listOut+i, x->x_bfcc[i]*0.5);
 
     outlet_list(x->x_featureList, 0, x->x_numFilters, x->x_listOut);
@@ -261,7 +261,7 @@ static void bfcc_chain_magSpec(t_bfcc *x, t_symbol *s, int argc, t_atom *argv)
     fftwf_execute(x->x_fftwDctPlan);
 
     // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         SETFLOAT(x->x_listOut+i, x->x_bfcc[i]*0.5);
 
     outlet_list(x->x_featureList, 0, x->x_numFilters, x->x_listOut);
@@ -280,13 +280,13 @@ static void bfcc_chain_barkSpec(t_bfcc *x, t_symbol *s, int argc, t_atom *argv)
     }
 
     // fill the x_fftwIn buffer with the incoming magSpec list
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         x->x_fftwIn[i] = atom_getfloat(argv + i);
 
     fftwf_execute(x->x_fftwDctPlan);
 
     // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         SETFLOAT(x->x_listOut+i, x->x_bfcc[i]*0.5);
 
     outlet_list(x->x_featureList, 0, x->x_numFilters, x->x_listOut);
@@ -328,7 +328,7 @@ static void bfcc_createFilterbank(t_bfcc *x, t_floatarg bs)
 
     x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
 
-    x->x_numFilters = x->x_sizeFilterFreqs-2;
+    x->x_numFilters = x->x_sizeFilterFreqs - 2;
 
     tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, oldNumFilters, x->x_numFilters, x->x_window, x->x_sr);
 
@@ -347,8 +347,8 @@ static void bfcc_createFilterbank(t_bfcc *x, t_floatarg bs)
 
 static void bfcc_spec_band_avg(t_bfcc *x, t_floatarg avg)
 {
-    avg = (avg<0)?0:avg;
-    avg = (avg>1)?1:avg;
+    avg = (avg < 0) ? 0 : avg;
+    avg = (avg > 1) ? 1 : avg;
     x->x_specBandAvg = avg;
 
     if(x->x_specBandAvg)
@@ -360,8 +360,8 @@ static void bfcc_spec_band_avg(t_bfcc *x, t_floatarg avg)
 
 static void bfcc_filter_avg(t_bfcc *x, t_floatarg avg)
 {
-    avg = (avg<0)?0:avg;
-    avg = (avg>1)?1:avg;
+    avg = (avg < 0) ? 0 : avg;
+    avg = (avg > 1) ? 1 : avg;
     x->x_filterAvg = avg;
 
     if(x->x_filterAvg)
@@ -465,8 +465,8 @@ static void bfcc_powerSpectrum(t_bfcc *x, t_floatarg spec)
 
 static void bfcc_normalize(t_bfcc *x, t_floatarg norm)
 {
-    norm = (norm<0)?0:norm;
-    norm = (norm>1)?1:norm;
+    norm = (norm < 0) ? 0 : norm;
+    norm = (norm > 1) ? 1 : norm;
     x->x_normalize = norm;
 
     if(x->x_normalize)
@@ -575,8 +575,8 @@ static void *bfcc_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
 
-    // sizeFilterFreqs-2 is the correct number of filters, since we don't count the start point of the first filter, or the finish point of the last filter
-    x->x_numFilters = x->x_sizeFilterFreqs-2;
+    // sizeFilterFreqs - 2 is the correct number of filters, since we don't count the start point of the first filter, or the finish point of the last filter
+    x->x_numFilters = x->x_sizeFilterFreqs - 2;
 
     tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, 0, x->x_numFilters, x->x_window, x->x_sr);
 
@@ -618,7 +618,7 @@ static void bfcc_free(t_bfcc *x)
     t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs * sizeof(t_float));
 
     // free the filterbank memory
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].filterSize * sizeof(t_float));
 
     t_freebytes(x->x_filterbank, x->x_numFilters * sizeof(t_filter));

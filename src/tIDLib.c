@@ -588,8 +588,8 @@ t_binIdx tIDLib_nearestBinIndex (t_float target, t_float* binFreqs, t_binIdx n)
 }
 
 
-// TODO: this should probably take in a pointer to x->x_filterbank, resize it to sizeFilterFreqs-2, then write the filter bound freqs in x_filterbank.filterFreqs[0] and [1]. Then x_filterbank can be passed to _createFilterbank with the filter bound freqs known, and no need for a separate x_filterFreqs buffer
-// resizes the filterFreqs array and fills it with the Hz values for the Bark filter boundaries. Reports the new number of Bark frequency band boundaries based on the desired spacing. The size of the corresponding filterbank would be sizeFilterFreqs-2
+// TODO: this should probably take in a pointer to x->x_filterbank, resize it to sizeFilterFreqs - 2, then write the filter bound freqs in x_filterbank.filterFreqs[0] and [1]. Then x_filterbank can be passed to _createFilterbank with the filter bound freqs known, and no need for a separate x_filterFreqs buffer
+// resizes the filterFreqs array and fills it with the Hz values for the Bark filter boundaries. Reports the new number of Bark frequency band boundaries based on the desired spacing. The size of the corresponding filterbank would be sizeFilterFreqs - 2
 t_filterIdx tIDLib_getBarkBoundFreqs (t_float** filterFreqs, t_filterIdx oldSizeFilterFreqs, t_float spacing, t_float sr)
 {
     t_filterIdx i, sizeFilterFreqs;
@@ -629,7 +629,7 @@ t_filterIdx tIDLib_getBarkBoundFreqs (t_float** filterFreqs, t_filterIdx oldSize
 }
 
 
-// TODO: this should probably take in a pointer to x->x_filterbank, resize it to sizeFilterFreqs-2, then write the filter bound freqs in x_filterbank.filterFreqs[0] and [1]. Then x_filterbank can be passed to _createFilterbank with the filter bound freqs known, and no need for a separate x_filterFreqs buffer
+// TODO: this should probably take in a pointer to x->x_filterbank, resize it to sizeFilterFreqs - 2, then write the filter bound freqs in x_filterbank.filterFreqs[0] and [1]. Then x_filterbank can be passed to _createFilterbank with the filter bound freqs known, and no need for a separate x_filterFreqs buffer
 t_filterIdx tIDLib_getMelBoundFreqs (t_float** filterFreqs, t_filterIdx oldSizeFilterFreqs, t_float spacing, t_float sr)
 {
     t_filterIdx i, sizeFilterFreqs;

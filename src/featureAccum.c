@@ -53,7 +53,7 @@ static void featureAccum_allocMem(t_featureAccum *x)
     x->x_instances = (t_instance *)t_getbytes((x->x_numFrames+1) * sizeof(t_instance));
 
     // grab featureLength floats per row
-    for(i=0; i<x->x_numFrames+1; i++)
+    for(i = 0; i < x->x_numFrames+1; i++)
         x->x_instances[i].data = (float *)t_getbytes(x->x_featureLength * sizeof(float));
 }
 
@@ -62,11 +62,11 @@ static void featureAccum_initMem(t_featureAccum *x)
     t_attributeIdx i, j;
 
     // clear the atom list
-    for(i=0; i<x->x_featureLength*x->x_numFrames; i++)
+    for(i = 0; i < x->x_featureLength*x->x_numFrames; i++)
         SETFLOAT(x->x_listOut+i, 0.0);
 
     // initialize each row of database to zero
-    for(i=0; i<x->x_numFrames+1; i++)
+    for(i = 0; i < x->x_numFrames+1; i++)
         for(j=0; j<x->x_featureLength; j++)
             x->x_instances[i].data[j] = 0.0;
 }
@@ -79,7 +79,7 @@ static void featureAccum_free(t_featureAccum *x)
     t_freebytes(x->x_listOut, (x->x_featureLength*x->x_numFrames) * sizeof(t_atom));
 
     // free the database memory rows
-    for(i=0; i<x->x_numFrames+1; i++)
+    for(i = 0; i < x->x_numFrames+1; i++)
         t_freebytes(x->x_instances[i].data, x->x_featureLength * sizeof(float));
 
     // free the database memory itself
@@ -91,7 +91,7 @@ static void featureAccum_sum(t_featureAccum *x)
 {
     t_attributeIdx i;
 
-    for(i=0; i<x->x_featureLength; i++)
+    for(i = 0; i < x->x_featureLength; i++)
         SETFLOAT(x->x_listOut+i, x->x_instances[0].data[i]);
         // only deal with first row
     outlet_list(x->x_featureList, 0, x->x_featureLength, x->x_listOut);
@@ -101,7 +101,7 @@ static void featureAccum_mean(t_featureAccum *x)
 {
     t_attributeIdx i;
 
-    for(i=0; i<x->x_featureLength; i++)
+    for(i = 0; i < x->x_featureLength; i++)
         SETFLOAT(x->x_listOut+i, x->x_instances[0].data[i]/x->x_meanFrameCount);
         // only deal with first row
     outlet_list(x->x_featureList, 0, x->x_featureLength, x->x_listOut);
@@ -122,11 +122,11 @@ static void featureAccum_accum(t_featureAccum *x, t_symbol *s, int argc, t_atom 
         {
             case concat:
             case sma:
-                for(i=0; i<x->x_featureLength; i++)
+                for(i = 0; i < x->x_featureLength; i++)
                     x->x_instances[x->x_concatCurrentFrame].data[i] = atom_getfloat(argv + i);
                 break;
             default: // for modes 1 and 2, add to previous contents. first row only
-                for(i=0; i<x->x_featureLength; i++)
+                for(i = 0; i < x->x_featureLength; i++)
                     x->x_instances[0].data[i] += atom_getfloat(argv + i);
                 break;
         }
@@ -167,16 +167,16 @@ static void featureAccum_accum(t_featureAccum *x, t_symbol *s, int argc, t_atom 
 
         case sma:
             // clear the extra row of x_instances
-            for(i=0; i<x->x_featureLength; i++)
+            for(i = 0; i < x->x_featureLength; i++)
                 x->x_instances[x->x_numFrames].data[i] = 0.0;
 
             // sum all rows into the extra row
-            for(i=0; i<x->x_numFrames; i++)
+            for(i = 0; i < x->x_numFrames; i++)
                 for(j=0; j<x->x_featureLength; j++)
                     x->x_instances[x->x_numFrames].data[j] += x->x_instances[i].data[j];
 
             // divide the sum by x->x_numFrames
-            for(i=0; i<x->x_featureLength; i++)
+            for(i = 0; i < x->x_featureLength; i++)
                 SETFLOAT(x->x_listOut+i, x->x_instances[x->x_numFrames].data[i]/x->x_numFrames);
 
             outlet_list(x->x_featureList, 0, x->x_featureLength, x->x_listOut);

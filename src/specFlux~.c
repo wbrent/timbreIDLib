@@ -384,8 +384,8 @@ static void specFlux_tilde_squaredDiff(t_specFlux_tilde *x, t_floatarg sd)
 
 static void specFlux_tilde_normalize(t_specFlux_tilde *x, t_floatarg norm)
 {
-    norm = (norm<0)?0:norm;
-    norm = (norm>1)?1:norm;
+    norm = (norm < 0) ? 0 : norm;
+    norm = (norm > 1) ? 1 : norm;
     x->x_normalize = norm;
 
     if(x->x_normalize)

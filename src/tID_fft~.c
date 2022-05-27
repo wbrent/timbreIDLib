@@ -349,7 +349,7 @@ static void tID_fft_tilde_zeroPad(t_tID_fft_tilde *x, t_floatarg z)
     x->x_listOutImagZeroPad = (t_atom *)t_resizebytes(x->x_listOutImagZeroPad, (oldZeroPadHalf+1) * sizeof(t_atom), (x->x_zeroPadHalf+1) * sizeof(t_atom));
 
     // we're supposed to initialize the input array after we create the plan
-     for(i=0; i<x->x_zeroPad; i++)
+     for(i = 0; i < x->x_zeroPad; i++)
         x->x_fftwInZeroPad[i] = 0.0;
 
     if(x->x_zeroPad>0)
@@ -361,8 +361,8 @@ static void tID_fft_tilde_zeroPad(t_tID_fft_tilde *x, t_floatarg z)
 
 static void tID_fft_tilde_normalize(t_tID_fft_tilde *x, t_floatarg norm)
 {
-    norm = (norm<0)?0:norm;
-    norm = (norm>1)?1:norm;
+    norm = (norm < 0) ? 0 : norm;
+    norm = (norm > 1) ? 1 : norm;
     x->x_normalize = norm;
 
     if(x->x_normalize)

@@ -45,7 +45,7 @@ static void featureNorm_initMem(t_featureNorm *x)
     t_attributeIdx i;
 
     // clear the atom list
-    for(i=0; i<x->x_featureLength; i++)
+    for(i = 0; i < x->x_featureLength; i++)
     {
         x->x_minValues[i] = 0.0;
         x->x_maxValues[i] = 0.0;
@@ -77,7 +77,7 @@ static void featureNorm_normalize(t_featureNorm *x, t_symbol *s, int argc, t_ato
         switch(x->x_mode)
         {
             case 0:
-                for(i=0; i<x->x_featureLength; i++)
+                for(i = 0; i < x->x_featureLength; i++)
                 {
                     t_float thisAtt, numer, denom;
 
@@ -99,7 +99,7 @@ static void featureNorm_normalize(t_featureNorm *x, t_symbol *s, int argc, t_ato
                 }
                 break;
             case 1:
-                for(i=0; i<x->x_featureLength; i++)
+                for(i = 0; i < x->x_featureLength; i++)
                 {
                     t_float thisAtt, numer, denom;
 
@@ -139,7 +139,7 @@ static void featureNorm_minValues(t_featureNorm *x, t_symbol *s, int argc, t_ato
     }
     else
     {
-        for(i=0; i<x->x_featureLength; i++)
+        for(i = 0; i < x->x_featureLength; i++)
             x->x_minValues[i] = atom_getfloat(argv + i);
     }
 }
@@ -155,7 +155,7 @@ static void featureNorm_maxValues(t_featureNorm *x, t_symbol *s, int argc, t_ato
     }
     else
     {
-        for(i=0; i<x->x_featureLength; i++)
+        for(i = 0; i < x->x_featureLength; i++)
             x->x_maxValues[i] = atom_getfloat(argv + i);
     }
 }
@@ -179,13 +179,13 @@ static void featureNorm_print(t_featureNorm *x)
     }
 
     startpost("minimum values: ");
-    for(i=0; i<x->x_featureLength; i++)
+    for(i = 0; i < x->x_featureLength; i++)
         startpost("%f ", x->x_minValues[i]);
 
     endpost();
 
     startpost("maximum values: ");
-    for(i=0; i<x->x_featureLength; i++)
+    for(i = 0; i < x->x_featureLength; i++)
         startpost("%f ", x->x_maxValues[i]);
 
     endpost();

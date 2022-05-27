@@ -180,14 +180,14 @@ static void barkSpecFlatness_analyze(t_barkSpecFlatness *x, t_floatarg start, t_
 
         // geometric mean
         // take the nth roots first so as not to lose data to precision error.
-        for(i=0; i<x->x_numFilters; i++)
+        for(i = 0; i < x->x_numFilters; i++)
             x->x_nthRoots[i] = pow(x->x_fftwIn[i], numFiltersRecip);
 
         // take the product of nth roots
-        for(i=0; i<x->x_numFilters; i++)
+        for(i = 0; i < x->x_numFilters; i++)
             dividend *= x->x_nthRoots[i];
 
-        for(i=0; i<x->x_numFilters; i++)
+        for(i = 0; i < x->x_numFilters; i++)
             divisor += x->x_fftwIn[i];
 
         divisor *= numFiltersRecip; // arithmetic mean
@@ -242,14 +242,14 @@ static void barkSpecFlatness_chain_fftData(t_barkSpecFlatness *x, t_symbol *s, i
 
     // geometric mean
     // take the nth roots first so as not to lose data to precision error.
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         x->x_nthRoots[i] = pow(x->x_fftwIn[i], numFiltersRecip);
 
     // take the product of nth roots
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         dividend *= x->x_nthRoots[i];
 
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         divisor += x->x_fftwIn[i];
 
     divisor *= numFiltersRecip; // arithmetic mean
@@ -294,14 +294,14 @@ static void barkSpecFlatness_chain_magSpec(t_barkSpecFlatness *x, t_symbol *s, i
 
     // geometric mean
     // take the nth roots first so as not to lose data to precision error.
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         x->x_nthRoots[i] = pow(x->x_fftwIn[i], numFiltersRecip);
 
     // take the product of nth roots
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         dividend *= x->x_nthRoots[i];
 
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         divisor += x->x_fftwIn[i];
 
     divisor *= numFiltersRecip; // arithmetic mean
@@ -328,7 +328,7 @@ static void barkSpecFlatness_chain_barkSpec(t_barkSpecFlatness *x, t_symbol *s, 
     }
 
     // fill the x_fftwIn buffer with the incoming magSpec list
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         x->x_fftwIn[i] = atom_getfloat(argv + i);
 
     numFiltersRecip = 1.0/(double)x->x_numFilters;
@@ -338,14 +338,14 @@ static void barkSpecFlatness_chain_barkSpec(t_barkSpecFlatness *x, t_symbol *s, 
 
     // geometric mean
     // take the nth roots first so as not to lose data to precision error.
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         x->x_nthRoots[i] = pow(x->x_fftwIn[i], numFiltersRecip);
 
     // take the product of nth roots
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         dividend *= x->x_nthRoots[i];
 
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         divisor += x->x_fftwIn[i];
 
     divisor *= numFiltersRecip; // arithmetic mean
@@ -394,7 +394,7 @@ static void barkSpecFlatness_createFilterbank(t_barkSpecFlatness *x, t_floatarg 
 
     x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
 
-    x->x_numFilters = x->x_sizeFilterFreqs-2;
+    x->x_numFilters = x->x_sizeFilterFreqs - 2;
 
     tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, oldNumFilters, x->x_numFilters, x->x_window, x->x_sr);
 
@@ -405,8 +405,8 @@ static void barkSpecFlatness_createFilterbank(t_barkSpecFlatness *x, t_floatarg 
 
 static void barkSpecFlatness_spec_band_avg(t_barkSpecFlatness *x, t_floatarg avg)
 {
-    avg = (avg<0)?0:avg;
-    avg = (avg>1)?1:avg;
+    avg = (avg < 0) ? 0 : avg;
+    avg = (avg > 1) ? 1 : avg;
     x->x_specBandAvg = avg;
 
     if(x->x_specBandAvg)
@@ -418,8 +418,8 @@ static void barkSpecFlatness_spec_band_avg(t_barkSpecFlatness *x, t_floatarg avg
 
 static void barkSpecFlatness_filter_avg(t_barkSpecFlatness *x, t_floatarg avg)
 {
-    avg = (avg<0)?0:avg;
-    avg = (avg>1)?1:avg;
+    avg = (avg < 0) ? 0 : avg;
+    avg = (avg > 1) ? 1 : avg;
     x->x_filterAvg = avg;
 
     if(x->x_filterAvg)
@@ -619,8 +619,8 @@ static void *barkSpecFlatness_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs(&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
 
-    // sizeFilterFreqs-2 is the correct number of filters, since we don't count the start point of the first filter, or the finish point of the last filter
-    x->x_numFilters = x->x_sizeFilterFreqs-2;
+    // sizeFilterFreqs - 2 is the correct number of filters, since we don't count the start point of the first filter, or the finish point of the last filter
+    x->x_numFilters = x->x_sizeFilterFreqs - 2;
 
     tIDLib_createFilterbank(x->x_filterFreqs, &x->x_filterbank, 0, x->x_numFilters, x->x_window, x->x_sr);
 
@@ -653,7 +653,7 @@ static void barkSpecFlatness_free(t_barkSpecFlatness *x)
     t_freebytes(x->x_filterFreqs, x->x_sizeFilterFreqs * sizeof(t_float));
 
     // free the filterbank memory
-    for(i=0; i<x->x_numFilters; i++)
+    for(i = 0; i < x->x_numFilters; i++)
         t_freebytes(x->x_filterbank[i].filter, x->x_filterbank[i].filterSize * sizeof(t_float));
 
     t_freebytes(x->x_filterbank, x->x_numFilters * sizeof(t_filter));

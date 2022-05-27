@@ -170,7 +170,7 @@ static void chroma_analyze(t_chroma *x, t_floatarg start, t_floatarg n)
 
         maxEnergySum = 0.0;
 
-        for(i=0; i<x->x_numChroma; i++)
+        for(i = 0; i < x->x_numChroma; i++)
         {
             t_uInt cardinality;
             chromaSums[i] = 0.0;
@@ -222,7 +222,7 @@ static void chroma_analyze(t_chroma *x, t_floatarg start, t_floatarg n)
         if(!x->x_normalize)
             maxEnergySum = 1.0;
 
-        for(i=0; i<x->x_numChroma; i++)
+        for(i = 0; i < x->x_numChroma; i++)
             SETFLOAT(x->x_listOut+i, chromaSums[i]/maxEnergySum);
 
         outlet_list(x->x_chroma, 0, x->x_numChroma, x->x_listOut);
@@ -260,7 +260,7 @@ static void chroma_chain_fftData(t_chroma *x, t_symbol *s, int argc, t_atom *arg
 
     maxEnergySum = 0.0;
 
-    for(i=0; i<x->x_numChroma; i++)
+    for(i = 0; i < x->x_numChroma; i++)
     {
         t_uInt cardinality;
         chromaSums[i] = 0.0;
@@ -311,7 +311,7 @@ static void chroma_chain_fftData(t_chroma *x, t_symbol *s, int argc, t_atom *arg
     if(!x->x_normalize)
         maxEnergySum = 1.0;
 
-    for(i=0; i<x->x_numChroma; i++)
+    for(i = 0; i < x->x_numChroma; i++)
         SETFLOAT(x->x_listOut+i, chromaSums[i]/maxEnergySum);
 
     outlet_list(x->x_chroma, 0, x->x_numChroma, x->x_listOut);
@@ -339,7 +339,7 @@ static void chroma_chain_magSpec(t_chroma *x, t_symbol *s, int argc, t_atom *arg
 
     maxEnergySum = 0.0;
 
-    for(i=0; i<x->x_numChroma; i++)
+    for(i = 0; i < x->x_numChroma; i++)
     {
         t_uInt cardinality;
         chromaSums[i] = 0.0;
@@ -390,7 +390,7 @@ static void chroma_chain_magSpec(t_chroma *x, t_symbol *s, int argc, t_atom *arg
     if(!x->x_normalize)
         maxEnergySum = 1.0;
 
-    for(i=0; i<x->x_numChroma; i++)
+    for(i = 0; i < x->x_numChroma; i++)
         SETFLOAT(x->x_listOut+i, chromaSums[i]/maxEnergySum);
 
     outlet_list(x->x_chroma, 0, x->x_numChroma, x->x_listOut);
@@ -446,7 +446,7 @@ static void chroma_print(t_chroma *x)
 
     startpost("%s Bass MIDI pitches: ", x->x_objSymbol->s_name);
 
-    for(i=0; i<x->x_numChroma; i++)
+    for(i = 0; i < x->x_numChroma; i++)
         startpost("%0.2f ", x->x_pitchClasses[i]);
 
     endpost();
@@ -517,8 +517,8 @@ static void chroma_powerSpectrum(t_chroma *x, t_floatarg spec)
 
 static void chroma_normalize(t_chroma *x, t_floatarg norm)
 {
-    norm = (norm<0)?0:norm;
-    norm = (norm>1)?1:norm;
+    norm = (norm < 0) ? 0 : norm;
+    norm = (norm > 1) ? 1 : norm;
     x->x_normalize = norm;
 
     if(x->x_normalize)
@@ -577,7 +577,7 @@ static void chroma_microtune(t_chroma *x, t_floatarg cents)
 
     x->x_microtune = cents/100.0;
 
-    for(i=0; i<x->x_numChroma; i++)
+    for(i = 0; i < x->x_numChroma; i++)
         x->x_pitchClasses[i] += x->x_microtune;
 }
 
@@ -618,7 +618,7 @@ static void chroma_resolution(t_chroma *x, t_symbol *r)
     // beginning of pitch class array starts at lowest C on piano
     basePitch = 24 + x->x_microtune;
 
-    for(i=0; i<x->x_numChroma-(3/x->x_resolution); i++)
+    for(i = 0; i < x->x_numChroma-(3/x->x_resolution); i++)
     {
         x->x_pitchClasses[i] = basePitch;
         basePitch += x->x_resolution;
