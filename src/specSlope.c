@@ -159,7 +159,7 @@ static void specSlope_analyze (t_specSlope *x, t_floatarg start, t_floatarg n)
             tIDLib_mag (x->x_windowHalf + 1, x->x_fftwIn);
 
         if (x->x_normalize)
-            tIDLib_normal(x->x_windowHalf + 1, x->x_fftwIn);
+            tIDLib_normal (x->x_windowHalf + 1, x->x_fftwIn);
 
         slope = tIDLib_fitLineSlope(x->x_windowHalf + 1, x->x_fftwIn);
 
@@ -197,7 +197,7 @@ static void specSlope_chain_fftData (t_specSlope *x, t_symbol *s, int argc, t_at
         tIDLib_mag (x->x_windowHalf + 1, x->x_fftwIn);
 
     if (x->x_normalize)
-        tIDLib_normal(x->x_windowHalf + 1, x->x_fftwIn);
+        tIDLib_normal (x->x_windowHalf + 1, x->x_fftwIn);
 
     slope = tIDLib_fitLineSlope(x->x_windowHalf + 1, x->x_fftwIn);
 
@@ -225,7 +225,7 @@ static void specSlope_chain_magSpec (t_specSlope *x, t_symbol *s, int argc, t_at
         x->x_fftwIn[i] = atom_getfloat (argv + i);
 
     if (x->x_normalize)
-        tIDLib_normal(x->x_windowHalf + 1, x->x_fftwIn);
+        tIDLib_normal (x->x_windowHalf + 1, x->x_fftwIn);
 
     slope = tIDLib_fitLineSlope(x->x_windowHalf + 1, x->x_fftwIn);
 

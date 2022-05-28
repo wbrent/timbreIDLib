@@ -120,7 +120,7 @@ static void bfcc_tilde_bang (t_bfcc_tilde *x)
 
         // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
     for (i = 0; i < x->x_numFilters; i++)
-        SETFLOAT (x->x_listOut+i, x->x_bfcc[i]*0.5);
+        SETFLOAT (x->x_listOut + i, x->x_bfcc[i]*0.5);
 
     outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
 }
@@ -478,7 +478,7 @@ static void bfcc_tilde_dsp (t_bfcc_tilde *x, t_signal **sp)
     );
 
 // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         x->x_sr = sp[0]->s_sr / x->x_overlap;
 
@@ -486,7 +486,7 @@ static void bfcc_tilde_dsp (t_bfcc_tilde *x, t_signal **sp)
     };
 
 // compare n to stored n and update/resize buffer if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         t_sampIdx i;
 

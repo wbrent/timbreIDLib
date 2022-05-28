@@ -165,7 +165,7 @@ static void barkSpecFlux_tilde_bang (t_barkSpecFlux_tilde *x)
     else
         tIDLib_filterbankMultiply (x->x_fftwInBackWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
-    flux=0.0;
+    flux = 0.0.0;
 
     for (i = 0; i < x->x_numFilters; i++)
     {
@@ -193,21 +193,21 @@ static void barkSpecFlux_tilde_bang (t_barkSpecFlux_tilde *x)
         switch (x->x_mode)
         {
             case mGrowth:
-                diff = (diff<0)?0:diff;
+                diff = (diff < 0) ? 0 : diff;
                 break;
             case mDecay:
-                diff = (diff>0)?0:diff;
+                diff = (diff > 0) ? 0 : diff;
                 break;
             default:
                 break;
         }
 
         if (x->x_squaredDiff)
-            val = diff*diff;
+            val = diff * diff;
         else
-            val = fabs(diff);
+            val = fabs (diff);
 
-        SETFLOAT (x->x_listOut+i, diff);
+        SETFLOAT (x->x_listOut + i, diff);
         flux += val;
     }
 
@@ -322,7 +322,7 @@ static void barkSpecFlux_tilde_window (t_barkSpecFlux_tilde *x, t_floatarg w)
 
     windowHalf = window * 0.5;
 
-    x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_window*2+x->x_n) * sizeof (t_sample), (window*2+x->x_n) * sizeof (t_sample));
+    x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_window * 2 + x->x_n) * sizeof (t_sample), (window * 2 + x->x_n) * sizeof (t_sample));
     x->x_fftwInForwardWindow = (t_sample *)t_resizebytes (x->x_fftwInForwardWindow, x->x_window * sizeof (t_sample), window * sizeof (t_sample));
     x->x_fftwInBackWindow = (t_sample *)t_resizebytes (x->x_fftwInBackWindow, x->x_window * sizeof (t_sample), window * sizeof (t_sample));
 
@@ -358,7 +358,7 @@ static void barkSpecFlux_tilde_window (t_barkSpecFlux_tilde *x, t_floatarg w)
     }
 
     // initialize signal buffer
-    for (i=0; i<(x->x_window*2+x->x_n); i++)
+    for (i = 0; i < x->x_window * 2 + x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
     // re-init window functions
@@ -437,23 +437,23 @@ static void barkSpecFlux_tilde_logSpectrum (t_barkSpecFlux_tilde *x, t_floatarg 
 }
 
 
-static void barkSpecFlux_tilde_mode(t_barkSpecFlux_tilde *x, t_symbol *m)
+static void barkSpecFlux_tilde_mode (t_barkSpecFlux_tilde *x, t_symbol *m)
 {
-    if ( !strcmp(m->s_name, "flux"))
+    if ( !strcmp (m->s_name, "flux"))
         x->x_mode = mFlux;
-    else if ( !strcmp(m->s_name, "growth"))
+    else if ( !strcmp (m->s_name, "growth"))
         x->x_mode = mGrowth;
-    else if ( !strcmp(m->s_name, "decay"))
+    else if ( !strcmp (m->s_name, "decay"))
         x->x_mode = mDecay;
     else
         x->x_mode = mFlux;
 }
 
 
-static void barkSpecFlux_tilde_squaredDiff(t_barkSpecFlux_tilde *x, t_floatarg sd)
+static void barkSpecFlux_tilde_squaredDiff (t_barkSpecFlux_tilde *x, t_floatarg sd)
 {
-    sd = (sd<0)?0:sd;
-    sd = (sd>1)?1:sd;
+    sd = (sd < 0) ? 0 : sd;
+    sd = (sd > 1) ? 1 : sd;
     x->x_squaredDiff = sd;
 
     if (x->x_squaredDiff)
@@ -476,7 +476,7 @@ static void barkSpecFlux_tilde_normalize (t_barkSpecFlux_tilde *x, t_floatarg no
 }
 
 
-static void barkSpecFlux_tilde_separation(t_barkSpecFlux_tilde *x, t_floatarg s)
+static void barkSpecFlux_tilde_separation (t_barkSpecFlux_tilde *x, t_floatarg s)
 {
     if (s > x->x_window)
     {
@@ -577,7 +577,7 @@ static void *barkSpecFlux_tilde_new (t_symbol *s, int argc, t_atom *argv)
             break;
 
         default:
-            post ("%s WARNING: Too many arguments supplied. Using default window size of %i, Bark spacing of %f, and frame separation of %i.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, TID_BARKSPACINGDEFAULT, TID_WINDOWSIZEDEFAULT*0.5);
+            post ("%s WARNING: Too many arguments supplied. Using default window size of %i, Bark spacing of %f, and frame separation of %i.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, TID_BARKSPACINGDEFAULT, TID_WINDOWSIZEDEFAULT * 0.5);
             x->x_window = TID_WINDOWSIZEDEFAULT;
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             x->x_separation = x->x_window * 0.5;
@@ -600,11 +600,11 @@ static void *barkSpecFlux_tilde_new (t_symbol *s, int argc, t_atom *argv)
     x->x_filterAvg = false;
     x->x_mode = mFlux;
 
-    x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_window*2+x->x_n) * sizeof (t_sample));
+    x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_window * 2 + x->x_n) * sizeof (t_sample));
     x->x_fftwInForwardWindow = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
     x->x_fftwInBackWindow = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
 
-     for (i=0; i<(x->x_window*2+x->x_n); i++)
+     for (i = 0; i < x->x_window * 2 + x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
       x->x_blackman = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
@@ -662,12 +662,12 @@ static t_int *barkSpecFlux_tilde_perform (t_int *w)
     n = w[3];
 
      // shift signal buffer contents back.
-    for (i=0; i<(x->x_window*2); i++)
+    for (i = 0; i < (x->x_window * 2); i++)
         x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)
-        x->x_signalBuffer[x->x_window*2+i] = in[i];
+        x->x_signalBuffer[x->x_window * 2 + i] = in[i];
 
     x->x_lastDspTime = clock_getlogicaltime();
 
@@ -686,7 +686,7 @@ static void barkSpecFlux_tilde_dsp (t_barkSpecFlux_tilde *x, t_signal **sp)
     );
 
 // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         x->x_sr = sp[0]->s_sr / x->x_overlap;
 
@@ -694,17 +694,17 @@ static void barkSpecFlux_tilde_dsp (t_barkSpecFlux_tilde *x, t_signal **sp)
     };
 
 // compare n to stored n and update/resize buffer if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         t_sampIdx i;
 
-        x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_window*2+x->x_n) * sizeof (t_sample), (x->x_window*2+sp[0]->s_n) * sizeof (t_sample));
+        x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_window * 2 + x->x_n) * sizeof (t_sample), (x->x_window * 2 + sp[0]->s_n) * sizeof (t_sample));
 
         x->x_n = sp[0]->s_n;
         x->x_lastDspTime = clock_getlogicaltime();
 
         // init signal buffer
-        for (i=0; i<(x->x_window*2+x->x_n); i++)
+        for (i = 0; i < x->x_window * 2 + x->x_n; i++)
             x->x_signalBuffer[i] = 0.0;
     }
 };
@@ -714,7 +714,7 @@ static void barkSpecFlux_tilde_free (t_barkSpecFlux_tilde *x)
     t_filterIdx i;
 
     // free the input buffer memory
-    t_freebytes (x->x_signalBuffer, (x->x_window*2+x->x_n) * sizeof (t_sample));
+    t_freebytes (x->x_signalBuffer, (x->x_window * 2 + x->x_n) * sizeof (t_sample));
 
     // free FFTW stuff
     t_freebytes (x->x_fftwInForwardWindow, x->x_window * sizeof (t_sample));

@@ -223,7 +223,7 @@ static void chroma_analyze (t_chroma *x, t_floatarg start, t_floatarg n)
             maxEnergySum = 1.0;
 
         for (i = 0; i < x->x_numChroma; i++)
-            SETFLOAT (x->x_listOut+i, chromaSums[i]/maxEnergySum);
+            SETFLOAT (x->x_listOut + i, chromaSums[i]/maxEnergySum);
 
         outlet_list (x->x_chroma, 0, x->x_numChroma, x->x_listOut);
     }
@@ -312,7 +312,7 @@ static void chroma_chain_fftData (t_chroma *x, t_symbol *s, int argc, t_atom *ar
         maxEnergySum = 1.0;
 
     for (i = 0; i < x->x_numChroma; i++)
-        SETFLOAT (x->x_listOut+i, chromaSums[i]/maxEnergySum);
+        SETFLOAT (x->x_listOut + i, chromaSums[i]/maxEnergySum);
 
     outlet_list (x->x_chroma, 0, x->x_numChroma, x->x_listOut);
 }
@@ -391,7 +391,7 @@ static void chroma_chain_magSpec (t_chroma *x, t_symbol *s, int argc, t_atom *ar
         maxEnergySum = 1.0;
 
     for (i = 0; i < x->x_numChroma; i++)
-        SETFLOAT (x->x_listOut+i, chromaSums[i]/maxEnergySum);
+        SETFLOAT (x->x_listOut + i, chromaSums[i]/maxEnergySum);
 
     outlet_list (x->x_chroma, 0, x->x_numChroma, x->x_listOut);
 }
@@ -589,17 +589,17 @@ static void chroma_resolution(t_chroma *x, t_symbol *r)
 
     oldNumChroma = x->x_numChroma;
 
-    if ( !strcmp(r->s_name, "full"))
+    if ( !strcmp (r->s_name, "full"))
     {
         x->x_numChroma = 12;
         x->x_resolution = 1.0;
     }
-    else if ( !strcmp(r->s_name, "half"))
+    else if ( !strcmp (r->s_name, "half"))
     {
         x->x_numChroma = 24;
         x->x_resolution = 0.5;
     }
-    else if ( !strcmp(r->s_name, "third"))
+    else if ( !strcmp (r->s_name, "third"))
     {
         x->x_numChroma = 36;
         x->x_resolution = 0.333333;
@@ -627,7 +627,7 @@ static void chroma_resolution(t_chroma *x, t_symbol *r)
     // fill out the last part starting with lowest A on piano
     basePitch = 21 + x->x_microtune;
 
-    for (; i<x->x_numChroma; i++)
+    for (; i < x->x_numChroma; i++)
     {
         x->x_pitchClasses[i] = basePitch;
         basePitch += x->x_resolution;

@@ -50,7 +50,7 @@ static void nearestPoint_add (t_nearestPoint *x, t_symbol *s, int argc, t_atom *
 
         x->x_numInstances++;
 
-        for (i=0; i<dimensions; i++)
+        for (i = 0; i < dimensions; i++)
             x->x_instances[pointIdx].data[i] = atom_getfloat (argv + i);
     }
     else
@@ -76,7 +76,7 @@ static void nearestPoint_nearest(t_nearestPoint *x, t_symbol *s, int argc, t_ato
 
             for (i = 0; i < x->x_numInstances; i++)
             {
-                for (j=0; j<dimensions; j++)
+                for (j = 0; j<dimensions; j++)
                 {
                     x->x_attributeData[j].inputData = atom_getfloat (argv+j);
                     inputBuffer[j] = x->x_attributeData[j].inputData;

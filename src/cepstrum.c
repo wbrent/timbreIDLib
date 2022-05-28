@@ -193,7 +193,7 @@ static void cepstrum_analyze (t_cepstrum *x, t_floatarg start, t_floatarg n)
                 x->x_fftwIn[i] = x->x_fftwIn[i]*x->x_fftwIn[i];
 
         for (i = 0; i < x->x_windowHalf + 1; i++)
-            SETFLOAT (x->x_listOut+i, x->x_fftwIn[i]);
+            SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
 
         outlet_list (x->x_featureList, 0, x->x_windowHalf + 1, x->x_listOut);
     }
@@ -256,7 +256,7 @@ static void cepstrum_chain_fftData (t_cepstrum *x, t_symbol *s, int argc, t_atom
             x->x_fftwIn[i] = x->x_fftwIn[i]*x->x_fftwIn[i];
 
     for (i = 0; i < x->x_windowHalf + 1; i++)
-        SETFLOAT (x->x_listOut+i, x->x_fftwIn[i]);
+        SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
 
     outlet_list (x->x_featureList, 0, x->x_windowHalf + 1, x->x_listOut);
 }
@@ -309,7 +309,7 @@ static void cepstrum_chain_magSpec (t_cepstrum *x, t_symbol *s, int argc, t_atom
             x->x_fftwIn[i] = x->x_fftwIn[i]*x->x_fftwIn[i];
 
     for (i = 0; i < x->x_windowHalf + 1; i++)
-        SETFLOAT (x->x_listOut+i, x->x_fftwIn[i]);
+        SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
 
     outlet_list (x->x_featureList, 0, x->x_windowHalf + 1, x->x_listOut);
 }

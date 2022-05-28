@@ -179,7 +179,7 @@ static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde *x)
 
             thisFreq = peakFreqs[i];
             roundedHarm = roundf (thisFreq/fund);
-            deviation = fabs(thisFreq - (roundedHarm*fund));
+            deviation = fabs (thisFreq - (roundedHarm*fund));
             inHarmDividend += deviation * thisAmp;
             divisor += thisAmp;
 
@@ -192,7 +192,7 @@ static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde *x)
     t_freebytes (peakAmps, numPeaks * sizeof (t_float));
     t_freebytes (peakFreqs, numPeaks * sizeof (t_float));
 
-    if (divisor<=0.0 || fund<=0.0)
+    if (divisor <= 0.0 || fund<=0.0)
         inHarm = -1.0;
     else
         inHarm = (2*inHarmDividend)/(divisor*fund);

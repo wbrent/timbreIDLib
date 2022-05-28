@@ -445,7 +445,7 @@ static void barkSpecCentroid_tilde_dsp (t_barkSpecCentroid_tilde *x, t_signal **
     );
 
 // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         x->x_sr = sp[0]->s_sr / x->x_overlap;
 
@@ -453,7 +453,7 @@ static void barkSpecCentroid_tilde_dsp (t_barkSpecCentroid_tilde *x, t_signal **
     };
 
 // compare n to stored n and update/resize buffer if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         t_sampIdx i;
 

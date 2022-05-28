@@ -63,11 +63,11 @@ static void featureAccum_initMem(t_featureAccum *x)
 
     // clear the atom list
     for (i = 0; i < x->x_featureLength*x->x_numFrames; i++)
-        SETFLOAT (x->x_listOut+i, 0.0);
+        SETFLOAT (x->x_listOut + i, 0.0);
 
     // initialize each row of database to zero
     for (i = 0; i < x->x_numFrames+1; i++)
-        for (j=0; j<x->x_featureLength; j++)
+        for (j = 0; j<x->x_featureLength; j++)
             x->x_instances[i].data[j] = 0.0;
 }
 
@@ -92,7 +92,7 @@ static void featureAccum_sum(t_featureAccum *x)
     t_attributeIdx i;
 
     for (i = 0; i < x->x_featureLength; i++)
-        SETFLOAT (x->x_listOut+i, x->x_instances[0].data[i]);
+        SETFLOAT (x->x_listOut + i, x->x_instances[0].data[i]);
         // only deal with first row
     outlet_list (x->x_featureList, 0, x->x_featureLength, x->x_listOut);
 }
@@ -102,7 +102,7 @@ static void featureAccum_mean(t_featureAccum *x)
     t_attributeIdx i;
 
     for (i = 0; i < x->x_featureLength; i++)
-        SETFLOAT (x->x_listOut+i, x->x_instances[0].data[i]/x->x_meanFrameCount);
+        SETFLOAT (x->x_listOut + i, x->x_instances[0].data[i]/x->x_meanFrameCount);
         // only deal with first row
     outlet_list (x->x_featureList, 0, x->x_featureLength, x->x_listOut);
 }
@@ -145,7 +145,7 @@ static void featureAccum_accum(t_featureAccum *x, t_symbol *s, int argc, t_atom 
                 totalFeat = x->x_featureLength * x->x_numFrames;
 
                 for (count=0, i=x->x_numFrames-x->x_concatCurrentFrame; count<x->x_numFrames; count++, i++)
-                    for (j=0; j<x->x_featureLength; j++)
+                    for (j = 0; j<x->x_featureLength; j++)
                         SETFLOAT (x->x_listOut+((i%x->x_numFrames)*x->x_featureLength)+j, x->x_instances[count].data[j]);
 
                 outlet_list (x->x_featureList, 0, totalFeat, x->x_listOut);
@@ -172,12 +172,12 @@ static void featureAccum_accum(t_featureAccum *x, t_symbol *s, int argc, t_atom 
 
             // sum all rows into the extra row
             for (i = 0; i < x->x_numFrames; i++)
-                for (j=0; j<x->x_featureLength; j++)
+                for (j = 0; j<x->x_featureLength; j++)
                     x->x_instances[x->x_numFrames].data[j] += x->x_instances[i].data[j];
 
             // divide the sum by x->x_numFrames
             for (i = 0; i < x->x_featureLength; i++)
-                SETFLOAT (x->x_listOut+i, x->x_instances[x->x_numFrames].data[i]/x->x_numFrames);
+                SETFLOAT (x->x_listOut + i, x->x_instances[x->x_numFrames].data[i]/x->x_numFrames);
 
             outlet_list (x->x_featureList, 0, x->x_featureLength, x->x_listOut);
 
@@ -258,19 +258,19 @@ static void featureAccum_length(t_featureAccum *x, t_floatarg len)
 static void featureAccum_spew(t_featureAccum *x, t_floatarg s)
 {
     s = (s<=0)?0:s;
-    s = (s>=1)?1:s;
+    s = (s >= 1)?1:s;
     x->x_spew = s;
 }
 
-static void featureAccum_mode(t_featureAccum *x, t_symbol *m)
+static void featureAccum_mode (t_featureAccum *x, t_symbol *m)
 {
-    if ( !strcmp(m->s_name, "concat"))
+    if ( !strcmp (m->s_name, "concat"))
         x->x_mode = concat;
-    else if ( !strcmp(m->s_name, "sum"))
+    else if ( !strcmp (m->s_name, "sum"))
         x->x_mode = sum;
-    else if ( !strcmp(m->s_name, "mean"))
+    else if ( !strcmp (m->s_name, "mean"))
         x->x_mode = mean;
-    else if ( !strcmp(m->s_name, "sma"))
+    else if ( !strcmp (m->s_name, "sma"))
         x->x_mode = sma;
     else
         x->x_mode = concat;
@@ -342,13 +342,13 @@ static void *featureAccum_new (t_symbol *s, int argc, t_atom *argv)
 
             mode = atom_getsymbol (argv + 3);
 
-            if ( !strcmp(mode->s_name, "concat"))
+            if ( !strcmp (mode->s_name, "concat"))
                 x->x_mode = concat;
-            else if ( !strcmp(mode->s_name, "sum"))
+            else if ( !strcmp (mode->s_name, "sum"))
                 x->x_mode = sum;
-            else if ( !strcmp(mode->s_name, "mean"))
+            else if ( !strcmp (mode->s_name, "mean"))
                 x->x_mode = mean;
-            else if ( !strcmp(mode->s_name, "sma"))
+            else if ( !strcmp (mode->s_name, "sma"))
                 x->x_mode = sma;
             else
                 x->x_mode = concat;
@@ -368,13 +368,13 @@ static void *featureAccum_new (t_symbol *s, int argc, t_atom *argv)
 
             mode = atom_getsymbol (argv + 3);
 
-            if ( !strcmp(mode->s_name, "concat"))
+            if ( !strcmp (mode->s_name, "concat"))
                 x->x_mode = concat;
-            else if ( !strcmp(mode->s_name, "sum"))
+            else if ( !strcmp (mode->s_name, "sum"))
                 x->x_mode = sum;
-            else if ( !strcmp(mode->s_name, "mean"))
+            else if ( !strcmp (mode->s_name, "mean"))
                 x->x_mode = mean;
-            else if ( !strcmp(mode->s_name, "sma"))
+            else if ( !strcmp (mode->s_name, "sma"))
                 x->x_mode = sma;
             else
                 x->x_mode = concat;

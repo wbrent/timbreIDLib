@@ -121,7 +121,7 @@ static void barkSpecRolloff_tilde_bang (t_barkSpecRolloff_tilde *x)
     energyTarget *= x->x_concentration;
 
     energySum=0.0;
-    i=0;
+    i = 0;
 
     while(energySum <= energyTarget)
     {
@@ -133,7 +133,7 @@ static void barkSpecRolloff_tilde_bang (t_barkSpecRolloff_tilde *x)
     }
 
     if (i>0)
-        rolloff = x->x_barkFreqList[i-1]; // back up one because the last one went over...
+        rolloff = x->x_barkFreqList[i - 1]; // back up one because the last one went over...
     else
         rolloff = -1;
 
@@ -500,7 +500,7 @@ static void barkSpecRolloff_tilde_dsp (t_barkSpecRolloff_tilde *x, t_signal **sp
     );
 
 // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         x->x_sr = sp[0]->s_sr / x->x_overlap;
 
@@ -508,7 +508,7 @@ static void barkSpecRolloff_tilde_dsp (t_barkSpecRolloff_tilde *x, t_signal **sp
     };
 
 // compare n to stored n and update/resize buffer if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         t_sampIdx i;
 

@@ -267,13 +267,13 @@ static void barkSpecSkewness_chain_magSpec (t_barkSpecSkewness *x, t_symbol *s, 
 }
 
 
-static void barkSpecSkewness_chain_barkSpec(t_barkSpecSkewness *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecSkewness_chain_barkSpec (t_barkSpecSkewness *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_filterIdx i;
     t_float energySum, centroid, spread, skewness;
 
     // make sure that argc == x->x_numFilters in order to avoid an out of bounds memory read below. we won't resize all memory based on an incoming chain_ command with a different size. instead, just throw an error and exit
-    if (argc!=x->x_numFilters)
+    if (argc != x->x_numFilters)
     {
         pd_error (x, "%s: length of chain_ message (%i) does not match current number of Bark filters (%i)", x->x_objSymbol->s_name, argc, x->x_numFilters);
         return;

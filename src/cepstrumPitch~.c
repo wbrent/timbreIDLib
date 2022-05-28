@@ -149,7 +149,7 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde *x)
     binCount=0;
 
     // traverse from hiFreq to loFreq because the high frequency cepstrum bin is lower than the low frequency cepstrum bin
-    for (i=hiFreqBin; i<=loFreqBin; i++, binCount++)
+    for (i=hiFreqBin; i < =loFreqBin; i++, binCount++)
     {
         // check that loFreqBin doesn't go above Nyquist bin
         if (i>=windowHalf)
@@ -170,7 +170,7 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde *x)
     binCount = 0;
 
     // center & square the data
-    for (i=hiFreqBin; i<=loFreqBin; i++, binCount++)
+    for (i=hiFreqBin; i < =loFreqBin; i++, binCount++)
     {
         x->x_fftwIn[i] -= mean;
         x->x_fftwIn[i] *= x->x_fftwIn[i];
@@ -182,7 +182,7 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde *x)
     std = sqrt(std);
 
     // see if maxVal is above the mean by more than x_thresh standard deviations
-    if ( fabs(maxVal-mean) > (x->x_thresh*std) )
+    if ( fabs (maxVal-mean) > (x->x_thresh*std) )
         pitch = ftom(x->x_sr/((t_float)maxValIdx));
     else
         pitch = -1500.0;
@@ -346,7 +346,7 @@ static void cepstrumPitch_tilde_pitchRange(t_cepstrumPitch_tilde *x, t_floatarg 
     low = (low<0)?0:low;
     low = (low>20000)?20000:low;
 
-    hi = (hi<0)?0:hi;
+    hi = (hi < 0)?0:hi;
     hi = (hi>20000)?20000:hi;
 
     if (low>hi)

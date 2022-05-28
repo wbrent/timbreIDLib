@@ -174,7 +174,7 @@ static void barkSpec_analyze (t_barkSpec *x, t_floatarg start, t_floatarg n)
             tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
         for (i = 0; i < x->x_numFilters; i++)
-            SETFLOAT (x->x_listOut+i, x->x_fftwIn[i]);
+            SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
 
         outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
     }
@@ -214,7 +214,7 @@ static void barkSpec_chain_fftData (t_barkSpec *x, t_symbol *s, int argc, t_atom
         tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     for (i = 0; i < x->x_numFilters; i++)
-        SETFLOAT (x->x_listOut+i, x->x_fftwIn[i]);
+        SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
 
     outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
 }
@@ -244,7 +244,7 @@ static void barkSpec_chain_magSpec (t_barkSpec *x, t_symbol *s, int argc, t_atom
         tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     for (i = 0; i < x->x_numFilters; i++)
-        SETFLOAT (x->x_listOut+i, x->x_fftwIn[i]);
+        SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
 
     outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
 }

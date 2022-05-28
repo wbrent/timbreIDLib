@@ -59,7 +59,7 @@ static void attackTime_tilde_bang (t_attackTime_tilde *x)
     startSample = (x->x_maxSearchRange+x->x_n) - bangSample - window - 1;
 
     // construct analysis window
-    for (i=0, j=startSample; i<window; i++, j++)
+    for (i = 0, j=startSample; i < window; i++, j++)
         x->x_analysisBuffer[i] = x->x_signalBuffer[j];
 
     tIDLib_peakSample(window, x->x_analysisBuffer, &peakSampIdx, &peakSampVal);
@@ -284,7 +284,7 @@ static void attackTime_tilde_dsp (t_attackTime_tilde *x, t_signal **sp)
     );
 
     // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         t_sampIdx i, newRange;
         t_float range;
@@ -312,7 +312,7 @@ static void attackTime_tilde_dsp (t_attackTime_tilde *x, t_signal **sp)
     };
 
 // compare n to stored n and update/resize buffer if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         t_sampIdx i;
 
@@ -321,7 +321,7 @@ static void attackTime_tilde_dsp (t_attackTime_tilde *x, t_signal **sp)
         x->x_n = sp[0]->s_n;
 
         // init signal buffer
-        for (i=0; i<(x->x_maxSearchRange+x->x_n); i++)
+        for (i = 0; i < (x->x_maxSearchRange+x->x_n); i++)
             x->x_signalBuffer[i] = 0.0;
 
         x->x_lastDspTime = clock_getlogicaltime();

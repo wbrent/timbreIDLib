@@ -61,7 +61,7 @@ static void featureDelta_initMem(t_featureDelta *x)
     for (i = 0; i < x->x_featureLength; i++)
     {
         x->x_prevFeature[i] = 0.0;
-        SETFLOAT (x->x_listOut+i, 0.0);
+        SETFLOAT (x->x_listOut + i, 0.0);
     }
 }
 
@@ -106,7 +106,7 @@ static void featureDelta_delta(t_featureDelta *x, t_symbol *s, int argc, t_atom 
             switch (x->x_mode)
             {
                 case deltaAbs:
-                    thisDiff = fabs(thisDiff);
+                    thisDiff = fabs (thisDiff);
                     break;
                 case deltaSquared:
                     thisDiff = thisDiff*thisDiff;
@@ -115,7 +115,7 @@ static void featureDelta_delta(t_featureDelta *x, t_symbol *s, int argc, t_atom 
                     break;
             }
 
-            SETFLOAT (x->x_listOut+i, thisDiff);
+            SETFLOAT (x->x_listOut + i, thisDiff);
         }
     }
 
@@ -196,13 +196,13 @@ static void featureDelta_length(t_featureDelta *x, t_floatarg len)
     featureDelta_initMem(x);
 }
 
-static void featureDelta_mode(t_featureDelta *x, t_symbol *m)
+static void featureDelta_mode (t_featureDelta *x, t_symbol *m)
 {
-    if ( !strcmp(m->s_name, "diff"))
+    if ( !strcmp (m->s_name, "diff"))
         x->x_mode = deltaDiff;
-    else if ( !strcmp(m->s_name, "abs"))
+    else if ( !strcmp (m->s_name, "abs"))
         x->x_mode = deltaAbs;
-    else if ( !strcmp(m->s_name, "squared"))
+    else if ( !strcmp (m->s_name, "squared"))
         x->x_mode = deltaSquared;
     else
         x->x_mode = deltaDiff;
@@ -210,11 +210,11 @@ static void featureDelta_mode(t_featureDelta *x, t_symbol *m)
 
 static void featureDelta_direction(t_featureDelta *x, t_symbol *d)
 {
-    if ( !strcmp(d->s_name, "pos"))
+    if ( !strcmp (d->s_name, "pos"))
         x->x_direction = deltaPos;
-    else if ( !strcmp(d->s_name, "neg"))
+    else if ( !strcmp (d->s_name, "neg"))
         x->x_direction = deltaNeg;
-    else if ( !strcmp(d->s_name, "both"))
+    else if ( !strcmp (d->s_name, "both"))
         x->x_direction = deltaBoth;
     else
         x->x_direction = deltaBoth;
@@ -253,11 +253,11 @@ static void *featureDelta_new (t_symbol *s, int argc, t_atom *argv)
 
             mode = atom_getsymbol (argv + 1);
 
-            if ( !strcmp(mode->s_name, "diff"))
+            if ( !strcmp (mode->s_name, "diff"))
                 x->x_mode = deltaDiff;
-            else if ( !strcmp(mode->s_name, "abs"))
+            else if ( !strcmp (mode->s_name, "abs"))
                 x->x_mode = deltaAbs;
-            else if ( !strcmp(mode->s_name, "squared"))
+            else if ( !strcmp (mode->s_name, "squared"))
                 x->x_mode = deltaSquared;
             else
                 x->x_mode = deltaDiff;
@@ -271,22 +271,22 @@ static void *featureDelta_new (t_symbol *s, int argc, t_atom *argv)
 
             mode = atom_getsymbol (argv + 1);
 
-            if ( !strcmp(mode->s_name, "diff"))
+            if ( !strcmp (mode->s_name, "diff"))
                 x->x_mode = deltaDiff;
-            else if ( !strcmp(mode->s_name, "abs"))
+            else if ( !strcmp (mode->s_name, "abs"))
                 x->x_mode = deltaAbs;
-            else if ( !strcmp(mode->s_name, "squared"))
+            else if ( !strcmp (mode->s_name, "squared"))
                 x->x_mode = deltaSquared;
             else
                 x->x_mode = deltaDiff;
 
             direction = atom_getsymbol (argv + 2);
 
-            if ( !strcmp(direction->s_name, "pos"))
+            if ( !strcmp (direction->s_name, "pos"))
                 x->x_direction = deltaPos;
-            else if ( !strcmp(direction->s_name, "neg"))
+            else if ( !strcmp (direction->s_name, "neg"))
                 x->x_direction = deltaNeg;
-            else if ( !strcmp(direction->s_name, "both"))
+            else if ( !strcmp (direction->s_name, "both"))
                 x->x_direction = deltaBoth;
             else
                 x->x_direction = deltaBoth;
@@ -299,22 +299,22 @@ static void *featureDelta_new (t_symbol *s, int argc, t_atom *argv)
 
             mode = atom_getsymbol (argv + 1);
 
-            if ( !strcmp(mode->s_name, "diff"))
+            if ( !strcmp (mode->s_name, "diff"))
                 x->x_mode = deltaDiff;
-            else if ( !strcmp(mode->s_name, "abs"))
+            else if ( !strcmp (mode->s_name, "abs"))
                 x->x_mode = deltaAbs;
-            else if ( !strcmp(mode->s_name, "squared"))
+            else if ( !strcmp (mode->s_name, "squared"))
                 x->x_mode = deltaSquared;
             else
                 x->x_mode = deltaDiff;
 
             direction = atom_getsymbol (argv + 2);
 
-            if ( !strcmp(direction->s_name, "pos"))
+            if ( !strcmp (direction->s_name, "pos"))
                 x->x_direction = deltaPos;
-            else if ( !strcmp(direction->s_name, "neg"))
+            else if ( !strcmp (direction->s_name, "neg"))
                 x->x_direction = deltaNeg;
-            else if ( !strcmp(direction->s_name, "both"))
+            else if ( !strcmp (direction->s_name, "both"))
                 x->x_direction = deltaBoth;
             else
                 x->x_direction = deltaBoth;

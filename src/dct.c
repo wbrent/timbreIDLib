@@ -150,7 +150,7 @@ static void dct_analyze (t_dct *x, t_floatarg start, t_floatarg n)
             tIDLib_normalPeak(x->x_window, x->x_dctOut);
 
         for (i = 0; i < x->x_window; i++)
-            SETFLOAT (x->x_listOut+i, x->x_dctOut[i]);
+            SETFLOAT (x->x_listOut + i, x->x_dctOut[i]);
 
         outlet_list (x->x_dct, 0, x->x_window, x->x_listOut);
     }

@@ -186,7 +186,7 @@ static void bfcc_analyze (t_bfcc *x, t_floatarg start, t_floatarg n)
 
         // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
         for (i = 0; i < x->x_numFilters; i++)
-            SETFLOAT (x->x_listOut+i, x->x_bfcc[i]*0.5);
+            SETFLOAT (x->x_listOut + i, x->x_bfcc[i]*0.5);
 
         outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
     }
@@ -229,7 +229,7 @@ static void bfcc_chain_fftData (t_bfcc *x, t_symbol *s, int argc, t_atom *argv)
 
     // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
     for (i = 0; i < x->x_numFilters; i++)
-        SETFLOAT (x->x_listOut+i, x->x_bfcc[i]*0.5);
+        SETFLOAT (x->x_listOut + i, x->x_bfcc[i]*0.5);
 
     outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
 }
@@ -262,18 +262,18 @@ static void bfcc_chain_magSpec (t_bfcc *x, t_symbol *s, int argc, t_atom *argv)
 
     // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
     for (i = 0; i < x->x_numFilters; i++)
-        SETFLOAT (x->x_listOut+i, x->x_bfcc[i]*0.5);
+        SETFLOAT (x->x_listOut + i, x->x_bfcc[i]*0.5);
 
     outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
 }
 
 
-static void bfcc_chain_barkSpec(t_bfcc *x, t_symbol *s, int argc, t_atom *argv)
+static void bfcc_chain_barkSpec (t_bfcc *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_filterIdx i;
 
     // make sure that argc == x->x_numFilters in order to avoid an out of bounds memory read below. we won't resize all memory based on an incoming chain_ command with a different size. instead, just throw an error and exit
-    if (argc!=x->x_numFilters)
+    if (argc != x->x_numFilters)
     {
         pd_error (x, "%s: length of chain_ message (%i) does not match current number of Bark filters (%i)", x->x_objSymbol->s_name, argc, x->x_numFilters);
         return;
@@ -287,7 +287,7 @@ static void bfcc_chain_barkSpec(t_bfcc *x, t_symbol *s, int argc, t_atom *argv)
 
     // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
     for (i = 0; i < x->x_numFilters; i++)
-        SETFLOAT (x->x_listOut+i, x->x_bfcc[i]*0.5);
+        SETFLOAT (x->x_listOut + i, x->x_bfcc[i]*0.5);
 
     outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
 }

@@ -192,7 +192,7 @@ static void barkSpecFlatness_analyze (t_barkSpecFlatness *x, t_floatarg start, t
 
         divisor *= numFiltersRecip; // arithmetic mean
 
-        if (divisor<=0.0)
+        if (divisor <= 0.0)
             flatness = -1.0;
         else
             flatness = dividend / divisor;
@@ -254,7 +254,7 @@ static void barkSpecFlatness_chain_fftData (t_barkSpecFlatness *x, t_symbol *s, 
 
     divisor *= numFiltersRecip; // arithmetic mean
 
-    if (divisor<=0.0)
+    if (divisor <= 0.0)
         flatness = -1.0;
     else
         flatness = dividend / divisor;
@@ -306,7 +306,7 @@ static void barkSpecFlatness_chain_magSpec (t_barkSpecFlatness *x, t_symbol *s, 
 
     divisor *= numFiltersRecip; // arithmetic mean
 
-    if (divisor<=0.0)
+    if (divisor <= 0.0)
         flatness = -1.0;
     else
         flatness = dividend / divisor;
@@ -315,13 +315,13 @@ static void barkSpecFlatness_chain_magSpec (t_barkSpecFlatness *x, t_symbol *s, 
 }
 
 
-static void barkSpecFlatness_chain_barkSpec(t_barkSpecFlatness *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecFlatness_chain_barkSpec (t_barkSpecFlatness *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_filterIdx i;
     double numFiltersRecip, dividend, divisor, flatness;
 
     // make sure that argc == x->x_numFilters in order to avoid an out of bounds memory read below. we won't resize all memory based on an incoming chain_ command with a different size. instead, just throw an error and exit
-    if (argc!=x->x_numFilters)
+    if (argc != x->x_numFilters)
     {
         pd_error (x, "%s: length of chain_ message (%i) does not match current number of Bark filters (%i)", x->x_objSymbol->s_name, argc, x->x_numFilters);
         return;
@@ -350,7 +350,7 @@ static void barkSpecFlatness_chain_barkSpec(t_barkSpecFlatness *x, t_symbol *s, 
 
     divisor *= numFiltersRecip; // arithmetic mean
 
-    if (divisor<=0.0)
+    if (divisor <= 0.0)
         flatness = -1.0;
     else
         flatness = dividend / divisor;

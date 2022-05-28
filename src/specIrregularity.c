@@ -165,9 +165,9 @@ static void specIrregularity_analyze (t_specIrregularity *x, t_floatarg start, t
             tIDLib_mag (x->x_windowHalf + 1, x->x_fftwIn);
 
         if (x->x_normalize)
-            tIDLib_normal(x->x_windowHalf + 1, x->x_fftwIn);
+            tIDLib_normal (x->x_windowHalf + 1, x->x_fftwIn);
 
-        divisor=irregularity=0.0;
+        divisor = irregularity = 0.0;
 
         switch (x->x_algorithm)
         {
@@ -178,12 +178,12 @@ static void specIrregularity_analyze (t_specIrregularity *x, t_floatarg start, t
                     if (i==x->x_windowHalf)
                         irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
                     else
-                        irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+                        irregularity += powf (x->x_fftwIn[i] - x->x_fftwIn[i + 1], 2);
 
                     divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
                 }
 
-                if (divisor<=0.0)
+                if (divisor <= 0.0)
                     irregularity = -1.0;
                 else
                     irregularity /= divisor;
@@ -191,17 +191,17 @@ static void specIrregularity_analyze (t_specIrregularity *x, t_floatarg start, t
 
             case krimphoff:
                 // Krimphoff
-                for (i=1; i<x->x_windowHalf; i++)
+                for (i = 1; i < x->x_windowHalf; i++)
                 {
                     t_float localAvg;
                     localAvg = 0.0;
 
-                    for (j=0; j<3; j++)
-                        localAvg += x->x_fftwIn[i-1+j];
+                    for (j = 0; j < 3; j++)
+                        localAvg += x->x_fftwIn[i - 1 + j];
 
                     localAvg *= 0.333333333333;
 
-                    irregularity += fabs(x->x_fftwIn[i] - localAvg);
+                    irregularity += fabs (x->x_fftwIn[i] - localAvg);
                     //irregularity = log10(irregularity);
                 }
                 break;
@@ -244,9 +244,9 @@ static void specIrregularity_chain_fftData (t_specIrregularity *x, t_symbol *s, 
         tIDLib_mag (x->x_windowHalf + 1, x->x_fftwIn);
 
     if (x->x_normalize)
-        tIDLib_normal(x->x_windowHalf + 1, x->x_fftwIn);
+        tIDLib_normal (x->x_windowHalf + 1, x->x_fftwIn);
 
-    divisor=irregularity=0.0;
+    divisor = irregularity = 0.0;
 
     switch (x->x_algorithm)
     {
@@ -257,12 +257,12 @@ static void specIrregularity_chain_fftData (t_specIrregularity *x, t_symbol *s, 
                 if (i==x->x_windowHalf)
                     irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
                 else
-                    irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+                    irregularity += powf (x->x_fftwIn[i] - x->x_fftwIn[i + 1], 2);
 
                 divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
             }
 
-            if (divisor<=0.0)
+            if (divisor <= 0.0)
                 irregularity = -1.0;
             else
                 irregularity /= divisor;
@@ -270,17 +270,17 @@ static void specIrregularity_chain_fftData (t_specIrregularity *x, t_symbol *s, 
 
         case krimphoff:
             // Krimphoff
-            for (i=1; i<x->x_windowHalf; i++)
+            for (i = 1; i < x->x_windowHalf; i++)
             {
                 t_float localAvg;
                 localAvg = 0.0;
 
-                for (j=0; j<3; j++)
-                    localAvg += x->x_fftwIn[i-1+j];
+                for (j = 0; j < 3; j++)
+                    localAvg += x->x_fftwIn[i - 1 + j];
 
                 localAvg *= 0.333333333333;
 
-                irregularity += fabs(x->x_fftwIn[i] - localAvg);
+                irregularity += fabs (x->x_fftwIn[i] - localAvg);
                 //irregularity = log10(irregularity);
             }
             break;
@@ -313,9 +313,9 @@ static void specIrregularity_chain_magSpec (t_specIrregularity *x, t_symbol *s, 
         x->x_fftwIn[i] = atom_getfloat (argv + i);
 
     if (x->x_normalize)
-        tIDLib_normal(x->x_windowHalf + 1, x->x_fftwIn);
+        tIDLib_normal (x->x_windowHalf + 1, x->x_fftwIn);
 
-    divisor=irregularity=0.0;
+    divisor = irregularity = 0.0;
 
     switch (x->x_algorithm)
     {
@@ -326,12 +326,12 @@ static void specIrregularity_chain_magSpec (t_specIrregularity *x, t_symbol *s, 
                 if (i==x->x_windowHalf)
                     irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
                 else
-                    irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+                    irregularity += powf (x->x_fftwIn[i] - x->x_fftwIn[i + 1], 2);
 
                 divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
             }
 
-            if (divisor<=0.0)
+            if (divisor <= 0.0)
                 irregularity = -1.0;
             else
                 irregularity /= divisor;
@@ -339,17 +339,17 @@ static void specIrregularity_chain_magSpec (t_specIrregularity *x, t_symbol *s, 
 
         case krimphoff:
             // Krimphoff
-            for (i=1; i<x->x_windowHalf; i++)
+            for (i = 1; i < x->x_windowHalf; i++)
             {
                 t_float localAvg;
                 localAvg = 0.0;
 
-                for (j=0; j<3; j++)
-                    localAvg += x->x_fftwIn[i-1+j];
+                for (j = 0; j < 3; j++)
+                    localAvg += x->x_fftwIn[i - 1 + j];
 
                 localAvg *= 0.333333333333;
 
-                irregularity += fabs(x->x_fftwIn[i] - localAvg);
+                irregularity += fabs (x->x_fftwIn[i] - localAvg);
                 //irregularity = log10(irregularity);
             }
             break;
@@ -492,10 +492,10 @@ static void specIrregularity_normalize (t_specIrregularity *x, t_floatarg norm)
 }
 
 
-static void specIrregularity_algorithm(t_specIrregularity *x, t_floatarg a)
+static void specIrregularity_algorithm (t_specIrregularity *x, t_floatarg a)
 {
-    a = (a<0)?0:a;
-    a = (a>1)?1:a;
+    a = (a < 0) ? 0 : a;
+    a = (a > 1) ? 1 : a;
     x->x_algorithm = a;
 
     switch (x->x_algorithm)
@@ -533,7 +533,7 @@ static void *specIrregularity_new (t_symbol *s, int argc, t_atom *argv)
             else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            if (atom_getfloat (argv + 1)>=1)
+            if (atom_getfloat (argv + 1) >= 1)
                 x->x_algorithm = krimphoff;
             else
                 x->x_algorithm = jensen;

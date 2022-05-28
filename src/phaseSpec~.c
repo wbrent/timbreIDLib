@@ -94,7 +94,7 @@ static void phaseSpec_tilde_bang (t_phaseSpec_tilde *x)
     fftwf_execute (x->x_fftwPlan);
 
     for (i = 0; i <= windowHalf; i++)
-        SETFLOAT (x->x_listOut+i, atan2(x->x_fftwOut[i][1], x->x_fftwOut[i][0]));
+        SETFLOAT (x->x_listOut + i, atan2(x->x_fftwOut[i][1], x->x_fftwOut[i][0]));
 
      outlet_list (x->x_phase, 0, windowHalf + 1, x->x_listOut);
 }

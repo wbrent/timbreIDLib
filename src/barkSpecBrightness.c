@@ -177,7 +177,7 @@ static void barkSpecBrightness_analyze (t_barkSpecBrightness *x, t_floatarg star
 
         dividend = divisor = brightness = 0.0;
 
-        for (i=x->x_bandBoundary; i<x->x_numFilters; i++)
+        for (i=x->x_bandBoundary; i < x->x_numFilters; i++)
             dividend += x->x_fftwIn[i];
 
         for (i = 0; i < x->x_numFilters; i++)
@@ -228,7 +228,7 @@ static void barkSpecBrightness_chain_fftData (t_barkSpecBrightness *x, t_symbol 
 
     dividend = divisor = brightness = 0.0;
 
-    for (i=x->x_bandBoundary; i<x->x_numFilters; i++)
+    for (i=x->x_bandBoundary; i < x->x_numFilters; i++)
         dividend += x->x_fftwIn[i];
 
     for (i = 0; i < x->x_numFilters; i++)
@@ -269,7 +269,7 @@ static void barkSpecBrightness_chain_magSpec (t_barkSpecBrightness *x, t_symbol 
 
     dividend = divisor = brightness = 0.0;
 
-    for (i=x->x_bandBoundary; i<x->x_numFilters; i++)
+    for (i=x->x_bandBoundary; i < x->x_numFilters; i++)
         dividend += x->x_fftwIn[i];
 
     for (i = 0; i < x->x_numFilters; i++)
@@ -284,13 +284,13 @@ static void barkSpecBrightness_chain_magSpec (t_barkSpecBrightness *x, t_symbol 
 }
 
 
-static void barkSpecBrightness_chain_barkSpec(t_barkSpecBrightness *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecBrightness_chain_barkSpec (t_barkSpecBrightness *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_filterIdx i;
     t_float dividend, divisor, brightness;
 
     // make sure that argc == x->x_numFilters in order to avoid an out of bounds memory read below. we won't resize all memory based on an incoming chain_ command with a different size. instead, just throw an error and exit
-    if (argc!=x->x_numFilters)
+    if (argc != x->x_numFilters)
     {
         pd_error (x, "%s: length of chain_ message (%i) does not match current number of Bark filters (%i)", x->x_objSymbol->s_name, argc, x->x_numFilters);
         return;
@@ -302,7 +302,7 @@ static void barkSpecBrightness_chain_barkSpec(t_barkSpecBrightness *x, t_symbol 
 
     dividend = divisor = brightness = 0.0;
 
-    for (i=x->x_bandBoundary; i<x->x_numFilters; i++)
+    for (i=x->x_bandBoundary; i < x->x_numFilters; i++)
         dividend += x->x_fftwIn[i];
 
     for (i = 0; i < x->x_numFilters; i++)

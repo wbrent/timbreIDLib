@@ -163,10 +163,10 @@ static void magSpec_analyze (t_magSpec *x, t_floatarg start, t_floatarg n)
             tIDLib_mag (x->x_windowHalf + 1, x->x_fftwIn);
 
         if (x->x_normalize)
-            tIDLib_normal(x->x_windowHalf + 1, x->x_fftwIn);
+            tIDLib_normal (x->x_windowHalf + 1, x->x_fftwIn);
 
         for (i = 0; i <= x->x_windowHalf; i++)
-            SETFLOAT (x->x_listOut+i, x->x_fftwIn[i]);
+            SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
 
         outlet_list (x->x_mag, 0, x->x_windowHalf + 1, x->x_listOut);
     }
@@ -201,10 +201,10 @@ static void magSpec_chain_fftData (t_magSpec *x, t_symbol *s, int argc, t_atom *
         tIDLib_mag (x->x_windowHalf + 1, x->x_fftwIn);
 
     if (x->x_normalize)
-        tIDLib_normal(x->x_windowHalf + 1, x->x_fftwIn);
+        tIDLib_normal (x->x_windowHalf + 1, x->x_fftwIn);
 
     for (i = 0; i <= x->x_windowHalf; i++)
-        SETFLOAT (x->x_listOut+i, x->x_fftwIn[i]);
+        SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
 
     outlet_list (x->x_mag, 0, x->x_windowHalf + 1, x->x_listOut);
 }

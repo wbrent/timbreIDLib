@@ -109,9 +109,9 @@ static void specIrregularity_tilde_bang (t_specIrregularity_tilde *x)
         tIDLib_mag (windowHalf + 1, x->x_fftwIn);
 
     if (x->x_normalize)
-        tIDLib_normal(windowHalf + 1, x->x_fftwIn);
+        tIDLib_normal (windowHalf + 1, x->x_fftwIn);
 
-    divisor=irregularity=0.0;
+    divisor = irregularity = 0.0;
 
     switch (x->x_algorithm)
     {
@@ -122,7 +122,7 @@ static void specIrregularity_tilde_bang (t_specIrregularity_tilde *x)
                 if (i==windowHalf)
                     irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
                 else
-                    irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+                    irregularity += powf (x->x_fftwIn[i] - x->x_fftwIn[i + 1], 2);
 
                 divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
             }
@@ -135,17 +135,17 @@ static void specIrregularity_tilde_bang (t_specIrregularity_tilde *x)
 
         case krimphoff:
             // Krimphoff
-            for (i=1; i<windowHalf; i++)
+            for (i = 1; i < windowHalf; i++)
             {
                 t_float localAvg;
                 localAvg = 0.0;
 
-                for (j=0; j<3; j++)
-                    localAvg += x->x_fftwIn[i-1+j];
+                for (j = 0; j < 3; j++)
+                    localAvg += x->x_fftwIn[i - 1 + j];
 
                 localAvg *= 0.333333333333;
 
-                irregularity += fabs(x->x_fftwIn[i] - localAvg);
+                irregularity += fabs (x->x_fftwIn[i] - localAvg);
                 //irregularity = log10(irregularity);
             }
             break;
@@ -182,10 +182,10 @@ static void specIrregularity_tilde_print (t_specIrregularity_tilde *x)
 }
 
 
-static void specIrregularity_tilde_algorithm(t_specIrregularity_tilde *x, t_floatarg a)
+static void specIrregularity_tilde_algorithm (t_specIrregularity_tilde *x, t_floatarg a)
 {
-    a = (a<0)?0:a;
-    a = (a>1)?1:a;
+    a = (a < 0) ? 0 : a;
+    a = (a > 1) ? 1 : a;
     x->x_algorithm = a;
 
     switch (x->x_algorithm)
@@ -340,7 +340,7 @@ static void *specIrregularity_tilde_new (t_symbol *s, int argc, t_atom *argv)
                 x->x_window = TID_WINDOWSIZEDEFAULT;
                 post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
-            if (atom_getfloat (argv + 1)>=1)
+            if (atom_getfloat (argv + 1) >= 1)
                 x->x_algorithm = krimphoff;
             else
                 x->x_algorithm = jensen;
@@ -444,13 +444,13 @@ static void specIrregularity_tilde_dsp (t_specIrregularity_tilde *x, t_signal **
     );
 
 // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         x->x_sr = sp[0]->s_sr / x->x_overlap;
     };
 
 // compare n to stored n and update/resize buffer if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         t_sampIdx i;
 

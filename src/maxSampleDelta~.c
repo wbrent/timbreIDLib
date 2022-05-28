@@ -58,7 +58,7 @@ static void maxSampleDelta_tilde_bang (t_maxSampleDelta_tilde *x)
 
     if (bangSample>0)
     {
-        max = fabs(x->x_analysisBuffer[0] - x->x_signalBuffer[bangSample-1]);
+        max = fabs (x->x_analysisBuffer[0] - x->x_signalBuffer[bangSample-1]);
         maxIdx = 0;
     }
     else
@@ -67,11 +67,11 @@ static void maxSampleDelta_tilde_bang (t_maxSampleDelta_tilde *x)
         maxIdx = ULONG_MAX;
     }
 
-    for (i=1; i<window; i++)
+    for (i = 1; i < window; i++)
     {
         t_float thisDiff;
 
-        thisDiff = fabs(x->x_analysisBuffer[i] - x->x_analysisBuffer[i-1]);
+        thisDiff = fabs (x->x_analysisBuffer[i] - x->x_analysisBuffer[i - 1]);
 
         if (thisDiff>max)
         {

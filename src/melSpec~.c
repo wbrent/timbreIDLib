@@ -115,7 +115,7 @@ static void melSpec_tilde_bang (t_melSpec_tilde *x)
         tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     for (i = 0; i < x->x_numFilters; i++)
-        SETFLOAT (x->x_listOut+i, x->x_fftwIn[i]);
+        SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
 
     outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
 }
@@ -463,7 +463,7 @@ static void melSpec_tilde_dsp (t_melSpec_tilde *x, t_signal **sp)
     );
 
 // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         x->x_sr = sp[0]->s_sr / x->x_overlap;
 
@@ -471,7 +471,7 @@ static void melSpec_tilde_dsp (t_melSpec_tilde *x, t_signal **sp)
     };
 
 // compare n to stored n and update/resize buffer if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         t_sampIdx i;
 

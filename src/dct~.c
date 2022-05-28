@@ -96,7 +96,7 @@ static void dct_tilde_bang (t_dct_tilde *x)
         tIDLib_normalPeak(x->x_window, x->x_dctOut);
 
     for (i = 0; i < window; i++)
-        SETFLOAT (x->x_listOut+i, x->x_dctOut[i]);
+        SETFLOAT (x->x_listOut + i, x->x_dctOut[i]);
 
      outlet_list (x->x_dct, 0, window, x->x_listOut);
 }

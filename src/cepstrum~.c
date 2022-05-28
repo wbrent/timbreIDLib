@@ -131,7 +131,7 @@ static void cepstrum_tilde_bang (t_cepstrum_tilde *x)
             x->x_fftwIn[i] = x->x_fftwIn[i]*x->x_fftwIn[i];
 
     for (i = 0; i < windowHalf + 1; i++)
-        SETFLOAT (x->x_listOut+i, x->x_fftwIn[i]);
+        SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
 
      outlet_list (x->x_ceps, 0, windowHalf + 1, x->x_listOut);
 }

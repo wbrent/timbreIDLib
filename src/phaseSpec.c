@@ -159,7 +159,7 @@ static void phaseSpec_analyze (t_phaseSpec *x, t_floatarg start, t_floatarg n)
         fftwf_execute (x->x_fftwPlan);
 
         for (i = 0; i <= windowHalf; i++)
-            SETFLOAT (x->x_listOut+i, atan2(x->x_fftwOut[i][1], x->x_fftwOut[i][0]));
+            SETFLOAT (x->x_listOut + i, atan2(x->x_fftwOut[i][1], x->x_fftwOut[i][0]));
 
         outlet_list (x->x_phase, 0, windowHalf + 1, x->x_listOut);
     }
@@ -189,7 +189,7 @@ static void phaseSpec_chain_fftData (t_phaseSpec *x, t_symbol *s, int argc, t_at
     }
 
     for (i = 0; i <= windowHalf; i++)
-        SETFLOAT (x->x_listOut+i, atan2(x->x_fftwOut[i][1], x->x_fftwOut[i][0]));
+        SETFLOAT (x->x_listOut + i, atan2(x->x_fftwOut[i][1], x->x_fftwOut[i][0]));
 
     outlet_list (x->x_phase, 0, windowHalf + 1, x->x_listOut);
 }

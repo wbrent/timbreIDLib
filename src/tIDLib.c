@@ -215,7 +215,7 @@ t_float tIDLib_hps (t_float* data, t_uInt n, t_float loIdx, t_float hiIdx, t_uSh
 
         thisProduct = 1.0;
 
-        // NOTE: this was erroneously starting at j=0 before. Should start at harmonic 1
+        // NOTE: this was erroneously starting at j = 0 before. Should start at harmonic 1
         for (j = 1; j < numHarm; j++)
         {
             t_sampIdx thisIdx;
@@ -530,7 +530,7 @@ void tIDLib_peaksValleys (t_sampIdx n, t_float* data, t_float* flags, t_float* m
         {
             // peak case
             case -2:
-                // write to i-1, because the peak moment occurred just before this observed change in slope direction
+                // write to i - 1, because the peak moment occurred just before this observed change in slope direction
                 flags[i - 1] = 1;
                 if (data[i - 1] > localMaxVal)
                     localMaxVal = data[i - 1];

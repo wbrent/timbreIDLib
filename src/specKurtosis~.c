@@ -345,7 +345,7 @@ static void specKurtosis_tilde_dsp (t_specKurtosis_tilde *x, t_signal **sp)
     );
 
 // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         t_sampIdx i;
         x->x_sr = sp[0]->s_sr / x->x_overlap;
@@ -355,7 +355,7 @@ static void specKurtosis_tilde_dsp (t_specKurtosis_tilde *x, t_signal **sp)
     };
 
 // compare n to stored n and update/resize buffer if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         t_sampIdx i;
 

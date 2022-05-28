@@ -236,7 +236,7 @@ static void specHarmonicity_analyze (t_specHarmonicity *x, t_floatarg start, t_f
 
                 thisFreq = peakFreqs[i];
                 roundedHarm = roundf (thisFreq/fund);
-                deviation = fabs(thisFreq - (roundedHarm*fund));
+                deviation = fabs (thisFreq - (roundedHarm*fund));
                 inHarmDividend += deviation * thisAmp;
                 divisor += thisAmp;
 
@@ -249,7 +249,7 @@ static void specHarmonicity_analyze (t_specHarmonicity *x, t_floatarg start, t_f
         t_freebytes (peakAmps, numPeaks * sizeof (t_float));
         t_freebytes (peakFreqs, numPeaks * sizeof (t_float));
 
-        if (divisor<=0.0 || fund<=0.0)
+        if (divisor <= 0.0 || fund<=0.0)
             inHarm = -1.0;
         else
             inHarm = (2*inHarmDividend)/(divisor*fund);
@@ -366,7 +366,7 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity *x, t_symbol *s, in
 
             thisFreq = peakFreqs[i];
             roundedHarm = roundf (thisFreq/fund);
-            deviation = fabs(thisFreq - (roundedHarm*fund));
+            deviation = fabs (thisFreq - (roundedHarm*fund));
             inHarmDividend += deviation * thisAmp;
             divisor += thisAmp;
 
@@ -379,7 +379,7 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity *x, t_symbol *s, in
     t_freebytes (peakAmps, numPeaks * sizeof (t_float));
     t_freebytes (peakFreqs, numPeaks * sizeof (t_float));
 
-    if (divisor<=0.0 || fund<=0.0)
+    if (divisor <= 0.0 || fund<=0.0)
         inHarm = -1.0;
     else
         inHarm = (2*inHarmDividend)/(divisor*fund);
@@ -486,7 +486,7 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity *x, t_symbol *s, in
 
             thisFreq = peakFreqs[i];
             roundedHarm = roundf (thisFreq/fund);
-            deviation = fabs(thisFreq - (roundedHarm*fund));
+            deviation = fabs (thisFreq - (roundedHarm*fund));
             inHarmDividend += deviation * thisAmp;
             divisor += thisAmp;
 
@@ -499,7 +499,7 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity *x, t_symbol *s, in
     t_freebytes (peakAmps, numPeaks * sizeof (t_float));
     t_freebytes (peakFreqs, numPeaks * sizeof (t_float));
 
-    if (divisor<=0.0 || fund<=0.0)
+    if (divisor <= 0.0 || fund<=0.0)
         inHarm = -1.0;
     else
         inHarm = (2*inHarmDividend)/(divisor*fund);

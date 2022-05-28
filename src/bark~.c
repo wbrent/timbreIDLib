@@ -138,9 +138,9 @@ static void bark_tilde_create_loudness_weighting(t_bark_tilde *x)
         }
 
         if (x->x_powerSpectrum)
-            x->x_loudWeights[i] = powf(10.0, dBint*0.1);
+            x->x_loudWeights[i] = powf (10.0, dBint*0.1);
         else
-            x->x_loudWeights[i] = powf(10.0, dBint*0.05);
+            x->x_loudWeights[i] = powf (10.0, dBint*0.05);
 
     }
 }
@@ -190,7 +190,7 @@ static void bark_tilde_windowFunction (t_bark_tilde *x, t_floatarg f)
 
 static void bark_tilde_thresh(t_bark_tilde *x, t_floatarg lo, t_floatarg hi)
 {
-    if (hi<lo)
+    if (hi < lo)
     {
         post ("%s WARNING: high threshold less than low threshold. Reversing order.", x->x_objSymbol->s_name);
         x->x_hiThresh = lo;
@@ -239,7 +239,7 @@ static void bark_tilde_filter_avg (t_bark_tilde *x, t_floatarg avg)
 
 static void bark_tilde_filter_range(t_bark_tilde *x, t_floatarg lo, t_floatarg hi)
 {
-    if (hi<lo)
+    if (hi < lo)
     {
         t_float tmp;
 
@@ -248,14 +248,14 @@ static void bark_tilde_filter_range(t_bark_tilde *x, t_floatarg lo, t_floatarg h
         lo = tmp;
 
         x->x_loBin = (lo<0)?0:lo;
-        x->x_hiBin = (hi>=x->x_numFilters)?x->x_numFilters-1:hi;
+        x->x_hiBin = (hi>=x->x_numFilters)?x->x_numFilters - 1:hi;
 
         post ("%s WARNING: high bin less than low bin.", x->x_objSymbol->s_name);
     }
     else
     {
         x->x_loBin = (lo<0)?0:lo;
-        x->x_hiBin = (hi>=x->x_numFilters)?x->x_numFilters-1:hi;
+        x->x_hiBin = (hi>=x->x_numFilters)?x->x_numFilters - 1:hi;
     }
 }
 
@@ -557,7 +557,7 @@ static void *bark_tilde_new (t_symbol *s, int argc, t_atom *argv)
     tIDLib_createFilterbank (x->x_filterFreqs, &x->x_filterbank, 0, x->x_numFilters, x->x_window, x->x_sr);
 
     x->x_loBin = 0;
-    x->x_hiBin = x->x_numFilters-1;
+    x->x_hiBin = x->x_numFilters - 1;
 
     x->x_mask = (t_float *)t_getbytes (x->x_numFilters * sizeof (t_float));
     x->x_growth = (t_float *)t_getbytes (x->x_numFilters * sizeof (t_float));
@@ -673,7 +673,7 @@ static t_int *bark_tilde_perform (t_int *w)
             if (x->x_fftwIn[i] > x->x_mask[i])
                 x->x_growth[i] = x->x_fftwIn[i]/(x->x_mask[i] + 1.0e-15) - 1.0;
 
-            if (i>=x->x_loBin && i<=x->x_hiBin && x->x_growth[i]>0)
+            if (i>=x->x_loBin && i < =x->x_hiBin && x->x_growth[i]>0)
                 totalGrowth += x->x_growth[i];
 
             SETFLOAT (x->x_growthList+i, x->x_growth[i]);
@@ -769,7 +769,7 @@ static void bark_tilde_dsp (t_bark_tilde *x, t_signal **sp)
     );
 
 // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         x->x_sr = sp[0]->s_sr / x->x_overlap;
 
@@ -777,7 +777,7 @@ static void bark_tilde_dsp (t_bark_tilde *x, t_signal **sp)
     };
 
 // compare n to stored n and update/resize buffer if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         t_sampIdx i;
 

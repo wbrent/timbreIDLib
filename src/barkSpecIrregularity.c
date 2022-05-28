@@ -180,7 +180,7 @@ static void barkSpecIrregularity_analyze (t_barkSpecIrregularity *x, t_floatarg 
         else
             tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
-        divisor=irregularity=0.0;
+        divisor = irregularity = 0.0;
 
         switch (x->x_algorithm)
         {
@@ -188,15 +188,15 @@ static void barkSpecIrregularity_analyze (t_barkSpecIrregularity *x, t_floatarg 
                 // Jensen
                 for (i = 0; i < x->x_numFilters; i++)
                 {
-                    if (i==(x->x_numFilters-1))
+                    if (i == x->x_numFilters - 1)
                         irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
                     else
-                        irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+                        irregularity += powf (x->x_fftwIn[i] - x->x_fftwIn[i + 1], 2);
 
                     divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
                 }
 
-                if (divisor<=0.0)
+                if (divisor <= 0.0)
                     irregularity = -1.0;
                 else
                     irregularity /= divisor;
@@ -204,17 +204,17 @@ static void barkSpecIrregularity_analyze (t_barkSpecIrregularity *x, t_floatarg 
 
             case krimphoff:
                 // Krimphoff
-                for (i=1; i<(x->x_numFilters-1); i++)
+                for (i = 1; i < x->x_numFilters - 1; i++)
                 {
                     t_float localAvg;
                     localAvg = 0.0;
 
-                    for (j=0; j<3; j++)
-                        localAvg += x->x_fftwIn[i-1+j];
+                    for (j = 0; j < 3; j++)
+                        localAvg += x->x_fftwIn[i - 1 + j];
 
                     localAvg *= 0.333333333333;
 
-                    irregularity += fabs(x->x_fftwIn[i] - localAvg);
+                    irregularity += fabs (x->x_fftwIn[i] - localAvg);
                     //irregularity = log10(irregularity);
                 };
                 break;
@@ -261,7 +261,7 @@ static void barkSpecIrregularity_chain_fftData (t_barkSpecIrregularity *x, t_sym
     else
         tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
-    divisor=irregularity=0.0;
+    divisor = irregularity = 0.0;
 
     switch (x->x_algorithm)
     {
@@ -269,15 +269,15 @@ static void barkSpecIrregularity_chain_fftData (t_barkSpecIrregularity *x, t_sym
             // Jensen
             for (i = 0; i < x->x_numFilters; i++)
             {
-                if (i==(x->x_numFilters-1))
+                if (i == x->x_numFilters - 1)
                     irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
                 else
-                    irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+                    irregularity += powf (x->x_fftwIn[i] - x->x_fftwIn[i + 1], 2);
 
                 divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
             }
 
-            if (divisor<=0.0)
+            if (divisor <= 0.0)
                 irregularity = -1.0;
             else
                 irregularity /= divisor;
@@ -285,17 +285,17 @@ static void barkSpecIrregularity_chain_fftData (t_barkSpecIrregularity *x, t_sym
 
         case krimphoff:
             // Krimphoff
-            for (i=1; i<(x->x_numFilters-1); i++)
+            for (i = 1; i < x->x_numFilters - 1; i++)
             {
                 t_float localAvg;
                 localAvg = 0.0;
 
-                for (j=0; j<3; j++)
-                    localAvg += x->x_fftwIn[i-1+j];
+                for (j = 0; j < 3; j++)
+                    localAvg += x->x_fftwIn[i - 1 + j];
 
                 localAvg *= 0.333333333333;
 
-                irregularity += fabs(x->x_fftwIn[i] - localAvg);
+                irregularity += fabs (x->x_fftwIn[i] - localAvg);
                 //irregularity = log10(irregularity);
             };
             break;
@@ -332,7 +332,7 @@ static void barkSpecIrregularity_chain_magSpec (t_barkSpecIrregularity *x, t_sym
     else
         tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
-    divisor=irregularity=0.0;
+    divisor = irregularity = 0.0;
 
     switch (x->x_algorithm)
     {
@@ -340,15 +340,15 @@ static void barkSpecIrregularity_chain_magSpec (t_barkSpecIrregularity *x, t_sym
             // Jensen
             for (i = 0; i < x->x_numFilters; i++)
             {
-                if (i==(x->x_numFilters-1))
+                if (i == x->x_numFilters - 1)
                     irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
                 else
-                    irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+                    irregularity += powf (x->x_fftwIn[i] - x->x_fftwIn[i + 1], 2);
 
                 divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
             }
 
-            if (divisor<=0.0)
+            if (divisor <= 0.0)
                 irregularity = -1.0;
             else
                 irregularity /= divisor;
@@ -356,17 +356,17 @@ static void barkSpecIrregularity_chain_magSpec (t_barkSpecIrregularity *x, t_sym
 
         case krimphoff:
             // Krimphoff
-            for (i=1; i<(x->x_numFilters-1); i++)
+            for (i = 1; i < x->x_numFilters - 1; i++)
             {
                 t_float localAvg;
                 localAvg = 0.0;
 
-                for (j=0; j<3; j++)
-                    localAvg += x->x_fftwIn[i-1+j];
+                for (j = 0; j < 3; j++)
+                    localAvg += x->x_fftwIn[i - 1 + j];
 
                 localAvg *= 0.333333333333;
 
-                irregularity += fabs(x->x_fftwIn[i] - localAvg);
+                irregularity += fabs (x->x_fftwIn[i] - localAvg);
                 //irregularity = log10(irregularity);
             };
             break;
@@ -379,13 +379,13 @@ static void barkSpecIrregularity_chain_magSpec (t_barkSpecIrregularity *x, t_sym
 }
 
 
-static void barkSpecIrregularity_chain_barkSpec(t_barkSpecIrregularity *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecIrregularity_chain_barkSpec (t_barkSpecIrregularity *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_filterIdx i, j;
     t_float divisor, irregularity;
 
     // make sure that argc == x->x_numFilters in order to avoid an out of bounds memory read below. we won't resize all memory based on an incoming chain_ command with a different size. instead, just throw an error and exit
-    if (argc!=x->x_numFilters)
+    if (argc != x->x_numFilters)
     {
         pd_error (x, "%s: length of chain_ message (%i) does not match current number of Bark filters (%i)", x->x_objSymbol->s_name, argc, x->x_numFilters);
         return;
@@ -395,7 +395,7 @@ static void barkSpecIrregularity_chain_barkSpec(t_barkSpecIrregularity *x, t_sym
     for (i = 0; i < x->x_numFilters; i++)
         x->x_fftwIn[i] = atom_getfloat (argv + i);
 
-    divisor=irregularity=0.0;
+    divisor = irregularity = 0.0;
 
     switch (x->x_algorithm)
     {
@@ -403,15 +403,15 @@ static void barkSpecIrregularity_chain_barkSpec(t_barkSpecIrregularity *x, t_sym
             // Jensen
             for (i = 0; i < x->x_numFilters; i++)
             {
-                if (i==(x->x_numFilters-1))
+                if (i == x->x_numFilters - 1)
                     irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
                 else
-                    irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+                    irregularity += powf (x->x_fftwIn[i] - x->x_fftwIn[i + 1], 2);
 
                 divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
             }
 
-            if (divisor<=0.0)
+            if (divisor <= 0.0)
                 irregularity = -1.0;
             else
                 irregularity /= divisor;
@@ -419,17 +419,17 @@ static void barkSpecIrregularity_chain_barkSpec(t_barkSpecIrregularity *x, t_sym
 
         case krimphoff:
             // Krimphoff
-            for (i=1; i<(x->x_numFilters-1); i++)
+            for (i = 1; i < x->x_numFilters - 1; i++)
             {
                 t_float localAvg;
                 localAvg = 0.0;
 
-                for (j=0; j<3; j++)
-                    localAvg += x->x_fftwIn[i-1+j];
+                for (j = 0; j < 3; j++)
+                    localAvg += x->x_fftwIn[i - 1 + j];
 
                 localAvg *= 0.333333333333;
 
-                irregularity += fabs(x->x_fftwIn[i] - localAvg);
+                irregularity += fabs (x->x_fftwIn[i] - localAvg);
                 //irregularity = log10(irregularity);
             };
             break;
@@ -500,7 +500,7 @@ static void barkSpecIrregularity_set (t_barkSpecIrregularity *x, t_symbol *s)
 static void barkSpecIrregularity_print (t_barkSpecIrregularity *x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-    post ("%s samplerate: %i", x->x_objSymbol->s_name, (int)(x->x_sr));
+    post ("%s samplerate: %i", x->x_objSymbol->s_name, (int)x->x_sr);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
     post ("%s power spectrum: %i", x->x_objSymbol->s_name, x->x_powerSpectrum);
     post ("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
@@ -522,10 +522,10 @@ static void barkSpecIrregularity_print (t_barkSpecIrregularity *x)
 }
 
 
-static void barkSpecIrregularity_algorithm(t_barkSpecIrregularity *x, t_floatarg a)
+static void barkSpecIrregularity_algorithm (t_barkSpecIrregularity *x, t_floatarg a)
 {
-    a = (a<0)?0:a;
-    a = (a>1)?1:a;
+    a = (a < 0) ? 0 : a;
+    a = (a > 1) ? 1 : a;
     x->x_algorithm = a;
 
     switch (x->x_algorithm)
@@ -673,7 +673,7 @@ static void *barkSpecIrregularity_new (t_symbol *s, int argc, t_atom *argv)
                 x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
                 post ("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
-            if (atom_getfloat (argv + 2)>=1)
+            if (atom_getfloat (argv + 2) >= 1)
                 x->x_algorithm = krimphoff;
             else
                 x->x_algorithm = jensen;

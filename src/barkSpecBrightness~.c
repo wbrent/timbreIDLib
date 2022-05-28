@@ -119,7 +119,7 @@ static void barkSpecBrightness_tilde_bang (t_barkSpecBrightness_tilde *x)
 
     dividend = divisor = brightness = 0.0;
 
-    for (i=x->x_bandBoundary; i<x->x_numFilters; i++)
+    for (i=x->x_bandBoundary; i < x->x_numFilters; i++)
         dividend += x->x_fftwIn[i];
 
     for (i = 0; i < x->x_numFilters; i++)
@@ -215,9 +215,9 @@ static void barkSpecBrightness_tilde_window (t_barkSpecBrightness_tilde *x, t_fl
     window = w;
 
     // FFT must be at least 4 points long
-    if (window<4)
+    if (window < TID_MINWINDOWSIZE)
     {
-        window = 1024;
+        window = TID_WINDOWSIZEDEFAULT;
         post ("%s WARNING: window size must be 4 or greater. Using default size of 1024 instead.", x->x_objSymbol->s_name);
     }
 
@@ -513,7 +513,7 @@ static void barkSpecBrightness_tilde_dsp (t_barkSpecBrightness_tilde *x, t_signa
     );
 
 // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         x->x_sr = sp[0]->s_sr / x->x_overlap;
 
@@ -521,7 +521,7 @@ static void barkSpecBrightness_tilde_dsp (t_barkSpecBrightness_tilde *x, t_signa
     };
 
 // compare n to stored n and update/resize buffer if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         t_sampIdx i;
 

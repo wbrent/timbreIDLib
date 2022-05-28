@@ -108,7 +108,7 @@ static void tID_fft_tilde_bang (t_tID_fft_tilde *x)
             x->x_fftwInZeroPad[i] = x->x_fftwIn[i];
 
         // fill out the remaining space with zeros
-        for (; i<x->x_zeroPad; i++)
+        for (; i < x->x_zeroPad; i++)
             x->x_fftwInZeroPad[i] = 0.0;
 
         // execute the zero pad plan
@@ -119,7 +119,7 @@ static void tID_fft_tilde_bang (t_tID_fft_tilde *x)
 
         if (x->x_normalize)
         {
-            for (i=0; i<=x->x_zeroPadHalf; i++)
+            for (i = 0; i < =x->x_zeroPadHalf; i++)
             {
                 t_float thisReal, thisImag;
 
@@ -140,7 +140,7 @@ static void tID_fft_tilde_bang (t_tID_fft_tilde *x)
             imagMax = 1.0/imagMax;
         }
 
-        for (i=0; i<=x->x_zeroPadHalf; i++)
+        for (i = 0; i < =x->x_zeroPadHalf; i++)
         {
             if (x->x_normalize)
             {

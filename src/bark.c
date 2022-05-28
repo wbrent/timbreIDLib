@@ -176,7 +176,7 @@ static void bark_windowFunction (t_bark *x, t_floatarg f)
 
 static void bark_thresh(t_bark *x, t_floatarg lo, t_floatarg hi)
 {
-    if (hi<lo)
+    if (hi < lo)
     {
         post ("%s WARNING: high threshold less than low threshold.", x->x_objSymbol->s_name);
         x->x_hiThresh = lo;
@@ -204,7 +204,7 @@ static void bark_minvel(t_bark *x, t_floatarg mv)
 
 static void bark_filter_range(t_bark *x, t_floatarg lo, t_floatarg hi)
 {
-    if (hi<lo)
+    if (hi < lo)
     {
         t_float tmp;
 
@@ -213,14 +213,14 @@ static void bark_filter_range(t_bark *x, t_floatarg lo, t_floatarg hi)
         lo = tmp;
 
         x->x_loBin = (lo<0)?0:lo;
-        x->x_hiBin = (hi>=x->x_numFilters)?x->x_numFilters-1:hi;
+        x->x_hiBin = (hi>=x->x_numFilters)?x->x_numFilters - 1:hi;
 
         post ("%s WARNING: high band less than low band. Reversing order.", x->x_objSymbol->s_name);
     }
     else
     {
         x->x_loBin = (lo<0)?0:lo;
-        x->x_hiBin = (hi>=x->x_numFilters)?x->x_numFilters-1:hi;
+        x->x_hiBin = (hi>=x->x_numFilters)?x->x_numFilters - 1:hi;
     }
 }
 
@@ -392,7 +392,7 @@ static void bark_samplerate (t_bark *x, t_floatarg sr)
     tIDLib_createFilterbank (x->x_filterFreqs, &x->x_filterbank, oldNumFilters, x->x_numFilters, x->x_window, x->x_sr);
 
     x->x_loBin = 0;
-    x->x_hiBin = x->x_numFilters-1;
+    x->x_hiBin = x->x_numFilters - 1;
 
     x->x_mask = (t_float *)t_resizebytes (x->x_mask, oldNumFilters * sizeof (t_float), x->x_numFilters * sizeof (t_float));
     x->x_growth = (t_float *)t_resizebytes (x->x_growth, oldNumFilters * sizeof (t_float), x->x_numFilters * sizeof (t_float));
@@ -598,7 +598,7 @@ static void *bark_new (t_symbol *s, int argc, t_atom *argv)
     tIDLib_createFilterbank (x->x_filterFreqs, &x->x_filterbank, 0, x->x_numFilters, x->x_window, x->x_sr);
 
     x->x_loBin = 0;
-    x->x_hiBin = x->x_numFilters-1;
+    x->x_hiBin = x->x_numFilters - 1;
 
     x->x_mask = (t_float *)t_getbytes (x->x_numFilters * sizeof (t_float));
     x->x_growth = (t_float *)t_getbytes (x->x_numFilters * sizeof (t_float));
@@ -677,7 +677,7 @@ static void bark_analyze (t_bark *x, t_floatarg startTime, t_floatarg endTime)
         for (frame=0; frame<nFrames; frame++)
         {
             // fill buffer with <window> samples
-            for (i=0, j=frame*hop+startSamp; i<window; i++, j++)
+            for (i = 0, j=frame*hop+startSamp; i < window; i++, j++)
                 x->x_fftwIn[i] = x->x_vec[j].w_float;
 
             totalGrowth = 0.0;
@@ -743,7 +743,7 @@ static void bark_analyze (t_bark *x, t_floatarg startTime, t_floatarg endTime)
                 if (x->x_fftwIn[i] > x->x_mask[i])
                     x->x_growth[i] = x->x_fftwIn[i]/(x->x_mask[i] + 1.0e-15) - 1.0;
 
-                if (i>=x->x_loBin && i<=x->x_hiBin && x->x_growth[i]>0)
+                if (i>=x->x_loBin && i < =x->x_hiBin && x->x_growth[i]>0)
                     totalGrowth += x->x_growth[i];
 
                 SETFLOAT (x->x_growthList+i, x->x_growth[i]);

@@ -58,7 +58,7 @@ static void minSampleDelta_tilde_bang (t_minSampleDelta_tilde *x)
 
     if (bangSample>0)
     {
-        min = fabs(x->x_analysisBuffer[0] - x->x_signalBuffer[bangSample-1]);
+        min = fabs (x->x_analysisBuffer[0] - x->x_signalBuffer[bangSample-1]);
         minIdx = 0;
     }
     else
@@ -67,11 +67,11 @@ static void minSampleDelta_tilde_bang (t_minSampleDelta_tilde *x)
         minIdx = ULONG_MAX;
     }
 
-    for (i=1; i<window; i++)
+    for (i = 1; i < window; i++)
     {
         t_float thisDiff;
 
-        thisDiff = fabs(x->x_analysisBuffer[i] - x->x_analysisBuffer[i-1]);
+        thisDiff = fabs (x->x_analysisBuffer[i] - x->x_analysisBuffer[i - 1]);
 
         if (thisDiff<min)
         {

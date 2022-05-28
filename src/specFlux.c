@@ -163,7 +163,7 @@ static void specFlux_analyze (t_specFlux *x, t_floatarg start, t_floatarg n)
         endSampBack = startSampBack + x->x_window - 1;
 
         // construct back analysis window x->x_separation frames earlier
-        for (i=0, j=startSampBack; j<=endSampBack; i++, j++)
+        for (i = 0, j=startSampBack; j<=endSampBack; i++, j++)
             x->x_fftwInBackWindow[i] = x->x_vec[j].w_float;
 
         windowFuncPtr = x->x_blackman;
@@ -203,7 +203,7 @@ static void specFlux_analyze (t_specFlux *x, t_floatarg start, t_floatarg n)
             tIDLib_mag (x->x_windowHalf + 1, x->x_fftwInForwardWindow);
 
         if (x->x_normalize)
-            tIDLib_normal(x->x_windowHalf + 1, x->x_fftwInForwardWindow);
+            tIDLib_normal (x->x_windowHalf + 1, x->x_fftwInForwardWindow);
 
         switch (x->x_windowFunction)
         {
@@ -240,9 +240,9 @@ static void specFlux_analyze (t_specFlux *x, t_floatarg start, t_floatarg n)
             tIDLib_mag (x->x_windowHalf + 1, x->x_fftwInBackWindow);
 
         if (x->x_normalize)
-            tIDLib_normal(x->x_windowHalf + 1, x->x_fftwInBackWindow);
+            tIDLib_normal (x->x_windowHalf + 1, x->x_fftwInBackWindow);
 
-        flux=0.0;
+        flux = 0.0.0;
 
         for (i = 0; i <= x->x_windowHalf; i++)
         {
@@ -270,21 +270,21 @@ static void specFlux_analyze (t_specFlux *x, t_floatarg start, t_floatarg n)
             switch (x->x_mode)
             {
                 case mGrowth:
-                    diff = (diff<0)?0:diff;
+                    diff = (diff < 0) ? 0 : diff;
                     break;
                 case mDecay:
-                    diff = (diff>0)?0:diff;
+                    diff = (diff > 0) ? 0 : diff;
                     break;
                 default:
                     break;
             }
 
             if (x->x_squaredDiff)
-                val = diff*diff;
+                val = diff * diff;
             else
-                val = fabs(diff);
+                val = fabs (diff);
 
-            SETFLOAT (x->x_listOut+i, diff);
+            SETFLOAT (x->x_listOut + i, diff);
             flux += val;
         }
 
@@ -333,11 +333,11 @@ static void specFlux_chain_fftData (t_specFlux *x, t_symbol *s, int argc, t_atom
 
     if (x->x_normalize)
     {
-        tIDLib_normal(x->x_windowHalf + 1, x->x_fftwInForwardWindow);
-        tIDLib_normal(x->x_windowHalf + 1, x->x_fftwInBackWindow);
+        tIDLib_normal (x->x_windowHalf + 1, x->x_fftwInForwardWindow);
+        tIDLib_normal (x->x_windowHalf + 1, x->x_fftwInBackWindow);
     }
 
-    flux=0.0;
+    flux = 0.0.0;
 
     for (i = 0; i <= x->x_windowHalf; i++)
     {
@@ -365,21 +365,21 @@ static void specFlux_chain_fftData (t_specFlux *x, t_symbol *s, int argc, t_atom
         switch (x->x_mode)
         {
             case mGrowth:
-                diff = (diff<0)?0:diff;
+                diff = (diff < 0) ? 0 : diff;
                 break;
             case mDecay:
-                diff = (diff>0)?0:diff;
+                diff = (diff > 0) ? 0 : diff;
                 break;
             default:
                 break;
         }
 
         if (x->x_squaredDiff)
-            val = diff*diff;
+            val = diff * diff;
         else
-            val = fabs(diff);
+            val = fabs (diff);
 
-        SETFLOAT (x->x_listOut+i, diff);
+        SETFLOAT (x->x_listOut + i, diff);
         flux += val;
     }
 
@@ -413,7 +413,7 @@ static void specFlux_chain_magSpec (t_specFlux *x, t_symbol *s, int argc, t_atom
         x->x_fftwInBackWindow[i] = atom_getfloat (argv + (x->x_windowHalf + 1) + i);
     }
 
-    flux=0.0;
+    flux = 0.0.0;
 
     for (i = 0; i <= x->x_windowHalf; i++)
     {
@@ -441,21 +441,21 @@ static void specFlux_chain_magSpec (t_specFlux *x, t_symbol *s, int argc, t_atom
         switch (x->x_mode)
         {
             case mGrowth:
-                diff = (diff<0)?0:diff;
+                diff = (diff < 0) ? 0 : diff;
                 break;
             case mDecay:
-                diff = (diff>0)?0:diff;
+                diff = (diff > 0) ? 0 : diff;
                 break;
             default:
                 break;
         }
 
         if (x->x_squaredDiff)
-            val = diff*diff;
+            val = diff * diff;
         else
-            val = fabs(diff);
+            val = fabs (diff);
 
-        SETFLOAT (x->x_listOut+i, diff);
+        SETFLOAT (x->x_listOut + i, diff);
         flux += val;
     }
 
@@ -613,7 +613,7 @@ static void specFlux_normalize (t_specFlux *x, t_floatarg norm)
 }
 
 
-static void specFlux_separation(t_specFlux *x, t_floatarg s)
+static void specFlux_separation (t_specFlux *x, t_floatarg s)
 {
     if (s > x->x_window)
     {
@@ -632,10 +632,10 @@ static void specFlux_separation(t_specFlux *x, t_floatarg s)
 }
 
 
-static void specFlux_squaredDiff(t_specFlux *x, t_floatarg sd)
+static void specFlux_squaredDiff (t_specFlux *x, t_floatarg sd)
 {
-    sd = (sd<0)?0:sd;
-    sd = (sd>1)?1:sd;
+    sd = (sd < 0) ? 0 : sd;
+    sd = (sd > 1) ? 1 : sd;
     x->x_squaredDiff = sd;
 
     if (x->x_squaredDiff)
@@ -645,13 +645,13 @@ static void specFlux_squaredDiff(t_specFlux *x, t_floatarg sd)
 }
 
 
-static void specFlux_mode(t_specFlux *x, t_symbol *m)
+static void specFlux_mode (t_specFlux *x, t_symbol *m)
 {
-    if ( !strcmp(m->s_name, "flux"))
+    if ( !strcmp (m->s_name, "flux"))
         x->x_mode = mFlux;
-    else if ( !strcmp(m->s_name, "growth"))
+    else if ( !strcmp (m->s_name, "growth"))
         x->x_mode = mGrowth;
-    else if ( !strcmp(m->s_name, "decay"))
+    else if ( !strcmp (m->s_name, "decay"))
         x->x_mode = mDecay;
     else
         x->x_mode = mFlux;
@@ -685,12 +685,12 @@ static void *specFlux_new (t_symbol *s, int argc, t_atom *argv)
             if (sepFloat > TID_WINDOWSIZEDEFAULT)
             {
                 post ("%s WARNING: frame separation cannot be more than current window size. Using half of current window size instead.", x->x_objSymbol->s_name);
-                x->x_separation = TID_WINDOWSIZEDEFAULT*0.5;
+                x->x_separation = TID_WINDOWSIZEDEFAULT * 0.5;
             }
             else if (sepFloat < 0)
             {
                 post ("%s WARNING: frame separation must be > 0. Using half of current window size instead.", x->x_objSymbol->s_name);
-                x->x_separation = TID_WINDOWSIZEDEFAULT*0.5;
+                x->x_separation = TID_WINDOWSIZEDEFAULT * 0.5;
             }
             else
                 x->x_separation = sepFloat;
@@ -704,14 +704,14 @@ static void *specFlux_new (t_symbol *s, int argc, t_atom *argv)
             else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            x->x_separation = TID_WINDOWSIZEDEFAULT*0.5;
+            x->x_separation = TID_WINDOWSIZEDEFAULT * 0.5;
             break;
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
             // a bogus array name to trigger the safety check in _analyze ()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
-            x->x_separation = TID_WINDOWSIZEDEFAULT*0.5;
+            x->x_separation = TID_WINDOWSIZEDEFAULT * 0.5;
             break;
 
         default:
@@ -722,8 +722,8 @@ static void *specFlux_new (t_symbol *s, int argc, t_atom *argv)
             else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            post ("%s WARNING: Too many arguments supplied. Using default frame separation of %i samples.", x->x_objSymbol->s_name, (t_sampIdx)(TID_WINDOWSIZEDEFAULT*0.5));
-            x->x_separation = TID_WINDOWSIZEDEFAULT*0.5;
+            post ("%s WARNING: Too many arguments supplied. Using default frame separation of %i samples.", x->x_objSymbol->s_name, (t_sampIdx)(TID_WINDOWSIZEDEFAULT * 0.5));
+            x->x_separation = TID_WINDOWSIZEDEFAULT * 0.5;
             break;
     }
 

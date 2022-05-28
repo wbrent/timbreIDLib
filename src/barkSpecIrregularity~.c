@@ -126,17 +126,17 @@ static void barkSpecIrregularity_tilde_bang (t_barkSpecIrregularity_tilde *x)
     if (x->x_algorithm)
     {
         // Krimphoff
-        for (i=1; i<(x->x_numFilters-1); i++)
+        for (i = 1; i < x->x_numFilters - 1; i++)
         {
             t_float localAvg;
             localAvg = 0;
 
-            for (j=0; j<3; j++)
-                localAvg += x->x_fftwIn[i-1+j];
+            for (j = 0; j < 3; j++)
+                localAvg += x->x_fftwIn[i - 1 + j];
 
             localAvg *= 0.333333333333;
 
-            irregularity += fabs(x->x_fftwIn[i] - localAvg);
+            irregularity += fabs (x->x_fftwIn[i] - localAvg);
             //irregularity = log10(irregularity);
         }
     }
@@ -145,10 +145,10 @@ static void barkSpecIrregularity_tilde_bang (t_barkSpecIrregularity_tilde *x)
         // Jensen
         for (i = 0; i < x->x_numFilters; i++)
         {
-            if (i==(x->x_numFilters-1))
+            if (i == x->x_numFilters - 1)
                 irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
             else
-                irregularity += powf(x->x_fftwIn[i] - x->x_fftwIn[i+1], 2);
+                irregularity += powf (x->x_fftwIn[i] - x->x_fftwIn[i + 1], 2);
 
             divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
         }
@@ -231,10 +231,10 @@ static void barkSpecIrregularity_tilde_print (t_barkSpecIrregularity_tilde *x)
 }
 
 
-static void barkSpecIrregularity_tilde_algorithm(t_barkSpecIrregularity_tilde *x, t_floatarg a)
+static void barkSpecIrregularity_tilde_algorithm (t_barkSpecIrregularity_tilde *x, t_floatarg a)
 {
-    a = (a<0)?0:a;
-    a = (a>1)?1:a;
+    a = (a < 0) ? 0 : a;
+    a = (a > 1) ? 1 : a;
     x->x_algorithm = a;
 
     switch (x->x_algorithm)
@@ -399,7 +399,7 @@ static void *barkSpecIrregularity_tilde_new (t_symbol *s, int argc, t_atom *argv
                 x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
                 post ("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
-            if (atom_getfloat (argv + 2)>=1)
+            if (atom_getfloat (argv + 2) >= 1)
                 x->x_algorithm = krimphoff;
             else
                 x->x_algorithm = jensen;
@@ -537,7 +537,7 @@ static void barkSpecIrregularity_tilde_dsp (t_barkSpecIrregularity_tilde *x, t_s
     );
 
 // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         x->x_sr = sp[0]->s_sr / x->x_overlap;
 
@@ -545,7 +545,7 @@ static void barkSpecIrregularity_tilde_dsp (t_barkSpecIrregularity_tilde *x, t_s
     };
 
 // compare n to stored n and update/resize buffer if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         t_sampIdx i;
 

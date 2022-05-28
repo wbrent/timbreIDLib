@@ -81,7 +81,7 @@ static void binWrangler_clear(t_binWrangler *x)
     x->x_currentFrame = 0;
 
     for (i = 0; i < x->x_featureLength*x->x_numFrames; i++)
-        SETFLOAT (x->x_listOut+i, 0.0);
+        SETFLOAT (x->x_listOut + i, 0.0);
 
     x->x_instances = (t_instance *)t_getbytes (x->x_numFrames * sizeof (t_instance));
 
@@ -89,7 +89,7 @@ static void binWrangler_clear(t_binWrangler *x)
         x->x_instances[i].data = (float *)t_getbytes (x->x_featureLength * sizeof (float));
 
     for (i = 0; i < x->x_numFrames; i++)
-        for (j=0; j<x->x_featureLength; j++)
+        for (j = 0; j<x->x_featureLength; j++)
             x->x_instances[i].data[j] = 0.0;
 }
 
@@ -111,7 +111,7 @@ static void binWrangler_numFrames(t_binWrangler *x, t_float num)
     x->x_numFrames = num;
 
     for (i = 0; i < x->x_featureLength*x->x_numFrames; i++)
-        SETFLOAT (x->x_listOut+i, 0.0);
+        SETFLOAT (x->x_listOut + i, 0.0);
 
     x->x_instances = (t_instance *)t_getbytes (x->x_numFrames * sizeof (t_instance));
 
@@ -119,7 +119,7 @@ static void binWrangler_numFrames(t_binWrangler *x, t_float num)
         x->x_instances[i].data = (float *)t_getbytes (x->x_featureLength * sizeof (float));
 
     for (i = 0; i < x->x_numFrames; i++)
-        for (j=0; j<x->x_featureLength; j++)
+        for (j = 0; j<x->x_featureLength; j++)
             x->x_instances[i].data[j] = 0.0;
 }
 
@@ -143,20 +143,20 @@ static void binWrangler_length(t_binWrangler *x, t_float len)
     x->x_currentFrame = 0;
 
     for (i = 0; i < x->x_featureLength*x->x_numFrames; i++)
-        SETFLOAT (x->x_listOut+i, 0.0);
+        SETFLOAT (x->x_listOut + i, 0.0);
 
     for (i = 0; i < x->x_numFrames; i++)
         x->x_instances[i].data = (float *)t_getbytes (x->x_featureLength * sizeof (float));
 
     for (i = 0; i < x->x_numFrames; i++)
-        for (j=0; j<x->x_featureLength; j++)
+        for (j = 0; j<x->x_featureLength; j++)
             x->x_instances[i].data[j] = 0.0;
 }
 
 static void binWrangler_spew(t_binWrangler *x, t_floatarg s)
 {
     s = (s<=0)?0:s;
-    s = (s>=1)?1:s;
+    s = (s >= 1)?1:s;
     x->x_spew = s;
 }
 
@@ -183,13 +183,13 @@ static void *binWrangler_new (t_float numFrames, t_float length, t_float spew)
     x->x_instances = (t_instance *)t_getbytes (x->x_numFrames * sizeof (t_instance));
 
     for (i = 0; i < x->x_featureLength*x->x_numFrames; i++)
-        SETFLOAT (x->x_listOut+i, 0.0);
+        SETFLOAT (x->x_listOut + i, 0.0);
 
     for (i = 0; i < x->x_numFrames; i++)
         x->x_instances[i].data = (float *)t_getbytes (x->x_featureLength * sizeof (float));
 
     for (i = 0; i < x->x_numFrames; i++)
-        for (j=0; j<x->x_featureLength; j++)
+        for (j = 0; j<x->x_featureLength; j++)
             x->x_instances[i].data[j] = 0.0;
 
     return (void *)x;

@@ -93,7 +93,7 @@ static void maxSampleDelta_analyze (t_maxSampleDelta *x, t_floatarg start, t_flo
 
         if (startSamp>0)
         {
-            max = fabs(x->x_analysisBuffer[0] - x->x_vec[startSamp-1].w_float);
+            max = fabs (x->x_analysisBuffer[0] - x->x_vec[startSamp-1].w_float);
             maxIdx = 0;
         }
         else
@@ -102,11 +102,11 @@ static void maxSampleDelta_analyze (t_maxSampleDelta *x, t_floatarg start, t_flo
             maxIdx = ULONG_MAX;
         }
 
-        for (i=1; i<x->x_window; i++)
+        for (i = 1; i < x->x_window; i++)
         {
             t_float thisDiff;
 
-            thisDiff = fabs(x->x_analysisBuffer[i] - x->x_analysisBuffer[i-1]);
+            thisDiff = fabs (x->x_analysisBuffer[i] - x->x_analysisBuffer[i - 1]);
 
             if (thisDiff>max)
             {

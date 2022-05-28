@@ -49,7 +49,7 @@ static void featureNorm_initMem(t_featureNorm *x)
     {
         x->x_minValues[i] = 0.0;
         x->x_maxValues[i] = 0.0;
-        SETFLOAT (x->x_listOut+i, 0.0);
+        SETFLOAT (x->x_listOut + i, 0.0);
     }
 }
 
@@ -95,7 +95,7 @@ static void featureNorm_normalize (t_featureNorm *x, t_symbol *s, int argc, t_at
                         return;
                     }
 
-                    SETFLOAT (x->x_listOut+i, numer/denom);
+                    SETFLOAT (x->x_listOut + i, numer/denom);
                 }
                 break;
             case 1:
@@ -117,7 +117,7 @@ static void featureNorm_normalize (t_featureNorm *x, t_symbol *s, int argc, t_at
                         return;
                     }
 
-                    SETFLOAT (x->x_listOut+i, (numer/denom)*2.0-1.0);
+                    SETFLOAT (x->x_listOut + i, (numer/denom)*2.0-1.0);
                 }
                 break;
             default:
@@ -211,7 +211,7 @@ static void featureNorm_length(t_featureNorm *x, t_floatarg len)
     featureNorm_initMem(x);
 }
 
-static void featureNorm_mode(t_featureNorm *x, t_floatarg m)
+static void featureNorm_mode (t_featureNorm *x, t_floatarg m)
 {
     m = (m<0)?0:m;
     m = (m>1)?1:m;

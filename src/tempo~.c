@@ -130,11 +130,11 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
     windowHalf = x->x_windowHalf;
 
     // construct forward analysis window
-    for (i=0, j=0; i<window; i++, j++)
+    for (i = 0, j = 0; i < window; i++, j++)
         x->x_fftwInForwardWindow[i] = x->x_signalBuffer[window + j];
 
     // construct back analysis window x->x_hop samples earlier
-    for (i=0, j=0; i<window; i++, j++)
+    for (i = 0, j = 0; i < window; i++, j++)
         x->x_fftwInBackWindow[i] = x->x_signalBuffer[window - x->x_hop + j];
 
     windowFuncPtr = x->x_blackman;
@@ -217,7 +217,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
 
     growth=0;
 
-    for (i=x->x_loBin; i<=x->x_hiBin; i++)
+    for (i=x->x_loBin; i < =x->x_hiBin; i++)
     {
         t_float diff;
 
@@ -227,7 +227,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
         if (diff>0.0)
         {
             if (x->x_squaredDiff)
-                diff = diff*diff;
+                diff = diff * diff;
             else
                 diff = fabsf(diff);
         }
@@ -248,7 +248,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
 
     // shift the contents backwards
     for (i = 0; i < x->x_onsetsBufSize-1; i++)
-        x->x_onsetsBuffer[i] = x->x_onsetsBuffer[i+1];
+        x->x_onsetsBuffer[i] = x->x_onsetsBuffer[i + 1];
 
     if (growth>=((x->x_growthThresh/100.0)*x->x_maxOnsetPeakVal))
         x->x_onsetsBuffer[x->x_onsetsBufSize-1] = growth;
@@ -301,7 +301,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
 
     onsetsBufferShifted = (t_float *)t_getbytes (onsetBufferShiftedSize * sizeof (t_float));
 
-    for (i=startIdx, j=0; i<x->x_onsetsBufSize; i++, j++)
+    for (i=startIdx, j = 0; i < x->x_onsetsBufSize; i++, j++)
     {
         SETFLOAT (x->x_listOut+j, x->x_onsetsBuffer[i]);
         onsetsBufferShifted[j] = x->x_onsetsBuffer[i];
@@ -324,7 +324,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
         yValues = (t_float *)t_getbytes (onsetBufferShiftedSize * sizeof (t_float));
 
         // init yValues arrays to zero
-        for (i=0; i<onsetBufferShiftedSize; i++)
+        for (i = 0; i < onsetBufferShiftedSize; i++)
             yValues[i] = 0.0;
 
         periodIdx = tIDLib_hps(onsetsBufferShifted, onsetBufferShiftedSize, x->x_hiTempoIdx, x->x_loTempoIdx, x->x_numHarm, yValues, &maxYValue, x->x_debug);
@@ -357,9 +357,9 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
 
             x->x_tempoBuffer[x->x_tempoBufferIdx] = roundf (tempo);
 
-            // modeCount must be t_uLongInt for tIDLib_mode()
+            // modeCount must be t_uLongInt for tIDLib_mode ()
             modeCount = 0;
-            tempoMode = tIDLib_mode(x->x_tempoBuffer, x->x_tempoBufferSize, &modeCount);
+            tempoMode = tIDLib_mode (x->x_tempoBuffer, x->x_tempoBufferSize, &modeCount);
 
             tempoConf = (modeCount/(t_float)x->x_tempoBufferSize)*100.0f;
 
@@ -434,7 +434,7 @@ static void tempo_tilde_window (t_tempo_tilde *x, t_floatarg w)
 
     windowHalf = window * 0.5;
 
-    x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_window*2) * sizeof (t_sample), (window*2) * sizeof (t_sample));
+    x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_window * 2) * sizeof (t_sample), (window * 2) * sizeof (t_sample));
     x->x_fftwInForwardWindow = (t_sample *)t_resizebytes (x->x_fftwInForwardWindow, x->x_window * sizeof (t_sample), window * sizeof (t_sample));
     x->x_fftwInBackWindow = (t_sample *)t_resizebytes (x->x_fftwInBackWindow, x->x_window * sizeof (t_sample), window * sizeof (t_sample));
 
@@ -470,7 +470,7 @@ static void tempo_tilde_window (t_tempo_tilde *x, t_floatarg w)
     }
 
     // initialize signal buffer
-    for (i=0; i<(x->x_window*2); i++)
+    for (i = 0; i < (x->x_window * 2); i++)
         x->x_signalBuffer[i] = 0.0;
 
     // re-init window functions
@@ -529,10 +529,10 @@ static void tempo_tilde_overlap (t_tempo_tilde *x, t_floatarg o)
 }
 
 
-static void tempo_tilde_squaredDiff(t_tempo_tilde *x, t_floatarg sd)
+static void tempo_tilde_squaredDiff (t_tempo_tilde *x, t_floatarg sd)
 {
-    sd = (sd<0)?0:sd;
-    sd = (sd>1)?1:sd;
+    sd = (sd < 0) ? 0 : sd;
+    sd = (sd > 1) ? 1 : sd;
     x->x_squaredDiff = sd;
 
     if (x->x_squaredDiff)
@@ -788,7 +788,7 @@ static void *tempo_tilde_new (t_symbol *s, int argc, t_atom *argv)
             break;
 
         default:
-            post ("%s WARNING: Too many arguments supplied. Using default window size of %i, and analysis hop of %i.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, (t_sampIdx)(TID_WINDOWSIZEDEFAULT*0.5));
+            post ("%s WARNING: Too many arguments supplied. Using default window size of %i, and analysis hop of %i.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, (t_sampIdx)(TID_WINDOWSIZEDEFAULT * 0.5));
             x->x_window = TID_WINDOWSIZEDEFAULT;
             x->x_hop = x->x_window * 0.5;
             break;
@@ -837,13 +837,13 @@ static void *tempo_tilde_new (t_symbol *s, int argc, t_atom *argv)
     x->x_onsetsBufSize = x->x_loTempoIdx*(x->x_numHarm+1);
     x->x_onsetsBufDur = ((x->x_onsetsBufSize*x->x_hop)/x->x_sr)*1000.0;
 
-    x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_window*2) * sizeof (t_sample));
+    x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_window * 2) * sizeof (t_sample));
     x->x_fftwInForwardWindow = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
     x->x_fftwInBackWindow = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
     x->x_onsetsBuffer = (t_float *)t_getbytes (x->x_onsetsBufSize * sizeof (t_float));
     x->x_listOut = (t_atom *)t_getbytes (x->x_onsetsBufSize * sizeof (t_atom));
 
-     for (i=0; i<(x->x_window*2); i++)
+     for (i = 0; i < (x->x_window * 2); i++)
         x->x_signalBuffer[i] = 0.0;
 
      for (i = 0; i < x->x_onsetsBufSize; i++)
@@ -895,12 +895,12 @@ static t_int *tempo_tilde_perform (t_int *w)
     n = w[3];
 
      // shift signal buffer contents back.
-    for (i=0; i<(x->x_window*2-n); i++)
+    for (i = 0; i < (x->x_window * 2-n); i++)
         x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)
-        x->x_signalBuffer[(x->x_window*2-n)+i] = in[i];
+        x->x_signalBuffer[(x->x_window * 2-n)+i] = in[i];
 
     x->x_dspTicks++;
 
@@ -927,7 +927,7 @@ static void tempo_tilde_dsp (t_tempo_tilde *x, t_signal **sp)
     );
 
 // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         t_sampIdx i;
         t_float loTempo, hiTempo;
@@ -938,7 +938,7 @@ static void tempo_tilde_dsp (t_tempo_tilde *x, t_signal **sp)
         x->x_dspTicks = 0;
 
         // since we're resetting dspTicks, we might as well clear the audio buffer and start fresh at the new samplerate
-        for (i=0; i<(x->x_window*2); i++)
+        for (i = 0; i < (x->x_window * 2); i++)
             x->x_signalBuffer[i] = 0.0;
 
         // if samplerate changes, we need to update loTempoIdx, hiTempoIdx, and therefore resize the onsets buffer
@@ -959,7 +959,7 @@ static void tempo_tilde_dsp (t_tempo_tilde *x, t_signal **sp)
     };
 
 // compare n to stored n and update if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         x->x_n = sp[0]->s_n;
         x->x_lastDspTime = clock_getlogicaltime();
@@ -969,7 +969,7 @@ static void tempo_tilde_dsp (t_tempo_tilde *x, t_signal **sp)
 static void tempo_tilde_free (t_tempo_tilde *x)
 {
     // free the input buffer memory
-    t_freebytes (x->x_signalBuffer, (x->x_window*2) * sizeof (t_sample));
+    t_freebytes (x->x_signalBuffer, (x->x_window * 2) * sizeof (t_sample));
     t_freebytes (x->x_onsetsBuffer, x->x_onsetsBufSize * sizeof (t_float));
 
     // free FFTW stuff

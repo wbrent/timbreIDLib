@@ -102,10 +102,10 @@ static void magSpec_tilde_bang (t_magSpec_tilde *x)
         tIDLib_mag (windowHalf + 1, x->x_fftwIn);
 
     if (x->x_normalize)
-        tIDLib_normal(windowHalf + 1, x->x_fftwIn);
+        tIDLib_normal (windowHalf + 1, x->x_fftwIn);
 
     for (i = 0; i <= windowHalf; i++)
-        SETFLOAT (x->x_listOut+i, x->x_fftwIn[i]);
+        SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
 
      outlet_list (x->x_mag, 0, windowHalf + 1, x->x_listOut);
 }

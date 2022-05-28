@@ -120,7 +120,7 @@ static void mfcc_tilde_bang (t_mfcc_tilde *x)
 
         // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
     for (i = 0; i < x->x_numFilters; i++)
-        SETFLOAT (x->x_listOut+i, x->x_mfcc[i]*0.5);
+        SETFLOAT (x->x_listOut + i, x->x_mfcc[i]*0.5);
 
     outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
 }
@@ -208,9 +208,9 @@ static void mfcc_tilde_window (t_mfcc_tilde *x, t_floatarg w)
     window = w;
 
     // FFT must be at least 4 points long
-    if (window<4)
+    if (window < TID_MINWINDOWSIZE)
     {
-        window = 1024;
+        window = TID_WINDOWSIZEDEFAULT;
         post ("%s WARNING: window size must be 4 or greater. Using default size of 1024 instead.", x->x_objSymbol->s_name);
     }
 
@@ -479,7 +479,7 @@ static void mfcc_tilde_dsp (t_mfcc_tilde *x, t_signal **sp)
     );
 
 // compare sr to stored sr and update if different
-    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if (sp[0]->s_sr != x->x_sr * x->x_overlap)
     {
         x->x_sr = sp[0]->s_sr / x->x_overlap;
 
@@ -487,7 +487,7 @@ static void mfcc_tilde_dsp (t_mfcc_tilde *x, t_signal **sp)
     };
 
 // compare n to stored n and update/resize buffer if different
-    if ( sp[0]->s_n != x->x_n )
+    if (sp[0]->s_n != x->x_n)
     {
         t_sampIdx i;
 

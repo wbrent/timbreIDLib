@@ -50,7 +50,7 @@ static void sampleBuffer_tilde_bang (t_sampleBuffer_tilde *x)
 
     // construct analysis window using bangSample as the end of the window
     for (i = 0, j = bangSample; i < window; i++, j++)
-        SETFLOAT (x->x_listOut+i, x->x_signalBuffer[j]);
+        SETFLOAT (x->x_listOut + i, x->x_signalBuffer[j]);
 
      outlet_list (x->x_bufOut, 0, window, x->x_listOut);
 }

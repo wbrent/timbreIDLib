@@ -93,7 +93,7 @@ static void minSampleDelta_analyze (t_minSampleDelta *x, t_floatarg start, t_flo
 
         if (startSamp>0)
         {
-            min = fabs(x->x_analysisBuffer[0] - x->x_vec[startSamp-1].w_float);
+            min = fabs (x->x_analysisBuffer[0] - x->x_vec[startSamp-1].w_float);
             minIdx = 0;
         }
         else
@@ -102,11 +102,11 @@ static void minSampleDelta_analyze (t_minSampleDelta *x, t_floatarg start, t_flo
             minIdx = ULONG_MAX;
         }
 
-        for (i=1; i<x->x_window; i++)
+        for (i = 1; i < x->x_window; i++)
         {
             t_float thisDiff;
 
-            thisDiff = fabs(x->x_analysisBuffer[i] - x->x_analysisBuffer[i-1]);
+            thisDiff = fabs (x->x_analysisBuffer[i] - x->x_analysisBuffer[i - 1]);
 
             if (thisDiff<min)
             {
