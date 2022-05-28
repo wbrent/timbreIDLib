@@ -242,7 +242,7 @@ static void cepstrumPitch_analyze (t_cepstrumPitch *x, t_floatarg start, t_float
         if ( fabs (maxVal-mean) > (x->x_thresh*std) )
             pitch = ftom(x->x_sr/((t_float)maxValIdx));
         else
-            pitch =  - 1500.0;
+            pitch = -1500.0;
 
         outlet_float (x->x_pitch, pitch);
     }

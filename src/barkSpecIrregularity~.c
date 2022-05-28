@@ -154,7 +154,7 @@ static void barkSpecIrregularity_tilde_bang (t_barkSpecIrregularity_tilde *x)
         }
 
         if (divisor <= 0)
-            irregularity =  - 1;
+            irregularity = -1;
         else
             irregularity /= divisor;
     }

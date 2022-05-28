@@ -193,7 +193,7 @@ static void barkSpecFlatness_analyze (t_barkSpecFlatness *x, t_floatarg start, t
         divisor *= numFiltersRecip; // arithmetic mean
 
         if (divisor <= 0.0)
-            flatness =  - 1.0;
+            flatness = -1.0;
         else
             flatness = dividend / divisor;
 
@@ -255,7 +255,7 @@ static void barkSpecFlatness_chain_fftData (t_barkSpecFlatness *x, t_symbol *s, 
     divisor *= numFiltersRecip; // arithmetic mean
 
     if (divisor <= 0.0)
-        flatness =  - 1.0;
+        flatness = -1.0;
     else
         flatness = dividend / divisor;
 
@@ -307,7 +307,7 @@ static void barkSpecFlatness_chain_magSpec (t_barkSpecFlatness *x, t_symbol *s, 
     divisor *= numFiltersRecip; // arithmetic mean
 
     if (divisor <= 0.0)
-        flatness =  - 1.0;
+        flatness = -1.0;
     else
         flatness = dividend / divisor;
 
@@ -351,7 +351,7 @@ static void barkSpecFlatness_chain_barkSpec (t_barkSpecFlatness *x, t_symbol *s,
     divisor *= numFiltersRecip; // arithmetic mean
 
     if (divisor <= 0.0)
-        flatness =  - 1.0;
+        flatness = -1.0;
     else
         flatness = dividend / divisor;
 

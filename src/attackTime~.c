@@ -87,7 +87,7 @@ static void attackTime_tilde_bang (t_attackTime_tilde *x)
 
     // if the index returned is ULONG_MAX, the search failed
     if (attackStartIdx==ULONG_MAX)
-        attackTime =  - 1.0;
+        attackTime = -1.0;
     else
     {
         // attack duration in samples is the end of buffer index (where the peak sample was) minus the start index

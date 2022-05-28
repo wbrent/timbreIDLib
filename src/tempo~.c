@@ -319,7 +319,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
 
     if (hpsFlag)
     {
-        maxYValue =  - 1;
+        maxYValue = -1;
 
         yValues = (t_float *)t_getbytes (onsetBufferShiftedSize * sizeof (t_float));
 
@@ -677,7 +677,7 @@ static void tempo_tilde_belowThreshDefault(t_tempo_tilde *x, t_floatarg val)
 
 static void tempo_tilde_resetMaxOnsetPeakVal(t_tempo_tilde *x)
 {
-    x->x_maxOnsetPeakVal =  - 1;
+    x->x_maxOnsetPeakVal = -1;
 
     post ("%s maximum onset peak reset", x->x_objSymbol->s_name);
 }
@@ -704,7 +704,7 @@ static void tempo_tilde_tempoBufferSize(t_tempo_tilde *x, t_floatarg n)
     x->x_tempoBufferSize = n;
 
     for (i = 0; i < x->x_tempoBufferSize; i++)
-        x->x_tempoBuffer[i] =  - 1;
+        x->x_tempoBuffer[i] = -1;
 
     post ("%s tempo buffer size: %i", x->x_objSymbol->s_name, x->x_tempoBufferSize);
 }
@@ -726,7 +726,7 @@ static void tempo_tilde_tempoBufferClear(t_tempo_tilde *x)
     t_uShortInt i;
 
     for (i = 0; i < x->x_tempoBufferSize; i++)
-        x->x_tempoBuffer[i] =  - 1;
+        x->x_tempoBuffer[i] = -1;
 
     post ("%s tempo buffer reset", x->x_objSymbol->s_name);
 }
@@ -811,9 +811,9 @@ static void *tempo_tilde_new (t_symbol *s, int argc, t_atom *argv)
 
     x->x_loTempo = 40;
     x->x_hiTempo = 240;
-    x->x_lastGoodTempo =  - 1;
-    x->x_maxOnsetPeakVal =  - 1.0;
-    x->x_lastFirstOnsetPeakVal =  - 1.0;
+    x->x_lastGoodTempo = -1;
+    x->x_maxOnsetPeakVal = -1.0;
+    x->x_lastFirstOnsetPeakVal = -1.0;
 
     loTempo = 60.0f/x->x_loTempo; // BPM to seconds
     loTempo *= x->x_sr; // seconds to samples
@@ -878,7 +878,7 @@ static void *tempo_tilde_new (t_symbol *s, int argc, t_atom *argv)
       x->x_tempoBuffer = (t_float *)t_getbytes (x->x_tempoBufferSize * sizeof (t_float));
 
      for (i = 0; i < x->x_tempoBufferSize; i++)
-        x->x_tempoBuffer[i] =  - 1;
+        x->x_tempoBuffer[i] = -1;
 
     return (x);
 }

@@ -714,7 +714,7 @@ static t_int *bark_tilde_perform (t_int *w)
 
             outlet_bang (x->x_bangOut);
         }
-        else if (x->x_haveHit && x->x_loThresh<0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh ==  - 1, report attack as soon as growth shows any decay at all
+        else if (x->x_haveHit && x->x_loThresh<0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh == -1, report attack as soon as growth shows any decay at all
         {
             if (x->x_debug)
                 post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);

@@ -119,7 +119,7 @@ static void attackTime_analyze (t_attackTime *x, t_floatarg start, t_floatarg n)
 
         // if the index returned is ULONG_MAX, the search failed
         if (attackStartIdx==ULONG_MAX)
-            attackTime =  - 1.0;
+            attackTime = -1.0;
         else
         {
             // attack duration in samples is the end of buffer index (where the peak sample was) minus the start index

@@ -120,7 +120,7 @@ static void specFlatness_tilde_bang (t_specFlatness_tilde *x)
     divisor *= windowHalfPlusOneRecip; // arithmetic mean
 
     if (divisor <= 0)
-        flatness =  - 1;
+        flatness = -1;
     else
         flatness = dividend / divisor;
 

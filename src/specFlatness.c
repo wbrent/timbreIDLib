@@ -183,7 +183,7 @@ static void specFlatness_analyze (t_specFlatness *x, t_floatarg start, t_floatar
         divisor *= windowHalfPlusOneRecip; // arithmetic mean
 
         if (divisor <= 0.0)
-            flatness =  - 1.0;
+            flatness = -1.0;
         else
             flatness = dividend / divisor;
 
@@ -239,7 +239,7 @@ static void specFlatness_chain_fftData (t_specFlatness *x, t_symbol *s, int argc
     divisor *= windowHalfPlusOneRecip; // arithmetic mean
 
     if (divisor <= 0.0)
-        flatness =  - 1.0;
+        flatness = -1.0;
     else
         flatness = dividend / divisor;
 
@@ -285,7 +285,7 @@ static void specFlatness_chain_magSpec (t_specFlatness *x, t_symbol *s, int argc
     divisor *= windowHalfPlusOneRecip; // arithmetic mean
 
     if (divisor <= 0.0)
-        flatness =  - 1.0;
+        flatness = -1.0;
     else
         flatness = dividend / divisor;
 

@@ -185,7 +185,7 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde *x)
     if ( fabs (maxVal-mean) > (x->x_thresh*std) )
         pitch = ftom(x->x_sr/((t_float)maxValIdx));
     else
-        pitch =  - 1500.0;
+        pitch = -1500.0;
 
      outlet_float (x->x_pitch, pitch);
 }

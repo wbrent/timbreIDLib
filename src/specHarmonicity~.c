@@ -193,12 +193,12 @@ static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde *x)
     t_freebytes (peakFreqs, numPeaks * sizeof (t_float));
 
     if (divisor <= 0.0 || fund <= 0.0)
-        inHarm =  - 1.0;
+        inHarm = -1.0;
     else
         inHarm = (2*inHarmDividend)/(divisor*fund);
 
     if (numPeaks <= 0)
-        harm =  - 1.0;
+        harm = -1.0;
     else
         harm = harmDividend/numPeaks;
 

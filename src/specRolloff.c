@@ -184,7 +184,7 @@ static void specRolloff_analyze (t_specRolloff *x, t_floatarg start, t_floatarg 
         if (i>0)
             rolloff = x->x_binFreqs[i - 1]; // back up one because the last one went over...
         else
-            rolloff =  - 1.0;
+            rolloff = -1.0;
 
         outlet_float (x->x_rolloff, rolloff);
     }
@@ -240,7 +240,7 @@ static void specRolloff_chain_fftData (t_specRolloff *x, t_symbol *s, int argc, 
     if (i>0)
         rolloff = x->x_binFreqs[i - 1]; // back up one because the last one went over...
     else
-        rolloff =  - 1.0;
+        rolloff = -1.0;
 
     outlet_float (x->x_rolloff, rolloff);
 }
@@ -286,7 +286,7 @@ static void specRolloff_chain_magSpec (t_specRolloff *x, t_symbol *s, int argc, 
     if (i>0)
         rolloff = x->x_binFreqs[i - 1]; // back up one because the last one went over...
     else
-        rolloff =  - 1.0;
+        rolloff = -1.0;
 
     outlet_float (x->x_rolloff, rolloff);
 }

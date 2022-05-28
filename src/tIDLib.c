@@ -139,7 +139,7 @@ t_sChar tIDLib_signum (t_float input)
     if (input > 0)
         sign = 1;
     else if (input < 0)
-        sign =  - 1;
+        sign = -1;
     else
         sign = 0;
 
@@ -228,7 +228,7 @@ t_float tIDLib_hps (t_float* data, t_uInt n, t_float loIdx, t_float hiIdx, t_uSh
         yValues[i] = thisProduct;
     }
 
-    maxVal =  - 1.0;
+    maxVal = -1.0;
     maxIdx = UINT_MAX;
 
     for (i = 0; i < n; i++)
@@ -262,7 +262,7 @@ t_float tIDLib_mode (t_float* data, t_uLongInt n, t_uLongInt* countOut)
         instanceCounters[i] = 0;
 
     maxCount = 0;
-    mode =  - 1;
+    mode = -1;
 
     for (i = 0; i < n; i++)
     {
@@ -547,7 +547,7 @@ void tIDLib_peaksValleys (t_sampIdx n, t_float* data, t_float* flags, t_float* m
                 break;
             // valley case
             case 2:
-                flags[i - 1] =  - 1;
+                flags[i - 1] = -1;
                 if (data[i - 1] < localMinVal)
                     localMinVal = data[i - 1];
                 break;
@@ -1134,7 +1134,7 @@ t_float tIDLib_sigEnergyEntropy (t_sampIdx subWindowSize, t_sampIdx subWindowsPe
     }
 
     // remember to negate at the end per eq 4.7
-    H *=  - 1.0;
+    H *= -1.0;
 
     return H;
 }

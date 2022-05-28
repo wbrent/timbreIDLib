@@ -175,7 +175,7 @@ static void specBrightness_analyze (t_specBrightness *x, t_floatarg start, t_flo
         if (divisor > 0.0)
             brightness = dividend / divisor;
         else
-            brightness =  - 1.0;
+            brightness = -1.0;
 
         outlet_float (x->x_brightness, brightness);
     }
@@ -221,7 +221,7 @@ static void specBrightness_chain_fftData (t_specBrightness *x, t_symbol *s, int 
     if (divisor > 0.0)
         brightness = dividend / divisor;
     else
-        brightness =  - 1.0;
+        brightness = -1.0;
 
     outlet_float (x->x_brightness, brightness);
 }
@@ -257,7 +257,7 @@ static void specBrightness_chain_magSpec (t_specBrightness *x, t_symbol *s, int 
     if (divisor > 0.0)
         brightness = dividend / divisor;
     else
-        brightness =  - 1.0;
+        brightness = -1.0;
 
     outlet_float (x->x_brightness, brightness);
 }

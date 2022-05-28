@@ -123,7 +123,7 @@ static void specRolloff_tilde_bang (t_specRolloff_tilde *x)
     if (i>0)
         rolloff = x->x_binFreqs[i - 1]; // back up one because the last one went over...
     else
-        rolloff =  - 1.0;
+        rolloff = -1.0;
 
     outlet_float (x->x_rolloff, rolloff);
 }

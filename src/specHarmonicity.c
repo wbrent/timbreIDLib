@@ -250,12 +250,12 @@ static void specHarmonicity_analyze (t_specHarmonicity *x, t_floatarg start, t_f
         t_freebytes (peakFreqs, numPeaks * sizeof (t_float));
 
         if (divisor <= 0.0 || fund <= 0.0)
-            inHarm =  - 1.0;
+            inHarm = -1.0;
         else
             inHarm = (2*inHarmDividend)/(divisor*fund);
 
         if (numPeaks <= 0)
-            harm =  - 1.0;
+            harm = -1.0;
         else
             harm = harmDividend/numPeaks;
 
@@ -380,12 +380,12 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity *x, t_symbol *s, in
     t_freebytes (peakFreqs, numPeaks * sizeof (t_float));
 
     if (divisor <= 0.0 || fund <= 0.0)
-        inHarm =  - 1.0;
+        inHarm = -1.0;
     else
         inHarm = (2*inHarmDividend)/(divisor*fund);
 
     if (numPeaks <= 0)
-        harm =  - 1.0;
+        harm = -1.0;
     else
         harm = harmDividend/numPeaks;
 
@@ -500,12 +500,12 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity *x, t_symbol *s, in
     t_freebytes (peakFreqs, numPeaks * sizeof (t_float));
 
     if (divisor <= 0.0 || fund <= 0.0)
-        inHarm =  - 1.0;
+        inHarm = -1.0;
     else
         inHarm = (2*inHarmDividend)/(divisor*fund);
 
     if (numPeaks <= 0)
-        harm =  - 1.0;
+        harm = -1.0;
     else
         harm = harmDividend/numPeaks;
 

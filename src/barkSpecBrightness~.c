@@ -128,7 +128,7 @@ static void barkSpecBrightness_tilde_bang (t_barkSpecBrightness_tilde *x)
     if (divisor > 0.0)
         brightness = dividend / divisor;
     else
-        brightness =  - 1;
+        brightness = -1;
 
     outlet_float (x->x_brightness, brightness);
 }

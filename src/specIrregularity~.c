@@ -128,7 +128,7 @@ static void specIrregularity_tilde_bang (t_specIrregularity_tilde *x)
             }
 
             if (divisor <= 0)
-                irregularity =  - 1;
+                irregularity = -1;
             else
                 irregularity /= divisor;
             break;

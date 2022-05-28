@@ -134,7 +134,7 @@ static void barkSpecFlatness_tilde_bang (t_barkSpecFlatness_tilde *x)
     divisor *= numFiltersRecip; // arithmetic mean
 
     if (divisor <= 0.0)
-        flatness =  - 1.0;
+        flatness = -1.0;
     else
         flatness = dividend / divisor;
 

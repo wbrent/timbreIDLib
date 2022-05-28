@@ -195,7 +195,7 @@ static void barkSpecRolloff_analyze (t_barkSpecRolloff *x, t_floatarg start, t_f
         if (i>0)
             rolloff = x->x_barkFreqList[i - 1]; // back up one because the last one went over...
         else
-            rolloff =  - 1.0;
+            rolloff = -1.0;
 
         outlet_float (x->x_rolloff, rolloff);
     }
@@ -256,7 +256,7 @@ static void barkSpecRolloff_chain_fftData (t_barkSpecRolloff *x, t_symbol *s, in
     if (i>0)
         rolloff = x->x_barkFreqList[i - 1]; // back up one because the last one went over...
     else
-        rolloff =  - 1.0;
+        rolloff = -1.0;
 
     outlet_float (x->x_rolloff, rolloff);
 }
@@ -307,7 +307,7 @@ static void barkSpecRolloff_chain_magSpec (t_barkSpecRolloff *x, t_symbol *s, in
     if (i>0)
         rolloff = x->x_barkFreqList[i - 1]; // back up one because the last one went over...
     else
-        rolloff =  - 1.0;
+        rolloff = -1.0;
 
     outlet_float (x->x_rolloff, rolloff);
 }
@@ -350,7 +350,7 @@ static void barkSpecRolloff_chain_barkSpec (t_barkSpecRolloff *x, t_symbol *s, i
     if (i>0)
         rolloff = x->x_barkFreqList[i - 1]; // back up one because the last one went over...
     else
-        rolloff =  - 1.0;
+        rolloff = -1.0;
 
     outlet_float (x->x_rolloff, rolloff);
 }

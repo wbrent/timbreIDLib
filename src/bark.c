@@ -777,7 +777,7 @@ static void bark_analyze (t_bark *x, t_floatarg startTime, t_floatarg endTime)
                 // add half a window of samples as a fudge factor. note that since this NRT and we can look into the future, all attack reports will be roughly a half window EARLY.  in RT, everything is a half window LATE because the point of reference is the END of the window.  here, it's the BEGINNING of the window.
                 outlet_float (x->x_timeOut, (frame*hop+startSamp + windowHalf)/x->x_sr);
             }
-            else if (x->x_haveHit && x->x_loThresh<0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh ==  - 1, report attack as soon as growth shows any decay at all
+            else if (x->x_haveHit && x->x_loThresh<0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh == -1, report attack as soon as growth shows any decay at all
             {
                 if (x->x_debug)
                     post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);

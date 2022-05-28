@@ -2515,7 +2515,7 @@ static void tabletool_abs(t_tabletool *x)
 
         for (i = 0; i < x->x_arrayPoints; i++)
             if (x->x_vec[i].w_float < 0.0)
-                x->x_vec[i].w_float *=  - 1.0;
+                x->x_vec[i].w_float *= -1.0;
 
         garray_redraw(a);
      }
@@ -2717,7 +2717,7 @@ static void tabletool_mode (t_tabletool *x)
             instanceCounters[i] = 0;
 
         maxCount = 0;
-        mode =  - 1;
+        mode = -1;
 
         for (i = 0; i < x->x_arrayPoints; i++)
         {
@@ -3518,7 +3518,7 @@ static void tabletool_hps(t_tabletool *x, t_float loIdx, t_float hiIdx, t_float 
             yValues[i] = thisProduct;
         }
 
-        maxVal =  - 1.0;
+        maxVal = -1.0;
         maxIdx = UINT_MAX;
 
         for (i = 0; i < numIndices; i++)

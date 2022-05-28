@@ -184,7 +184,7 @@ static void specIrregularity_analyze (t_specIrregularity *x, t_floatarg start, t
                 }
 
                 if (divisor <= 0.0)
-                    irregularity =  - 1.0;
+                    irregularity = -1.0;
                 else
                     irregularity /= divisor;
                 break;
@@ -263,7 +263,7 @@ static void specIrregularity_chain_fftData (t_specIrregularity *x, t_symbol *s, 
             }
 
             if (divisor <= 0.0)
-                irregularity =  - 1.0;
+                irregularity = -1.0;
             else
                 irregularity /= divisor;
             break;
@@ -332,7 +332,7 @@ static void specIrregularity_chain_magSpec (t_specIrregularity *x, t_symbol *s, 
             }
 
             if (divisor <= 0.0)
-                irregularity =  - 1.0;
+                irregularity = -1.0;
             else
                 irregularity /= divisor;
             break;
