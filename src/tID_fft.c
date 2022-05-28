@@ -182,7 +182,7 @@ static void tID_fft_analyze (t_tID_fft *x, t_floatarg start, t_floatarg n)
 
             if (x->x_normalize)
             {
-                for (i = 0; i < =x->x_zeroPadHalf; i++)
+                for (i = 0; i <= x->x_zeroPadHalf; i++)
                 {
                     t_float thisReal, thisImag;
 
@@ -203,7 +203,7 @@ static void tID_fft_analyze (t_tID_fft *x, t_floatarg start, t_floatarg n)
                 imagMax = 1.0/imagMax;
             }
 
-            for (i = 0; i < =x->x_zeroPadHalf; i++)
+            for (i = 0; i <= x->x_zeroPadHalf; i++)
             {
                 if (x->x_normalize)
                 {

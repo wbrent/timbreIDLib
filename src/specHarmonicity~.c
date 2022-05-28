@@ -159,12 +159,12 @@ static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde *x)
 
     if (fund<x->x_minFund || fund>x->x_maxFund)
     {
-        harmDividend = -numPeaks; // to make harm value -1.0
+        harmDividend = -numPeaks; // to make harm value  - 1.0
         goto earlyExit;
     }
 
     harmSpacing = fund;
-    halfHarmSpacing = harmSpacing*0.5;
+    halfHarmSpacing = harmSpacing * 0.5;
 
     for (i = 0; i < numPeaks; i++)
     {
@@ -192,13 +192,13 @@ static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde *x)
     t_freebytes (peakAmps, numPeaks * sizeof (t_float));
     t_freebytes (peakFreqs, numPeaks * sizeof (t_float));
 
-    if (divisor <= 0.0 || fund<=0.0)
-        inHarm = -1.0;
+    if (divisor <= 0.0 || fund <= 0.0)
+        inHarm =  - 1.0;
     else
         inHarm = (2*inHarmDividend)/(divisor*fund);
 
-    if (numPeaks<=0)
-        harm = -1.0;
+    if (numPeaks <= 0)
+        harm =  - 1.0;
     else
         harm = harmDividend/numPeaks;
 
@@ -480,7 +480,7 @@ static t_int *specHarmonicity_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < x->x_window; i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

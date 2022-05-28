@@ -206,7 +206,7 @@ static void cepstrumPitch_analyze (t_cepstrumPitch *x, t_floatarg start, t_float
         binCount=0;
 
         // traverse from hiFreq to loFreq because the high frequency cepstrum bin is lower than the low frequency cepstrum bin
-        for (i=hiFreqBin; i < =loFreqBin; i++, binCount++)
+        for (i=hiFreqBin; i <= loFreqBin; i++, binCount++)
         {
             // check that loFreqBin doesn't go above Nyquist bin
             if (i>=x->x_windowHalf)
@@ -227,7 +227,7 @@ static void cepstrumPitch_analyze (t_cepstrumPitch *x, t_floatarg start, t_float
         binCount = 0;
 
         // center & square the data
-        for (i=hiFreqBin; i < =loFreqBin; i++, binCount++)
+        for (i=hiFreqBin; i <= loFreqBin; i++, binCount++)
         {
             x->x_fftwIn[i] -= mean;
             x->x_fftwIn[i] *= x->x_fftwIn[i];
@@ -235,14 +235,14 @@ static void cepstrumPitch_analyze (t_cepstrumPitch *x, t_floatarg start, t_float
         }
 
         // get standard deviation
-        std = sum/(binCount-1);
+        std = sum/(binCount - 1);
         std = sqrt(std);
 
         // see if maxVal is above the mean by more than x_thresh standard deviations
         if ( fabs (maxVal-mean) > (x->x_thresh*std) )
             pitch = ftom(x->x_sr/((t_float)maxValIdx));
         else
-            pitch = -1500.0;
+            pitch =  - 1500.0;
 
         outlet_float (x->x_pitch, pitch);
     }

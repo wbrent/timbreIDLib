@@ -216,7 +216,7 @@ static void chroma_analyze (t_chroma *x, t_floatarg start, t_floatarg n)
         }
 
         // safety to make sure we don't get a division by zero
-        maxEnergySum = (maxEnergySum<=0.0)?1.0:maxEnergySum;
+        maxEnergySum = (maxEnergySum <= 0.0)?1.0:maxEnergySum;
 
         // neutralize maxEnergySum if not normalizing
         if ( !x->x_normalize)
@@ -305,7 +305,7 @@ static void chroma_chain_fftData (t_chroma *x, t_symbol *s, int argc, t_atom *ar
     }
 
     // safety to make sure we don't get a division by zero
-    maxEnergySum = (maxEnergySum<=0.0)?1.0:maxEnergySum;
+    maxEnergySum = (maxEnergySum <= 0.0)?1.0:maxEnergySum;
 
     // neutralize maxEnergySum if not normalizing
     if ( !x->x_normalize)
@@ -384,7 +384,7 @@ static void chroma_chain_magSpec (t_chroma *x, t_symbol *s, int argc, t_atom *ar
     }
 
     // safety to make sure we don't get a division by zero
-    maxEnergySum = (maxEnergySum<=0.0)?1.0:maxEnergySum;
+    maxEnergySum = (maxEnergySum <= 0.0)?1.0:maxEnergySum;
 
     // neutralize maxEnergySum if not normalizing
     if ( !x->x_normalize)
@@ -572,7 +572,7 @@ static void chroma_microtune(t_chroma *x, t_floatarg cents)
 {
     t_uChar i;
 
-    cents = (cents < -100.0)?-100.0:cents;
+    cents = (cents <  - 100.0)? - 100.0:cents;
     cents = (cents > 100.0)?100.0:cents;
 
     x->x_microtune = cents/100.0;

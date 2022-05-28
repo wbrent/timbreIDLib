@@ -197,7 +197,7 @@ static void barkSpecIrregularity_analyze (t_barkSpecIrregularity *x, t_floatarg 
                 }
 
                 if (divisor <= 0.0)
-                    irregularity = -1.0;
+                    irregularity =  - 1.0;
                 else
                     irregularity /= divisor;
                 break;
@@ -278,7 +278,7 @@ static void barkSpecIrregularity_chain_fftData (t_barkSpecIrregularity *x, t_sym
             }
 
             if (divisor <= 0.0)
-                irregularity = -1.0;
+                irregularity =  - 1.0;
             else
                 irregularity /= divisor;
             break;
@@ -349,7 +349,7 @@ static void barkSpecIrregularity_chain_magSpec (t_barkSpecIrregularity *x, t_sym
             }
 
             if (divisor <= 0.0)
-                irregularity = -1.0;
+                irregularity =  - 1.0;
             else
                 irregularity /= divisor;
             break;
@@ -412,7 +412,7 @@ static void barkSpecIrregularity_chain_barkSpec (t_barkSpecIrregularity *x, t_sy
             }
 
             if (divisor <= 0.0)
-                irregularity = -1.0;
+                irregularity =  - 1.0;
             else
                 irregularity /= divisor;
             break;

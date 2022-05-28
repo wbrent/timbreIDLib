@@ -186,7 +186,7 @@ static void bfcc_analyze (t_bfcc *x, t_floatarg start, t_floatarg n)
 
         // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
         for (i = 0; i < x->x_numFilters; i++)
-            SETFLOAT (x->x_listOut + i, x->x_bfcc[i]*0.5);
+            SETFLOAT (x->x_listOut + i, x->x_bfcc[i] * 0.5);
 
         outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
     }
@@ -229,7 +229,7 @@ static void bfcc_chain_fftData (t_bfcc *x, t_symbol *s, int argc, t_atom *argv)
 
     // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
     for (i = 0; i < x->x_numFilters; i++)
-        SETFLOAT (x->x_listOut + i, x->x_bfcc[i]*0.5);
+        SETFLOAT (x->x_listOut + i, x->x_bfcc[i] * 0.5);
 
     outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
 }
@@ -262,7 +262,7 @@ static void bfcc_chain_magSpec (t_bfcc *x, t_symbol *s, int argc, t_atom *argv)
 
     // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
     for (i = 0; i < x->x_numFilters; i++)
-        SETFLOAT (x->x_listOut + i, x->x_bfcc[i]*0.5);
+        SETFLOAT (x->x_listOut + i, x->x_bfcc[i] * 0.5);
 
     outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
 }
@@ -287,7 +287,7 @@ static void bfcc_chain_barkSpec (t_bfcc *x, t_symbol *s, int argc, t_atom *argv)
 
     // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
     for (i = 0; i < x->x_numFilters; i++)
-        SETFLOAT (x->x_listOut + i, x->x_bfcc[i]*0.5);
+        SETFLOAT (x->x_listOut + i, x->x_bfcc[i] * 0.5);
 
     outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
 }

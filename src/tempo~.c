@@ -217,7 +217,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
 
     growth=0;
 
-    for (i=x->x_loBin; i < =x->x_hiBin; i++)
+    for (i = x->x_loBin; i <= x->x_hiBin; i++)
     {
         t_float diff;
 
@@ -247,13 +247,13 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
     }
 
     // shift the contents backwards
-    for (i = 0; i < x->x_onsetsBufSize-1; i++)
+    for (i = 0; i < x->x_onsetsBufSize - 1; i++)
         x->x_onsetsBuffer[i] = x->x_onsetsBuffer[i + 1];
 
     if (growth>=((x->x_growthThresh/100.0)*x->x_maxOnsetPeakVal))
-        x->x_onsetsBuffer[x->x_onsetsBufSize-1] = growth;
+        x->x_onsetsBuffer[x->x_onsetsBufSize - 1] = growth;
     else
-        x->x_onsetsBuffer[x->x_onsetsBufSize-1] = x->x_belowThreshDefault; //set below thresh growth to a default value that is NOT ZERO, which would ruin the running product in the HPS algo
+        x->x_onsetsBuffer[x->x_onsetsBufSize - 1] = x->x_belowThreshDefault; //set below thresh growth to a default value that is NOT ZERO, which would ruin the running product in the HPS algo
 
     startIdx=0;
 
@@ -262,13 +262,13 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
     {
         startIdx++;
 
-        if (startIdx>=x->x_onsetsBufSize-1)
+        if (startIdx>=x->x_onsetsBufSize - 1)
             break;
     }
 
     // now, move to the peak of that first peak
     if (startIdx>0)
-        peakSlope = x->x_onsetsBuffer[startIdx] - x->x_onsetsBuffer[startIdx-1];
+        peakSlope = x->x_onsetsBuffer[startIdx] - x->x_onsetsBuffer[startIdx - 1];
     else
         peakSlope = 0.0;
 
@@ -276,10 +276,10 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
     {
         startIdx++;
 
-        if (startIdx>=x->x_onsetsBufSize-1)
+        if (startIdx>=x->x_onsetsBufSize - 1)
             break;
 
-        peakSlope = x->x_onsetsBuffer[startIdx] - x->x_onsetsBuffer[startIdx-1];
+        peakSlope = x->x_onsetsBuffer[startIdx] - x->x_onsetsBuffer[startIdx - 1];
     }
 
     // at this point, we're one idx past the peak, so back up a step
@@ -287,9 +287,9 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
     if (peakSlope!=0.0)
         startIdx--;
 
-    // TODO: should we make this onsetsBufSize-10 or something, just so that we don't get a buffer size of 0, which could cause problems with the onsetsBufferShifted and yValues arrays below?
+    // TODO: should we make this onsetsBufSize - 10 or something, just so that we don't get a buffer size of 0, which could cause problems with the onsetsBufferShifted and yValues arrays below?
     // safety to make sure we stay in bounds
-    startIdx = (startIdx>x->x_onsetsBufSize-1)?x->x_onsetsBufSize-1:startIdx;
+    startIdx = (startIdx>x->x_onsetsBufSize - 1)?x->x_onsetsBufSize - 1:startIdx;
 
     if (x->x_onsetsBuffer[startIdx] != x->x_lastFirstOnsetPeakVal)
     {
@@ -307,7 +307,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
         onsetsBufferShifted[j] = x->x_onsetsBuffer[i];
     }
 
-    for (; j<x->x_onsetsBufSize; j++)
+    for (; j < x->x_onsetsBufSize; j++)
         SETFLOAT (x->x_listOut+j, x->x_belowThreshDefault);
 
 // END MEASURE GROWTH
@@ -319,7 +319,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
 
     if (hpsFlag)
     {
-        maxYValue = -1;
+        maxYValue =  - 1;
 
         yValues = (t_float *)t_getbytes (onsetBufferShiftedSize * sizeof (t_float));
 
@@ -332,7 +332,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
         // OUTLET 4: shifted onset peak buffer
         outlet_list (x->x_onsetList, 0, x->x_onsetsBufSize, x->x_listOut);
 
-        if (periodIdx==-1)
+        if (periodIdx == -1)
         {
             outlet_float (x->x_tempoRaw, x->x_lastGoodTempo);
 
@@ -677,7 +677,7 @@ static void tempo_tilde_belowThreshDefault(t_tempo_tilde *x, t_floatarg val)
 
 static void tempo_tilde_resetMaxOnsetPeakVal(t_tempo_tilde *x)
 {
-    x->x_maxOnsetPeakVal = -1;
+    x->x_maxOnsetPeakVal =  - 1;
 
     post ("%s maximum onset peak reset", x->x_objSymbol->s_name);
 }
@@ -704,7 +704,7 @@ static void tempo_tilde_tempoBufferSize(t_tempo_tilde *x, t_floatarg n)
     x->x_tempoBufferSize = n;
 
     for (i = 0; i < x->x_tempoBufferSize; i++)
-        x->x_tempoBuffer[i] = -1;
+        x->x_tempoBuffer[i] =  - 1;
 
     post ("%s tempo buffer size: %i", x->x_objSymbol->s_name, x->x_tempoBufferSize);
 }
@@ -726,7 +726,7 @@ static void tempo_tilde_tempoBufferClear(t_tempo_tilde *x)
     t_uShortInt i;
 
     for (i = 0; i < x->x_tempoBufferSize; i++)
-        x->x_tempoBuffer[i] = -1;
+        x->x_tempoBuffer[i] =  - 1;
 
     post ("%s tempo buffer reset", x->x_objSymbol->s_name);
 }
@@ -811,9 +811,9 @@ static void *tempo_tilde_new (t_symbol *s, int argc, t_atom *argv)
 
     x->x_loTempo = 40;
     x->x_hiTempo = 240;
-    x->x_lastGoodTempo = -1;
-    x->x_maxOnsetPeakVal = -1.0;
-    x->x_lastFirstOnsetPeakVal = -1.0;
+    x->x_lastGoodTempo =  - 1;
+    x->x_maxOnsetPeakVal =  - 1.0;
+    x->x_lastFirstOnsetPeakVal =  - 1.0;
 
     loTempo = 60.0f/x->x_loTempo; // BPM to seconds
     loTempo *= x->x_sr; // seconds to samples
@@ -878,7 +878,7 @@ static void *tempo_tilde_new (t_symbol *s, int argc, t_atom *argv)
       x->x_tempoBuffer = (t_float *)t_getbytes (x->x_tempoBufferSize * sizeof (t_float));
 
      for (i = 0; i < x->x_tempoBufferSize; i++)
-        x->x_tempoBuffer[i] = -1;
+        x->x_tempoBuffer[i] =  - 1;
 
     return (x);
 }
@@ -896,7 +896,7 @@ static t_int *tempo_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < (x->x_window * 2-n); i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

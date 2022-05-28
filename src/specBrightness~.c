@@ -113,7 +113,7 @@ static void specBrightness_tilde_bang (t_specBrightness_tilde *x)
     if (divisor > 0.0)
         brightness = dividend / divisor;
     else
-        brightness = -1.0;
+        brightness =  - 1.0;
 
     outlet_float (x->x_brightness, brightness);
 }
@@ -379,7 +379,7 @@ static t_int *specBrightness_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < x->x_window; i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

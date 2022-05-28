@@ -321,7 +321,7 @@ static t_int *specSpread_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < x->x_window; i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

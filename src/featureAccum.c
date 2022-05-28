@@ -41,33 +41,33 @@ typedef struct _featureAccum
 } t_featureAccum;
 
 
-static void featureAccum_allocMem(t_featureAccum *x)
+static void featureAccum_allocMem (t_featureAccum *x)
 {
     t_attributeIdx i;
 
     // grab atom list memory
-    x->x_listOut = (t_atom *)t_getbytes ((x->x_featureLength*x->x_numFrames) * sizeof (t_atom));
+    x->x_listOut = (t_atom *)t_getbytes (x->x_featureLength * x->x_numFrames * sizeof (t_atom));
 
     // grab new database memory
-    // need numFrames+1 for an extra row for sma mode to sum to
-    x->x_instances = (t_instance *)t_getbytes ((x->x_numFrames+1) * sizeof (t_instance));
+    // need numFrames + 1 for an extra row for sma mode to sum to
+    x->x_instances = (t_instance *)t_getbytes ((x->x_numFrames + 1) * sizeof (t_instance));
 
     // grab featureLength floats per row
-    for (i = 0; i < x->x_numFrames+1; i++)
+    for (i = 0; i < x->x_numFrames + 1; i++)
         x->x_instances[i].data = (float *)t_getbytes (x->x_featureLength * sizeof (float));
 }
 
-static void featureAccum_initMem(t_featureAccum *x)
+static void featureAccum_initMem (t_featureAccum *x)
 {
     t_attributeIdx i, j;
 
     // clear the atom list
-    for (i = 0; i < x->x_featureLength*x->x_numFrames; i++)
+    for (i = 0; i < x->x_featureLength * x->x_numFrames; i++)
         SETFLOAT (x->x_listOut + i, 0.0);
 
     // initialize each row of database to zero
-    for (i = 0; i < x->x_numFrames+1; i++)
-        for (j = 0; j<x->x_featureLength; j++)
+    for (i = 0; i < x->x_numFrames + 1; i++)
+        for (j = 0; j < x->x_featureLength; j++)
             x->x_instances[i].data[j] = 0.0;
 }
 
@@ -76,18 +76,18 @@ static void featureAccum_free (t_featureAccum *x)
     t_attributeIdx i;
 
     // free listOut memory
-    t_freebytes (x->x_listOut, (x->x_featureLength*x->x_numFrames) * sizeof (t_atom));
+    t_freebytes (x->x_listOut, x->x_featureLength * x->x_numFrames * sizeof (t_atom));
 
     // free the database memory rows
-    for (i = 0; i < x->x_numFrames+1; i++)
+    for (i = 0; i < x->x_numFrames + 1; i++)
         t_freebytes (x->x_instances[i].data, x->x_featureLength * sizeof (float));
 
     // free the database memory itself
-    t_freebytes (x->x_instances, (x->x_numFrames+1) * sizeof (t_instance));
+    t_freebytes (x->x_instances, x->x_numFrames + 1 * sizeof (t_instance));
 
 }
 
-static void featureAccum_sum(t_featureAccum *x)
+static void featureAccum_sum (t_featureAccum *x)
 {
     t_attributeIdx i;
 
@@ -97,17 +97,17 @@ static void featureAccum_sum(t_featureAccum *x)
     outlet_list (x->x_featureList, 0, x->x_featureLength, x->x_listOut);
 }
 
-static void featureAccum_mean(t_featureAccum *x)
+static void featureAccum_mean (t_featureAccum *x)
 {
     t_attributeIdx i;
 
     for (i = 0; i < x->x_featureLength; i++)
-        SETFLOAT (x->x_listOut + i, x->x_instances[0].data[i]/x->x_meanFrameCount);
+        SETFLOAT (x->x_listOut + i, x->x_instances[0].data[i] / x->x_meanFrameCount);
         // only deal with first row
     outlet_list (x->x_featureList, 0, x->x_featureLength, x->x_listOut);
 }
 
-static void featureAccum_accum(t_featureAccum *x, t_symbol *s, int argc, t_atom *argv)
+static void featureAccum_accum (t_featureAccum *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_attributeIdx i, j, count, totalFeat;
 
@@ -140,29 +140,29 @@ static void featureAccum_accum(t_featureAccum *x, t_symbol *s, int argc, t_atom 
     switch (x->x_mode)
     {
         case concat:
-            if ((x->x_concatCurrentFrame==x->x_numFrames) || x->x_spew)
+            if ((x->x_concatCurrentFrame == x->x_numFrames) || x->x_spew)
             {
                 totalFeat = x->x_featureLength * x->x_numFrames;
 
-                for (count=0, i=x->x_numFrames-x->x_concatCurrentFrame; count<x->x_numFrames; count++, i++)
-                    for (j = 0; j<x->x_featureLength; j++)
-                        SETFLOAT (x->x_listOut+((i%x->x_numFrames)*x->x_featureLength)+j, x->x_instances[count].data[j]);
+                for (count = 0, i = x->x_numFrames - x->x_concatCurrentFrame; count < x->x_numFrames; count++, i++)
+                    for (j = 0; j < x->x_featureLength; j++)
+                        SETFLOAT (x->x_listOut+((i % x->x_numFrames) * x->x_featureLength) + j, x->x_instances[count].data[j]);
 
                 outlet_list (x->x_featureList, 0, totalFeat, x->x_listOut);
                 // reset currentFrame if we've hit numFrames only
                 // do nothing if we're in spew mode and haven't hit numFrames
-                x->x_concatCurrentFrame = (x->x_concatCurrentFrame>=x->x_numFrames)?0:x->x_concatCurrentFrame;
+                x->x_concatCurrentFrame = (x->x_concatCurrentFrame >= x->x_numFrames) ? 0 : x->x_concatCurrentFrame;
             }
             break;
 
         case sum:
             if (x->x_spew)
-                featureAccum_sum(x);
+                featureAccum_sum (x);
             break;
 
         case mean:
             if (x->x_spew)
-                featureAccum_mean(x);
+                featureAccum_mean (x);
             break;
 
         case sma:
@@ -172,17 +172,17 @@ static void featureAccum_accum(t_featureAccum *x, t_symbol *s, int argc, t_atom 
 
             // sum all rows into the extra row
             for (i = 0; i < x->x_numFrames; i++)
-                for (j = 0; j<x->x_featureLength; j++)
+                for (j = 0; j < x->x_featureLength; j++)
                     x->x_instances[x->x_numFrames].data[j] += x->x_instances[i].data[j];
 
             // divide the sum by x->x_numFrames
             for (i = 0; i < x->x_featureLength; i++)
-                SETFLOAT (x->x_listOut + i, x->x_instances[x->x_numFrames].data[i]/x->x_numFrames);
+                SETFLOAT (x->x_listOut + i, x->x_instances[x->x_numFrames].data[i] / x->x_numFrames);
 
             outlet_list (x->x_featureList, 0, x->x_featureLength, x->x_listOut);
 
             // still have to reset concatCurrentFrame so that database row writing position wraps back to beginning
-            x->x_concatCurrentFrame = (x->x_concatCurrentFrame>=x->x_numFrames)?0:x->x_concatCurrentFrame;
+            x->x_concatCurrentFrame = (x->x_concatCurrentFrame >= x->x_numFrames) ? 0 : x->x_concatCurrentFrame;
             break;
 
         default:
@@ -215,19 +215,19 @@ static void featureAccum_print (t_featureAccum *x)
     }
 }
 
-static void featureAccum_clear(t_featureAccum *x)
+static void featureAccum_clear (t_featureAccum *x)
 {
     featureAccum_free (x);
-    featureAccum_allocMem(x);
-    featureAccum_initMem(x);
+    featureAccum_allocMem (x);
+    featureAccum_initMem (x);
 
     x->x_concatCurrentFrame = 0;
     x->x_meanFrameCount = 0;
 }
 
-static void featureAccum_numFrames(t_featureAccum *x, t_floatarg num)
+static void featureAccum_numFrames (t_featureAccum *x, t_floatarg num)
 {
-    num = (num<1)?1:num;
+    num = (num < 1) ? 1 : num;
 
     // free memory first
     featureAccum_free (x);
@@ -236,13 +236,13 @@ static void featureAccum_numFrames(t_featureAccum *x, t_floatarg num)
     x->x_numFrames = num;
     x->x_concatCurrentFrame = 0;
 
-    featureAccum_allocMem(x);
-    featureAccum_initMem(x);
+    featureAccum_allocMem (x);
+    featureAccum_initMem (x);
 }
 
-static void featureAccum_length(t_featureAccum *x, t_floatarg len)
+static void featureAccum_length (t_featureAccum *x, t_floatarg len)
 {
-    len = (len<1)?1:len;
+    len = (len < 1) ? 1 : len;
 
     // free memory first
     featureAccum_free (x);
@@ -251,14 +251,14 @@ static void featureAccum_length(t_featureAccum *x, t_floatarg len)
     x->x_featureLength = len;
     x->x_concatCurrentFrame = 0;
 
-    featureAccum_allocMem(x);
-    featureAccum_initMem(x);
+    featureAccum_allocMem (x);
+    featureAccum_initMem (x);
 }
 
-static void featureAccum_spew(t_featureAccum *x, t_floatarg s)
+static void featureAccum_spew (t_featureAccum *x, t_floatarg s)
 {
-    s = (s<=0)?0:s;
-    s = (s >= 1)?1:s;
+    s = (s <= 0) ? 0 : s;
+    s = (s >= 1) ? 1 : s;
     x->x_spew = s;
 }
 
@@ -275,7 +275,7 @@ static void featureAccum_mode (t_featureAccum *x, t_symbol *m)
     else
         x->x_mode = concat;
 
-    featureAccum_clear(x);
+    featureAccum_clear (x);
 }
 
 
@@ -299,7 +299,7 @@ static void *featureAccum_new (t_symbol *s, int argc, t_atom *argv)
             break;
         case 1:
             numFrames = atom_getfloat (argv);
-            numFrames = (numFrames<1)?1:numFrames;
+            numFrames = (numFrames < 1) ? 1 : numFrames;
             x->x_numFrames = numFrames;
             x->x_featureLength = 50;
             x->x_spew = 0;
@@ -307,37 +307,37 @@ static void *featureAccum_new (t_symbol *s, int argc, t_atom *argv)
             break;
         case 2:
             numFrames = atom_getfloat (argv);
-            numFrames = (numFrames<1)?1:numFrames;
+            numFrames = (numFrames < 1) ? 1 : numFrames;
             x->x_numFrames = numFrames;
             featureLength = atom_getfloat (argv + 1);
-            featureLength = (featureLength<1)?1:featureLength;
+            featureLength = (featureLength < 1) ? 1 : featureLength;
             x->x_featureLength = featureLength;
             x->x_spew = false;
             x->x_mode = concat;
             break;
         case 3:
             numFrames = atom_getfloat (argv);
-            numFrames = (numFrames<1)?1:numFrames;
+            numFrames = (numFrames < 1) ? 1 : numFrames;
             x->x_numFrames = numFrames;
             featureLength = atom_getfloat (argv + 1);
-            featureLength = (featureLength<1)?1:featureLength;
+            featureLength = (featureLength < 1) ? 1 : featureLength;
             x->x_featureLength = featureLength;
             spew = atom_getfloat (argv + 2);
-            spew = (spew>1)?1:spew;
-            spew = (spew<0)?0:spew;
+            spew = (spew > 1) ? 1 : spew;
+            spew = (spew < 0) ? 0 : spew;
             x->x_spew = spew;
             x->x_mode = concat;
             break;
         case 4:
             numFrames = atom_getfloat (argv);
-            numFrames = (numFrames<1)?1:numFrames;
+            numFrames = (numFrames < 1) ? 1 : numFrames;
             x->x_numFrames = numFrames;
             featureLength = atom_getfloat (argv + 1);
-            featureLength = (featureLength<1)?1:featureLength;
+            featureLength = (featureLength < 1) ? 1 : featureLength;
             x->x_featureLength = featureLength;
             spew = atom_getfloat (argv + 2);
-            spew = (spew>1)?1:spew;
-            spew = (spew<0)?0:spew;
+            spew = (spew > 1) ? 1 : spew;
+            spew = (spew < 0) ? 0 : spew;
             x->x_spew = spew;
 
             mode = atom_getsymbol (argv + 3);
@@ -356,14 +356,14 @@ static void *featureAccum_new (t_symbol *s, int argc, t_atom *argv)
             break;
         default:
             numFrames = atom_getfloat (argv);
-            numFrames = (numFrames<1)?1:numFrames;
+            numFrames = (numFrames < 1) ? 1 : numFrames;
             x->x_numFrames = numFrames;
             featureLength = atom_getfloat (argv + 1);
-            featureLength = (featureLength<1)?1:featureLength;
+            featureLength = (featureLength < 1) ? 1 : featureLength;
             x->x_featureLength = featureLength;
             spew = atom_getfloat (argv + 2);
-            spew = (spew>1)?1:spew;
-            spew = (spew<0)?0:spew;
+            spew = (spew > 1) ? 1 : spew;
+            spew = (spew < 0) ? 0 : spew;
             x->x_spew = spew;
 
             mode = atom_getsymbol (argv + 3);
@@ -385,8 +385,8 @@ static void *featureAccum_new (t_symbol *s, int argc, t_atom *argv)
     x->x_concatCurrentFrame = 0;
     x->x_meanFrameCount = 0;
 
-     featureAccum_allocMem(x);
-     featureAccum_initMem(x);
+     featureAccum_allocMem (x);
+     featureAccum_initMem (x);
 
     return (void *)x;
 }

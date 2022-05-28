@@ -139,7 +139,7 @@ t_sChar tIDLib_signum (t_float input)
     if (input > 0)
         sign = 1;
     else if (input < 0)
-        sign = -1;
+        sign =  - 1;
     else
         sign = 0;
 
@@ -179,7 +179,7 @@ t_float tIDLib_fitLineSlope (t_sampIdx n, t_float* input)
         divisor += diffsX[i] * diffsX[i];
     }
 
-    // scale slope according to window size. This would give a perfect 0-1 ramp over N samples a slope of 1.0
+    // scale slope according to window size. This would give a perfect 0 - 1 ramp over N samples a slope of 1.0
     slope = (dividend / divisor) * n;
     return (slope);
 }
@@ -228,7 +228,7 @@ t_float tIDLib_hps (t_float* data, t_uInt n, t_float loIdx, t_float hiIdx, t_uSh
         yValues[i] = thisProduct;
     }
 
-    maxVal = -1.0;
+    maxVal =  - 1.0;
     maxIdx = UINT_MAX;
 
     for (i = 0; i < n; i++)
@@ -242,10 +242,10 @@ t_float tIDLib_hps (t_float* data, t_uInt n, t_float loIdx, t_float hiIdx, t_uSh
 
     *maxYValue = maxVal;
 
-    // if maxIdx is somehow not updated, output -1 to indicate failure.
+    // if maxIdx is somehow not updated, output  - 1 to indicate failure.
     // if the largest value in yValues was the initialized value of 0, also indicate failure
     if (maxIdx == UINT_MAX || maxVal == 0.0)
-        return (-1.0);
+        return ( - 1.0);
     else
         return (maxIdx); // previously added loIdx offset when the yValues memory was numIndices in length rather than n
 }
@@ -262,7 +262,7 @@ t_float tIDLib_mode (t_float* data, t_uLongInt n, t_uLongInt* countOut)
         instanceCounters[i] = 0;
 
     maxCount = 0;
-    mode = -1;
+    mode =  - 1;
 
     for (i = 0; i < n; i++)
     {
@@ -547,7 +547,7 @@ void tIDLib_peaksValleys (t_sampIdx n, t_float* data, t_float* flags, t_float* m
                 break;
             // valley case
             case 2:
-                flags[i - 1] = -1;
+                flags[i - 1] =  - 1;
                 if (data[i - 1] < localMinVal)
                     localMinVal = data[i - 1];
                 break;
@@ -964,7 +964,7 @@ t_float tIDLib_computeCentroid (t_binIdx n, t_float* spectrum, t_float* freqList
         dividend += spectrum[i] * freqList[i];  // weight by bin freq
 
     if (divisor <= 0.0)
-        return (-1.0);
+        return ( - 1.0);
     else
     {
         centroid = dividend / divisor;
@@ -984,7 +984,7 @@ t_float tIDLib_computeSpread (t_binIdx n, t_float* spectrum, t_float* freqList, 
         dividend += powf ((freqList[i] - centroid), 2) * spectrum[i];
 
     if (divisor <= 0.0)
-        return (-1.0);
+        return ( - 1.0);
     else
     {
         spread = sqrt (dividend / divisor);
@@ -1004,7 +1004,7 @@ t_float tIDLib_computeSkewness (t_binIdx n, t_float* spectrum, t_float* freqList
         dividend += powf ((freqList[i] - centroid), 3) * spectrum[i];
 
     if (divisor <= 0.0 || spread <= 0.0)
-        return (-1.0);
+        return ( - 1.0);
     else
     {
         spread = powf (spread, 3);
@@ -1026,7 +1026,7 @@ t_float tIDLib_computeKurtosis (t_binIdx n, t_float* spectrum, t_float* freqList
 
 
     if (divisor <= 0.0 || spread <= 0.0)
-        return (-1.0);
+        return ( - 1.0);
     else
     {
         spread = powf (spread, 4);
@@ -1134,7 +1134,7 @@ t_float tIDLib_sigEnergyEntropy (t_sampIdx subWindowSize, t_sampIdx subWindowsPe
     }
 
     // remember to negate at the end per eq 4.7
-    H *= -1.0;
+    H *=  - 1.0;
 
     return H;
 }

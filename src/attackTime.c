@@ -98,7 +98,7 @@ static void attackTime_analyze (t_attackTime *x, t_floatarg start, t_floatarg n)
         tIDLib_peakSample(x->x_window, x->x_analysisBuffer, &peakSampIdx, &peakSampVal);
         peakSampIdx += startSamp; // add startSamp back so we can find the peak sample index relative to the whole array
 
-        i=x->x_maxSearchRange;
+        i = x->x_maxSearchRange;
         j=peakSampIdx;
 
         while(i--)
@@ -119,7 +119,7 @@ static void attackTime_analyze (t_attackTime *x, t_floatarg start, t_floatarg n)
 
         // if the index returned is ULONG_MAX, the search failed
         if (attackStartIdx==ULONG_MAX)
-            attackTime = -1.0;
+            attackTime =  - 1.0;
         else
         {
             // attack duration in samples is the end of buffer index (where the peak sample was) minus the start index
@@ -279,7 +279,7 @@ static void *attackTime_new (t_symbol *s, int argc, t_atom *argv)
 
     x->x_numSampsThresh = 10;
     x->x_sampMagThresh = 0.005;
-    x->x_maxSearchRange = x->x_sr*2.0; // two seconds
+    x->x_maxSearchRange = x->x_sr * 2.0; // two seconds
 
     x->x_searchBuffer = (t_float *)t_getbytes (x->x_maxSearchRange * sizeof (t_float));
     x->x_analysisBuffer = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));

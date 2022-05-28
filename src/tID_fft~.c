@@ -119,7 +119,7 @@ static void tID_fft_tilde_bang (t_tID_fft_tilde *x)
 
         if (x->x_normalize)
         {
-            for (i = 0; i < =x->x_zeroPadHalf; i++)
+            for (i = 0; i <= x->x_zeroPadHalf; i++)
             {
                 t_float thisReal, thisImag;
 
@@ -140,7 +140,7 @@ static void tID_fft_tilde_bang (t_tID_fft_tilde *x)
             imagMax = 1.0/imagMax;
         }
 
-        for (i = 0; i < =x->x_zeroPadHalf; i++)
+        for (i = 0; i <= x->x_zeroPadHalf; i++)
         {
             if (x->x_normalize)
             {
@@ -464,7 +464,7 @@ static t_int *tID_fft_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < x->x_window; i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

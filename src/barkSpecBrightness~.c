@@ -119,7 +119,7 @@ static void barkSpecBrightness_tilde_bang (t_barkSpecBrightness_tilde *x)
 
     dividend = divisor = brightness = 0.0;
 
-    for (i=x->x_bandBoundary; i < x->x_numFilters; i++)
+    for (i = x->x_bandBoundary; i < x->x_numFilters; i++)
         dividend += x->x_fftwIn[i];
 
     for (i = 0; i < x->x_numFilters; i++)
@@ -128,7 +128,7 @@ static void barkSpecBrightness_tilde_bang (t_barkSpecBrightness_tilde *x)
     if (divisor > 0.0)
         brightness = dividend / divisor;
     else
-        brightness = -1;
+        brightness =  - 1;
 
     outlet_float (x->x_brightness, brightness);
 }
@@ -490,7 +490,7 @@ static t_int *barkSpecBrightness_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < x->x_window; i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

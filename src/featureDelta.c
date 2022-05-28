@@ -44,16 +44,16 @@ typedef struct _featureDelta
 } t_featureDelta;
 
 
-static void featureDelta_allocMem(t_featureDelta *x)
+static void featureDelta_allocMem (t_featureDelta *x)
 {
     // grab atom list memory
-    x->x_listOut = (t_atom *)t_getbytes ((x->x_featureLength) * sizeof (t_atom));
+    x->x_listOut = (t_atom *)t_getbytes (x->x_featureLength * sizeof (t_atom));
 
     // grab new memory
-    x->x_prevFeature = (t_float *)t_getbytes ((x->x_featureLength) * sizeof (t_float));
+    x->x_prevFeature = (t_float *)t_getbytes (x->x_featureLength * sizeof (t_float));
 }
 
-static void featureDelta_initMem(t_featureDelta *x)
+static void featureDelta_initMem (t_featureDelta *x)
 {
     t_attributeIdx i;
 
@@ -68,13 +68,13 @@ static void featureDelta_initMem(t_featureDelta *x)
 static void featureDelta_free (t_featureDelta *x)
 {
     // free listOut memory
-    t_freebytes (x->x_listOut, (x->x_featureLength) * sizeof (t_atom));
+    t_freebytes (x->x_listOut, x->x_featureLength * sizeof (t_atom));
 
     // free the previous feature memory
-    t_freebytes (x->x_prevFeature, (x->x_featureLength) * sizeof (t_float));
+    t_freebytes (x->x_prevFeature, x->x_featureLength * sizeof (t_float));
 }
 
-static void featureDelta_delta(t_featureDelta *x, t_symbol *s, int argc, t_atom *argv)
+static void featureDelta_delta (t_featureDelta *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_attributeIdx i;
 
@@ -94,10 +94,10 @@ static void featureDelta_delta(t_featureDelta *x, t_symbol *s, int argc, t_atom 
             switch (x->x_direction)
             {
                 case deltaPos:
-                    thisDiff = (thisDiff<0)?0:thisDiff;
+                    thisDiff = (thisDiff < 0) ? 0 : thisDiff;
                     break;
                 case deltaNeg:
-                    thisDiff = (thisDiff>0)?0:thisDiff;
+                    thisDiff = (thisDiff > 0) ? 0 : thisDiff;
                     break;
                 default:
                     break;
@@ -109,7 +109,7 @@ static void featureDelta_delta(t_featureDelta *x, t_symbol *s, int argc, t_atom 
                     thisDiff = fabs (thisDiff);
                     break;
                 case deltaSquared:
-                    thisDiff = thisDiff*thisDiff;
+                    thisDiff = thisDiff * thisDiff;
                     break;
                 default:
                     break;
@@ -123,7 +123,7 @@ static void featureDelta_delta(t_featureDelta *x, t_symbol *s, int argc, t_atom 
 }
 
 
-static void featureDelta_prevFeature(t_featureDelta *x, t_symbol *s, int argc, t_atom *argv)
+static void featureDelta_prevFeature (t_featureDelta *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_attributeIdx i;
 
@@ -176,24 +176,24 @@ static void featureDelta_print (t_featureDelta *x)
     }
 }
 
-static void featureDelta_clear(t_featureDelta *x)
+static void featureDelta_clear (t_featureDelta *x)
 {
     featureDelta_free (x);
-    featureDelta_allocMem(x);
-    featureDelta_initMem(x);
+    featureDelta_allocMem (x);
+    featureDelta_initMem (x);
 }
 
-static void featureDelta_length(t_featureDelta *x, t_floatarg len)
+static void featureDelta_length (t_featureDelta *x, t_floatarg len)
 {
-    len = (len<1)?1:len;
+    len = (len < 1) ? 1 : len;
 
     // free memory first
     featureDelta_free (x);
 
     x->x_featureLength = len;
 
-    featureDelta_allocMem(x);
-    featureDelta_initMem(x);
+    featureDelta_allocMem (x);
+    featureDelta_initMem (x);
 }
 
 static void featureDelta_mode (t_featureDelta *x, t_symbol *m)
@@ -208,7 +208,7 @@ static void featureDelta_mode (t_featureDelta *x, t_symbol *m)
         x->x_mode = deltaDiff;
 }
 
-static void featureDelta_direction(t_featureDelta *x, t_symbol *d)
+static void featureDelta_direction (t_featureDelta *x, t_symbol *d)
 {
     if ( !strcmp (d->s_name, "pos"))
         x->x_direction = deltaPos;
@@ -241,14 +241,14 @@ static void *featureDelta_new (t_symbol *s, int argc, t_atom *argv)
             break;
         case 1:
             featureLength = atom_getfloat (argv);
-            featureLength = (featureLength<1)?1:featureLength;
+            featureLength = (featureLength < 1) ? 1 : featureLength;
             x->x_featureLength = featureLength;
             x->x_mode = deltaDiff;
             x->x_direction = deltaBoth;
             break;
         case 2:
             featureLength = atom_getfloat (argv);
-            featureLength = (featureLength<1)?1:featureLength;
+            featureLength = (featureLength < 1) ? 1 : featureLength;
             x->x_featureLength = featureLength;
 
             mode = atom_getsymbol (argv + 1);
@@ -266,7 +266,7 @@ static void *featureDelta_new (t_symbol *s, int argc, t_atom *argv)
             break;
         case 3:
             featureLength = atom_getfloat (argv);
-            featureLength = (featureLength<1)?1:featureLength;
+            featureLength = (featureLength < 1) ? 1 : featureLength;
             x->x_featureLength = featureLength;
 
             mode = atom_getsymbol (argv + 1);
@@ -294,7 +294,7 @@ static void *featureDelta_new (t_symbol *s, int argc, t_atom *argv)
             break;
         default:
             featureLength = atom_getfloat (argv);
-            featureLength = (featureLength<1)?1:featureLength;
+            featureLength = (featureLength < 1) ? 1 : featureLength;
             x->x_featureLength = featureLength;
 
             mode = atom_getsymbol (argv + 1);
@@ -322,8 +322,8 @@ static void *featureDelta_new (t_symbol *s, int argc, t_atom *argv)
             break;
     }
 
-     featureDelta_allocMem(x);
-     featureDelta_initMem(x);
+     featureDelta_allocMem (x);
+     featureDelta_initMem (x);
 
     return (void *)x;
 }

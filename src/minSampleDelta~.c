@@ -58,7 +58,7 @@ static void minSampleDelta_tilde_bang (t_minSampleDelta_tilde *x)
 
     if (bangSample>0)
     {
-        min = fabs (x->x_analysisBuffer[0] - x->x_signalBuffer[bangSample-1]);
+        min = fabs (x->x_analysisBuffer[0] - x->x_signalBuffer[bangSample - 1]);
         minIdx = 0;
     }
     else
@@ -195,7 +195,7 @@ static t_int *minSampleDelta_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < x->x_window; i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

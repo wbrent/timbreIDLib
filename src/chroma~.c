@@ -361,7 +361,7 @@ static void chroma_tilde_microtune (t_chroma_tilde *x, t_floatarg cents)
 {
     t_uChar i;
 
-    cents = (cents < -100.0) ? -100.0 : cents;
+    cents = (cents <  - 100.0) ?  - 100.0 : cents;
     cents = (cents > 100.0) ? 100.0 : cents;
 
     x->x_microtune = cents / 100.0;
@@ -586,7 +586,7 @@ static t_int *chroma_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < x->x_window; i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

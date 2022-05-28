@@ -120,7 +120,7 @@ static void mfcc_tilde_bang (t_mfcc_tilde *x)
 
         // FFTW DCT-II multiplies every coefficient by 2.0, so multiply by 0.5 on the way out
     for (i = 0; i < x->x_numFilters; i++)
-        SETFLOAT (x->x_listOut + i, x->x_mfcc[i]*0.5);
+        SETFLOAT (x->x_listOut + i, x->x_mfcc[i] * 0.5);
 
     outlet_list (x->x_featureList, 0, x->x_numFilters, x->x_listOut);
 }
@@ -456,7 +456,7 @@ static t_int *mfcc_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < x->x_window; i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

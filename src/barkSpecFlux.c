@@ -438,7 +438,7 @@ static void barkSpecFlux_chain_magSpec (t_barkSpecFlux *x, t_symbol *s, int argc
         tIDLib_filterbankMultiply (x->x_fftwInBackWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
     }
 
-    flux = 0.0.0;
+    flux = 0.0;
 
     for (i = 0; i < x->x_numFilters; i++)
     {
@@ -495,7 +495,7 @@ static void barkSpecFlux_chain_barkSpec (t_barkSpecFlux *x, t_symbol *s, int arg
     t_float flux;
 
     // make sure that argc == 2*(x->x_numFilters) in order to avoid an out of bounds memory read below. we won't resize all memory based on an incoming chain_ command with a different size. instead, just throw an error and exit
-    if (argc!=(x->x_numFilters)*2)
+    if (argc!=(x->x_numFilters) * 2)
     {
         pd_error (x, "%s: length of chain_ message (%i) does not match current number of Bark filters (%i)", x->x_objSymbol->s_name, argc, x->x_numFilters);
         return;
@@ -508,7 +508,7 @@ static void barkSpecFlux_chain_barkSpec (t_barkSpecFlux *x, t_symbol *s, int arg
         x->x_fftwInBackWindow[i] = atom_getfloat (argv+x->x_numFilters+i);
     }
 
-    flux = 0.0.0;
+    flux = 0.0;
 
     for (i = 0; i < x->x_numFilters; i++)
     {

@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-t_float bark_tilde_weights_dB[] = {-69.9, -60.4, -51.4, -43.3, -36.6, -30.3, -24.3, -19.5, -14.8, -10.7, -7.5, -4.8, -2.6, -0.8, 0.0, 0.6, 0.5, 0.0, -0.1, 0.5, 1.5, 3.6, 5.9, 6.5, 4.2, -2.6, -10.2, -10.0, -2.8};
+t_float bark_tilde_weights_dB[] = {-69.9, -60.4, -51.4, -43.3, -36.6, -30.3, -24.3,  - 19.5,  - 14.8,  - 10.7, -7.5, -4.8, -2.6, -0.8, 0.0, 0.6, 0.5, 0.0, -0.1, 0.5, 1.5, 3.6, 5.9, 6.5, 4.2, -2.6,  - 10.2,  - 10.0, -2.8};
 
 t_float bark_tilde_weights_freqs[] = {20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500};
 
@@ -130,11 +130,11 @@ static void bark_tilde_create_loudness_weighting(t_bark_tilde *x)
         {
             if (nearIdx>0)
             {
-                diffFreq = (barkFreqs[i] - bark_tilde_weights_freqs[nearIdx-1])/(nearFreq - bark_tilde_weights_freqs[nearIdx-1]);
-                diffdB = diffFreq * (bark_tilde_weights_dB[nearIdx] - bark_tilde_weights_dB[nearIdx-1]);
+                diffFreq = (barkFreqs[i] - bark_tilde_weights_freqs[nearIdx - 1])/(nearFreq - bark_tilde_weights_freqs[nearIdx - 1]);
+                diffdB = diffFreq * (bark_tilde_weights_dB[nearIdx] - bark_tilde_weights_dB[nearIdx - 1]);
             }
 
-            dBint = bark_tilde_weights_dB[nearIdx-1] + diffdB;
+            dBint = bark_tilde_weights_dB[nearIdx - 1] + diffdB;
         }
 
         if (x->x_powerSpectrum)
@@ -196,14 +196,14 @@ static void bark_tilde_thresh(t_bark_tilde *x, t_floatarg lo, t_floatarg hi)
         x->x_hiThresh = lo;
         x->x_loThresh = hi;
 
-        x->x_loThresh = (x->x_loThresh<0)?-1:x->x_loThresh;
+        x->x_loThresh = (x->x_loThresh<0)? - 1:x->x_loThresh;
     }
     else
     {
         x->x_hiThresh = hi;
         x->x_loThresh = lo;
 
-        x->x_loThresh = (x->x_loThresh<0)?-1:x->x_loThresh;
+        x->x_loThresh = (x->x_loThresh<0)? - 1:x->x_loThresh;
     }
 }
 
@@ -313,10 +313,10 @@ static void bark_tilde_debug(t_bark_tilde *x, t_floatarg debug)
         post ("%s debug mode OFF", x->x_objSymbol->s_name);
 }
 
-static void bark_tilde_spew(t_bark_tilde *x, t_floatarg spew)
+static void bark_tilde_spew (t_bark_tilde *x, t_floatarg spew)
 {
-    spew = (spew<0)?0:spew;
-    spew = (spew>1)?1:spew;
+    spew = (spew < 0) ? 0 : spew;
+    spew = (spew > 1) ? 1 : spew;
     x->x_spew = spew;
 
     post ("%s spew mode: %i", x->x_objSymbol->s_name, x->x_spew);
@@ -324,8 +324,8 @@ static void bark_tilde_spew(t_bark_tilde *x, t_floatarg spew)
 
 static void bark_tilde_measure(t_bark_tilde *x, t_floatarg m)
 {
-    m = (m<0)?0:m;
-    m = (m>1)?1:m;
+    m = (m < 0) ? 0 : m;
+    m = (m > 1) ? 1 : m;
 
     if (m)
     {
@@ -596,7 +596,7 @@ static t_int *bark_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < window; i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)
@@ -673,7 +673,7 @@ static t_int *bark_tilde_perform (t_int *w)
             if (x->x_fftwIn[i] > x->x_mask[i])
                 x->x_growth[i] = x->x_fftwIn[i]/(x->x_mask[i] + 1.0e-15) - 1.0;
 
-            if (i>=x->x_loBin && i < =x->x_hiBin && x->x_growth[i]>0)
+            if (i>=x->x_loBin && i <= x->x_hiBin && x->x_growth[i]>0)
                 totalGrowth += x->x_growth[i];
 
             SETFLOAT (x->x_growthList+i, x->x_growth[i]);
@@ -698,7 +698,7 @@ static t_int *bark_tilde_perform (t_int *w)
             clock_delay(x->x_clock, x->x_debounceTime); // wait debounceTime ms before allowing another attack
             x->x_lastDspTime = clock_getlogicaltime();
         }
-        else if (x->x_haveHit && x->x_loThresh>0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not -1), then wait until growth drops below that value before reporting attack
+        else if (x->x_haveHit && x->x_loThresh>0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not  - 1), then wait until growth drops below that value before reporting attack
         {
             if (x->x_debug)
                 post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);
@@ -714,7 +714,7 @@ static t_int *bark_tilde_perform (t_int *w)
 
             outlet_bang (x->x_bangOut);
         }
-        else if (x->x_haveHit && x->x_loThresh<0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh == -1, report attack as soon as growth shows any decay at all
+        else if (x->x_haveHit && x->x_loThresh<0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh ==  - 1, report attack as soon as growth shows any decay at all
         {
             if (x->x_debug)
                 post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);

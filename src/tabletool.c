@@ -151,7 +151,7 @@ static void tabletool_asSet(t_tabletool *x)
                 // look backwards from i for duplicates. If we find one, mark the uniqueFlag as false, stop looking, and move on to next value
                 for (j=i; j >= 1; j--)
                 {
-                    if (x->x_vec[j-1].w_float==thisVal)
+                    if (x->x_vec[j - 1].w_float==thisVal)
                     {
                         uniqueFlag = false;
                         break;
@@ -474,9 +474,9 @@ static void tabletool_equals(t_tabletool *x, t_float val)
             {
                 numMatches++;
 
-                indices = (t_sampIdx *)t_resizebytes (indices, (numMatches-1) * sizeof (t_sampIdx), numMatches * sizeof (t_sampIdx));
+                indices = (t_sampIdx *)t_resizebytes (indices, (numMatches - 1) * sizeof (t_sampIdx), numMatches * sizeof (t_sampIdx));
 
-                indices[numMatches-1] = i;
+                indices[numMatches - 1] = i;
             }
 
         if (numMatches)
@@ -495,7 +495,7 @@ static void tabletool_equals(t_tabletool *x, t_float val)
             t_freebytes (listOut, numMatches * sizeof (t_atom));
         }
         else
-            outlet_float (x->x_info, -1);
+            outlet_float (x->x_info,  - 1);
 
         // free local memory
         t_freebytes (indices, numMatches * sizeof (t_sampIdx));
@@ -524,9 +524,9 @@ static void tabletool_greater(t_tabletool *x, t_float val)
             {
                 numMatches++;
 
-                indices = (t_sampIdx *)t_resizebytes (indices, (numMatches-1) * sizeof (t_sampIdx), numMatches * sizeof (t_sampIdx));
+                indices = (t_sampIdx *)t_resizebytes (indices, (numMatches - 1) * sizeof (t_sampIdx), numMatches * sizeof (t_sampIdx));
 
-                indices[numMatches-1] = i;
+                indices[numMatches - 1] = i;
             }
 
         if (numMatches)
@@ -545,7 +545,7 @@ static void tabletool_greater(t_tabletool *x, t_float val)
             t_freebytes (listOut, numMatches * sizeof (t_atom));
         }
         else
-            outlet_float (x->x_info, -1);
+            outlet_float (x->x_info,  - 1);
 
         // free local memory
         t_freebytes (indices, numMatches * sizeof (t_sampIdx));
@@ -574,9 +574,9 @@ static void tabletool_less(t_tabletool *x, t_float val)
             {
                 numMatches++;
 
-                indices = (t_sampIdx *)t_resizebytes (indices, (numMatches-1) * sizeof (t_sampIdx), numMatches * sizeof (t_sampIdx));
+                indices = (t_sampIdx *)t_resizebytes (indices, (numMatches - 1) * sizeof (t_sampIdx), numMatches * sizeof (t_sampIdx));
 
-                indices[numMatches-1] = i;
+                indices[numMatches - 1] = i;
             }
 
         if (numMatches)
@@ -595,7 +595,7 @@ static void tabletool_less(t_tabletool *x, t_float val)
             t_freebytes (listOut, numMatches * sizeof (t_atom));
         }
         else
-            outlet_float (x->x_info, -1);
+            outlet_float (x->x_info,  - 1);
 
         // free local memory
         t_freebytes (indices, numMatches * sizeof (t_sampIdx));
@@ -624,9 +624,9 @@ static void tabletool_between(t_tabletool *x, t_float lowBound, t_float hiBound)
             {
                 numMatches++;
 
-                indices = (t_sampIdx *)t_resizebytes (indices, (numMatches-1) * sizeof (t_sampIdx), numMatches * sizeof (t_sampIdx));
+                indices = (t_sampIdx *)t_resizebytes (indices, (numMatches - 1) * sizeof (t_sampIdx), numMatches * sizeof (t_sampIdx));
 
-                indices[numMatches-1] = i;
+                indices[numMatches - 1] = i;
             }
 
         if (numMatches)
@@ -645,7 +645,7 @@ static void tabletool_between(t_tabletool *x, t_float lowBound, t_float hiBound)
             t_freebytes (listOut, numMatches * sizeof (t_atom));
         }
         else
-            outlet_float (x->x_info, -1);
+            outlet_float (x->x_info,  - 1);
 
         // free local memory
         t_freebytes (indices, numMatches * sizeof (t_sampIdx));
@@ -677,7 +677,7 @@ static void tabletool_findZeroCrossings(t_tabletool *x)
             t_uChar crossing;
             crossing = abs(tIDLib_signum(x->x_vec[i].w_float) - tIDLib_signum(x->x_vec[i - 1].w_float));
 
-            crossTotal += crossing*0.5;
+            crossTotal += crossing * 0.5;
 
             if (crossing>0)
             {
@@ -758,7 +758,7 @@ static void tabletool_permute(t_tabletool *x, t_float n)
             {
                 t_uInt pIdx, listIdx;
 
-                listIdx = n-j-1;
+                listIdx = n-j - 1;
                 pIdx = floor(i/pow(totalElements, j));
                 pIdx = pIdx % totalElements;
                 SETFLOAT (listOut+listIdx, x->x_vec[pIdx].w_float);
@@ -803,7 +803,7 @@ static void tabletool_const(t_tabletool *x, t_float val, t_float idx1, t_float i
 
 //		post ("intIdx1: %lu, intIdx2: %lu", intIdx1, intIdx2);
 
-        for (i=intIdx1; i < =intIdx2; i++)
+        for (i=intIdx1; i <= intIdx2; i++)
             x->x_vec[i].w_float = val;
 
         garray_redraw(a);
@@ -1080,7 +1080,7 @@ static void tabletool_reverse(t_tabletool *x)
         for (i = 0; i < x->x_arrayPoints; i++)
             tableVals[i] = x->x_vec[i].w_float;
 
-        for (i=x->x_arrayPoints - 1, j = 0; j<x->x_arrayPoints; i--, j++)
+        for (i = x->x_arrayPoints - 1, j = 0; j < x->x_arrayPoints; i--, j++)
             x->x_vec[j].w_float = tableVals[i];
 
         garray_redraw(a);
@@ -1194,7 +1194,7 @@ static void tabletool_round(t_tabletool *x, t_float res)
     {
         t_sampIdx i;
 
-        if (res<=0 || res==1.0)
+        if (res <= 0 || res==1.0)
         {
             for (i = 0; i < x->x_arrayPoints; i++)
             {
@@ -1561,16 +1561,16 @@ static void tabletool_lace(t_tabletool *x, t_symbol *array2)
         totalPoints = x->x_arrayPoints + array2pts;
         listOut = (t_atom *)t_getbytes (totalPoints * sizeof (t_atom));
 
-        for (i = 0, j = 0; i < (x->x_arrayPoints*2)-1; i+=2, j++)
+        for (i = 0, j = 0; i < (x->x_arrayPoints * 2) - 1; i+=2, j++)
         {
-            if (j>(array2pts-1))
+            if (j>(array2pts - 1))
                 break;
 
             SETFLOAT (listOut + i, x->x_vec[j].w_float);
             SETFLOAT (listOut + i + 1, vec2[j].w_float);
         }
 
-        for (; j<x->x_arrayPoints; i++, j++)
+        for (; j < x->x_arrayPoints; i++, j++)
             SETFLOAT (listOut + i, x->x_vec[j].w_float);
 
         outlet_list (x->x_list, 0, totalPoints, listOut);
@@ -1656,7 +1656,7 @@ static void tabletool_scramble(t_tabletool *x)
 
         length = x->x_arrayPoints;
 
-        for (i = 0; i < length-1; i++)
+        for (i = 0; i < length - 1; i++)
         {
             t_float tmp;
 
@@ -1748,12 +1748,12 @@ static void tabletool_sort_range(t_tabletool *x, t_float start, t_float end)
 
         tableVals = (t_float *)t_getbytes (length * sizeof (t_float));
 
-        for (i=intStart, j = 0; i < =intEnd; i++, j++)
+        for (i=intStart, j = 0; i <= intEnd; i++, j++)
             tableVals[j] = x->x_vec[i].w_float;
 
         tIDLib_bubbleSort(length, tableVals);
 
-        for (i=intStart, j = 0; i < =intEnd; i++, j++)
+        for (i=intStart, j = 0; i <= intEnd; i++, j++)
              x->x_vec[i].w_float = tableVals[j];
 
         garray_redraw(a);
@@ -1969,8 +1969,8 @@ static void tabletool_add_range(t_tabletool *x, t_symbol *s, int argc, t_atom *a
         if (ss<0)
             ss = 0;
 
-        if (se>sourcePts-1)
-            se = sourcePts-1;
+        if (se>sourcePts - 1)
+            se = sourcePts - 1;
 
         length = se-ss+1;
 
@@ -2014,7 +2014,7 @@ static void tabletool_overlapAdd(t_tabletool *x, t_symbol *s, int argc, t_atom *
         t_float *wPtr, nFloat, sourceStartSampFloat, targetStartSampFloat;
 
         sourceStartSampFloat = atom_getfloat (argv+0);
-        sourceStartSamp = (sourceStartSampFloat<0)?0:sourceStartSampFloat;
+        sourceStartSamp = (sourceStartSampFloat<0) ? 0 : sourceStartSampFloat;
         nFloat = atom_getfloat (argv + 1);
         n = (nFloat<0)?0:nFloat;
         w = atom_getsymbol (argv + 2);
@@ -2515,7 +2515,7 @@ static void tabletool_abs(t_tabletool *x)
 
         for (i = 0; i < x->x_arrayPoints; i++)
             if (x->x_vec[i].w_float < 0.0)
-                x->x_vec[i].w_float *= -1.0;
+                x->x_vec[i].w_float *=  - 1.0;
 
         garray_redraw(a);
      }
@@ -2551,7 +2551,7 @@ static void tabletool_reciprocal(t_tabletool *x)
 }
 
 
-static void tabletool_sum(t_tabletool *x)
+static void tabletool_sum (t_tabletool *x)
 {
     t_garray *a;
 
@@ -2574,7 +2574,7 @@ static void tabletool_sum(t_tabletool *x)
 }
 
 
-static void tabletool_mean(t_tabletool *x)
+static void tabletool_mean (t_tabletool *x)
 {
     t_garray *a;
 
@@ -2629,7 +2629,7 @@ static void tabletool_median(t_tabletool *x)
             median = tableVals[medIdx] + tableVals[medIdx+1];
             median *= 0.5;
 
-            SETFLOAT (&indexOut, -1);
+            SETFLOAT (&indexOut,  - 1);
             outlet_list (x->x_list, 0, 1, &indexOut);
         }
         else
@@ -2717,14 +2717,14 @@ static void tabletool_mode (t_tabletool *x)
             instanceCounters[i] = 0;
 
         maxCount = 0;
-        mode = -1;
+        mode =  - 1;
 
         for (i = 0; i < x->x_arrayPoints; i++)
         {
             t_float thisVal;
             thisVal = x->x_vec[i].w_float;
 
-            for (j = 0; j<x->x_arrayPoints; j++)
+            for (j = 0; j < x->x_arrayPoints; j++)
             {
                 if (x->x_vec[j].w_float==thisVal)
                     instanceCounters[i]++;
@@ -2768,7 +2768,7 @@ static void tabletool_mode (t_tabletool *x)
 }
 
 
-static void tabletool_geomean(t_tabletool *x)
+static void tabletool_geomean (t_tabletool *x)
 {
     t_garray *a;
 
@@ -2918,7 +2918,7 @@ static void tabletool_normalize (t_tabletool *x, t_float min, t_float max)
         for (i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float -= smallest;
 
-        // scale to 0-1 range
+        // scale to 0 - 1 range
         for (i = 0; i < x->x_arrayPoints; i++)
             x->x_vec[i].w_float *= range_data;
 
@@ -2935,7 +2935,7 @@ static void tabletool_normalize (t_tabletool *x, t_float min, t_float max)
 }
 
 
-static void tabletool_normalize_sum(t_tabletool *x)
+static void tabletool_normalize_sum (t_tabletool *x)
 {
     t_garray *a;
 
@@ -3123,8 +3123,8 @@ static void tabletool_copy_range(t_tabletool *x, t_symbol *s, int argc, t_atom *
         }
 
         targetStart = (targetStartFloat<0)?0:targetStartFloat;
-        sourceStart = (sourceStartFloat<0)?0:sourceStartFloat;
-        sourceEnd = (sourceEnd>sourcePts-1)?sourcePts-1:sourceEnd;
+        sourceStart = (sourceStartFloat<0) ? 0 : sourceStartFloat;
+        sourceEnd = (sourceEnd>sourcePts - 1)?sourcePts - 1:sourceEnd;
 
         if (sourceStart>sourceEnd)
         {
@@ -3518,7 +3518,7 @@ static void tabletool_hps(t_tabletool *x, t_float loIdx, t_float hiIdx, t_float 
             yValues[i] = thisProduct;
         }
 
-        maxVal = -1.0;
+        maxVal =  - 1.0;
         maxIdx = UINT_MAX;
 
         for (i = 0; i < numIndices; i++)
@@ -3538,10 +3538,10 @@ static void tabletool_hps(t_tabletool *x, t_float loIdx, t_float hiIdx, t_float 
 
         outlet_list (x->x_list, 0, numIndices, yValuesOut);
 
-        // if maxIdx is somehow not updated, output -1 to indicate failure.
+        // if maxIdx is somehow not updated, output  - 1 to indicate failure.
         // otherwise, add the loIdx offset back in to get the array index of the HPS peak
         if (maxIdx==UINT_MAX)
-            outlet_float (x->x_info, -1);
+            outlet_float (x->x_info,  - 1);
         else
             outlet_float (x->x_info, loIdx + maxIdx);
 

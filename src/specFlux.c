@@ -242,7 +242,7 @@ static void specFlux_analyze (t_specFlux *x, t_floatarg start, t_floatarg n)
         if (x->x_normalize)
             tIDLib_normal (x->x_windowHalf + 1, x->x_fftwInBackWindow);
 
-        flux = 0.0.0;
+        flux = 0.0;
 
         for (i = 0; i <= x->x_windowHalf; i++)
         {
@@ -337,7 +337,7 @@ static void specFlux_chain_fftData (t_specFlux *x, t_symbol *s, int argc, t_atom
         tIDLib_normal (x->x_windowHalf + 1, x->x_fftwInBackWindow);
     }
 
-    flux = 0.0.0;
+    flux = 0.0;
 
     for (i = 0; i <= x->x_windowHalf; i++)
     {
@@ -413,7 +413,7 @@ static void specFlux_chain_magSpec (t_specFlux *x, t_symbol *s, int argc, t_atom
         x->x_fftwInBackWindow[i] = atom_getfloat (argv + (x->x_windowHalf + 1) + i);
     }
 
-    flux = 0.0.0;
+    flux = 0.0;
 
     for (i = 0; i <= x->x_windowHalf; i++)
     {

@@ -177,7 +177,7 @@ static void barkSpecBrightness_analyze (t_barkSpecBrightness *x, t_floatarg star
 
         dividend = divisor = brightness = 0.0;
 
-        for (i=x->x_bandBoundary; i < x->x_numFilters; i++)
+        for (i = x->x_bandBoundary; i < x->x_numFilters; i++)
             dividend += x->x_fftwIn[i];
 
         for (i = 0; i < x->x_numFilters; i++)
@@ -186,7 +186,7 @@ static void barkSpecBrightness_analyze (t_barkSpecBrightness *x, t_floatarg star
         if (divisor > 0.0)
             brightness = dividend / divisor;
         else
-            brightness = -1;
+            brightness =  - 1;
 
         outlet_float (x->x_brightness, brightness);
     }
@@ -228,7 +228,7 @@ static void barkSpecBrightness_chain_fftData (t_barkSpecBrightness *x, t_symbol 
 
     dividend = divisor = brightness = 0.0;
 
-    for (i=x->x_bandBoundary; i < x->x_numFilters; i++)
+    for (i = x->x_bandBoundary; i < x->x_numFilters; i++)
         dividend += x->x_fftwIn[i];
 
     for (i = 0; i < x->x_numFilters; i++)
@@ -237,7 +237,7 @@ static void barkSpecBrightness_chain_fftData (t_barkSpecBrightness *x, t_symbol 
     if (divisor > 0.0)
         brightness = dividend / divisor;
     else
-        brightness = -1;
+        brightness =  - 1;
 
     outlet_float (x->x_brightness, brightness);
 }
@@ -269,7 +269,7 @@ static void barkSpecBrightness_chain_magSpec (t_barkSpecBrightness *x, t_symbol 
 
     dividend = divisor = brightness = 0.0;
 
-    for (i=x->x_bandBoundary; i < x->x_numFilters; i++)
+    for (i = x->x_bandBoundary; i < x->x_numFilters; i++)
         dividend += x->x_fftwIn[i];
 
     for (i = 0; i < x->x_numFilters; i++)
@@ -278,7 +278,7 @@ static void barkSpecBrightness_chain_magSpec (t_barkSpecBrightness *x, t_symbol 
     if (divisor > 0.0)
         brightness = dividend / divisor;
     else
-        brightness = -1;
+        brightness =  - 1;
 
     outlet_float (x->x_brightness, brightness);
 }
@@ -302,7 +302,7 @@ static void barkSpecBrightness_chain_barkSpec (t_barkSpecBrightness *x, t_symbol
 
     dividend = divisor = brightness = 0.0;
 
-    for (i=x->x_bandBoundary; i < x->x_numFilters; i++)
+    for (i = x->x_bandBoundary; i < x->x_numFilters; i++)
         dividend += x->x_fftwIn[i];
 
     for (i = 0; i < x->x_numFilters; i++)
@@ -311,7 +311,7 @@ static void barkSpecBrightness_chain_barkSpec (t_barkSpecBrightness *x, t_symbol
     if (divisor > 0.0)
         brightness = dividend / divisor;
     else
-        brightness = -1;
+        brightness =  - 1;
 
     outlet_float (x->x_brightness, brightness);
 }

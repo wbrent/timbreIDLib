@@ -117,7 +117,7 @@ static void nearestPoint_dimensions(t_nearestPoint *x, t_floatarg dim)
         pd_error (x, "%s: clear all coordinates before changing dimensionality.", x->x_objSymbol->s_name);
         return;
     }
-    else if (dim<=0)
+    else if (dim <= 0)
         x->x_dimensions = 1;
     else
         x->x_dimensions = dim;
@@ -145,7 +145,7 @@ static void nearestPoint_print (t_nearestPoint *x)
 }
 
 
-static void nearestPoint_clear(t_nearestPoint *x)
+static void nearestPoint_clear (t_nearestPoint *x)
 {
     t_instanceIdx i;
 

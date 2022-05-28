@@ -66,7 +66,7 @@ static void attackTime_tilde_bang (t_attackTime_tilde *x)
 
     peakSampIdx += startSample; // add startSample back so we can find the peak sample index relative to x_signalBuffer
 
-    i=x->x_maxSearchRange;
+    i = x->x_maxSearchRange;
     j=peakSampIdx;
 
     while(i--)
@@ -87,7 +87,7 @@ static void attackTime_tilde_bang (t_attackTime_tilde *x)
 
     // if the index returned is ULONG_MAX, the search failed
     if (attackStartIdx==ULONG_MAX)
-        attackTime = -1.0;
+        attackTime =  - 1.0;
     else
     {
         // attack duration in samples is the end of buffer index (where the peak sample was) minus the start index
@@ -228,7 +228,7 @@ static void *attackTime_tilde_new (t_symbol *s, int argc, t_atom *argv)
 
     x->x_numSampsThresh = 10;
     x->x_sampMagThresh = 0.005;
-    x->x_maxSearchRange = x->x_sr*2.0; // two seconds
+    x->x_maxSearchRange = x->x_sr * 2.0; // two seconds
 
     x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_maxSearchRange+x->x_n) * sizeof (t_sample));
     x->x_analysisBuffer = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
@@ -261,7 +261,7 @@ static t_int *attackTime_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < x->x_maxSearchRange; i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

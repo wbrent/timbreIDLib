@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-t_float bark_weights_dB[] = {-69.9, -60.4, -51.4, -43.3, -36.6, -30.3, -24.3, -19.5, -14.8, -10.7, -7.5, -4.8, -2.6, -0.8, 0.0, 0.6, 0.5, 0.0, -0.1, 0.5, 1.5, 3.6, 5.9, 6.5, 4.2, -2.6, -10.2, -10.0, -2.8};
+t_float bark_weights_dB[] = {-69.9, -60.4, -51.4, -43.3, -36.6, -30.3, -24.3,  - 19.5,  - 14.8,  - 10.7, -7.5, -4.8, -2.6, -0.8, 0.0, 0.6, 0.5, 0.0, -0.1, 0.5, 1.5, 3.6, 5.9, 6.5, 4.2, -2.6,  - 10.2,  - 10.0, -2.8};
 
 t_float bark_weights_freqs[] = {20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500};
 
@@ -126,11 +126,11 @@ static void bark_create_loudness_weighting(t_bark *x)
         {
             if (nearIdx>0)
             {
-                diffFreq = (barkFreqs[i] - bark_weights_freqs[nearIdx-1])/(nearFreq - bark_weights_freqs[nearIdx-1]);
-                diffdB = diffFreq * (bark_weights_dB[nearIdx] - bark_weights_dB[nearIdx-1]);
+                diffFreq = (barkFreqs[i] - bark_weights_freqs[nearIdx - 1])/(nearFreq - bark_weights_freqs[nearIdx - 1]);
+                diffdB = diffFreq * (bark_weights_dB[nearIdx] - bark_weights_dB[nearIdx - 1]);
             }
 
-            dBint = bark_weights_dB[nearIdx-1] + diffdB;
+            dBint = bark_weights_dB[nearIdx - 1] + diffdB;
         }
 
         if (x->x_powerSpectrum)
@@ -182,7 +182,7 @@ static void bark_thresh(t_bark *x, t_floatarg lo, t_floatarg hi)
         x->x_hiThresh = lo;
         x->x_loThresh = hi;
 
-        x->x_loThresh = (x->x_loThresh<0)?-1:x->x_loThresh;
+        x->x_loThresh = (x->x_loThresh<0)? - 1:x->x_loThresh;
 
 //		post ("bark: low thresh: %f, high thresh: %f", x->x_loThresh, x->x_hiThresh);
     }
@@ -191,7 +191,7 @@ static void bark_thresh(t_bark *x, t_floatarg lo, t_floatarg hi)
         x->x_hiThresh = hi;
         x->x_loThresh = lo;
 
-        x->x_loThresh = (x->x_loThresh<0) ?-1:x->x_loThresh;
+        x->x_loThresh = (x->x_loThresh<0) ? - 1:x->x_loThresh;
 
 //		post ("bark: low thresh: %0.2f, high thresh: %0.2f", x->x_loThresh, x->x_hiThresh);
     }
@@ -247,10 +247,10 @@ static void bark_debounce(t_bark *x, t_floatarg db)
         pd_error (x, "%s debounce time must be >= 0 ms", x->x_objSymbol->s_name);
 }
 
-static void bark_spew(t_bark *x, t_floatarg spew)
+static void bark_spew (t_bark *x, t_floatarg spew)
 {
-    spew = (spew<0)?0:spew;
-    spew = (spew>1)?1:spew;
+    spew = (spew < 0) ? 0 : spew;
+    spew = (spew > 1) ? 1 : spew;
     x->x_spew = spew;
 
     post ("%s spew mode: %i", x->x_objSymbol->s_name, x->x_spew);
@@ -743,7 +743,7 @@ static void bark_analyze (t_bark *x, t_floatarg startTime, t_floatarg endTime)
                 if (x->x_fftwIn[i] > x->x_mask[i])
                     x->x_growth[i] = x->x_fftwIn[i]/(x->x_mask[i] + 1.0e-15) - 1.0;
 
-                if (i>=x->x_loBin && i < =x->x_hiBin && x->x_growth[i]>0)
+                if (i>=x->x_loBin && i <= x->x_hiBin && x->x_growth[i]>0)
                     totalGrowth += x->x_growth[i];
 
                 SETFLOAT (x->x_growthList+i, x->x_growth[i]);
@@ -760,7 +760,7 @@ static void bark_analyze (t_bark *x, t_floatarg startTime, t_floatarg endTime)
                 x->x_haveHit = true;
                 x->x_debounceActive = frame*hop+startSamp + x->x_debounceSamp;
             }
-            else if (x->x_haveHit && x->x_loThresh>0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not -1), then wait until growth drops below that value before reporting attack
+            else if (x->x_haveHit && x->x_loThresh>0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not  - 1), then wait until growth drops below that value before reporting attack
             {
                 if (x->x_debug)
                     post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);
@@ -777,7 +777,7 @@ static void bark_analyze (t_bark *x, t_floatarg startTime, t_floatarg endTime)
                 // add half a window of samples as a fudge factor. note that since this NRT and we can look into the future, all attack reports will be roughly a half window EARLY.  in RT, everything is a half window LATE because the point of reference is the END of the window.  here, it's the BEGINNING of the window.
                 outlet_float (x->x_timeOut, (frame*hop+startSamp + windowHalf)/x->x_sr);
             }
-            else if (x->x_haveHit && x->x_loThresh<0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh == -1, report attack as soon as growth shows any decay at all
+            else if (x->x_haveHit && x->x_loThresh<0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh ==  - 1, report attack as soon as growth shows any decay at all
             {
                 if (x->x_debug)
                     post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);

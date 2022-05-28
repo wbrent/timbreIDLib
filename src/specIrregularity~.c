@@ -127,8 +127,8 @@ static void specIrregularity_tilde_bang (t_specIrregularity_tilde *x)
                 divisor += x->x_fftwIn[i] * x->x_fftwIn[i];
             }
 
-            if (divisor<=0)
-                irregularity = -1;
+            if (divisor <= 0)
+                irregularity =  - 1;
             else
                 irregularity /= divisor;
             break;
@@ -421,7 +421,7 @@ static t_int *specIrregularity_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < x->x_window; i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

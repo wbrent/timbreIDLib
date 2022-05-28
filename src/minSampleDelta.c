@@ -93,7 +93,7 @@ static void minSampleDelta_analyze (t_minSampleDelta *x, t_floatarg start, t_flo
 
         if (startSamp>0)
         {
-            min = fabs (x->x_analysisBuffer[0] - x->x_vec[startSamp-1].w_float);
+            min = fabs (x->x_analysisBuffer[0] - x->x_vec[startSamp - 1].w_float);
             minIdx = 0;
         }
         else

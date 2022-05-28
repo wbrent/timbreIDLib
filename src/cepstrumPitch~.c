@@ -149,7 +149,7 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde *x)
     binCount=0;
 
     // traverse from hiFreq to loFreq because the high frequency cepstrum bin is lower than the low frequency cepstrum bin
-    for (i=hiFreqBin; i < =loFreqBin; i++, binCount++)
+    for (i=hiFreqBin; i <= loFreqBin; i++, binCount++)
     {
         // check that loFreqBin doesn't go above Nyquist bin
         if (i>=windowHalf)
@@ -170,7 +170,7 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde *x)
     binCount = 0;
 
     // center & square the data
-    for (i=hiFreqBin; i < =loFreqBin; i++, binCount++)
+    for (i=hiFreqBin; i <= loFreqBin; i++, binCount++)
     {
         x->x_fftwIn[i] -= mean;
         x->x_fftwIn[i] *= x->x_fftwIn[i];
@@ -178,14 +178,14 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde *x)
     }
 
     // get standard deviation
-    std = sum/(binCount-1);
+    std = sum/(binCount - 1);
     std = sqrt(std);
 
     // see if maxVal is above the mean by more than x_thresh standard deviations
     if ( fabs (maxVal-mean) > (x->x_thresh*std) )
         pitch = ftom(x->x_sr/((t_float)maxValIdx));
     else
-        pitch = -1500.0;
+        pitch =  - 1500.0;
 
      outlet_float (x->x_pitch, pitch);
 }
@@ -508,7 +508,7 @@ static t_int *cepstrumPitch_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < x->x_window; i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

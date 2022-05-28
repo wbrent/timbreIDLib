@@ -165,7 +165,7 @@ static void barkSpecFlux_tilde_bang (t_barkSpecFlux_tilde *x)
     else
         tIDLib_filterbankMultiply (x->x_fftwInBackWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
-    flux = 0.0.0;
+    flux = 0.0;
 
     for (i = 0; i < x->x_numFilters; i++)
     {
@@ -663,7 +663,7 @@ static t_int *barkSpecFlux_tilde_perform (t_int *w)
 
      // shift signal buffer contents back.
     for (i = 0; i < (x->x_window * 2); i++)
-        x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
+        x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)

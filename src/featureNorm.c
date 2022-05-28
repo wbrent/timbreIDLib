@@ -30,17 +30,17 @@ typedef struct _featureNorm
 } t_featureNorm;
 
 
-static void featureNorm_allocMem(t_featureNorm *x)
+static void featureNorm_allocMem (t_featureNorm *x)
 {
     // grab atom list memory
-    x->x_listOut = (t_atom *)t_getbytes ((x->x_featureLength) * sizeof (t_atom));
+    x->x_listOut = (t_atom *)t_getbytes (x->x_featureLength * sizeof (t_atom));
 
     // grab new memory
-    x->x_minValues = (t_float *)t_getbytes ((x->x_featureLength) * sizeof (t_float));
-    x->x_maxValues = (t_float *)t_getbytes ((x->x_featureLength) * sizeof (t_float));
+    x->x_minValues = (t_float *)t_getbytes (x->x_featureLength * sizeof (t_float));
+    x->x_maxValues = (t_float *)t_getbytes (x->x_featureLength * sizeof (t_float));
 }
 
-static void featureNorm_initMem(t_featureNorm *x)
+static void featureNorm_initMem (t_featureNorm *x)
 {
     t_attributeIdx i;
 
@@ -56,11 +56,11 @@ static void featureNorm_initMem(t_featureNorm *x)
 static void featureNorm_free (t_featureNorm *x)
 {
     // free listOut memory
-    t_freebytes (x->x_listOut, (x->x_featureLength) * sizeof (t_atom));
+    t_freebytes (x->x_listOut, x->x_featureLength * sizeof (t_atom));
 
     // free the min/max values memory
-    t_freebytes (x->x_minValues, (x->x_featureLength) * sizeof (t_float));
-    t_freebytes (x->x_maxValues, (x->x_featureLength) * sizeof (t_float));
+    t_freebytes (x->x_minValues, x->x_featureLength * sizeof (t_float));
+    t_freebytes (x->x_maxValues, x->x_featureLength * sizeof (t_float));
 }
 
 static void featureNorm_normalize (t_featureNorm *x, t_symbol *s, int argc, t_atom *argv)
@@ -83,19 +83,19 @@ static void featureNorm_normalize (t_featureNorm *x, t_symbol *s, int argc, t_at
 
                     thisAtt = atom_getfloat (argv + i);
 
-                    thisAtt = (thisAtt<x->x_minValues[i])?x->x_minValues[i]:thisAtt;
-                    thisAtt = (thisAtt>x->x_maxValues[i])?x->x_maxValues[i]:thisAtt;
+                    thisAtt = (thisAtt < x->x_minValues[i]) ? x->x_minValues[i] : thisAtt;
+                    thisAtt = (thisAtt > x->x_maxValues[i]) ? x->x_maxValues[i] : thisAtt;
 
                     numer = thisAtt - x->x_minValues[i];
                     denom = x->x_maxValues[i] - x->x_minValues[i];
 
-                    if (denom<=0.0)
+                    if (denom <= 0.0)
                     {
                         pd_error (x, "%s: invalid max/min values. input ignored.", x->x_objSymbol->s_name);
                         return;
                     }
 
-                    SETFLOAT (x->x_listOut + i, numer/denom);
+                    SETFLOAT (x->x_listOut + i, numer / denom);
                 }
                 break;
             case 1:
@@ -105,19 +105,19 @@ static void featureNorm_normalize (t_featureNorm *x, t_symbol *s, int argc, t_at
 
                     thisAtt = atom_getfloat (argv + i);
 
-                    thisAtt = (thisAtt<x->x_minValues[i])?x->x_minValues[i]:thisAtt;
-                    thisAtt = (thisAtt>x->x_maxValues[i])?x->x_maxValues[i]:thisAtt;
+                    thisAtt = (thisAtt < x->x_minValues[i]) ? x->x_minValues[i] : thisAtt;
+                    thisAtt = (thisAtt > x->x_maxValues[i]) ? x->x_maxValues[i] : thisAtt;
 
                     numer = thisAtt - x->x_minValues[i];
                     denom = x->x_maxValues[i] - x->x_minValues[i];
 
-                    if (denom<=0.0)
+                    if (denom <= 0.0)
                     {
                         pd_error (x, "%s: invalid max/min values. input ignored.", x->x_objSymbol->s_name);
                         return;
                     }
 
-                    SETFLOAT (x->x_listOut + i, (numer/denom)*2.0-1.0);
+                    SETFLOAT (x->x_listOut + i, (numer / denom) * 2.0 - 1.0);
                 }
                 break;
             default:
@@ -128,7 +128,7 @@ static void featureNorm_normalize (t_featureNorm *x, t_symbol *s, int argc, t_at
     outlet_list (x->x_featureList, 0, x->x_featureLength, x->x_listOut);
 }
 
-static void featureNorm_minValues(t_featureNorm *x, t_symbol *s, int argc, t_atom *argv)
+static void featureNorm_minValues (t_featureNorm *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_attributeIdx i;
 
@@ -144,7 +144,7 @@ static void featureNorm_minValues(t_featureNorm *x, t_symbol *s, int argc, t_ato
     }
 }
 
-static void featureNorm_maxValues(t_featureNorm *x, t_symbol *s, int argc, t_atom *argv)
+static void featureNorm_maxValues (t_featureNorm *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_attributeIdx i;
 
@@ -191,30 +191,30 @@ static void featureNorm_print (t_featureNorm *x)
     endpost ();
 }
 
-static void featureNorm_clear(t_featureNorm *x)
+static void featureNorm_clear (t_featureNorm *x)
 {
     featureNorm_free (x);
-    featureNorm_allocMem(x);
-    featureNorm_initMem(x);
+    featureNorm_allocMem (x);
+    featureNorm_initMem (x);
 }
 
-static void featureNorm_length(t_featureNorm *x, t_floatarg len)
+static void featureNorm_length (t_featureNorm *x, t_floatarg len)
 {
-    len = (len<1)?1:len;
+    len = (len < 1) ? 1 : len;
 
     // free memory first
     featureNorm_free (x);
 
     x->x_featureLength = len;
 
-    featureNorm_allocMem(x);
-    featureNorm_initMem(x);
+    featureNorm_allocMem (x);
+    featureNorm_initMem (x);
 }
 
 static void featureNorm_mode (t_featureNorm *x, t_floatarg m)
 {
-    m = (m<0)?0:m;
-    m = (m>1)?1:m;
+    m = (m < 0) ? 0 : m;
+    m = (m > 1) ? 1 : m;
 
     x->x_mode = m;
 }
@@ -238,20 +238,20 @@ static void *featureNorm_new (t_symbol *s, int argc, t_atom *argv)
             break;
         case 1:
             featureLength = atom_getfloat (argv);
-            featureLength = (featureLength<1)?1:featureLength;
+            featureLength = (featureLength < 1) ? 1 : featureLength;
             x->x_featureLength = featureLength;
             x->x_mode = 0;
             break;
         default:
             featureLength = atom_getfloat (argv);
-            featureLength = (featureLength<1)?1:featureLength;
+            featureLength = (featureLength < 1) ? 1 : featureLength;
             x->x_featureLength = featureLength;
             x->x_mode = atom_getfloat (argv + 1);
             break;
     }
 
-     featureNorm_allocMem(x);
-     featureNorm_initMem(x);
+     featureNorm_allocMem (x);
+     featureNorm_initMem (x);
 
     return (void *)x;
 }
