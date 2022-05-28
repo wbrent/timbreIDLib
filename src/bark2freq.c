@@ -35,30 +35,30 @@ static void bark2freq_calculate(t_bark2freq *x, t_float b)
 
     bark = b;
 
-    if(bark>=0.0 && bark<=TID_MAXBARKS)
+    if (bark>=0.0 && bark<=TID_MAXBARKS)
     {
         t_float freq;
 
         freq = tIDLib_bark2freq(bark);
-        outlet_float(x->x_freq, freq);
+        outlet_float (x->x_freq, freq);
     }
     else
-        pd_error(x, "%s: Bark frequency must be between 0 and %f Barks", x->x_objSymbol->s_name, TID_MAXBARKS);
+        pd_error (x, "%s: Bark frequency must be between 0 and %f Barks", x->x_objSymbol->s_name, TID_MAXBARKS);
 }
 
 
-static void *bark2freq_new(t_symbol *s, int argc, t_atom *argv)
+static void *bark2freq_new (t_symbol *s, int argc, t_atom *argv)
 {
-    t_bark2freq *x = (t_bark2freq *)pd_new(bark2freq_class);
-    x->x_freq = outlet_new(&x->x_obj, &s_float);
+    t_bark2freq *x = (t_bark2freq *)pd_new (bark2freq_class);
+    x->x_freq = outlet_new (&x->x_obj, &s_float);
 
     x->x_objSymbol = s;
 
     // will use x->x_formula in future
-    switch(argc)
+    switch (argc)
     {
         case 1:
-            x->x_formula = atom_getfloat(argv);
+            x->x_formula = atom_getfloat (argv);
             break;
         default:
             x->x_formula = bark2freqFormula0;
@@ -69,30 +69,30 @@ static void *bark2freq_new(t_symbol *s, int argc, t_atom *argv)
 }
 
 
-void bark2freq_setup(void)
+void bark2freq_setup (void)
 {
     bark2freq_class =
-    class_new(
-        gensym("bark2freq"),
+    class_new (
+        gensym ("bark2freq"),
         (t_newmethod)bark2freq_new,
         0,
-        sizeof(t_bark2freq),
+        sizeof (t_bark2freq),
         CLASS_DEFAULT,
         A_GIMME,
         0
     );
 
-    class_addcreator(
+    class_addcreator (
         (t_newmethod)bark2freq_new,
-        gensym("timbreIDLib/bark2freq"),
+        gensym ("timbreIDLib/bark2freq"),
         A_GIMME,
         0
     );
 
-    class_addfloat(
+    class_addfloat (
         bark2freq_class,
         (t_method)bark2freq_calculate
     );
 
-    class_sethelpsymbol(bark2freq_class, gensym("tID-conversion"));
+    class_sethelpsymbol (bark2freq_class, gensym ("tID-conversion"));
 }

@@ -34,30 +34,30 @@ static void freq2mel_calculate(t_freq2mel *x, t_float f)
 
     freq = f;
 
-    if(freq>=0.0 && freq<=TID_MAXMELFREQ)
+    if (freq>=0.0 && freq<=TID_MAXMELFREQ)
     {
         t_float melFreq;
 
         melFreq = tIDLib_freq2mel(freq);
 
-        outlet_float(x->x_melFreq, melFreq);
+        outlet_float (x->x_melFreq, melFreq);
     }
     else
-        pd_error(x, "%s: frequency must be between 0 and %f Hz", x->x_objSymbol->s_name, TID_MAXMELFREQ);
+        pd_error (x, "%s: frequency must be between 0 and %f Hz", x->x_objSymbol->s_name, TID_MAXMELFREQ);
 }
 
-static void *freq2mel_new(t_symbol *s, int argc, t_atom *argv)
+static void *freq2mel_new (t_symbol *s, int argc, t_atom *argv)
 {
-    t_freq2mel *x = (t_freq2mel *)pd_new(freq2mel_class);
-    x->x_melFreq = outlet_new(&x->x_obj, &s_float);
+    t_freq2mel *x = (t_freq2mel *)pd_new (freq2mel_class);
+    x->x_melFreq = outlet_new (&x->x_obj, &s_float);
 
     x->x_objSymbol = s;
 
     // will use x->x_formula in future
-    switch(argc)
+    switch (argc)
     {
         case 1:
-            x->x_formula = atom_getfloat(argv);
+            x->x_formula = atom_getfloat (argv);
             break;
         default:
             x->x_formula = freq2melFormula0;
@@ -67,30 +67,30 @@ static void *freq2mel_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-void freq2mel_setup(void)
+void freq2mel_setup (void)
 {
     freq2mel_class =
-    class_new(
-        gensym("freq2mel"),
+    class_new (
+        gensym ("freq2mel"),
         (t_newmethod)freq2mel_new,
         0,
-        sizeof(t_freq2mel),
+        sizeof (t_freq2mel),
         CLASS_DEFAULT,
         A_GIMME,
         0
     );
 
-    class_addcreator(
+    class_addcreator (
         (t_newmethod)freq2mel_new,
-        gensym("timbreIDLib/freq2mel"),
+        gensym ("timbreIDLib/freq2mel"),
         A_GIMME,
         0
     );
 
-    class_addfloat(
+    class_addfloat (
         freq2mel_class,
         (t_method)freq2mel_calculate
     );
 
-    class_sethelpsymbol(freq2mel_class, gensym("tID-conversion"));
+    class_sethelpsymbol (freq2mel_class, gensym ("tID-conversion"));
 }

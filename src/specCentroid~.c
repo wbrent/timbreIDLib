@@ -46,7 +46,7 @@ typedef struct _specCentroid_tilde
 
 /* ------------------------ specCentroid~ -------------------------------- */
 
-static void specCentroid_tilde_bang(t_specCentroid_tilde *x)
+static void specCentroid_tilde_bang (t_specCentroid_tilde *x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
     t_float energySum, centroid, *windowFuncPtr;
@@ -55,19 +55,19 @@ static void specCentroid_tilde_bang(t_specCentroid_tilde *x)
     window = x->x_window;
     windowHalf = x->x_windowHalf;
 
-    currentTime = clock_gettimesince(x->x_lastDspTime);
-    bangSample = roundf((currentTime / 1000.0) * x->x_sr);
+    currentTime = clock_gettimesince (x->x_lastDspTime);
+    bangSample = roundf ((currentTime / 1000.0) * x->x_sr);
 
-    if(bangSample >= x->x_n)
+    if (bangSample >= x->x_n)
         bangSample = x->x_n - 1;
 
     // construct analysis window using bangSample as the end of the window
-    for(i = 0, j = bangSample; i < window; i++, j++)
+    for (i = 0, j = bangSample; i < window; i++, j++)
         x->x_fftwIn[i] = x->x_signalBuffer[j];
 
     windowFuncPtr = x->x_blackman;
 
-    switch(x->x_windowFunction)
+    switch (x->x_windowFunction)
     {
         case rectangular:
             break;
@@ -89,129 +89,129 @@ static void specCentroid_tilde_bang(t_specCentroid_tilde *x)
     };
 
     // if windowFunction == 0, skip the windowing (rectangular)
-    if(x->x_windowFunction != rectangular)
-        for(i = 0; i < window; i++, windowFuncPtr++)
+    if (x->x_windowFunction != rectangular)
+        for (i = 0; i < window; i++, windowFuncPtr++)
             x->x_fftwIn[i] *= *windowFuncPtr;
 
-    fftwf_execute(x->x_fftwPlan);
+    fftwf_execute (x->x_fftwPlan);
 
     // put the result of power calc back in x_fftwIn
-    tIDLib_power(windowHalf + 1, x->x_fftwOut, x->x_fftwIn);
+    tIDLib_power (windowHalf + 1, x->x_fftwOut, x->x_fftwIn);
 
-    if(!x->x_powerSpectrum)
-        tIDLib_mag(windowHalf + 1, x->x_fftwIn);
+    if ( !x->x_powerSpectrum)
+        tIDLib_mag (windowHalf + 1, x->x_fftwIn);
 
     energySum = 0.0;
-    for(i = 0; i <= windowHalf; i++)
+    for (i = 0; i <= windowHalf; i++)
         energySum += x->x_fftwIn[i];
 
     centroid = tIDLib_computeCentroid(windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum);
 
-    outlet_float(x->x_centroid, centroid);
+    outlet_float (x->x_centroid, centroid);
 }
 
 
-static void specCentroid_tilde_print(t_specCentroid_tilde *x)
+static void specCentroid_tilde_print (t_specCentroid_tilde *x)
 {
-    post("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
-    post("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
-    post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
-    post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
-    post("%s power spectrum: %i", x->x_objSymbol->s_name, x->x_powerSpectrum);
-    post("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
+    post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
+    post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
+    post ("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
+    post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
+    post ("%s power spectrum: %i", x->x_objSymbol->s_name, x->x_powerSpectrum);
+    post ("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
 }
 
 
-static void specCentroid_tilde_window(t_specCentroid_tilde *x, t_floatarg w)
+static void specCentroid_tilde_window (t_specCentroid_tilde *x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
     window = w;
 
-    if(window < TID_MINWINDOWSIZE)
+    if (window < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
-        post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
+        post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
 
     windowHalf = window * 0.5;
 
-    x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window + x->x_n) * sizeof(t_sample), (window + x->x_n) * sizeof(t_sample));
-    x->x_fftwIn = (t_sample *)t_resizebytes(x->x_fftwIn, x->x_window * sizeof(t_sample), window * sizeof(t_sample));
-    x->x_binFreqs = (t_float *)t_resizebytes(x->x_binFreqs, (x->x_windowHalf + 1) * sizeof(t_float), (windowHalf + 1) * sizeof(t_float));
+    x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample), (window + x->x_n) * sizeof (t_sample));
+    x->x_fftwIn = (t_sample *)t_resizebytes (x->x_fftwIn, x->x_window * sizeof (t_sample), window * sizeof (t_sample));
+    x->x_binFreqs = (t_float *)t_resizebytes (x->x_binFreqs, (x->x_windowHalf + 1) * sizeof (t_float), (windowHalf + 1) * sizeof (t_float));
 
-    x->x_blackman = (t_float *)t_resizebytes(x->x_blackman, x->x_window * sizeof(t_float), window * sizeof(t_float));
-    x->x_cosine = (t_float *)t_resizebytes(x->x_cosine, x->x_window * sizeof(t_float), window * sizeof(t_float));
-    x->x_hamming = (t_float *)t_resizebytes(x->x_hamming, x->x_window * sizeof(t_float), window * sizeof(t_float));
-    x->x_hann = (t_float *)t_resizebytes(x->x_hann, x->x_window * sizeof(t_float), window * sizeof(t_float));
+    x->x_blackman = (t_float *)t_resizebytes (x->x_blackman, x->x_window * sizeof (t_float), window * sizeof (t_float));
+    x->x_cosine = (t_float *)t_resizebytes (x->x_cosine, x->x_window * sizeof (t_float), window * sizeof (t_float));
+    x->x_hamming = (t_float *)t_resizebytes (x->x_hamming, x->x_window * sizeof (t_float), window * sizeof (t_float));
+    x->x_hann = (t_float *)t_resizebytes (x->x_hann, x->x_window * sizeof (t_float), window * sizeof (t_float));
 
     x->x_window = window;
     x->x_windowHalf = windowHalf;
 
     // free the FFTW output buffer, and re-malloc according to new window
-    fftwf_free(x->x_fftwOut);
+    fftwf_free (x->x_fftwOut);
 
     // destroy old DFT plan, which depended on x->x_window
-    fftwf_destroy_plan(x->x_fftwPlan);
+    fftwf_destroy_plan (x->x_fftwPlan);
 
     // allocate new fftwf_complex memory for the plan based on new window size
-    x->x_fftwOut = (fftwf_complex *) fftwf_alloc_complex(windowHalf + 1);
+    x->x_fftwOut = (fftwf_complex *) fftwf_alloc_complex (windowHalf + 1);
 
     // create a new DFT plan based on new window size
-    x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
+    x->x_fftwPlan = fftwf_plan_dft_r2c_1d (x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
 
     // we're supposed to initialize the input array after we create the plan
-     for(i = 0; i < x->x_window; i++)
+     for (i = 0; i < x->x_window; i++)
         x->x_fftwIn[i] = 0.0;
 
     // initialize signal buffer
-    for(i = 0; i < x->x_window + x->x_n; i++)
+    for (i = 0; i < x->x_window + x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
     // re-init window functions
-    tIDLib_blackmanWindow(x->x_blackman, x->x_window);
-    tIDLib_cosineWindow(x->x_cosine, x->x_window);
-    tIDLib_hammingWindow(x->x_hamming, x->x_window);
-    tIDLib_hannWindow(x->x_hann, x->x_window);
+    tIDLib_blackmanWindow (x->x_blackman, x->x_window);
+    tIDLib_cosineWindow (x->x_cosine, x->x_window);
+    tIDLib_hammingWindow (x->x_hamming, x->x_window);
+    tIDLib_hannWindow (x->x_hann, x->x_window);
 
-     for(i = 0; i <= x->x_windowHalf; i++)
+     for (i = 0; i <= x->x_windowHalf; i++)
         x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
 
-    post("%s window size: %i", x->x_objSymbol->s_name, x->x_window);
+    post ("%s window size: %i", x->x_objSymbol->s_name, x->x_window);
 }
 
 
-static void specCentroid_tilde_overlap(t_specCentroid_tilde *x, t_floatarg o)
+static void specCentroid_tilde_overlap (t_specCentroid_tilde *x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
 
-    post("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
+    post ("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
 }
 
 
-static void specCentroid_tilde_windowFunction(t_specCentroid_tilde *x, t_floatarg f)
+static void specCentroid_tilde_windowFunction (t_specCentroid_tilde *x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
     x->x_windowFunction = f;
 
-    switch(x->x_windowFunction)
+    switch (x->x_windowFunction)
     {
         case rectangular:
-            post("%s window function: rectangular.", x->x_objSymbol->s_name);
+            post ("%s window function: rectangular.", x->x_objSymbol->s_name);
             break;
         case blackman:
-            post("%s window function: blackman.", x->x_objSymbol->s_name);
+            post ("%s window function: blackman.", x->x_objSymbol->s_name);
             break;
         case cosine:
-            post("%s window function: cosine.", x->x_objSymbol->s_name);
+            post ("%s window function: cosine.", x->x_objSymbol->s_name);
             break;
         case hamming:
-            post("%s window function: hamming.", x->x_objSymbol->s_name);
+            post ("%s window function: hamming.", x->x_objSymbol->s_name);
             break;
         case hann:
-            post("%s window function: hann.", x->x_objSymbol->s_name);
+            post ("%s window function: hann.", x->x_objSymbol->s_name);
             break;
         default:
             break;
@@ -219,37 +219,37 @@ static void specCentroid_tilde_windowFunction(t_specCentroid_tilde *x, t_floatar
 }
 
 
-static void specCentroid_tilde_powerSpectrum(t_specCentroid_tilde *x, t_floatarg power)
+static void specCentroid_tilde_powerSpectrum (t_specCentroid_tilde *x, t_floatarg power)
 {
     power = (power<0)?0:power;
     power = (power>1)?1:power;
     x->x_powerSpectrum = power;
 
-    if(x->x_powerSpectrum)
-        post("%s using power spectrum", x->x_objSymbol->s_name);
+    if (x->x_powerSpectrum)
+        post ("%s using power spectrum", x->x_objSymbol->s_name);
     else
-        post("%s using magnitude spectrum", x->x_objSymbol->s_name);
+        post ("%s using magnitude spectrum", x->x_objSymbol->s_name);
 }
 
 
-static void *specCentroid_tilde_new(t_symbol *s, int argc, t_atom *argv)
+static void *specCentroid_tilde_new (t_symbol *s, int argc, t_atom *argv)
 {
-    t_specCentroid_tilde *x = (t_specCentroid_tilde *)pd_new(specCentroid_tilde_class);
+    t_specCentroid_tilde *x = (t_specCentroid_tilde *)pd_new (specCentroid_tilde_class);
     t_sampIdx i;
 
-    x->x_centroid = outlet_new(&x->x_obj, &s_float);
+    x->x_centroid = outlet_new (&x->x_obj, &s_float);
 
     // store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
     x->x_objSymbol = s;
 
-    switch(argc)
+    switch (argc)
     {
         case 1:
-            x->x_window = atom_getfloat(argv);
-            if(x->x_window < TID_MINWINDOWSIZE)
+            x->x_window = atom_getfloat (argv);
+            if (x->x_window < TID_MINWINDOWSIZE)
             {
                 x->x_window = TID_WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
+                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
             break;
 
@@ -258,7 +258,7 @@ static void *specCentroid_tilde_new(t_symbol *s, int argc, t_atom *argv)
             break;
 
         default:
-            post("%s WARNING: Too many arguments supplied. Using default window size of %i.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT);
+            post ("%s WARNING: Too many arguments supplied. Using default window size of %i.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT);
             x->x_window = TID_WINDOWSIZEDEFAULT;
             break;
     }
@@ -271,44 +271,44 @@ static void *specCentroid_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_powerSpectrum = 0;
     x->x_lastDspTime = clock_getlogicaltime();
 
-    x->x_signalBuffer = (t_sample *)t_getbytes((x->x_window + x->x_n) * sizeof(t_sample));
-    x->x_fftwIn = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
+    x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_window + x->x_n) * sizeof (t_sample));
+    x->x_fftwIn = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
 
     // initialize signal buffer
-    for(i = 0; i < x->x_window + x->x_n; i++)
+    for (i = 0; i < x->x_window + x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
-      x->x_blackman = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
-      x->x_cosine = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
-      x->x_hamming = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
-      x->x_hann = (t_float *)t_getbytes(x->x_window * sizeof(t_float));
+      x->x_blackman = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+      x->x_cosine = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+      x->x_hamming = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+      x->x_hann = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
 
      // initialize signal windowing functions
-    tIDLib_blackmanWindow(x->x_blackman, x->x_window);
-    tIDLib_cosineWindow(x->x_cosine, x->x_window);
-    tIDLib_hammingWindow(x->x_hamming, x->x_window);
-    tIDLib_hannWindow(x->x_hann, x->x_window);
+    tIDLib_blackmanWindow (x->x_blackman, x->x_window);
+    tIDLib_cosineWindow (x->x_cosine, x->x_window);
+    tIDLib_hammingWindow (x->x_hamming, x->x_window);
+    tIDLib_hannWindow (x->x_hann, x->x_window);
 
     // set up the FFTW output buffer
-    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex(x->x_windowHalf + 1);
+    x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex (x->x_windowHalf + 1);
 
     // DFT plan
-    x->x_fftwPlan = fftwf_plan_dft_r2c_1d(x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
+    x->x_fftwPlan = fftwf_plan_dft_r2c_1d (x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
 
     // we're supposed to initialize the input array after we create the plan
-     for(i = 0; i < x->x_window; i++)
+     for (i = 0; i < x->x_window; i++)
         x->x_fftwIn[i] = 0.0;
 
-    x->x_binFreqs = (t_float *)t_getbytes((x->x_windowHalf + 1) * sizeof(t_float));
+    x->x_binFreqs = (t_float *)t_getbytes ((x->x_windowHalf + 1) * sizeof (t_float));
 
-     for(i = 0; i <= x->x_windowHalf; i++)
+     for (i = 0; i <= x->x_windowHalf; i++)
         x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
 
     return (x);
 }
 
 
-static t_int *specCentroid_tilde_perform(t_int *w)
+static t_int *specCentroid_tilde_perform (t_int *w)
 {
     t_uShortInt n;
     t_sampIdx i;
@@ -319,11 +319,11 @@ static t_int *specCentroid_tilde_perform(t_int *w)
     n = w[3];
 
      // shift signal buffer contents back.
-    for(i = 0; i < x->x_window; i++)
+    for (i = 0; i < x->x_window; i++)
         x->x_signalBuffer[i] = x->x_signalBuffer[i+n];
 
     // write new block to end of signal buffer.
-    for(i = 0; i < n; i++)
+    for (i = 0; i < n; i++)
         x->x_signalBuffer[x->x_window + i] = in[i];
 
     x->x_lastDspTime = clock_getlogicaltime();
@@ -332,9 +332,9 @@ static t_int *specCentroid_tilde_perform(t_int *w)
 }
 
 
-static void specCentroid_tilde_dsp(t_specCentroid_tilde *x, t_signal **sp)
+static void specCentroid_tilde_dsp (t_specCentroid_tilde *x, t_signal **sp)
 {
-    dsp_add(
+    dsp_add (
         specCentroid_tilde_perform,
         3,
         x,
@@ -343,120 +343,120 @@ static void specCentroid_tilde_dsp(t_specCentroid_tilde *x, t_signal **sp)
     );
 
 // compare sr to stored sr and update if different
-    if( sp[0]->s_sr != x->x_sr * x->x_overlap )
+    if ( sp[0]->s_sr != x->x_sr * x->x_overlap )
     {
         t_sampIdx i;
         x->x_sr = sp[0]->s_sr / x->x_overlap;
 
-        for(i = 0; i <= x->x_windowHalf; i++)
+        for (i = 0; i <= x->x_windowHalf; i++)
             x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
     };
 
 // compare n to stored n and update/resize buffer if different
-    if( sp[0]->s_n != x->x_n )
+    if ( sp[0]->s_n != x->x_n )
     {
         t_sampIdx i;
 
-        x->x_signalBuffer = (t_sample *)t_resizebytes(x->x_signalBuffer, (x->x_window + x->x_n) * sizeof(t_sample), (x->x_window + sp[0]->s_n) * sizeof(t_sample));
+        x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample), (x->x_window + sp[0]->s_n) * sizeof (t_sample));
 
         x->x_n = sp[0]->s_n;
         x->x_lastDspTime = clock_getlogicaltime();
 
         // init signal buffer
-        for(i = 0; i < x->x_window + x->x_n; i++)
+        for (i = 0; i < x->x_window + x->x_n; i++)
             x->x_signalBuffer[i] = 0.0;
     }
 };
 
 
-static void specCentroid_tilde_free(t_specCentroid_tilde *x)
+static void specCentroid_tilde_free (t_specCentroid_tilde *x)
 {
     // free the input buffer memory
-    t_freebytes(x->x_signalBuffer, (x->x_window + x->x_n) * sizeof(t_sample));
+    t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));
 
     // free FFTW stuff
-    t_freebytes(x->x_fftwIn, (x->x_window) * sizeof(t_sample));
-    fftwf_free(x->x_fftwOut);
-    fftwf_destroy_plan(x->x_fftwPlan);
+    t_freebytes (x->x_fftwIn, x->x_window * sizeof (t_sample));
+    fftwf_free (x->x_fftwOut);
+    fftwf_destroy_plan (x->x_fftwPlan);
 
     // free the window memory
-    t_freebytes(x->x_blackman, x->x_window * sizeof(t_float));
-    t_freebytes(x->x_cosine, x->x_window * sizeof(t_float));
-    t_freebytes(x->x_hamming, x->x_window * sizeof(t_float));
-    t_freebytes(x->x_hann, x->x_window * sizeof(t_float));
+    t_freebytes (x->x_blackman, x->x_window * sizeof (t_float));
+    t_freebytes (x->x_cosine, x->x_window * sizeof (t_float));
+    t_freebytes (x->x_hamming, x->x_window * sizeof (t_float));
+    t_freebytes (x->x_hann, x->x_window * sizeof (t_float));
 
     // free x_binFreqs memory
-    t_freebytes(x->x_binFreqs, (x->x_windowHalf + 1) * sizeof(t_float));
+    t_freebytes (x->x_binFreqs, (x->x_windowHalf + 1) * sizeof (t_float));
 }
 
 
-void specCentroid_tilde_setup(void)
+void specCentroid_tilde_setup (void)
 {
     specCentroid_tilde_class =
-    class_new(
-        gensym("specCentroid~"),
+    class_new (
+        gensym ("specCentroid~"),
         (t_newmethod)specCentroid_tilde_new,
         (t_method)specCentroid_tilde_free,
-        sizeof(t_specCentroid_tilde),
+        sizeof (t_specCentroid_tilde),
         CLASS_DEFAULT,
         A_GIMME,
         0
     );
 
-    class_addcreator(
+    class_addcreator (
         (t_newmethod)specCentroid_tilde_new,
-        gensym("timbreIDLib/specCentroid~"),
+        gensym ("timbreIDLib/specCentroid~"),
         A_GIMME,
         0
     );
 
-    CLASS_MAINSIGNALIN(specCentroid_tilde_class, t_specCentroid_tilde, x_f);
+    CLASS_MAINSIGNALIN (specCentroid_tilde_class, t_specCentroid_tilde, x_f);
 
-    class_addbang(specCentroid_tilde_class, specCentroid_tilde_bang);
+    class_addbang (specCentroid_tilde_class, specCentroid_tilde_bang);
 
-    class_addmethod(
+    class_addmethod (
         specCentroid_tilde_class,
         (t_method)specCentroid_tilde_print,
-        gensym("print"),
+        gensym ("print"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         specCentroid_tilde_class,
         (t_method)specCentroid_tilde_window,
-        gensym("window"),
+        gensym ("window"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         specCentroid_tilde_class,
         (t_method)specCentroid_tilde_overlap,
-        gensym("overlap"),
+        gensym ("overlap"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         specCentroid_tilde_class,
         (t_method)specCentroid_tilde_windowFunction,
-        gensym("window_function"),
+        gensym ("window_function"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         specCentroid_tilde_class,
         (t_method)specCentroid_tilde_powerSpectrum,
-        gensym("power_spectrum"),
+        gensym ("power_spectrum"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         specCentroid_tilde_class,
         (t_method)specCentroid_tilde_dsp,
-        gensym("dsp"),
+        gensym ("dsp"),
         0
     );
 }

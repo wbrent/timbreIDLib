@@ -35,60 +35,60 @@ static void tID_mean_calculate(t_tID_mean *x, t_symbol *s, int argc, t_atom *arg
 
     n = argc;
 
-    if(n < 1)
-        pd_error(x, "%s: too few elements in list.", x->x_objSymbol->s_name);
+    if (n < 1)
+        pd_error (x, "%s: too few elements in list.", x->x_objSymbol->s_name);
     else
     {
         // create local memory
-        input = (t_float *)t_getbytes(n * sizeof(t_float));
+        input = (t_float *)t_getbytes (n * sizeof (t_float));
 
-        for(i = 0; i < n; i++)
-            input[i] = atom_getfloat(argv + i);
+        for (i = 0; i < n; i++)
+            input[i] = atom_getfloat (argv + i);
 
         sum = 0.0;
 
-        for(i = 0; i < n; i++)
+        for (i = 0; i < n; i++)
             sum += input[i];
 
         mean = sum/n;
 
-        outlet_float(x->x_mean, mean);
+        outlet_float (x->x_mean, mean);
 
         // free local memory
-        t_freebytes(input, n * sizeof(t_float));
+        t_freebytes (input, n * sizeof (t_float));
     }
 }
 
-static void *tID_mean_new(void)
+static void *tID_mean_new (void)
 {
-    t_tID_mean *x = (t_tID_mean *)pd_new(tID_mean_class);
-    x->x_mean = outlet_new(&x->x_obj, &s_float);
+    t_tID_mean *x = (t_tID_mean *)pd_new (tID_mean_class);
+    x->x_mean = outlet_new (&x->x_obj, &s_float);
 
-    x->x_objSymbol = gensym("tID_mean");
+    x->x_objSymbol = gensym ("tID_mean");
 
     return (x);
 }
 
-void tID_mean_setup(void)
+void tID_mean_setup (void)
 {
     tID_mean_class =
-    class_new(
-        gensym("tID_mean"),
+    class_new (
+        gensym ("tID_mean"),
         (t_newmethod)tID_mean_new,
         0,
-        sizeof(t_tID_mean),
+        sizeof (t_tID_mean),
         CLASS_DEFAULT,
         0
     );
 
-    class_addcreator(
+    class_addcreator (
         (t_newmethod)tID_mean_new,
-        gensym("timbreIDLib/tID_mean"),
+        gensym ("timbreIDLib/tID_mean"),
         A_GIMME,
         0
     );
 
-    class_addlist(
+    class_addlist (
         tID_mean_class,
         (t_method)tID_mean_calculate
     );

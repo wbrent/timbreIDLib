@@ -314,7 +314,7 @@ void tIDLib_bubbleSort (t_sampIdx n, t_float* input )
             }
         }
 
-        if (!flag)
+        if ( !flag)
             break;
     }
 }
@@ -343,7 +343,7 @@ void tIDLib_knnInfoBubbleSort (t_uShortInt n, t_instance* instances)
             }
         }
 
-        if (!flag)
+        if ( !flag)
             break;
     }
 }

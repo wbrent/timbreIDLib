@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 ** 0.6.0 changed all floats to t_floats, got rid of unused headers, removed underscores from variable names.  FIXED concatenative_id function's search center/neighborhood bug.  Added a similarity matrix function.  Added a "print" method to show internal settings.  Made even or odd neighborhood settings valid since it will sometimes be important to pick an exact range.  Odd settings are fine - with n=5, we search from the center -/+ 2.  With n=6, it be center -2/+3 because of a special case for searchStart.
 ** 0.5.1 was just to remove the "no such table" error from the NRT externs when it doesn't find the specified table at load time. also, the max window size for all the NRT externs was set to 131072 because this seems to be the maximum allowable size for mayer_realfft().
-** 0.5 as part of the timbreID-0.5 update, this gets rid of unnecessary getbytes(0) calls in timbreID.c. does not yet use memset() or memcpy() where possible.  fixed lack of memory free for x->x_weights, x->x_attributeOrder, x->x_instanceFeatureLengths, x->x_normData in _free.
+** 0.5 as part of the timbreID-0.5 update, this gets rid of unnecessary getbytes (0) calls in timbreID.c. does not yet use memset () or memcpy() where possible.  fixed lack of memory free for x->x_weights, x->x_attributeOrder, x->x_instanceFeatureLengths, x->x_normData in _free.
 ** fixed small memory mismanagement in all _make_filterbank functions for bark-based externs.
 ** [timbreID] is unchanged - only updating for addition of [featureAccum] and [binWrangler], which streamline time-evolving feature extraction
 ** [timbreID] is unchanged - only updating version for [cepstrum] and [cepstrum~] changes.
@@ -108,12 +108,12 @@ static t_float timbreID_attributeMean(t_instanceIdx numRows, t_attributeIdx colu
 
     avg=0.0;
 
-    for(i = 0; i < numRows; i++)
+    for (i = 0; i < numRows; i++)
     {
         // check that this attribute is in range for instance i
-        if(column<instances[i].length)
+        if (column<instances[i].length)
         {
-            if(normalFlag)
+            if (normalFlag)
             {
                 min = attributeData[column].normData.minVal;
                 scalar = attributeData[column].normData.normScalar;
@@ -142,38 +142,38 @@ static t_float timbreID_getInputDist(t_timbreID *x, t_instanceIdx instanceID)
     min=max=dist = 0.0;
     normScalar = 1.0;
 
-    vec1Buffer = (t_float *)t_getbytes(vecLen * sizeof(t_float));
-    vec2Buffer = (t_float *)t_getbytes(vecLen * sizeof(t_float));
-    vecWeights = (t_float *)t_getbytes(vecLen * sizeof(t_float));
+    vec1Buffer = (t_float *)t_getbytes (vecLen * sizeof (t_float));
+    vec2Buffer = (t_float *)t_getbytes (vecLen * sizeof (t_float));
+    vecWeights = (t_float *)t_getbytes (vecLen * sizeof (t_float));
 
     // extract the right attributes and apply normalization if it's active
-    for(i=x->x_attributeLo, j=0; i<=x->x_attributeHi; i++, j++)
+    for (i=x->x_attributeLo, j=0; i<=x->x_attributeHi; i++, j++)
     {
         t_attributeIdx thisAttribute;
         thisAttribute = x->x_attributeData[i].order;
 
-        if(thisAttribute>x->x_instances[instanceID].length)
+        if (thisAttribute>x->x_instances[instanceID].length)
         {
-            pd_error(x, "%s: attribute %i out of range for database instance %i.", x->x_objSymbol->s_name, thisAttribute, instanceID);
+            pd_error (x, "%s: attribute %i out of range for database instance %i.", x->x_objSymbol->s_name, thisAttribute, instanceID);
 
             // free local memory before exiting
-            t_freebytes(vec1Buffer, vecLen * sizeof(t_float));
-            t_freebytes(vec2Buffer, vecLen * sizeof(t_float));
-            t_freebytes(vecWeights, vecLen * sizeof(t_float));
+            t_freebytes (vec1Buffer, vecLen * sizeof (t_float));
+            t_freebytes (vec2Buffer, vecLen * sizeof (t_float));
+            t_freebytes (vecWeights, vecLen * sizeof (t_float));
 
             return(FLT_MAX);
         }
 
         vecWeights[j] = x->x_attributeData[thisAttribute].weight;
 
-        if(x->x_normalize)
+        if (x->x_normalize)
         {
-            if(x->x_attributeData[thisAttribute].inputData < x->x_attributeData[thisAttribute].normData.minVal)
+            if (x->x_attributeData[thisAttribute].inputData < x->x_attributeData[thisAttribute].normData.minVal)
                 min = x->x_attributeData[thisAttribute].inputData;
             else
                 min = x->x_attributeData[thisAttribute].normData.minVal;
 
-            if(x->x_attributeData[thisAttribute].inputData > x->x_attributeData[thisAttribute].normData.maxVal)
+            if (x->x_attributeData[thisAttribute].inputData > x->x_attributeData[thisAttribute].normData.maxVal)
             {
                 max = x->x_attributeData[thisAttribute].inputData;
                 normScalar = 1.0/(max-min);
@@ -194,7 +194,7 @@ static t_float timbreID_getInputDist(t_timbreID *x, t_instanceIdx instanceID)
         }
     }
 
-    switch(x->x_distMetric)
+    switch (x->x_distMetric)
     {
         case euclidean:
             dist = tIDLib_euclidDist(vecLen, vec1Buffer, vec2Buffer, vecWeights, false);
@@ -213,9 +213,9 @@ static t_float timbreID_getInputDist(t_timbreID *x, t_instanceIdx instanceID)
     };
 
     // free local memory
-    t_freebytes(vec1Buffer, vecLen * sizeof(t_float));
-    t_freebytes(vec2Buffer, vecLen * sizeof(t_float));
-    t_freebytes(vecWeights, vecLen * sizeof(t_float));
+    t_freebytes (vec1Buffer, vecLen * sizeof (t_float));
+    t_freebytes (vec2Buffer, vecLen * sizeof (t_float));
+    t_freebytes (vecWeights, vecLen * sizeof (t_float));
 
     return(dist);
 }
@@ -232,31 +232,31 @@ static t_float timbreID_getDist(t_timbreID *x, t_instance instance1, t_instance 
     min=max=dist = 0.0;
     normScalar = 1.0;
 
-    vec1Buffer = (t_float *)t_getbytes(vecLen * sizeof(t_float));
-    vec2Buffer = (t_float *)t_getbytes(vecLen * sizeof(t_float));
-    vecWeights = (t_float *)t_getbytes(vecLen * sizeof(t_float));
+    vec1Buffer = (t_float *)t_getbytes (vecLen * sizeof (t_float));
+    vec2Buffer = (t_float *)t_getbytes (vecLen * sizeof (t_float));
+    vecWeights = (t_float *)t_getbytes (vecLen * sizeof (t_float));
 
     // extract the right attributes and apply normalization if it's active
-    for(i=x->x_attributeLo, j=0; i<=x->x_attributeHi; i++, j++)
+    for (i=x->x_attributeLo, j=0; i<=x->x_attributeHi; i++, j++)
     {
         t_attributeIdx thisAttribute;
         thisAttribute = x->x_attributeData[i].order;
 
-        if(thisAttribute>(instance1.length-1) || thisAttribute>(instance2.length-1))
+        if (thisAttribute>(instance1.length-1) || thisAttribute>(instance2.length-1))
         {
-            pd_error(x, "%s: attribute %i does not exist for both feature vectors. cannot compute distance.", x->x_objSymbol->s_name, thisAttribute);
+            pd_error (x, "%s: attribute %i does not exist for both feature vectors. cannot compute distance.", x->x_objSymbol->s_name, thisAttribute);
 
             // free local memory before exiting
-            t_freebytes(vec1Buffer, vecLen * sizeof(t_float));
-            t_freebytes(vec2Buffer, vecLen * sizeof(t_float));
-            t_freebytes(vecWeights, vecLen * sizeof(t_float));
+            t_freebytes (vec1Buffer, vecLen * sizeof (t_float));
+            t_freebytes (vec2Buffer, vecLen * sizeof (t_float));
+            t_freebytes (vecWeights, vecLen * sizeof (t_float));
 
             return(FLT_MAX);
         }
 
         vecWeights[j] = x->x_attributeData[thisAttribute].weight;
 
-        if(x->x_normalize)
+        if (x->x_normalize)
         {
             // don't need to test if instance1 has attribute values below/above current min/max values in normData, because this function isn't used on input vectors from the wild. It's only used to compare database instances to other database instances, so the normalization terms are valid.
             min = x->x_attributeData[thisAttribute].normData.minVal;
@@ -273,7 +273,7 @@ static t_float timbreID_getDist(t_timbreID *x, t_instance instance1, t_instance 
         }
     }
 
-    switch(x->x_distMetric)
+    switch (x->x_distMetric)
     {
         case euclidean:
             dist = tIDLib_euclidDist(vecLen, vec1Buffer, vec2Buffer, vecWeights, false);
@@ -292,9 +292,9 @@ static t_float timbreID_getDist(t_timbreID *x, t_instance instance1, t_instance 
     };
 
     // free local memory
-    t_freebytes(vec1Buffer, vecLen * sizeof(t_float));
-    t_freebytes(vec2Buffer, vecLen * sizeof(t_float));
-    t_freebytes(vecWeights, vecLen * sizeof(t_float));
+    t_freebytes (vec1Buffer, vecLen * sizeof (t_float));
+    t_freebytes (vec2Buffer, vecLen * sizeof (t_float));
+    t_freebytes (vecWeights, vecLen * sizeof (t_float));
 
     return(dist);
 }
@@ -312,11 +312,11 @@ static t_float timbreID_getClassRefDist(t_timbreID *x, t_attributeIdx inputLen, 
 
     weights = (t_float *)t_getbytes (classLen * sizeof (t_float));
 
-    for(i=0; i < classLen; i++)
+    for (i=0; i < classLen; i++)
     {
-        if(i >= inputLen)
+        if (i >= inputLen)
         {
-            pd_error(x, "%s: attribute %i does not exist for both feature vectors. cannot compute distance.", x->x_objSymbol->s_name, i);
+            pd_error (x, "%s: attribute %i does not exist for both feature vectors. cannot compute distance.", x->x_objSymbol->s_name, i);
 
             // free local memory before exiting
             t_freebytes (weights, classLen * sizeof (t_float));
@@ -327,7 +327,7 @@ static t_float timbreID_getClassRefDist(t_timbreID *x, t_attributeIdx inputLen, 
             weights[i] = 1.0;
     }
 
-    switch(x->x_distMetric)
+    switch (x->x_distMetric)
     {
         case euclidean:
             dist = tIDLib_euclidDist(classLen, input, classRef.data, weights, false);
@@ -356,33 +356,33 @@ static void timbreID_attributeDataResize(t_timbreID *x, t_attributeIdx oldSize, 
 {
     t_attributeIdx i;
 
-    x->x_attributeData = (t_attributeData *)t_resizebytes(x->x_attributeData, oldSize * sizeof(t_attributeData), newSize * sizeof(t_attributeData));
+    x->x_attributeData = (t_attributeData *)t_resizebytes (x->x_attributeData, oldSize * sizeof (t_attributeData), newSize * sizeof (t_attributeData));
     x->x_maxFeatureLength = newSize;
 
-    if(x->x_maxFeatureLength<x->x_minFeatureLength)
+    if (x->x_maxFeatureLength<x->x_minFeatureLength)
         x->x_minFeatureLength = x->x_maxFeatureLength;
 
     // initialize attributeData
-    for(i = 0; i < x->x_maxFeatureLength; i++)
+    for (i = 0; i < x->x_maxFeatureLength; i++)
     {
         x->x_attributeData[i].inputData = 0.0;
         x->x_attributeData[i].order = i;
         x->x_attributeData[i].weight = 1.0;
-        x->x_attributeData[i].name = gensym("NULL");
+        x->x_attributeData[i].name = gensym ("NULL");
     }
 
     x->x_normalize = false;
     x->x_attributeLo = 0;
     x->x_attributeHi = x->x_maxFeatureLength-1;
 
-    if(postFlag)
+    if (postFlag)
     {
-        post("%s: max feature length: %i.", x->x_objSymbol->s_name, x->x_maxFeatureLength);
-        post("%s: min feature length: %i.", x->x_objSymbol->s_name, x->x_minFeatureLength);
-        post("%s: feature attribute normalization OFF.", x->x_objSymbol->s_name);
-        post("%s: attribute weights initialized", x->x_objSymbol->s_name);
-        post("%s: attribute order initialized", x->x_objSymbol->s_name);
-        post("%s: attribute range: %i through %i.", x->x_objSymbol->s_name, x->x_attributeLo, x->x_attributeHi);
+        post ("%s: max feature length: %i.", x->x_objSymbol->s_name, x->x_maxFeatureLength);
+        post ("%s: min feature length: %i.", x->x_objSymbol->s_name, x->x_minFeatureLength);
+        post ("%s: feature attribute normalization OFF.", x->x_objSymbol->s_name);
+        post ("%s: attribute weights initialized", x->x_objSymbol->s_name);
+        post ("%s: attribute order initialized", x->x_objSymbol->s_name);
+        post ("%s: attribute range: %i through %i.", x->x_objSymbol->s_name, x->x_attributeLo, x->x_attributeHi);
     }
 };
 /* -------- END utility functions -------- */
@@ -395,25 +395,25 @@ static void timbreID_train(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_instanceIdx i, instanceIdx;
 
-    if(x->x_normalize)
-        pd_error(x, "%s: cannot add more training instances when database is normalized. deactivate normalization first.", x->x_objSymbol->s_name);
-    else if(x->x_numClusters != x->x_numInstances)
-        pd_error(x, "%s: cannot add more training instances when database is clustered. uncluster first.", x->x_objSymbol->s_name);
+    if (x->x_normalize)
+        pd_error (x, "%s: cannot add more training instances when database is normalized. deactivate normalization first.", x->x_objSymbol->s_name);
+    else if (x->x_numClusters != x->x_numInstances)
+        pd_error (x, "%s: cannot add more training instances when database is clustered. uncluster first.", x->x_objSymbol->s_name);
     else
     {
     instanceIdx = x->x_numInstances;
 
-    x->x_instances = (t_instance *)t_resizebytes(x->x_instances, x->x_numInstances * sizeof(t_instance), (x->x_numInstances+1) * sizeof(t_instance));
-    x->x_clusters = (t_cluster *)t_resizebytes(x->x_clusters, x->x_numInstances * sizeof(t_cluster), (x->x_numInstances+1) * sizeof(t_cluster));
+    x->x_instances = (t_instance *)t_resizebytes (x->x_instances, x->x_numInstances * sizeof (t_instance), (x->x_numInstances+1) * sizeof (t_instance));
+    x->x_clusters = (t_cluster *)t_resizebytes (x->x_clusters, x->x_numInstances * sizeof (t_cluster), (x->x_numInstances+1) * sizeof (t_cluster));
 
     x->x_instances[instanceIdx].clusterMembership = instanceIdx;
     x->x_instances[instanceIdx].length = argc;
 
-    x->x_instances[instanceIdx].data = (t_float *)t_getbytes(x->x_instances[instanceIdx].length * sizeof(t_float));
+    x->x_instances[instanceIdx].data = (t_float *)t_getbytes (x->x_instances[instanceIdx].length * sizeof (t_float));
 
     x->x_clusters[instanceIdx].numMembers = 2; // 2 because we're unclustered to start, and each instance has a cluster with itself as a member, plus UINT_MAX as the 2nd element to terminate the list
 
-    x->x_clusters[instanceIdx].members = (t_instanceIdx *)t_getbytes(x->x_clusters[instanceIdx].numMembers * sizeof(t_instanceIdx));
+    x->x_clusters[instanceIdx].members = (t_instanceIdx *)t_getbytes (x->x_clusters[instanceIdx].numMembers * sizeof (t_instanceIdx));
 
     // init new clusterMembers
     x->x_clusters[instanceIdx].members[0] = instanceIdx; // first member of the cluster is the instance index
@@ -425,16 +425,16 @@ static void timbreID_train(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
     x->x_numClusters++;
     x->x_neighborhood++;
 
-    if(x->x_instances[instanceIdx].length > x->x_maxFeatureLength)
+    if (x->x_instances[instanceIdx].length > x->x_maxFeatureLength)
         timbreID_attributeDataResize(x, x->x_maxFeatureLength, x->x_instances[instanceIdx].length, true);
 
-    if(x->x_instances[instanceIdx].length < x->x_minFeatureLength)
+    if (x->x_instances[instanceIdx].length < x->x_minFeatureLength)
         x->x_minFeatureLength = x->x_instances[instanceIdx].length;
 
-    for(i = 0; i < x->x_instances[instanceIdx].length; i++)
-        x->x_instances[instanceIdx].data[i] = atom_getfloat(argv + i);
+    for (i = 0; i < x->x_instances[instanceIdx].length; i++)
+        x->x_instances[instanceIdx].data[i] = atom_getfloat (argv + i);
 
-    outlet_float(x->x_id, instanceIdx); // output "received" feedback here rather than a post (in case of hi-speed training)
+    outlet_float (x->x_id, instanceIdx); // output "received" feedback here rather than a post (in case of hi-speed training)
     }
 }
 
@@ -446,23 +446,23 @@ static void timbreID_id(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
     t_uInt topVote;
     t_attributeIdx listLength;
 
-    if(x->x_numInstances)
+    if (x->x_numInstances)
     {
         listLength = argc;
         confidence = 0.0;
 
-        if(listLength > x->x_maxFeatureLength)
+        if (listLength > x->x_maxFeatureLength)
         {
-            pd_error(x, "%s: input feature list longer than current max feature length of database. input ignored.", x->x_objSymbol->s_name);
+            pd_error (x, "%s: input feature list longer than current max feature length of database. input ignored.", x->x_objSymbol->s_name);
             return;
         };
 
         // init votes to 0
-        for(i = 0; i < x->x_numClusters; i++)
+        for (i = 0; i < x->x_numClusters; i++)
             x->x_clusters[i].votes = 0;
 
         // init cluster info to instance idx
-        for(i = 0; i < x->x_numInstances; i++)
+        for (i = 0; i < x->x_numInstances; i++)
         {
             x->x_instances[i].knnInfo.idx = i;
             x->x_instances[i].knnInfo.cluster = i;
@@ -470,19 +470,19 @@ static void timbreID_id(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
             x->x_instances[i].knnInfo.safeDist = FLT_MAX;
         }
 
-        for(i=0; i<listLength; i++)
-            x->x_attributeData[i].inputData = atom_getfloat(argv + i);
+        for (i=0; i<listLength; i++)
+            x->x_attributeData[i].inputData = atom_getfloat (argv + i);
 
         winningID = UINT_MAX;
         bestDist = FLT_MAX;
         secondBestDist = FLT_MAX;
 
-        for(i = 0; i < x->x_numInstances; i++)
+        for (i = 0; i < x->x_numInstances; i++)
         {
             dist = timbreID_getInputDist(x, i);
 
             // abort _id() altogether if distance measurement fails. return value of FLT_MAX indicates failure
-            if(dist==FLT_MAX)
+            if (dist==FLT_MAX)
                 return;
 
             x->x_instances[i].knnInfo.dist = x->x_instances[i].knnInfo.safeDist = dist; // store the distance
@@ -492,7 +492,7 @@ static void timbreID_id(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
         tIDLib_sortKnnInfo(x->x_k, x->x_numInstances, UINT_MAX, x->x_instances); // pass a prevMatch value of UINT_MAX as a flag that it's unused here
 
         // store instance's cluster id
-        for(i = 0; i < x->x_k; i++)
+        for (i = 0; i < x->x_k; i++)
         {
             t_instanceIdx thisInstance;
             thisInstance = x->x_instances[i].knnInfo.idx;
@@ -501,7 +501,7 @@ static void timbreID_id(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
         }
 
         // vote
-        for(i = 0; i < x->x_k; i++)
+        for (i = 0; i < x->x_k; i++)
         {
             t_instanceIdx thisCluster;
             thisCluster = x->x_instances[i].knnInfo.cluster;
@@ -511,8 +511,8 @@ static void timbreID_id(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
 
         // TODO: potential issue is that i'm using t_uInt for t_cluster.votes and topVote, so can no longer have -1 as the initialized value. should be that initializing to 0 is actually ok, even in the case of a tie for 0. originally this was topVote = -1;
         topVote = 0;
-        for(i = 0; i < x->x_numClusters; i++)
-            if(x->x_clusters[i].votes > topVote)
+        for (i = 0; i < x->x_numClusters; i++)
+            if (x->x_clusters[i].votes > topVote)
             {
                 topVote = x->x_clusters[i].votes;
                 winningID = i; // store cluster id of winner
@@ -520,24 +520,24 @@ static void timbreID_id(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
 
         // see if there is a tie for number of votes
         topVoteInstances = 0;
-        for(i = 0; i < x->x_numClusters; i++)
-            if(x->x_clusters[i].votes==topVote)
+        for (i = 0; i < x->x_numClusters; i++)
+            if (x->x_clusters[i].votes==topVote)
                 topVoteInstances++;
 
         // in case of a tie, pick the instance with the shortest distance. The knnInfo for instances will be sorted by distance, so x_instance[0].knnInfo.cluster is the cluster ID of the instance with the smallest distance
-        if(topVoteInstances>1)
+        if (topVoteInstances>1)
             winningID = x->x_instances[0].knnInfo.cluster;
 
-        for(i = 0; i < x->x_k; i++)
-            if(x->x_instances[i].knnInfo.cluster==winningID)
+        for (i = 0; i < x->x_k; i++)
+            if (x->x_instances[i].knnInfo.cluster==winningID)
             {
                 bestDist = x->x_instances[i].knnInfo.safeDist;
                 break;
             };
 
         // this assigns the distance belonging to the first item in knnInfo that isn't a member of the winning cluster to the variable "secondBest". i.e., the distance between the test vector and the next nearest instance that isn't a member of the winning cluster.
-        for(i = 0; i < x->x_k; i++)
-            if(x->x_instances[i].knnInfo.cluster!=winningID)
+        for (i = 0; i < x->x_k; i++)
+            if (x->x_instances[i].knnInfo.cluster!=winningID)
             {
                 secondBestDist = x->x_instances[i].knnInfo.safeDist;
                 break;
@@ -547,11 +547,11 @@ static void timbreID_id(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
     // unless I'm missing something, this is faulty logic with the current setup. If all K items belong to the same cluster, then secondBestDist will still be FLT_MAX, which will make confidence below near to 1.0. That's good. Assigning it the actual second best distance from a sibling cluster member will produce a number near 0 for confidence, which is wrong.
 
         // if no second best assignment is made (because all K items belong to same cluster), make 2nd best the 2nd in list
-        if(secondBestDist==FLT_MAX)
+        if (secondBestDist==FLT_MAX)
             secondBestDist = x->x_instances[1].knnInfo.safeDist;
 
     // if above note on faulty logic is correct, then this is not needed. confidence can just be calculated without a condition
-        if(secondBestDist<=0)
+        if (secondBestDist<=0)
             confidence = -FLT_MAX;
         else
             confidence = 1.0-(bestDist/secondBestDist);
@@ -559,25 +559,25 @@ static void timbreID_id(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
 
         confidence = 1.0-(bestDist/secondBestDist);
 
-        outlet_float(x->x_confidence, confidence);
-        outlet_float(x->x_nearestDist, bestDist);
-        outlet_float(x->x_id, winningID);
+        outlet_float (x->x_confidence, confidence);
+        outlet_float (x->x_nearestDist, bestDist);
+        outlet_float (x->x_id, winningID);
 
-        if(x->x_outputKnnMatches)
+        if (x->x_outputKnnMatches)
         {
-            for(i = 0; i < x->x_k; i++)
+            for (i = 0; i < x->x_k; i++)
             {
                 // suppress reporting of the vote-winning id, because it was already reported above
-                if(x->x_instances[i].knnInfo.cluster != winningID)
+                if (x->x_instances[i].knnInfo.cluster != winningID)
                 {
-                    outlet_float(x->x_nearestDist, x->x_instances[i].knnInfo.safeDist);
-                    outlet_float(x->x_id, x->x_instances[i].knnInfo.cluster);
+                    outlet_float (x->x_nearestDist, x->x_instances[i].knnInfo.safeDist);
+                    outlet_float (x->x_id, x->x_instances[i].knnInfo.cluster);
                 }
             }
         }
     }
     else
-        pd_error(x, "%s: no training instances have been loaded. cannot perform ID.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: no training instances have been loaded. cannot perform ID.", x->x_objSymbol->s_name);
 }
 
 
@@ -587,31 +587,31 @@ static void timbreID_worstMatch(t_timbreID *x, t_symbol *s, int argc, t_atom *ar
     t_attributeIdx listLength;
     t_instanceIdx i, losingID;
 
-    if(x->x_numInstances)
+    if (x->x_numInstances)
     {
         listLength = argc;
 
-        if(listLength > x->x_maxFeatureLength)
+        if (listLength > x->x_maxFeatureLength)
         {
-            pd_error(x, "%s: input feature list too long. input ignored.", x->x_objSymbol->s_name);
+            pd_error (x, "%s: input feature list too long. input ignored.", x->x_objSymbol->s_name);
             return;
         };
 
-        for(i=0; i<listLength; i++)
-            x->x_attributeData[i].inputData = atom_getfloat(argv + i);
+        for (i=0; i<listLength; i++)
+            x->x_attributeData[i].inputData = atom_getfloat (argv + i);
 
         losingID = UINT_MAX;
         worstDist = -FLT_MAX;
 
-        for(i = 0; i < x->x_numInstances; i++)
+        for (i = 0; i < x->x_numInstances; i++)
         {
             dist = timbreID_getInputDist(x, i);
 
             // abort _worstMatch() altogether if distance measurement fails
-            if(dist==FLT_MAX)
+            if (dist==FLT_MAX)
                 return;
 
-            if(dist > worstDist)
+            if (dist > worstDist)
             {
                 worstDist = dist;
                 losingID = i;
@@ -620,12 +620,12 @@ static void timbreID_worstMatch(t_timbreID *x, t_symbol *s, int argc, t_atom *ar
 
         losingID = x->x_instances[losingID].clusterMembership;
 
-        outlet_float(x->x_confidence, 0);
-        outlet_float(x->x_nearestDist, worstDist);
-        outlet_float(x->x_id, losingID);
+        outlet_float (x->x_confidence, 0);
+        outlet_float (x->x_nearestDist, worstDist);
+        outlet_float (x->x_id, losingID);
     }
     else
-        pd_error(x, "%s: no training instances have been loaded. cannot perform worst match.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: no training instances have been loaded. cannot perform worst match.", x->x_objSymbol->s_name);
 }
 /* -------- END classification methods -------- */
 
@@ -635,7 +635,7 @@ static void timbreID_worstMatch(t_timbreID *x, t_symbol *s, int argc, t_atom *ar
 /* -------- concatenative synthesis methods -------- */
 static void timbreID_concatId(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
 {
-    if(x->x_numInstances)
+    if (x->x_numInstances)
     {
         t_float dist, bestDist;
         t_instanceIdx i, j, halfNeighborhood, winningID;
@@ -643,7 +643,7 @@ static void timbreID_concatId(t_timbreID *x, t_symbol *s, int argc, t_atom *argv
         t_attributeIdx listLength;
 
         // init knn info
-        for(i = 0; i < x->x_numInstances; i++)
+        for (i = 0; i < x->x_numInstances; i++)
         {
             x->x_instances[i].knnInfo.idx = i;
             x->x_instances[i].knnInfo.dist = x->x_instances[i].knnInfo.safeDist = FLT_MAX;
@@ -653,28 +653,28 @@ static void timbreID_concatId(t_timbreID *x, t_symbol *s, int argc, t_atom *argv
 
         halfNeighborhood = x->x_neighborhood*0.5;
 
-        if(listLength > x->x_maxFeatureLength)
+        if (listLength > x->x_maxFeatureLength)
         {
-            pd_error(x, "%s: input feature list too long. input ignored.", x->x_objSymbol->s_name);
+            pd_error (x, "%s: input feature list too long. input ignored.", x->x_objSymbol->s_name);
             return;
         };
 
-        for(i=0; i<listLength; i++)
-            x->x_attributeData[i].inputData = atom_getfloat(argv + i);
+        for (i=0; i<listLength; i++)
+            x->x_attributeData[i].inputData = atom_getfloat (argv + i);
 
         winningID = UINT_MAX;
         bestDist = FLT_MAX;
 
         // searchStart needs to be signed in order to do wraparound. since t_instanceIdx is a unsigned int, we need a signed long int. unsigned int overflow is undefined, so can't count on that as an alternative for wraparound into negative
-        if(x->x_concatWrap)
+        if (x->x_concatWrap)
         {
             // for just the searchStart, check to see if x->x_neighborhood was EVEN.  if so, we should make searchStart = searchCenter - halfNeighborhood + 1
-            if(x->x_neighborhood%2==0)
+            if (x->x_neighborhood%2==0)
                 searchStart = x->x_searchCenter - halfNeighborhood + 1;
             else
                 searchStart = x->x_searchCenter - halfNeighborhood;
 
-            if(searchStart<0)
+            if (searchStart<0)
                 searchStart = x->x_numInstances + searchStart;  // wraps in reverse to end of table.  + searchStart because searchStart is negative here.
             else
                 searchStart = searchStart%x->x_numInstances;
@@ -682,35 +682,35 @@ static void timbreID_concatId(t_timbreID *x, t_symbol *s, int argc, t_atom *argv
         else
         {
             // for just the searchStart, check to see if x->x_neighborhood was EVEN.  if so, we should make searchStart = searchCenter - halfNeighborhood + 1
-            if(x->x_neighborhood%2==0)
+            if (x->x_neighborhood%2==0)
                 searchStart = x->x_searchCenter - halfNeighborhood + 1;
             else
                 searchStart = x->x_searchCenter - halfNeighborhood;
 
             // TODO: is this (t_instanceIdx) typecast a good idea here? Just to get rid of warning?
-            if(searchStart<0)
+            if (searchStart<0)
                 searchStart = 0; // no wrapping
-            else if((t_instanceIdx)searchStart>=x->x_numInstances)
+            else if ((t_instanceIdx)searchStart>=x->x_numInstances)
                 searchStart = x->x_numInstances-1;
         }
 
-        for(j=0, i=searchStart; j<x->x_neighborhood; j++)
+        for (j=0, i=searchStart; j<x->x_neighborhood; j++)
         {
             dist = timbreID_getInputDist(x, i);
 
             // abort _concat_id() altogether if distance measurement fails
-            if(dist==FLT_MAX)
+            if (dist==FLT_MAX)
                 return;
 
             x->x_instances[i].knnInfo.dist = x->x_instances[i].knnInfo.safeDist = dist; // store the distance
 
              i++;
 
-             if(x->x_concatWrap)
+             if (x->x_concatWrap)
                  i = i%x->x_numInstances;
              else
              {
-                 if(i>=x->x_numInstances)
+                 if (i>=x->x_numInstances)
                      break;
              }
         };
@@ -721,14 +721,14 @@ static void timbreID_concatId(t_timbreID *x, t_symbol *s, int argc, t_atom *argv
         // this is wasteful in restricted searches because we don't need to look through all x->x_numInstances
         tIDLib_sortKnnInfo(x->x_maxMatches, x->x_numInstances, x->x_prevMatch, x->x_instances);
 
-        if(x->x_prevMatch == UINT_MAX)
+        if (x->x_prevMatch == UINT_MAX)
         {
             winningID = x->x_instances[0].knnInfo.idx;
             bestDist = x->x_instances[0].knnInfo.safeDist;
         }
         else
         {
-            for(i=0, bestDist=FLT_MAX; i<x->x_maxMatches; i++)
+            for (i=0, bestDist=FLT_MAX; i<x->x_maxMatches; i++)
             {
                 t_instanceIdx thisInstance;
 
@@ -737,10 +737,10 @@ static void timbreID_concatId(t_timbreID *x, t_symbol *s, int argc, t_atom *argv
                 dist = timbreID_getDist(x, x->x_instances[x->x_prevMatch], x->x_instances[thisInstance]);
 
                 // abort _concat_id() altogether if distance measurement fails
-                if(dist==FLT_MAX)
+                if (dist==FLT_MAX)
                     return;
 
-                if(dist < bestDist)
+                if (dist < bestDist)
                 {
                     bestDist = dist;
                     winningID = thisInstance;
@@ -748,26 +748,26 @@ static void timbreID_concatId(t_timbreID *x, t_symbol *s, int argc, t_atom *argv
             };
         };
 
-        if(x->x_reorientFlag)
+        if (x->x_reorientFlag)
             x->x_searchCenter = winningID;
 
-        if( rand() < RAND_MAX*x->x_jumpProb )
+        if ( rand() < RAND_MAX*x->x_jumpProb )
         {
             winningID += rand();
             winningID = winningID%x->x_numInstances;
             x->x_searchCenter = winningID;
         };
 
-        if(x->x_stutterProtect)
+        if (x->x_stutterProtect)
             x->x_prevMatch = winningID;
         else
             x->x_prevMatch = UINT_MAX;
 
-        outlet_float(x->x_nearestDist, bestDist);
-        outlet_float(x->x_id, winningID);
+        outlet_float (x->x_nearestDist, bestDist);
+        outlet_float (x->x_id, winningID);
     }
     else
-        pd_error(x, "%s: no training instances have been loaded. cannot perform ID.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: no training instances have been loaded. cannot perform ID.", x->x_objSymbol->s_name);
 }
 
 
@@ -805,9 +805,9 @@ static void timbreID_concatReorient(t_timbreID *x, t_floatarg r)
 
 static void timbreID_concatSearchCenter(t_timbreID *x, t_floatarg sc)
 {
-    if( sc < 0 )
+    if ( sc < 0 )
         x->x_searchCenter = 0;
-    else if( sc >=x->x_numInstances )
+    else if ( sc >=x->x_numInstances )
         x->x_searchCenter = x->x_numInstances-1;
     else
         x->x_searchCenter = sc;
@@ -837,14 +837,14 @@ static void timbreID_concatStutterProtect(t_timbreID *x, t_floatarg sp)
 
 static void timbreID_knn(t_timbreID *x, t_floatarg k)
 {
-    if(k<1.0)
-        pd_error(x, "%s: k must be greater than zero.", x->x_objSymbol->s_name);
-    else if(k>x->x_numInstances)
-        pd_error(x, "%s: k must be less than the total number of instances.", x->x_objSymbol->s_name);
+    if (k<1.0)
+        pd_error (x, "%s: k must be greater than zero.", x->x_objSymbol->s_name);
+    else if (k>x->x_numInstances)
+        pd_error (x, "%s: k must be less than the total number of instances.", x->x_objSymbol->s_name);
     else
     {
         x->x_k = k;
-        post("%s: searching %i neighbors for KNN.", x->x_objSymbol->s_name, x->x_k);
+        post ("%s: searching %i neighbors for KNN.", x->x_objSymbol->s_name, x->x_k);
     }
 }
 
@@ -856,26 +856,26 @@ static void timbreID_outputKnnMatches(t_timbreID *x, t_floatarg out)
 
     x->x_outputKnnMatches = out;
 
-    if(x->x_outputKnnMatches)
-        post("%s: reporting all KNN matches.", x->x_objSymbol->s_name);
+    if (x->x_outputKnnMatches)
+        post ("%s: reporting all KNN matches.", x->x_objSymbol->s_name);
     else
-        post("%s: reporting best match only.", x->x_objSymbol->s_name);
+        post ("%s: reporting best match only.", x->x_objSymbol->s_name);
 }
 
 
-static void timbreID_normalize(t_timbreID *x, t_floatarg n)
+static void timbreID_normalize (t_timbreID *x, t_floatarg n)
 {
     t_float *attributeColumn;
 
     // create local memory
-    attributeColumn = (t_float *)t_getbytes(x->x_numInstances * sizeof(t_float));
+    attributeColumn = (t_float *)t_getbytes (x->x_numInstances * sizeof (t_float));
 
-    if(n<=0)
+    if (n<=0)
     {
         t_attributeIdx i;
 
         // initialize normData
-        for(i = 0; i < x->x_maxFeatureLength; i++)
+        for (i = 0; i < x->x_maxFeatureLength; i++)
         {
             x->x_attributeData[i].normData.minVal = 0.0;
             x->x_attributeData[i].normData.maxVal = 0.0;
@@ -883,25 +883,25 @@ static void timbreID_normalize(t_timbreID *x, t_floatarg n)
         }
 
         x->x_normalize=false;
-        post("%s: feature attribute normalization OFF.", x->x_objSymbol->s_name);
+        post ("%s: feature attribute normalization OFF.", x->x_objSymbol->s_name);
     }
     else
     {
-        if(x->x_numInstances)
+        if (x->x_numInstances)
         {
             t_instanceIdx i;
             t_attributeIdx j;
 
             // j for columns (attributes), i for rows (instances)
-            for(j=0; j<x->x_maxFeatureLength; j++)
+            for (j=0; j<x->x_maxFeatureLength; j++)
             {
-                for(i = 0; i < x->x_numInstances; i++)
+                for (i = 0; i < x->x_numInstances; i++)
                 {
-                    if(j>x->x_instances[i].length-1)
+                    if (j>x->x_instances[i].length-1)
                     {
-                        pd_error(x, "%s: attribute %i out of range for database instance %i. aborting normalization", x->x_objSymbol->s_name, j, i);
+                        pd_error (x, "%s: attribute %i out of range for database instance %i. aborting normalization", x->x_objSymbol->s_name, j, i);
                         // initialize normData
-                        for(i = 0; i < x->x_maxFeatureLength; i++)
+                        for (i = 0; i < x->x_maxFeatureLength; i++)
                         {
                             x->x_attributeData[i].normData.minVal = 0.0;
                             x->x_attributeData[i].normData.maxVal = 0.0;
@@ -910,9 +910,9 @@ static void timbreID_normalize(t_timbreID *x, t_floatarg n)
 
                         x->x_normalize=false;
 
-                        post("%s: feature attribute normalization OFF.", x->x_objSymbol->s_name);
+                        post ("%s: feature attribute normalization OFF.", x->x_objSymbol->s_name);
                         // free local memory before exit
-                        t_freebytes(attributeColumn, x->x_numInstances * sizeof(t_float));
+                        t_freebytes (attributeColumn, x->x_numInstances * sizeof (t_float));
 
                         return;
                     }
@@ -925,7 +925,7 @@ static void timbreID_normalize(t_timbreID *x, t_floatarg n)
                 x->x_attributeData[j].normData.minVal = attributeColumn[0];
                 x->x_attributeData[j].normData.maxVal = attributeColumn[x->x_numInstances-1];
 
-                if(x->x_attributeData[j].normData.maxVal <= x->x_attributeData[j].normData.minVal)
+                if (x->x_attributeData[j].normData.maxVal <= x->x_attributeData[j].normData.minVal)
                 {
                     // this will fix things in the case of 1 instance, where min==max
                     x->x_attributeData[j].normData.minVal = 0.0;
@@ -937,39 +937,39 @@ static void timbreID_normalize(t_timbreID *x, t_floatarg n)
             };
 
             x->x_normalize=true;
-            post("%s: feature attribute normalization ON.", x->x_objSymbol->s_name);
+            post ("%s: feature attribute normalization ON.", x->x_objSymbol->s_name);
         }
         else
-            pd_error(x, "%s: no training instances have been loaded. cannot calculate normalization terms.", x->x_objSymbol->s_name);
+            pd_error (x, "%s: no training instances have been loaded. cannot calculate normalization terms.", x->x_objSymbol->s_name);
     }
 
     // free local memory
-    t_freebytes(attributeColumn, x->x_numInstances * sizeof(t_float));
+    t_freebytes (attributeColumn, x->x_numInstances * sizeof (t_float));
 
 }
 
 
-static void timbreID_print(t_timbreID *x)
+static void timbreID_print (t_timbreID *x)
 {
-    post("timbreID version %s", TID_VERSION);
-    post("%s: no. of instances: %i", x->x_objSymbol->s_name, x->x_numInstances);
-    post("%s: max feature length: %i", x->x_objSymbol->s_name, x->x_maxFeatureLength);
-    post("%s: min feature length: %i", x->x_objSymbol->s_name, x->x_minFeatureLength);
-    post("%s: attribute range: %i through %i", x->x_objSymbol->s_name, x->x_attributeLo, x->x_attributeHi);
-    post("%s: normalization: %i", x->x_objSymbol->s_name, x->x_normalize);
-    post("%s: distance metric: %i", x->x_objSymbol->s_name, x->x_distMetric);
-    post("%s: no. of clusters: %i", x->x_objSymbol->s_name, x->x_numClusters);
-    post("%s: no. of defined reference classes: %i", x->x_objSymbol->s_name, x->x_numClassRefs);
-    post("%s: KNN: %i", x->x_objSymbol->s_name, x->x_k);
-    post("%s: output KNN matches: %i", x->x_objSymbol->s_name, x->x_outputKnnMatches);
-    post("%s: relative ordering: %i", x->x_objSymbol->s_name, x->x_relativeOrdering);
-    post("%s: concatenative wraparound: %i", x->x_objSymbol->s_name, x->x_concatWrap);
-    post("%s: search center: %i", x->x_objSymbol->s_name, x->x_searchCenter);
-    post("%s: neighborhood: %i", x->x_objSymbol->s_name, x->x_neighborhood);
-    post("%s: reorient: %i", x->x_objSymbol->s_name, x->x_reorientFlag);
-    post("%s: max matches: %i", x->x_objSymbol->s_name, x->x_maxMatches);
-    post("%s: jump probability: %f", x->x_objSymbol->s_name, x->x_jumpProb);
-    post("%s: stutter protect: %i", x->x_objSymbol->s_name, x->x_stutterProtect);
+    post ("timbreID version %s", TID_VERSION);
+    post ("%s: no. of instances: %i", x->x_objSymbol->s_name, x->x_numInstances);
+    post ("%s: max feature length: %i", x->x_objSymbol->s_name, x->x_maxFeatureLength);
+    post ("%s: min feature length: %i", x->x_objSymbol->s_name, x->x_minFeatureLength);
+    post ("%s: attribute range: %i through %i", x->x_objSymbol->s_name, x->x_attributeLo, x->x_attributeHi);
+    post ("%s: normalization: %i", x->x_objSymbol->s_name, x->x_normalize);
+    post ("%s: distance metric: %i", x->x_objSymbol->s_name, x->x_distMetric);
+    post ("%s: no. of clusters: %i", x->x_objSymbol->s_name, x->x_numClusters);
+    post ("%s: no. of defined reference classes: %i", x->x_objSymbol->s_name, x->x_numClassRefs);
+    post ("%s: KNN: %i", x->x_objSymbol->s_name, x->x_k);
+    post ("%s: output KNN matches: %i", x->x_objSymbol->s_name, x->x_outputKnnMatches);
+    post ("%s: relative ordering: %i", x->x_objSymbol->s_name, x->x_relativeOrdering);
+    post ("%s: concatenative wraparound: %i", x->x_objSymbol->s_name, x->x_concatWrap);
+    post ("%s: search center: %i", x->x_objSymbol->s_name, x->x_searchCenter);
+    post ("%s: neighborhood: %i", x->x_objSymbol->s_name, x->x_neighborhood);
+    post ("%s: reorient: %i", x->x_objSymbol->s_name, x->x_reorientFlag);
+    post ("%s: max matches: %i", x->x_objSymbol->s_name, x->x_maxMatches);
+    post ("%s: jump probability: %f", x->x_objSymbol->s_name, x->x_jumpProb);
+    post ("%s: stutter protect: %i", x->x_objSymbol->s_name, x->x_stutterProtect);
 }
 
 
@@ -978,9 +978,9 @@ static void timbreID_numInstances(t_timbreID *x)
     t_atom listOut;
     t_symbol *selector;
 
-    selector = gensym("num_instances");
+    selector = gensym ("num_instances");
 
-    SETFLOAT(&listOut, x->x_numInstances);
+    SETFLOAT (&listOut, x->x_numInstances);
 
     outlet_anything(x->x_listOut, selector, 1, &listOut);
 }
@@ -994,7 +994,7 @@ static void timbreID_manualCluster(t_timbreID *x, t_floatarg numClusters, t_floa
     lowIdx = (low<0)?0:low;
     hiIdx = (hi<0)?0:hi;
 
-    if(lowIdx>hiIdx)
+    if (lowIdx>hiIdx)
     {
         t_instanceIdx tmp;
 
@@ -1005,67 +1005,67 @@ static void timbreID_manualCluster(t_timbreID *x, t_floatarg numClusters, t_floa
 
     numMembers = hiIdx - lowIdx + 1;
 
-    if(lowIdx>x->x_numInstances-1 || hiIdx>x->x_numInstances-1)
+    if (lowIdx>x->x_numInstances-1 || hiIdx>x->x_numInstances-1)
     {
-        pd_error(x, "%s: instances out of range. clustering failed.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: instances out of range. clustering failed.", x->x_objSymbol->s_name);
         return;
     }
 
-    if(clusterIdx>=numClusters)
+    if (clusterIdx>=numClusters)
     {
-        pd_error(x, "%s: cluster index %i out of range for given number of clusters %i. clustering failed.", x->x_objSymbol->s_name, clusterIdxInt, (t_instanceIdx)numClusters);
+        pd_error (x, "%s: cluster index %i out of range for given number of clusters %i. clustering failed.", x->x_objSymbol->s_name, clusterIdxInt, (t_instanceIdx)numClusters);
         return;
     }
 
-    if(x->x_numInstances < numClusters)
-        pd_error(x, "%s: not enough instances to cluster. clustering failed.", x->x_objSymbol->s_name);
+    if (x->x_numInstances < numClusters)
+        pd_error (x, "%s: not enough instances to cluster. clustering failed.", x->x_objSymbol->s_name);
     else
     {
         // update the number of clusters, trusting that the user knows what they're doing!
         x->x_numClusters = numClusters;
 
         // free this cluster's members memory
-        t_freebytes(x->x_clusters[clusterIdxInt].members, x->x_clusters[clusterIdxInt].numMembers * sizeof(t_instanceIdx));
+        t_freebytes (x->x_clusters[clusterIdxInt].members, x->x_clusters[clusterIdxInt].numMembers * sizeof (t_instanceIdx));
 
         // update the .numMembers value
         x->x_clusters[clusterIdxInt].numMembers = numMembers+1; // +1 for the terminating UINT_MAX
 
         // get new memory for this cluster's members
-        x->x_clusters[clusterIdxInt].members = (t_instanceIdx *)t_getbytes(x->x_clusters[clusterIdxInt].numMembers * sizeof(t_instanceIdx));
+        x->x_clusters[clusterIdxInt].members = (t_instanceIdx *)t_getbytes (x->x_clusters[clusterIdxInt].numMembers * sizeof (t_instanceIdx));
 
         x->x_clusters[clusterIdxInt].votes = 0;
 
-        for(i=lowIdx; i<=hiIdx; i++)
+        for (i=lowIdx; i<=hiIdx; i++)
             x->x_instances[i].clusterMembership = clusterIdxInt;
 
-        for(i=lowIdx, j=0; i<=hiIdx; i++, j++)
+        for (i=lowIdx, j=0; i<=hiIdx; i++, j++)
             x->x_clusters[clusterIdxInt].members[j] = i;
 
         // terminate with UINT_MAX
         x->x_clusters[clusterIdxInt].members[j] = UINT_MAX;
 
         // resize the excess clusterMembers memory back to the default size of 2 and store the default instance index as the cluster member followed by a terminating UINT_MAX
-        for(i=x->x_numClusters; i<x->x_numInstances; i++)
+        for (i=x->x_numClusters; i<x->x_numInstances; i++)
         {
-            x->x_clusters[i].members = (t_instanceIdx *)t_resizebytes(x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof(t_instanceIdx), 2 * sizeof(t_instanceIdx));
+            x->x_clusters[i].members = (t_instanceIdx *)t_resizebytes (x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof (t_instanceIdx), 2 * sizeof (t_instanceIdx));
             x->x_clusters[i].numMembers = 2;
             x->x_clusters[i].members[0] = i;
             x->x_clusters[i].members[1] = UINT_MAX;
         }
 
-        post("%s: cluster %i contains instances %i through %i.", x->x_objSymbol->s_name, clusterIdxInt, lowIdx, hiIdx);
+        post ("%s: cluster %i contains instances %i through %i.", x->x_objSymbol->s_name, clusterIdxInt, lowIdx, hiIdx);
     };
 }
 
 
 static void timbreID_computeCluster(t_timbreID *x, t_floatarg numClusters)
 {
-    if(x->x_numInstances < numClusters)
-        pd_error(x, "%s: not enough instances to cluster.", x->x_objSymbol->s_name);
-    else if(x->x_numClusters != x->x_numInstances)
-        pd_error(x, "%s: instances already clustered. uncluster first.", x->x_objSymbol->s_name);
-    else if(numClusters==0)
-        pd_error(x, "%s: cannot create 0 clusters.", x->x_objSymbol->s_name);
+    if (x->x_numInstances < numClusters)
+        pd_error (x, "%s: not enough instances to cluster.", x->x_objSymbol->s_name);
+    else if (x->x_numClusters != x->x_numInstances)
+        pd_error (x, "%s: instances already clustered. uncluster first.", x->x_objSymbol->s_name);
+    else if (numClusters==0)
+        pd_error (x, "%s: cannot create 0 clusters.", x->x_objSymbol->s_name);
     else
     {
     t_instanceIdx i, j, k, numInstances, numInstancesM1, numPairs, numClusterMembers1, numClusterMembers2, numClusterMembersSum, clusterCount, *minDistIdx;
@@ -1087,24 +1087,24 @@ static void timbreID_computeCluster(t_timbreID *x, t_floatarg numClusters)
     i=j=k=0;
 
     // create local memory
-    minDistIdx = (t_instanceIdx *)t_getbytes(2 * sizeof(t_instanceIdx));
-    clusterData = (t_instance *)t_getbytes(numInstances * sizeof(t_instance));
-    pairDists = (t_float *)t_getbytes(numPairs * sizeof(t_float));
-    listOut = (t_atom *)t_getbytes(numInstances * sizeof(t_atom));
+    minDistIdx = (t_instanceIdx *)t_getbytes (2 * sizeof (t_instanceIdx));
+    clusterData = (t_instance *)t_getbytes (numInstances * sizeof (t_instance));
+    pairDists = (t_float *)t_getbytes (numPairs * sizeof (t_float));
+    listOut = (t_atom *)t_getbytes (numInstances * sizeof (t_atom));
 
-    for(i = 0; i < numInstances; i++)
+    for (i = 0; i < numInstances; i++)
     {
         x->x_clusters[i].members[0] = i; // first member of the cluster is the instance index
         x->x_clusters[i].members[1] = UINT_MAX;
     }
 
     // copy x->x_instances into a safe local copy: clusterData
-    for(i = 0; i < numInstances; i++)
+    for (i = 0; i < numInstances; i++)
     {
         clusterData[i].length = x->x_instances[i].length;
-        clusterData[i].data = (t_float *)t_getbytes(x->x_instances[i].length * sizeof(t_float));
+        clusterData[i].data = (t_float *)t_getbytes (x->x_instances[i].length * sizeof (t_float));
 
-        for(j=0; j<clusterData[i].length; j++)
+        for (j=0; j<clusterData[i].length; j++)
             clusterData[i].data[j] = x->x_instances[i].data[j];
     }
 
@@ -1113,23 +1113,23 @@ static void timbreID_computeCluster(t_timbreID *x, t_floatarg numClusters)
         minDist = FLT_MAX;
 
         // init minDistIdx to UINT_MAX as an indicator that it's initialized
-        for(i=0; i<2; i++)
+        for (i=0; i<2; i++)
             minDistIdx[i] = UINT_MAX;
 
         // init pair distances
-        for(i = 0; i < numPairs; i++)
+        for (i = 0; i < numPairs; i++)
             pairDists[i] = FLT_MAX;
 
         // get distances between all possible pairs in clusterData
-        for(i=0, k=0; i<numInstancesM1; i++)
+        for (i=0, k=0; i<numInstancesM1; i++)
         {
-            if( clusterData[i].data[0] != FLT_MAX ) // if this is true, the data hasn't been clustered yet.
+            if ( clusterData[i].data[0] != FLT_MAX ) // if this is true, the data hasn't been clustered yet.
             {
-                for(j=1; j<numInstances; j++)
+                for (j=1; j<numInstances; j++)
                 {
-                    if( (i+j) < numInstances )
+                    if ( (i+j) < numInstances )
                     {
-                        if( clusterData[i+j].data[0] != FLT_MAX )
+                        if ( clusterData[i+j].data[0] != FLT_MAX )
                         {
                             pairDists[k] = timbreID_getDist(x, clusterData[i], clusterData[i+j]);
                             numClusterMembers1 = x->x_clusters[i].numMembers-1; // -1 because the list is terminated with UINT_MAX
@@ -1139,12 +1139,12 @@ static void timbreID_computeCluster(t_timbreID *x, t_floatarg numClusters)
                             // pairDists[k] is already euclidean distance
                             numClusterMembersSum = numClusterMembers1 + numClusterMembers2;
 
-                            if(numClusterMembersSum > 0)
+                            if (numClusterMembersSum > 0)
                                 pairDists[k] = numClusterMembers1*numClusterMembers2 * (pairDists[k]/(numClusterMembers1+numClusterMembers2));
                             else
                                 pairDists[k] = FLT_MAX;
 
-                            if(pairDists[k]<minDist)
+                            if (pairDists[k]<minDist)
                             {
                                 minDist=pairDists[k];
                                 minDistIdx[0]=i;
@@ -1172,7 +1172,7 @@ static void timbreID_computeCluster(t_timbreID *x, t_floatarg numClusters)
         while(x->x_clusters[minDistIdx[1]].members[j] != UINT_MAX)
         {
             // make some more memory for the new member(s)
-            x->x_clusters[minDistIdx[0]].members = (t_instanceIdx *)t_resizebytes(x->x_clusters[minDistIdx[0]].members, x->x_clusters[minDistIdx[0]].numMembers * sizeof(t_instanceIdx), (x->x_clusters[minDistIdx[0]].numMembers+1) * sizeof(t_instanceIdx));
+            x->x_clusters[minDistIdx[0]].members = (t_instanceIdx *)t_resizebytes (x->x_clusters[minDistIdx[0]].members, x->x_clusters[minDistIdx[0]].numMembers * sizeof (t_instanceIdx), (x->x_clusters[minDistIdx[0]].numMembers+1) * sizeof (t_instanceIdx));
             (x->x_clusters[minDistIdx[0]].numMembers)++; // remember to update this member list's length
 
             x->x_clusters[minDistIdx[0]].members[i++] = x->x_clusters[minDistIdx[1]].members[j++];
@@ -1183,27 +1183,27 @@ static void timbreID_computeCluster(t_timbreID *x, t_floatarg numClusters)
 
         numClusterMembers1 = x->x_clusters[minDistIdx[0]].numMembers-1;
 
-        if(numClusterMembers1 > 0)
+        if (numClusterMembers1 > 0)
             numClusterMembers1_recip = 1.0/(t_float)numClusterMembers1;
         else
             numClusterMembers1_recip = 1.0;
 
         // resize the usurped cluster's cluster list memory, and update its size to 1
-        x->x_clusters[minDistIdx[1]].members = (t_instanceIdx *)t_resizebytes(x->x_clusters[minDistIdx[1]].members, x->x_clusters[minDistIdx[1]].numMembers * sizeof(t_instanceIdx), sizeof(t_instanceIdx));
+        x->x_clusters[minDistIdx[1]].members = (t_instanceIdx *)t_resizebytes (x->x_clusters[minDistIdx[1]].members, x->x_clusters[minDistIdx[1]].numMembers * sizeof (t_instanceIdx), sizeof (t_instanceIdx));
         x->x_clusters[minDistIdx[1]].members[0] = UINT_MAX; // terminate with UINT_MAX
         x->x_clusters[minDistIdx[1]].numMembers = 1;
 
         // grab the first original instance for this cluster index
-        for(i=0; i<clusterData[minDistIdx[0]].length; i++)
+        for (i=0; i<clusterData[minDistIdx[0]].length; i++)
             clusterData[minDistIdx[0]].data[i] = x->x_instances[minDistIdx[0]].data[i];
 
         // sum the original instances of the cluster members to compute centroid below
-        for(i=1; i<numClusterMembers1; i++)
-            for(j=0; j<clusterData[minDistIdx[0]].length; j++)
+        for (i=1; i<numClusterMembers1; i++)
+            for (j=0; j<clusterData[minDistIdx[0]].length; j++)
                 clusterData[minDistIdx[0]].data[j] += x->x_instances[  x->x_clusters[minDistIdx[0]].members[i]  ].data[j];
 
         // compute centroid
-        for(i=0; i<clusterData[minDistIdx[0]].length; i++)
+        for (i=0; i<clusterData[minDistIdx[0]].length; i++)
             clusterData[minDistIdx[0]].data[i] *= numClusterMembers1_recip;
 
         // write FLT_MAX to the first element in the nearest neighbor's instance to indicate it's now vacant.
@@ -1214,15 +1214,15 @@ static void timbreID_computeCluster(t_timbreID *x, t_floatarg numClusters)
     };
 
     // since the indices of the clusters have gaps from the process,
-    // shift the clusterMembers arrays that actually have content (!= UINT_MAX)
+    // shift the clusterMembers arrays that actually have content ( != UINT_MAX)
     // to the head of clusterMembers.  this will produce indices from 0 through numClusters-1.
-    for(i=0, k=0; i<numInstances; i++)
-        if( x->x_clusters[i].members[0] != UINT_MAX)
+    for (i=0, k=0; i<numInstances; i++)
+        if ( x->x_clusters[i].members[0] != UINT_MAX)
         {
             // resize this member list
-             x->x_clusters[k].members = (t_instanceIdx *)t_resizebytes(x->x_clusters[k].members, x->x_clusters[k].numMembers * sizeof(t_instanceIdx), x->x_clusters[i].numMembers * sizeof(t_instanceIdx));
+             x->x_clusters[k].members = (t_instanceIdx *)t_resizebytes (x->x_clusters[k].members, x->x_clusters[k].numMembers * sizeof (t_instanceIdx), x->x_clusters[i].numMembers * sizeof (t_instanceIdx));
 
-            for(j=0; j<x->x_clusters[i].numMembers; j++)
+            for (j=0; j<x->x_clusters[i].numMembers; j++)
                 x->x_clusters[k].members[j] = x->x_clusters[i].members[j];
 
             // shift the list length info back
@@ -1232,9 +1232,9 @@ static void timbreID_computeCluster(t_timbreID *x, t_floatarg numClusters)
         };
 
     // resize the excess clusterMembers memory back to the default size of 2 and store the default instance index as the cluster member followed by a terminating UINT_MAX
-    for(i=x->x_numClusters; i<numInstances; i++)
+    for (i=x->x_numClusters; i<numInstances; i++)
     {
-        x->x_clusters[i].members = (t_instanceIdx *)t_resizebytes(x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof(t_instanceIdx), 2 * sizeof(t_instanceIdx));
+        x->x_clusters[i].members = (t_instanceIdx *)t_resizebytes (x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof (t_instanceIdx), 2 * sizeof (t_instanceIdx));
         x->x_clusters[i].numMembers = 2;
         x->x_clusters[i].members[0] = i;
         x->x_clusters[i].members[1] = UINT_MAX;
@@ -1242,31 +1242,31 @@ static void timbreID_computeCluster(t_timbreID *x, t_floatarg numClusters)
 
     // UPDATE: as of version 0.7, not doing this resize because we're always keeping x_clusters to be size x_numInstances
     // resize clusterMembers so it is only x->x_numClusters big
-//	x->x_clusters = (t_cluster *)t_resizebytes(x->x_clusters, numInstances * sizeof(t_cluster), x->x_numClusters * sizeof(t_cluster));
+//	x->x_clusters = (t_cluster *)t_resizebytes (x->x_clusters, numInstances * sizeof (t_cluster), x->x_numClusters * sizeof (t_cluster));
 
-    for(i=0, k=0; i<x->x_numClusters; i++)
-        for(j=0; j<(x->x_clusters[i].numMembers-1); j++, k++)
+    for (i=0, k=0; i<x->x_numClusters; i++)
+        for (j=0; j<(x->x_clusters[i].numMembers-1); j++, k++)
         {
             x->x_instances[x->x_clusters[i].members[j]].clusterMembership = i;
-            SETFLOAT(listOut+k, x->x_clusters[i].members[j]);
+            SETFLOAT (listOut+k, x->x_clusters[i].members[j]);
         };
 
-    selector = gensym("clusters_list");
+    selector = gensym ("clusters_list");
     outlet_anything(x->x_listOut, selector, x->x_numInstances, listOut);
 
     // free memory
-    t_freebytes(minDistIdx, 2 * sizeof(t_instanceIdx));
+    t_freebytes (minDistIdx, 2 * sizeof (t_instanceIdx));
 
     // free the database memory
-    for(i = 0; i < numInstances; i++)
-        t_freebytes(clusterData[i].data, clusterData[i].length * sizeof(t_float));
+    for (i = 0; i < numInstances; i++)
+        t_freebytes (clusterData[i].data, clusterData[i].length * sizeof (t_float));
 
-    t_freebytes(clusterData, numInstances * sizeof(t_instance));
+    t_freebytes (clusterData, numInstances * sizeof (t_instance));
 
-    t_freebytes(pairDists, numPairs * sizeof(t_float));
-    t_freebytes(listOut, numInstances * sizeof(t_atom));
+    t_freebytes (pairDists, numPairs * sizeof (t_float));
+    t_freebytes (listOut, numInstances * sizeof (t_atom));
 
-    post("%s: instances clustered.", x->x_objSymbol->s_name);
+    post ("%s: instances clustered.", x->x_objSymbol->s_name);
 
     } // end of main if/else
 }
@@ -1277,18 +1277,18 @@ static void timbreID_uncluster(t_timbreID *x)
     t_instanceIdx i;
 
     // free each x->x_clusters list's memory
-    for(i = 0; i < x->x_numClusters; i++)
-        t_freebytes(x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof(t_instanceIdx));
+    for (i = 0; i < x->x_numClusters; i++)
+        t_freebytes (x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof (t_instanceIdx));
 
 // don't need to do this if x_clusters is always x_numInstances in size
-//	x->x_clusters = (t_cluster *)t_resizebytes(x->x_clusters, x->x_numClusters * sizeof(t_cluster), x->x_numInstances * sizeof(t_cluster));
+//	x->x_clusters = (t_cluster *)t_resizebytes (x->x_clusters, x->x_numClusters * sizeof (t_cluster), x->x_numInstances * sizeof (t_cluster));
 
-    for(i = 0; i < x->x_numInstances; i++)
-        x->x_clusters[i].members = (t_instanceIdx *)t_getbytes(2 * sizeof(t_instanceIdx));
+    for (i = 0; i < x->x_numInstances; i++)
+        x->x_clusters[i].members = (t_instanceIdx *)t_getbytes (2 * sizeof (t_instanceIdx));
 
     x->x_numClusters = x->x_numInstances;
 
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
         x->x_instances[i].clusterMembership = i; // init membership to index
         x->x_clusters[i].members[0] = i; // first member of the cluster is the instance index
@@ -1297,42 +1297,42 @@ static void timbreID_uncluster(t_timbreID *x)
         x->x_clusters[i].votes = 0;
     }
 
-    post("%s: instances unclustered.", x->x_objSymbol->s_name);
+    post ("%s: instances unclustered.", x->x_objSymbol->s_name);
 }
 
 
 static void timbreID_computeVariance(t_timbreID *x)
 {
-    if(x->x_numInstances > 0)
+    if (x->x_numInstances > 0)
     {
         t_instanceIdx i, j;
         t_float max, *attributeVar;
         t_instance *meanCentered;
 
         // create local memory
-        attributeVar = (t_float *)t_getbytes(x->x_maxFeatureLength * sizeof(t_float));
-        meanCentered = (t_instance *)t_getbytes(x->x_numInstances * sizeof(t_instance));
+        attributeVar = (t_float *)t_getbytes (x->x_maxFeatureLength * sizeof (t_float));
+        meanCentered = (t_instance *)t_getbytes (x->x_numInstances * sizeof (t_instance));
 
-        for(i = 0; i < x->x_numInstances; i++)
+        for (i = 0; i < x->x_numInstances; i++)
         {
             meanCentered[i].length = x->x_instances[i].length;
-            meanCentered[i].data = (t_float *)t_getbytes(meanCentered[i].length * sizeof(t_float));
+            meanCentered[i].data = (t_float *)t_getbytes (meanCentered[i].length * sizeof (t_float));
         }
 
         // init mean centered
-        for(i = 0; i < x->x_numInstances; i++)
-            for(j=0; j<meanCentered[i].length; j++)
+        for (i = 0; i < x->x_numInstances; i++)
+            for (j=0; j<meanCentered[i].length; j++)
                 meanCentered[i].data[j] = 0.0;
 
         // get the mean of each attribute
-        for(i = 0; i < x->x_maxFeatureLength; i++)
+        for (i = 0; i < x->x_maxFeatureLength; i++)
             attributeVar[i] = timbreID_attributeMean(x->x_numInstances, i, x->x_instances, x->x_normalize, x->x_attributeData);
 
         // center the data and write the matrix B
-        for(i = 0; i < x->x_numInstances; i++)
-            for(j=0; j<meanCentered[i].length; j++)
+        for (i = 0; i < x->x_numInstances; i++)
+            for (j=0; j<meanCentered[i].length; j++)
             {
-                if(x->x_normalize)
+                if (x->x_normalize)
                     meanCentered[i].data[j] = ((x->x_instances[i].data[j] - x->x_attributeData[j].normData.minVal) * x->x_attributeData[j].normData.normScalar) - attributeVar[j];
                 else
                     meanCentered[i].data[j] = x->x_instances[i].data[j] - attributeVar[j];
@@ -1340,28 +1340,28 @@ static void timbreID_computeVariance(t_timbreID *x)
 
         // variance is calculated as: sum(B(:,1).^2)/(M-1) for the first attribute
         // run process by matrix columns rather than rows, hence the j, i order
-        for(j=0; j<x->x_maxFeatureLength; j++)
+        for (j=0; j<x->x_maxFeatureLength; j++)
         {
             attributeVar[j] = 0;
 
-            for(i = 0; i < x->x_numInstances; i++)
+            for (i = 0; i < x->x_numInstances; i++)
             {
-                if(j<meanCentered[i].length)
+                if (j<meanCentered[i].length)
                     attributeVar[j] += meanCentered[i].data[j] * meanCentered[i].data[j];
             }
 
-            if((x->x_numInstances-1) > 0)
+            if ((x->x_numInstances-1) > 0)
                 attributeVar[j] /= x->x_numInstances-1;
         }
 
         // sort attributeOrder by largest variances: find max in attributeVar,
         // replace it with -FLT_MAX, find next max.
-        for(i = 0; i < x->x_maxFeatureLength; i++)
+        for (i = 0; i < x->x_maxFeatureLength; i++)
         {
             max=0.0;
-            for(j=0; j<x->x_maxFeatureLength; j++)
+            for (j=0; j<x->x_maxFeatureLength; j++)
             {
-                if(attributeVar[j] > max)
+                if (attributeVar[j] > max)
                 {
                     max = attributeVar[j];
                     x->x_attributeData[i].order = j;
@@ -1372,18 +1372,18 @@ static void timbreID_computeVariance(t_timbreID *x)
         };
 
         // free local memory
-        t_freebytes(attributeVar, x->x_maxFeatureLength * sizeof(t_float));
+        t_freebytes (attributeVar, x->x_maxFeatureLength * sizeof (t_float));
 
         // free the meanCentered memory
-        for(i = 0; i < x->x_numInstances; i++)
-            t_freebytes(meanCentered[i].data, meanCentered[i].length * sizeof(t_float));
+        for (i = 0; i < x->x_numInstances; i++)
+            t_freebytes (meanCentered[i].data, meanCentered[i].length * sizeof (t_float));
 
-        t_freebytes(meanCentered, x->x_numInstances * sizeof(t_instance));
+        t_freebytes (meanCentered, x->x_numInstances * sizeof (t_instance));
 
-        post("%s: attributes ordered by variance.", x->x_objSymbol->s_name);
+        post ("%s: attributes ordered by variance.", x->x_objSymbol->s_name);
     }
     else
-        pd_error(x, "%s: no instances for variance computation.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: no instances for variance computation.", x->x_objSymbol->s_name);
 
 }
 
@@ -1395,17 +1395,17 @@ static void timbreID_clustersList(t_timbreID *x)
     t_symbol *selector;
 
     // create local memory
-    listOut = (t_atom *)t_getbytes(x->x_numInstances * sizeof(t_atom));
+    listOut = (t_atom *)t_getbytes (x->x_numInstances * sizeof (t_atom));
 
-    for(i=0, k=0; i<x->x_numClusters; i++)
-        for(j=0; j<(x->x_clusters[i].numMembers-1); j++, k++) // -1 because it's terminated by UINT_MAX
-            SETFLOAT(listOut+k, x->x_clusters[i].members[j]);
+    for (i=0, k=0; i<x->x_numClusters; i++)
+        for (j=0; j<(x->x_clusters[i].numMembers-1); j++, k++) // -1 because it's terminated by UINT_MAX
+            SETFLOAT (listOut+k, x->x_clusters[i].members[j]);
 
-    selector = gensym("clusters_list");
+    selector = gensym ("clusters_list");
     outlet_anything(x->x_listOut, selector, x->x_numInstances, listOut);
 
     // free local memory
-    t_freebytes(listOut, x->x_numInstances * sizeof(t_atom));
+    t_freebytes (listOut, x->x_numInstances * sizeof (t_atom));
 }
 
 
@@ -1415,8 +1415,8 @@ static void timbreID_clusterList(t_timbreID *x, t_floatarg idx)
 
     idxInt = (idx<0)?0:idx;
 
-    if(idxInt >= x->x_numClusters)
-        pd_error(x, "%s: cluster %i does not exist.", x->x_objSymbol->s_name, idxInt);
+    if (idxInt >= x->x_numClusters)
+        pd_error (x, "%s: cluster %i does not exist.", x->x_objSymbol->s_name, idxInt);
     else
     {
         t_instanceIdx i, numMembers;
@@ -1426,16 +1426,16 @@ static void timbreID_clusterList(t_timbreID *x, t_floatarg idx)
         numMembers = x->x_clusters[idxInt].numMembers-1;
 
         // create local memory
-        listOut = (t_atom *)t_getbytes(numMembers * sizeof(t_atom));
+        listOut = (t_atom *)t_getbytes (numMembers * sizeof (t_atom));
 
-        for(i = 0; i < numMembers; i++)
-            SETFLOAT(listOut+i, x->x_clusters[idxInt].members[i]);
+        for (i = 0; i < numMembers; i++)
+            SETFLOAT (listOut+i, x->x_clusters[idxInt].members[i]);
 
-        selector = gensym("cluster_list");
+        selector = gensym ("cluster_list");
         outlet_anything(x->x_listOut, selector, numMembers, listOut);
 
         // free local memory
-        t_freebytes(listOut, numMembers * sizeof(t_atom));
+        t_freebytes (listOut, numMembers * sizeof (t_atom));
     }
 }
 
@@ -1446,15 +1446,15 @@ static void timbreID_clusterMembership(t_timbreID *x, t_floatarg idx)
 
     idxInt = (idx<0)?0:idx;
 
-    if(idxInt >= x->x_numInstances)
-        pd_error(x, "%s: instance %i does not exist.", x->x_objSymbol->s_name, idxInt);
+    if (idxInt >= x->x_numInstances)
+        pd_error (x, "%s: instance %i does not exist.", x->x_objSymbol->s_name, idxInt);
     else
     {
         t_atom listOut;
         t_symbol *selector;
 
-        SETFLOAT(&listOut, x->x_instances[idxInt].clusterMembership);
-        selector = gensym("cluster_membership");
+        SETFLOAT (&listOut, x->x_instances[idxInt].clusterMembership);
+        selector = gensym ("cluster_membership");
         outlet_anything(x->x_listOut, selector, 1, &listOut);
     }
 }
@@ -1469,42 +1469,42 @@ static void timbreID_computeOrder(t_timbreID *x, t_floatarg reference)
     t_symbol *selector;
 
     // create local memory
-    instancesCopy = (t_instance *)t_getbytes(x->x_numInstances * sizeof(t_instance));
-    listOut = (t_atom *)t_getbytes(x->x_numInstances * sizeof(t_atom));
+    instancesCopy = (t_instance *)t_getbytes (x->x_numInstances * sizeof (t_instance));
+    listOut = (t_atom *)t_getbytes (x->x_numInstances * sizeof (t_atom));
 
-    for(i = 0; i < x->x_numInstances; i++)
-        instancesCopy[i].data = (t_float *)t_getbytes(x->x_instances[i].length * sizeof(t_float));
+    for (i = 0; i < x->x_numInstances; i++)
+        instancesCopy[i].data = (t_float *)t_getbytes (x->x_instances[i].length * sizeof (t_float));
 
-    if(reference > x->x_numInstances-1)
+    if (reference > x->x_numInstances-1)
         ref = x->x_numInstances-1;
-    else if(reference < 0)
+    else if (reference < 0)
         ref = 0;
     else
         ref = reference;
 
     // make a local copy of instances so they can be abused
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
         instancesCopy[i].length = x->x_instances[i].length;
         instancesCopy[i].clusterMembership = x->x_instances[i].clusterMembership;
-        for(j=0; j<instancesCopy[i].length; j++)
+        for (j=0; j<instancesCopy[i].length; j++)
             instancesCopy[i].data[j] = x->x_instances[i].data[j];
     }
 
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
         smallest = FLT_MAX;
         smallIdx = 0;
 
-        for(j=0; j<x->x_numInstances; j++)
+        for (j=0; j<x->x_numInstances; j++)
         {
             // skip this iteration if this instance slot has already been used.
-            if(instancesCopy[j].data[0] == FLT_MAX)
+            if (instancesCopy[j].data[0] == FLT_MAX)
                 continue;
 
             dist = timbreID_getDist(x, x->x_instances[ref], instancesCopy[j]);
 
-            if(dist<smallest)
+            if (dist<smallest)
             {
                 smallest = dist;
                 smallIdx = j;
@@ -1512,63 +1512,63 @@ static void timbreID_computeOrder(t_timbreID *x, t_floatarg reference)
 
         };
 
-        SETFLOAT(listOut+i, smallIdx); // store the best from this round;
+        SETFLOAT (listOut+i, smallIdx); // store the best from this round;
 
-        if(x->x_relativeOrdering)
+        if (x->x_relativeOrdering)
             ref = smallIdx; // reorient search to nearest match;
 
         // set this instance to something huge so it will never be chosen as a good match
-        for(j=0; j<x->x_instances[smallIdx].length; j++)
+        for (j=0; j<x->x_instances[smallIdx].length; j++)
             instancesCopy[smallIdx].data[j] = FLT_MAX;
     };
 
-    selector = gensym("order");
+    selector = gensym ("order");
     outlet_anything(x->x_listOut, selector, x->x_numInstances, listOut);
 
     // free local memory
-    for(i = 0; i < x->x_numInstances; i++)
-        t_freebytes(instancesCopy[i].data, instancesCopy[i].length * sizeof(t_float));
+    for (i = 0; i < x->x_numInstances; i++)
+        t_freebytes (instancesCopy[i].data, instancesCopy[i].length * sizeof (t_float));
 
-    t_freebytes(instancesCopy, x->x_numInstances * sizeof(t_instance));
-    t_freebytes(listOut, x->x_numInstances * sizeof(t_atom));
+    t_freebytes (instancesCopy, x->x_numInstances * sizeof (t_instance));
+    t_freebytes (listOut, x->x_numInstances * sizeof (t_atom));
 }
 
 
 static void timbreID_relativeOrdering(t_timbreID *x, t_floatarg rel)
 {
-    if(rel<0)
+    if (rel<0)
         x->x_relativeOrdering = false;
     else if (rel>1)
         x->x_relativeOrdering = true;
     else
         x->x_relativeOrdering = rel;
 
-    if(x->x_relativeOrdering)
-        post("%s: relative ordering ON.", x->x_objSymbol->s_name);
+    if (x->x_relativeOrdering)
+        post ("%s: relative ordering ON.", x->x_objSymbol->s_name);
     else
-        post("%s: relative ordering OFF.", x->x_objSymbol->s_name);
+        post ("%s: relative ordering OFF.", x->x_objSymbol->s_name);
 }
 
 
 static void timbreID_distMetric(t_timbreID *x, t_floatarg d)
 {
-    if(d < 0)
+    if (d < 0)
         x->x_distMetric = 0;
-    if(d > 3)
+    if (d > 3)
         x->x_distMetric = 3;
     else
         x->x_distMetric = d;
 
-    switch(x->x_distMetric)
+    switch (x->x_distMetric)
     {
         case euclidean:
-            post("%s: distance metric: EUCLIDEAN.", x->x_objSymbol->s_name);
+            post ("%s: distance metric: EUCLIDEAN.", x->x_objSymbol->s_name);
             break;
         case taxi:
-            post("%s: distance metric: MANHATTAN (taxicab distance).", x->x_objSymbol->s_name);
+            post ("%s: distance metric: MANHATTAN (taxicab distance).", x->x_objSymbol->s_name);
             break;
         case correlation:
-            post("%s: distance metric: PEARSON CORRELATION COEFF.", x->x_objSymbol->s_name);
+            post ("%s: distance metric: PEARSON CORRELATION COEFF.", x->x_objSymbol->s_name);
             break;
         default:
             break;
@@ -1582,17 +1582,17 @@ static void timbreID_weights(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
 
     listLength = argc;
 
-    if(listLength > x->x_maxFeatureLength)
+    if (listLength > x->x_maxFeatureLength)
     {
-        pd_error(x, "%s: weights list longer than current feature length. ignoring excess weights", x->x_objSymbol->s_name);
+        pd_error (x, "%s: weights list longer than current feature length. ignoring excess weights", x->x_objSymbol->s_name);
         argc = x->x_maxFeatureLength;
     }
 
-    for(i=0; i<listLength; i++)
-        x->x_attributeData[i].weight = atom_getfloat(argv + i);
+    for (i=0; i<listLength; i++)
+        x->x_attributeData[i].weight = atom_getfloat (argv + i);
 
     // if only the first few of a long feature vector are specified, fill in the rest with 1.0
-    for(; i<x->x_maxFeatureLength; i++)
+    for (; i<x->x_maxFeatureLength; i++)
         x->x_attributeData[i].weight = 1.0;
 }
 
@@ -1603,16 +1603,16 @@ static void timbreID_attributeNames(t_timbreID *x, t_symbol *s, int argc, t_atom
 
     listLength = argc;
 
-    if(listLength > x->x_maxFeatureLength)
+    if (listLength > x->x_maxFeatureLength)
     {
-        pd_error(x, "%s: attribute list longer than current max feature length. ignoring excess attributes", x->x_objSymbol->s_name);
+        pd_error (x, "%s: attribute list longer than current max feature length. ignoring excess attributes", x->x_objSymbol->s_name);
         listLength = x->x_maxFeatureLength;
     }
 
-    for(i=0; i<listLength; i++)
-        x->x_attributeData[i].name = atom_getsymbol(argv + i);
+    for (i=0; i<listLength; i++)
+        x->x_attributeData[i].name = atom_getsymbol (argv + i);
 
-    post("%s: attribute names received.", x->x_objSymbol->s_name);
+    post ("%s: attribute names received.", x->x_objSymbol->s_name);
 }
 
 
@@ -1621,18 +1621,18 @@ static void timbreID_attributeInfo(t_timbreID *x, t_floatarg idx)
     t_attributeIdx thisIdx;
     thisIdx = (idx<0)?0:idx;
 
-    if(thisIdx>=x->x_maxFeatureLength)
-        pd_error(x, "%s: attribute %i does not exist", x->x_objSymbol->s_name, thisIdx);
+    if (thisIdx>=x->x_maxFeatureLength)
+        pd_error (x, "%s: attribute %i does not exist", x->x_objSymbol->s_name, thisIdx);
     else
     {
         t_symbol *selector;
         t_atom listOut[3];
 
-        selector = gensym("attribute_info");
+        selector = gensym ("attribute_info");
         // name, weight, order
         SETSYMBOL(&listOut[0], x->x_attributeData[thisIdx].name);
-        SETFLOAT(&listOut[1], x->x_attributeData[thisIdx].weight);
-        SETFLOAT(&listOut[2], x->x_attributeData[thisIdx].order);
+        SETFLOAT (&listOut[1], x->x_attributeData[thisIdx].weight);
+        SETFLOAT (&listOut[2], x->x_attributeData[thisIdx].order);
         outlet_anything(x->x_listOut, selector, 3, &listOut[0]);
     }
 }
@@ -1644,31 +1644,31 @@ static void timbreID_attributeOrder(t_timbreID *x, t_symbol *s, int argc, t_atom
 
     listLength = argc;
 
-    if(listLength > x->x_maxFeatureLength)
+    if (listLength > x->x_maxFeatureLength)
     {
-        pd_error(x, "%s: attribute list longer than current max feature length. ignoring excess attributes", x->x_objSymbol->s_name);
+        pd_error (x, "%s: attribute list longer than current max feature length. ignoring excess attributes", x->x_objSymbol->s_name);
         listLength = x->x_maxFeatureLength;
     }
 
-    for(i=0; i<listLength; i++)
+    for (i=0; i<listLength; i++)
     {
-        x->x_attributeData[i].order = atom_getfloat(argv + i);
+        x->x_attributeData[i].order = atom_getfloat (argv + i);
 
-        if(x->x_attributeData[i].order>x->x_maxFeatureLength-1)
+        if (x->x_attributeData[i].order>x->x_maxFeatureLength-1)
         {
             // initialize attributeOrder
-            for(j=0; j<x->x_maxFeatureLength; j++)
+            for (j=0; j<x->x_maxFeatureLength; j++)
                 x->x_attributeData[j].order = j;
 
-            pd_error(x, "%s: attribute %i out of range. attribute order initialized.", x->x_objSymbol->s_name, x->x_attributeData[i].order);
+            pd_error (x, "%s: attribute %i out of range. attribute order initialized.", x->x_objSymbol->s_name, x->x_attributeData[i].order);
         }
     }
 
     // fill any remainder with attribute 0
-    for(; i<x->x_maxFeatureLength; i++)
+    for (; i<x->x_maxFeatureLength; i++)
         x->x_attributeData[i].order = 0;
 
-    post("%s: attributes re-ordered.", x->x_objSymbol->s_name);
+    post ("%s: attributes re-ordered.", x->x_objSymbol->s_name);
 }
 
 
@@ -1680,7 +1680,7 @@ static void timbreID_attributeRange(t_timbreID *x, t_floatarg lo, t_floatarg hi)
     x->x_attributeHi = (hi<0)?0:hi;
     x->x_attributeHi = (x->x_attributeHi>=x->x_maxFeatureLength)?x->x_maxFeatureLength-1:x->x_attributeHi;
 
-    if(x->x_attributeLo>x->x_attributeHi)
+    if (x->x_attributeLo>x->x_attributeHi)
     {
         t_attributeIdx tmp;
         tmp = x->x_attributeHi;
@@ -1688,7 +1688,7 @@ static void timbreID_attributeRange(t_timbreID *x, t_floatarg lo, t_floatarg hi)
         x->x_attributeLo = tmp;
     }
 
-    post("%s: attribute range: %i through %i.", x->x_objSymbol->s_name, x->x_attributeLo, x->x_attributeHi);
+    post ("%s: attribute range: %i through %i.", x->x_objSymbol->s_name, x->x_attributeLo, x->x_attributeHi);
 }
 
 
@@ -1697,10 +1697,10 @@ static void timbreID_reorderAttributes(t_timbreID *x)
     t_attributeIdx i;
 
     // initialize attributeOrder
-    for(i = 0; i < x->x_maxFeatureLength; i++)
+    for (i = 0; i < x->x_maxFeatureLength; i++)
         x->x_attributeData[i].order = i;
 
-    post("%s: attribute order initialized.", x->x_objSymbol->s_name);
+    post ("%s: attribute order initialized.", x->x_objSymbol->s_name);
 }
 
 
@@ -1709,7 +1709,7 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx, t_floatarg normF
     t_instanceIdx idxInt;
     t_bool normalize, normRange;
 
-    post("%s WARNING: \"feature_list\" method name is deprecated, use \"instance_list\" instead", x->x_objSymbol->s_name);
+    post ("%s WARNING: \"feature_list\" method name is deprecated, use \"instance_list\" instead", x->x_objSymbol->s_name);
 
     normalize = false;
     normRange = false;
@@ -1734,8 +1734,8 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx, t_floatarg normF
 
     idxInt = (idx<0)?0:idx;
 
-    if(idxInt >= x->x_numInstances)
-        pd_error(x, "%s: instance %i does not exist.", x->x_objSymbol->s_name, idxInt);
+    if (idxInt >= x->x_numInstances)
+        pd_error (x, "%s: instance %i does not exist.", x->x_objSymbol->s_name, idxInt);
     else
     {
         t_attributeIdx i, thisFeatureLength;
@@ -1751,15 +1751,15 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx, t_floatarg normF
         normRange = (normRange > 1) ? 1 : normRange;
 
         // create local memory
-        listOut = (t_atom *)t_getbytes(thisFeatureLength * sizeof(t_atom));
+        listOut = (t_atom *)t_getbytes (thisFeatureLength * sizeof (t_atom));
 
-        for(i=0; i<thisFeatureLength; i++)
+        for (i=0; i<thisFeatureLength; i++)
         {
             if (normalize)
             {
-                if (!x->x_normalize)
+                if ( !x->x_normalize)
                 {
-                    pd_error(x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
+                    pd_error (x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
 
                     // free local memory before exit
                     t_freebytes (listOut, thisFeatureLength * sizeof (t_atom));
@@ -1768,19 +1768,19 @@ static void timbreID_featureList(t_timbreID *x, t_floatarg idx, t_floatarg normF
                 }
 
                 if (normRange)
-                    SETFLOAT(listOut+i, ((x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal) * x->x_attributeData[i].normData.normScalar * 2.0) - 1.0);
+                    SETFLOAT (listOut+i, ((x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal) * x->x_attributeData[i].normData.normScalar * 2.0) - 1.0);
                 else
-                    SETFLOAT(listOut+i, (x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal)*x->x_attributeData[i].normData.normScalar);
+                    SETFLOAT (listOut+i, (x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal)*x->x_attributeData[i].normData.normScalar);
             }
             else
-                SETFLOAT(listOut+i, x->x_instances[idxInt].data[i]);
+                SETFLOAT (listOut+i, x->x_instances[idxInt].data[i]);
         }
 
-        selector = gensym("feature_list");
+        selector = gensym ("feature_list");
         outlet_anything(x->x_listOut, selector, thisFeatureLength, listOut);
 
         // free local memory
-        t_freebytes(listOut, thisFeatureLength * sizeof(t_atom));
+        t_freebytes (listOut, thisFeatureLength * sizeof (t_atom));
     }
 }
 
@@ -1813,8 +1813,8 @@ static void timbreID_instanceList(t_timbreID *x, t_floatarg idx, t_floatarg norm
 
     idxInt = (idx<0)?0:idx;
 
-    if(idxInt >= x->x_numInstances)
-        pd_error(x, "%s: instance %i does not exist.", x->x_objSymbol->s_name, idxInt);
+    if (idxInt >= x->x_numInstances)
+        pd_error (x, "%s: instance %i does not exist.", x->x_objSymbol->s_name, idxInt);
     else
     {
         t_attributeIdx i, thisFeatureLength;
@@ -1830,15 +1830,15 @@ static void timbreID_instanceList(t_timbreID *x, t_floatarg idx, t_floatarg norm
         normRange = (normRange > 1) ? 1 : normRange;
 
         // create local memory
-        listOut = (t_atom *)t_getbytes(thisFeatureLength * sizeof(t_atom));
+        listOut = (t_atom *)t_getbytes (thisFeatureLength * sizeof (t_atom));
 
-        for(i=0; i<thisFeatureLength; i++)
+        for (i=0; i<thisFeatureLength; i++)
         {
             if (normalize)
             {
-                if (!x->x_normalize)
+                if ( !x->x_normalize)
                 {
-                    pd_error(x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
+                    pd_error (x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
 
                     // free local memory before exit
                     t_freebytes (listOut, thisFeatureLength * sizeof (t_atom));
@@ -1847,19 +1847,19 @@ static void timbreID_instanceList(t_timbreID *x, t_floatarg idx, t_floatarg norm
                 }
 
                 if (normRange)
-                    SETFLOAT(listOut+i, ((x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal) * x->x_attributeData[i].normData.normScalar * 2.0) - 1.0);
+                    SETFLOAT (listOut+i, ((x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal) * x->x_attributeData[i].normData.normScalar * 2.0) - 1.0);
                 else
-                    SETFLOAT(listOut+i, (x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal)*x->x_attributeData[i].normData.normScalar);
+                    SETFLOAT (listOut+i, (x->x_instances[idxInt].data[i] - x->x_attributeData[i].normData.minVal)*x->x_attributeData[i].normData.normScalar);
             }
             else
-                SETFLOAT(listOut+i, x->x_instances[idxInt].data[i]);
+                SETFLOAT (listOut+i, x->x_instances[idxInt].data[i]);
         }
 
-        selector = gensym("instance_list");
+        selector = gensym ("instance_list");
         outlet_anything(x->x_listOut, selector, thisFeatureLength, listOut);
 
         // free local memory
-        t_freebytes(listOut, thisFeatureLength * sizeof(t_atom));
+        t_freebytes (listOut, thisFeatureLength * sizeof (t_atom));
     }
 }
 
@@ -1892,8 +1892,8 @@ static void timbreID_attributeList(t_timbreID *x, t_floatarg idx, t_floatarg nor
 
     idxInt = (idx<0)?0:idx;
 
-    if(x->x_numInstances == 0 || idxInt > x->x_maxFeatureLength - 1)
-        pd_error(x, "%s: attribute %i does not exist.", x->x_objSymbol->s_name, idxInt);
+    if (x->x_numInstances == 0 || idxInt > x->x_maxFeatureLength - 1)
+        pd_error (x, "%s: attribute %i does not exist.", x->x_objSymbol->s_name, idxInt);
     else
     {
         t_attributeIdx i, attributeListLength;
@@ -1909,22 +1909,22 @@ static void timbreID_attributeList(t_timbreID *x, t_floatarg idx, t_floatarg nor
         normRange = (normRange > 1) ? 1 : normRange;
 
         // create local memory
-        listOut = (t_atom *)t_getbytes(attributeListLength * sizeof(t_atom));
+        listOut = (t_atom *)t_getbytes (attributeListLength * sizeof (t_atom));
 
-        for(i=0; i<attributeListLength; i++)
+        for (i=0; i<attributeListLength; i++)
         {
             if (idxInt >= x->x_instances[i].length)
             {
-                SETFLOAT(listOut+i, 0.0);
-                post("%s WARNING: attribute %i does not exist for instance %i, outputting 0 instead.", x->x_objSymbol->s_name, idxInt, i);
+                SETFLOAT (listOut+i, 0.0);
+                post ("%s WARNING: attribute %i does not exist for instance %i, outputting 0 instead.", x->x_objSymbol->s_name, idxInt, i);
             }
             else
             {
                 if (normalize)
                 {
-                    if (!x->x_normalize)
+                    if ( !x->x_normalize)
                     {
-                        pd_error(x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
+                        pd_error (x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
 
                         // free local memory before exit
                         t_freebytes (listOut, attributeListLength * sizeof (t_atom));
@@ -1933,27 +1933,27 @@ static void timbreID_attributeList(t_timbreID *x, t_floatarg idx, t_floatarg nor
                     }
 
                     if (normRange)
-                        SETFLOAT(listOut+i, ((x->x_instances[i].data[idxInt] - x->x_attributeData[idxInt].normData.minVal) * x->x_attributeData[idxInt].normData.normScalar * 2.0) - 1.0);
+                        SETFLOAT (listOut+i, ((x->x_instances[i].data[idxInt] - x->x_attributeData[idxInt].normData.minVal) * x->x_attributeData[idxInt].normData.normScalar * 2.0) - 1.0);
                     else
-                        SETFLOAT(listOut+i, (x->x_instances[i].data[idxInt] - x->x_attributeData[idxInt].normData.minVal)*x->x_attributeData[idxInt].normData.normScalar);
+                        SETFLOAT (listOut+i, (x->x_instances[i].data[idxInt] - x->x_attributeData[idxInt].normData.minVal)*x->x_attributeData[idxInt].normData.normScalar);
                 }
                 else
-                    SETFLOAT(listOut+i, x->x_instances[i].data[idxInt]);
+                    SETFLOAT (listOut+i, x->x_instances[i].data[idxInt]);
             }
         }
 
-        selector = gensym("attribute_list");
+        selector = gensym ("attribute_list");
         outlet_anything(x->x_listOut, selector, attributeListLength, listOut);
 
         // free local memory
-        t_freebytes(listOut, attributeListLength * sizeof(t_atom));
+        t_freebytes (listOut, attributeListLength * sizeof (t_atom));
     }
 }
 
 
 static void timbreID_similarityMatrix(t_timbreID *x, t_floatarg startInstance, t_floatarg finishInstance, t_floatarg normalize)
 {
-    if(x->x_numInstances)
+    if (x->x_numInstances)
     {
         t_instanceIdx i, j, k, l, numInst, startInst, finishInst;
         t_bool norm;
@@ -1970,7 +1970,7 @@ static void timbreID_similarityMatrix(t_timbreID *x, t_floatarg startInstance, t
         normalize = (normalize>1)?1:normalize;
         norm = normalize;
 
-        if(startInst>finishInst)
+        if (startInst>finishInst)
         {
             t_instanceIdx tmp;
 
@@ -1979,15 +1979,15 @@ static void timbreID_similarityMatrix(t_timbreID *x, t_floatarg startInstance, t
             startInst = tmp;
         }
 
-        if(finishInst-startInst==0)
+        if (finishInst-startInst==0)
         {
-            pd_error(x, "%s: bad instance range for similarity matrix", x->x_objSymbol->s_name);
+            pd_error (x, "%s: bad instance range for similarity matrix", x->x_objSymbol->s_name);
             return;
         }
 
         numInst = finishInst-startInst+1;
 
-        if(numInst)
+        if (numInst)
         {
             t_float maxDist;
             t_instance *distances;
@@ -1995,73 +1995,73 @@ static void timbreID_similarityMatrix(t_timbreID *x, t_floatarg startInstance, t
 
             // create local memory
             // only using t_instance type as a convenient way to make a numInst X numInst matrix
-            distances = (t_instance *)t_getbytes(numInst * sizeof(t_instance));
+            distances = (t_instance *)t_getbytes (numInst * sizeof (t_instance));
 
-            for(i = 0; i < numInst; i++)
+            for (i = 0; i < numInst; i++)
             {
-                distances[i].data = (t_float *)t_getbytes(numInst * sizeof(t_float));
+                distances[i].data = (t_float *)t_getbytes (numInst * sizeof (t_float));
                 distances[i].length = numInst;
-                for(j=0; j<distances[i].length; j++)
+                for (j=0; j<distances[i].length; j++)
                     distances[i].data[j] = 0.0;
             }
 
             maxDist = -1;
 
-            for(i=startInst, j=0; i<=finishInst; i++, j++)
+            for (i=startInst, j=0; i<=finishInst; i++, j++)
             {
-                for(k=startInst, l=0; k<=finishInst; k++, l++)
+                for (k=startInst, l=0; k<=finishInst; k++, l++)
                 {
                     t_float dist;
 
                     dist = timbreID_getDist(x, x->x_instances[i], x->x_instances[k]);
 
-                    if(dist>maxDist)
+                    if (dist>maxDist)
                         maxDist = dist;
 
-                    if(l<distances[i].length)
+                    if (l<distances[i].length)
                         distances[j].data[l] = dist;
                 }
             }
 
             maxDist = 1.0/maxDist;
 
-            for(i=startInst; i<numInst; i++)
+            for (i=startInst; i<numInst; i++)
             {
                 t_atom *listOut;
 
-                listOut = (t_atom *)t_getbytes(numInst * sizeof(t_atom));
+                listOut = (t_atom *)t_getbytes (numInst * sizeof (t_atom));
 
-                for(j=0; j<distances[i].length; j++)
+                for (j=0; j<distances[i].length; j++)
                 {
                     t_float dist;
 
                     dist = distances[i].data[j];
 
-                    if(norm)
+                    if (norm)
                         dist *= maxDist;
 
-                    SETFLOAT(listOut+j, dist);
+                    SETFLOAT (listOut+j, dist);
                 }
 
-                selector = gensym("similarity_matrix");
+                selector = gensym ("similarity_matrix");
                 outlet_anything(x->x_listOut, selector, numInst, listOut);
 
-                t_freebytes(listOut, numInst * sizeof(t_atom));
+                t_freebytes (listOut, numInst * sizeof (t_atom));
             }
 
 
             // free local memory
-            for(i = 0; i < numInst; i++)
-                t_freebytes(distances[i].data, numInst * sizeof(t_float));
+            for (i = 0; i < numInst; i++)
+                t_freebytes (distances[i].data, numInst * sizeof (t_float));
 
-            t_freebytes(distances, numInst * sizeof(t_instance));
+            t_freebytes (distances, numInst * sizeof (t_instance));
 
         }
         else
-            pd_error(x, "%s: bad range of instances", x->x_objSymbol->s_name);
+            pd_error (x, "%s: bad range of instances", x->x_objSymbol->s_name);
     }
     else
-        pd_error(x, "%s: no training instances have been loaded.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: no training instances have been loaded.", x->x_objSymbol->s_name);
 }
 
 
@@ -2074,19 +2074,19 @@ static void timbreID_minValues(t_timbreID *x)
         t_symbol *selector;
 
         // create local memory
-        listOut = (t_atom *)t_getbytes(x->x_maxFeatureLength * sizeof(t_atom));
+        listOut = (t_atom *)t_getbytes (x->x_maxFeatureLength * sizeof (t_atom));
 
-        for(i = 0; i < x->x_maxFeatureLength; i++)
-            SETFLOAT(listOut+i, x->x_attributeData[i].normData.minVal);
+        for (i = 0; i < x->x_maxFeatureLength; i++)
+            SETFLOAT (listOut+i, x->x_attributeData[i].normData.minVal);
 
-        selector = gensym("min_values");
+        selector = gensym ("min_values");
         outlet_anything(x->x_listOut, selector, x->x_maxFeatureLength, listOut);
 
         // free local memory
-        t_freebytes(listOut, x->x_maxFeatureLength * sizeof(t_atom));
+        t_freebytes (listOut, x->x_maxFeatureLength * sizeof (t_atom));
     }
     else
-        pd_error(x, "%s: feature database not normalized. minimum values not calculated yet.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: feature database not normalized. minimum values not calculated yet.", x->x_objSymbol->s_name);
 }
 
 
@@ -2099,19 +2099,19 @@ static void timbreID_maxValues(t_timbreID *x)
         t_symbol *selector;
 
         // create local memory
-        listOut = (t_atom *)t_getbytes(x->x_maxFeatureLength * sizeof(t_atom));
+        listOut = (t_atom *)t_getbytes (x->x_maxFeatureLength * sizeof (t_atom));
 
-        for(i = 0; i < x->x_maxFeatureLength; i++)
-            SETFLOAT(listOut+i, x->x_attributeData[i].normData.maxVal);
+        for (i = 0; i < x->x_maxFeatureLength; i++)
+            SETFLOAT (listOut+i, x->x_attributeData[i].normData.maxVal);
 
-        selector = gensym("max_values");
+        selector = gensym ("max_values");
         outlet_anything(x->x_listOut, selector, x->x_maxFeatureLength, listOut);
 
         // free local memory
-        t_freebytes(listOut, x->x_maxFeatureLength * sizeof(t_atom));
+        t_freebytes (listOut, x->x_maxFeatureLength * sizeof (t_atom));
     }
     else
-        pd_error(x, "%s: feature database not normalized. maximum values not calculated yet.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: feature database not normalized. maximum values not calculated yet.", x->x_objSymbol->s_name);
 }
 
 
@@ -2153,10 +2153,10 @@ static void timbreID_mink(t_timbreID *x, t_floatarg k, t_floatarg normFlag)
             break;
     }
 
-    attVals = (t_float *)t_getbytes (x->x_numInstances * sizeof(t_float));
+    attVals = (t_float *)t_getbytes (x->x_numInstances * sizeof (t_float));
     outputList = (t_atom *)t_getbytes ((kInt + 1) * sizeof (t_atom));
 
-    selector = gensym("min_k_values");
+    selector = gensym ("min_k_values");
 
     for (j = 0; j < x->x_maxFeatureLength; j++)
     {
@@ -2172,9 +2172,9 @@ static void timbreID_mink(t_timbreID *x, t_floatarg k, t_floatarg normFlag)
         {
             if (normalize)
             {
-                if (!x->x_normalize)
+                if ( !x->x_normalize)
                 {
-                    pd_error(x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
+                    pd_error (x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
 
                     // free local memory before exit
                     t_freebytes (attVals, x->x_numInstances * sizeof (t_float));
@@ -2240,10 +2240,10 @@ static void timbreID_maxk(t_timbreID *x, t_floatarg k, t_floatarg normFlag)
             break;
     }
 
-    attVals = (t_float *)t_getbytes (x->x_numInstances * sizeof(t_float));
+    attVals = (t_float *)t_getbytes (x->x_numInstances * sizeof (t_float));
     outputList = (t_atom *)t_getbytes ((kInt + 1) * sizeof (t_atom));
 
-    selector = gensym("max_k_values");
+    selector = gensym ("max_k_values");
 
     for (j = 0; j < x->x_maxFeatureLength; j++)
     {
@@ -2259,9 +2259,9 @@ static void timbreID_maxk(t_timbreID *x, t_floatarg k, t_floatarg normFlag)
         {
             if (normalize)
             {
-                if (!x->x_normalize)
+                if ( !x->x_normalize)
                 {
-                    pd_error(x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
+                    pd_error (x, "%s: feature database not normalized. cannot output normalized values.", x->x_objSymbol->s_name);
 
                     // free local memory before exit
                     t_freebytes (attVals, x->x_numInstances * sizeof (t_float));
@@ -2295,13 +2295,13 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
 
     if (x->x_numInstances == 0)
     {
-        pd_error(x, "%s: no training instances have been loaded. cannot define a class reference.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: no training instances have been loaded. cannot define a class reference.", x->x_objSymbol->s_name);
         return;
     }
 
-    commandName = atom_getsymbol(argv);
+    commandName = atom_getsymbol (argv);
 
-    if (!strcmp(commandName->s_name, "define"))
+    if ( !strcmp(commandName->s_name, "define"))
     {
         t_instanceIdx classIdx, i;
         t_attributeIdx numAttributes, j;
@@ -2314,13 +2314,13 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
 
         // the number of attributes in this definition is the number of remaining arguments after the "define" symbol
         numAttributes = argc - 1;
-        // post("numAttributes: %i", numAttributes);
+        // post ("numAttributes: %i", numAttributes);
 
         // confirm that the definition specifies a K percent for all attributes
         // if not, return with an error before we do any memory management below
         if (numAttributes != x->x_minFeatureLength)
         {
-            pd_error(x, "%s: class reference definition must provide a K percent value for all attributes. failed to define class reference.", x->x_objSymbol->s_name);
+            pd_error (x, "%s: class reference definition must provide a K percent value for all attributes. failed to define class reference.", x->x_objSymbol->s_name);
             return;
         }
 
@@ -2337,7 +2337,7 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
         x->x_classRefs[classIdx].data = (t_float *)t_getbytes (numAttributes * sizeof (t_float));
 
         // get local memory to store each attribute column
-        attVals = (t_float *)t_getbytes (x->x_numInstances * sizeof(t_float));
+        attVals = (t_float *)t_getbytes (x->x_numInstances * sizeof (t_float));
 
         // go through each attribute and:
             // get the average of the min/max K values of the specified attribute
@@ -2357,7 +2357,7 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
 
             // convert pct into a rounded K value
             kInstances = (fabs(pct) / 100.0) * x->x_numInstances + 0.5;
-            // post("kInstances[%i]: %i", j, kInstances);
+            // post ("kInstances[%i]: %i", j, kInstances);
 
             // initialize result, where we'll store the average
             kSum = 0.0;
@@ -2387,15 +2387,15 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
 
             // divide the running sum in kSum by K to get the average of the min K values
             x->x_classRefs[classIdx].data[j] = kSum / kInstances;
-            // post("avg[%i]: %f", j, x->x_classRefs[classIdx].data[j]);
+            // post ("avg[%i]: %f", j, x->x_classRefs[classIdx].data[j]);
         }
 
         // free the attVals buffer
         t_freebytes (attVals, x->x_numInstances * sizeof (t_float));
 
-        post("%s: defined class reference %i.", x->x_objSymbol->s_name, classIdx);
+        post ("%s: defined class reference %i.", x->x_objSymbol->s_name, classIdx);
     }
-    else if (!strcmp(commandName->s_name, "clear"))
+    else if ( !strcmp(commandName->s_name, "clear"))
     {
         t_instanceIdx i;
 
@@ -2408,9 +2408,9 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
 
         x->x_numClassRefs = 0;
 
-        post("%s: cleared all class reference vectors.", x->x_objSymbol->s_name);
+        post ("%s: cleared all class reference vectors.", x->x_objSymbol->s_name);
     }
-    else if (!strcmp(commandName->s_name, "id"))
+    else if ( !strcmp(commandName->s_name, "id"))
     {
         t_attributeIdx vecLen;
         t_instanceIdx i, winningIdx;
@@ -2419,7 +2419,7 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
 
         if (x->x_numClassRefs == 0)
         {
-            pd_error(x, "%s: no class references have been defined.", x->x_objSymbol->s_name);
+            pd_error (x, "%s: no class references have been defined.", x->x_objSymbol->s_name);
             return;
         }
 
@@ -2432,7 +2432,7 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
         // fill the inputVector memory with the input data
         // we can't normalize the input vector here since we don't know which attributes are in the class reference. timbreID help file must state clearly that incoming "class_reference id" vectors must be normalized ahead of time
         for (i = 0; i < vecLen; i++)
-            inputVector[i] = atom_getfloat(argv + 1 + i);
+            inputVector[i] = atom_getfloat (argv + 1 + i);
 
         winningDist = FLT_MAX;
         winningIdx = 0;
@@ -2452,15 +2452,15 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
         }
 
         // output the winning distance
-        outlet_float(x->x_nearestDist, winningDist);
+        outlet_float (x->x_nearestDist, winningDist);
 
         // output the winning index
-        outlet_float(x->x_id, winningIdx);
+        outlet_float (x->x_id, winningIdx);
 
         // free the inputVector buffer
         t_freebytes (inputVector, vecLen * sizeof (t_float));
     }
-    else if (!strcmp(commandName->s_name, "get"))
+    else if ( !strcmp(commandName->s_name, "get"))
     {
         t_instanceIdx i;
         t_attributeIdx j, classVecLen;
@@ -2475,10 +2475,10 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
         // fill the list with data from each class reference and output
         for (i = 0; i < x->x_numClassRefs; i++)
         {
-            SETFLOAT(listOut, i);
+            SETFLOAT (listOut, i);
 
             for (j = 0; j < classVecLen; j++)
-                SETFLOAT(listOut + 1 + j, x->x_classRefs[i].data[j]);
+                SETFLOAT (listOut + 1 + j, x->x_classRefs[i].data[j]);
 
             selector = gensym ("class_reference");
             outlet_anything(x->x_listOut, selector, classVecLen + 1, listOut);
@@ -2489,42 +2489,42 @@ static void timbreID_classReference(t_timbreID *x, t_symbol *s, int argc, t_atom
     }
     else
     {
-        pd_error(x, "%s: no such command (%s) for class_reference.", x->x_objSymbol->s_name, commandName->s_name);
+        pd_error (x, "%s: no such command (%s) for class_reference.", x->x_objSymbol->s_name, commandName->s_name);
     }
 }
 
 
 static void timbreID_minFeatureLength(t_timbreID *x)
 {
-    if(x->x_numInstances)
+    if (x->x_numInstances)
     {
         t_atom listOut;
         t_symbol *selector;
 
-        SETFLOAT(&listOut, x->x_minFeatureLength);
+        SETFLOAT (&listOut, x->x_minFeatureLength);
 
-        selector = gensym("min_feature_length");
+        selector = gensym ("min_feature_length");
         outlet_anything(x->x_listOut, selector, 1, &listOut);
     }
     else
-        pd_error(x, "%s: no training instances have been loaded.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: no training instances have been loaded.", x->x_objSymbol->s_name);
 }
 
 
 static void timbreID_maxFeatureLength(t_timbreID *x)
 {
-    if(x->x_numInstances)
+    if (x->x_numInstances)
     {
         t_atom listOut;
         t_symbol *selector;
 
-        SETFLOAT(&listOut, x->x_maxFeatureLength);
+        SETFLOAT (&listOut, x->x_maxFeatureLength);
 
-        selector = gensym("max_feature_length");
+        selector = gensym ("max_feature_length");
         outlet_anything(x->x_listOut, selector, 1, &listOut);
     }
     else
-        pd_error(x, "%s: no training instances have been loaded.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: no training instances have been loaded.", x->x_objSymbol->s_name);
 }
 
 
@@ -2536,16 +2536,16 @@ static void timbreID_clear(t_timbreID *x)
     timbreID_uncluster(x);
 
     // free the each instance's data memory
-    for(i = 0; i < x->x_numInstances; i++)
-        t_freebytes(x->x_instances[i].data, x->x_instances[i].length * sizeof(t_float));
+    for (i = 0; i < x->x_numInstances; i++)
+        t_freebytes (x->x_instances[i].data, x->x_instances[i].length * sizeof (t_float));
 
-    x->x_instances = (t_instance *)t_resizebytes(x->x_instances, x->x_numInstances * sizeof(t_instance), 0);
+    x->x_instances = (t_instance *)t_resizebytes (x->x_instances, x->x_numInstances * sizeof (t_instance), 0);
 
     // free each cluster's members memory
-    for(i = 0; i < x->x_numClusters; i++)
-        t_freebytes(x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof(t_instanceIdx));
+    for (i = 0; i < x->x_numClusters; i++)
+        t_freebytes (x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof (t_instanceIdx));
 
-    x->x_clusters = (t_cluster *)t_resizebytes(x->x_clusters, x->x_numInstances * sizeof(t_cluster), 0);
+    x->x_clusters = (t_cluster *)t_resizebytes (x->x_clusters, x->x_numInstances * sizeof (t_cluster), 0);
 
     // postFlag argument FALSE here
     timbreID_attributeDataResize(x, x->x_maxFeatureLength, 0, false);
@@ -2559,7 +2559,7 @@ static void timbreID_clear(t_timbreID *x)
     x->x_minFeatureLength = INT_MAX;
     x->x_normalize = false;
 
-    post("%s: all instances cleared.", x->x_objSymbol->s_name);
+    post ("%s: all instances cleared.", x->x_objSymbol->s_name);
 }
 
 
@@ -2570,37 +2570,37 @@ static void timbreID_write(t_timbreID *x, t_symbol *s)
     char fileNameBuf[MAXPDSTRING];
 
     // make a buffer for the header data, which is the number of instances followed by the length of each instance
-    header = (t_instanceIdx *)t_getbytes((x->x_numInstances+1) * sizeof(t_instanceIdx));
+    header = (t_instanceIdx *)t_getbytes ((x->x_numInstances+1) * sizeof (t_instanceIdx));
 
     canvas_makefilename(x->x_canvas, s->s_name, fileNameBuf, MAXPDSTRING);
 
     filePtr = fopen(fileNameBuf, "wb");
 
-    if(!filePtr)
+    if ( !filePtr)
     {
-        pd_error(x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
         // free header memory before exit
-        t_freebytes(header, (x->x_numInstances+1) * sizeof(t_instanceIdx));
+        t_freebytes (header, (x->x_numInstances+1) * sizeof (t_instanceIdx));
         return;
     }
 
     // write the header information, which is the number of instances, and then the length of each instance
     header[0] = x->x_numInstances;
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
         header[i+1] = x->x_instances[i].length;
 
-    fwrite(header, sizeof(t_instanceIdx), x->x_numInstances+1, filePtr);
+    fwrite(header, sizeof (t_instanceIdx), x->x_numInstances+1, filePtr);
 
     // write the instance data
-    for(i = 0; i < x->x_numInstances; i++)
-        fwrite(x->x_instances[i].data, sizeof(t_float), x->x_instances[i].length, filePtr);
+    for (i = 0; i < x->x_numInstances; i++)
+        fwrite(x->x_instances[i].data, sizeof (t_float), x->x_instances[i].length, filePtr);
 
-    post("%s: wrote %i non-normalized instances to %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
+    post ("%s: wrote %i non-normalized instances to %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
 
     fclose(filePtr);
 
     // free header memory
-    t_freebytes(header, (x->x_numInstances+1) * sizeof(t_instanceIdx));
+    t_freebytes (header, (x->x_numInstances+1) * sizeof (t_instanceIdx));
 }
 
 
@@ -2616,9 +2616,9 @@ static void timbreID_read(t_timbreID *x, t_symbol *s)
 
     filePtr = fopen(fileNameBuf, "rb");
 
-    if (!filePtr)
+    if ( !filePtr)
     {
-        pd_error(x, "%s: failed to open %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: failed to open %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
     }
 
@@ -2633,7 +2633,7 @@ static void timbreID_read(t_timbreID *x, t_symbol *s)
 
     if (txtFlag)
     {
-        pd_error(x, "%s: data in file %s is plain text (.txt), not binary (.timid). use read_text instead.", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: data in file %s is plain text (.txt), not binary (.timid). use read_text instead.", x->x_objSymbol->s_name, fileNameBuf);
         fclose(filePtr);
         return;
     }
@@ -2651,26 +2651,26 @@ static void timbreID_read(t_timbreID *x, t_symbol *s)
     timbreID_clear(x);
 
     // first item in the header is the number of instances
-    fread(&x->x_numInstances, sizeof(t_instanceIdx), 1, filePtr);
+    fread(&x->x_numInstances, sizeof (t_instanceIdx), 1, filePtr);
 
     // resize instances & clusterMembers to numInstances
-    x->x_instances = (t_instance *)t_resizebytes(x->x_instances, 0, x->x_numInstances * sizeof(t_instance));
+    x->x_instances = (t_instance *)t_resizebytes (x->x_instances, 0, x->x_numInstances * sizeof (t_instance));
 
-    x->x_clusters = (t_cluster *)t_resizebytes(x->x_clusters, 0, x->x_numInstances * sizeof(t_cluster));
+    x->x_clusters = (t_cluster *)t_resizebytes (x->x_clusters, 0, x->x_numInstances * sizeof (t_cluster));
 
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
         // get the length of each instance
-        fread(&x->x_instances[i].length, sizeof(t_attributeIdx), 1, filePtr);
+        fread(&x->x_instances[i].length, sizeof (t_attributeIdx), 1, filePtr);
 
-        if(x->x_instances[i].length>maxLength)
+        if (x->x_instances[i].length>maxLength)
             maxLength = x->x_instances[i].length;
 
-        if(x->x_instances[i].length<minLength)
+        if (x->x_instances[i].length<minLength)
             minLength = x->x_instances[i].length;
 
         // get the appropriate number of bytes for the data
-        x->x_instances[i].data = (t_float *)t_getbytes(x->x_instances[i].length * sizeof(t_float));
+        x->x_instances[i].data = (t_float *)t_getbytes (x->x_instances[i].length * sizeof (t_float));
     }
 
     x->x_minFeatureLength = minLength;
@@ -2682,10 +2682,10 @@ static void timbreID_read(t_timbreID *x, t_symbol *s)
     timbreID_attributeDataResize(x, 0, x->x_maxFeatureLength, 1);
 
     // after loading a database, instances are unclustered
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
         x->x_clusters[i].numMembers = 2;
-        x->x_clusters[i].members = (t_instanceIdx *)t_getbytes(x->x_clusters[i].numMembers * sizeof(t_instanceIdx));
+        x->x_clusters[i].members = (t_instanceIdx *)t_getbytes (x->x_clusters[i].numMembers * sizeof (t_instanceIdx));
 
         x->x_clusters[i].members[0] = i; // first member of the cluster is the instance index
         x->x_clusters[i].members[1] = UINT_MAX; // terminate with UINT_MAX
@@ -2694,10 +2694,10 @@ static void timbreID_read(t_timbreID *x, t_symbol *s)
     }
 
     // finally, read in the instance data
-    for(i = 0; i < x->x_numInstances; i++)
-        fread(x->x_instances[i].data, sizeof(t_float), x->x_instances[i].length, filePtr);
+    for (i = 0; i < x->x_numInstances; i++)
+        fread(x->x_instances[i].data, sizeof (t_float), x->x_instances[i].length, filePtr);
 
-    post("%s: read %i instances from %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
+    post ("%s: read %i instances from %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
 
     fclose(filePtr);
 }
@@ -2715,16 +2715,16 @@ static void timbreID_writeText(t_timbreID *x, t_symbol *s, t_floatarg normRange)
 
     filePtr = fopen(fileNameBuf, "w");
 
-    if(!filePtr)
+    if ( !filePtr)
     {
-        pd_error(x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
     }
 
     normRange = (normRange < 0) ? 0 : normRange;
     normRange = (normRange > 1) ? 1 : normRange;
 
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
         featurePtr = x->x_instances[i].data;
 
@@ -2737,10 +2737,10 @@ static void timbreID_writeText(t_timbreID *x, t_symbol *s, t_floatarg normRange)
 
             thisAttribute = x->x_attributeData[j].order;
 
-            if(thisAttribute>=x->x_instances[i].length)
+            if (thisAttribute>=x->x_instances[i].length)
                 break;
 
-            if(x->x_normalize)
+            if (x->x_normalize)
             {
                 if (normRange)
                     thisFeatureData = ((*(featurePtr+thisAttribute) - x->x_attributeData[thisAttribute].normData.minVal) * x->x_attributeData[thisAttribute].normData.normScalar * 2.0) - 1;
@@ -2752,7 +2752,7 @@ static void timbreID_writeText(t_timbreID *x, t_symbol *s, t_floatarg normRange)
 
             // What's the best float resolution to print?
             // no space after final value on an instance line
-            if(j==x->x_attributeHi)
+            if (j==x->x_attributeHi)
                 fprintf(filePtr, "%0.6f", thisFeatureData);
             else
                 fprintf(filePtr, "%0.6f ", thisFeatureData);
@@ -2763,7 +2763,7 @@ static void timbreID_writeText(t_timbreID *x, t_symbol *s, t_floatarg normRange)
         fprintf(filePtr, "\n");
        };
 
-    post("%s: wrote %i instances to %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
+    post ("%s: wrote %i instances to %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
 
     fclose(filePtr);
 }
@@ -2780,9 +2780,9 @@ static void timbreID_readText(t_timbreID *x, t_symbol *s)
 
     filePtr = fopen(fileNameBuf, "r");
 
-    if (!filePtr)
+    if ( !filePtr)
     {
-        pd_error(x, "%s: failed to open %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: failed to open %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
     }
 
@@ -2799,9 +2799,9 @@ static void timbreID_readText(t_timbreID *x, t_symbol *s)
     x->x_numInstances = numInstances;
 
     // resize instances & clusterMembers to numInstances
-    x->x_instances = (t_instance *)t_resizebytes(x->x_instances, 0, x->x_numInstances * sizeof(t_instance));
+    x->x_instances = (t_instance *)t_resizebytes (x->x_instances, 0, x->x_numInstances * sizeof (t_instance));
 
-    x->x_clusters = (t_cluster *)t_resizebytes(x->x_clusters, 0, x->x_numInstances * sizeof(t_cluster));
+    x->x_clusters = (t_cluster *)t_resizebytes (x->x_clusters, 0, x->x_numInstances * sizeof (t_cluster));
 
     // now that we have numInstances, close and re-open file to get the length of each line
     fclose(filePtr);
@@ -2814,25 +2814,25 @@ static void timbreID_readText(t_timbreID *x, t_symbol *s)
 
         // check to see if there's a space after the last data entry on the line. if so, our space counter loop below should stop prior to that final space. this allows us to read text files written both with and without spaces after the final entry of a line
         // stringLength-2 would be the position for this space, because the final character is a carriage return (10) at position stringLength-1
-        if(textLine[stringLength-2]==32)
+        if (textLine[stringLength-2]==32)
             stringLength = stringLength-2; // lop off the final space and CR
 
         numSpaces = 0;
-        for(j=0; j<stringLength; j++)
-            if(textLine[j]==32)
+        for (j=0; j<stringLength; j++)
+            if (textLine[j]==32)
                 numSpaces++;
 
         // there's a space after each entry in a file written by write_text(), except for the final entry. So (numSpaces+1)==length
         x->x_instances[i].length = numSpaces+1;
 
-        if(x->x_instances[i].length>maxLength)
+        if (x->x_instances[i].length>maxLength)
             maxLength = x->x_instances[i].length;
 
-        if(x->x_instances[i].length<minLength)
+        if (x->x_instances[i].length<minLength)
             minLength = x->x_instances[i].length;
 
         // get the appropriate number of bytes for the data
-        x->x_instances[i].data = (t_float *)t_getbytes(x->x_instances[i].length * sizeof(t_float));
+        x->x_instances[i].data = (t_float *)t_getbytes (x->x_instances[i].length * sizeof (t_float));
 
         i++;
     }
@@ -2845,10 +2845,10 @@ static void timbreID_readText(t_timbreID *x, t_symbol *s)
     // update x_attributeData based on new x_maxFeatureLength. postFlag argument TRUE here
     timbreID_attributeDataResize(x, 0, x->x_maxFeatureLength, 1);
 
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
         x->x_clusters[i].numMembers = 2;
-        x->x_clusters[i].members = (t_instanceIdx *)t_getbytes(x->x_clusters[i].numMembers * sizeof(t_instanceIdx));
+        x->x_clusters[i].members = (t_instanceIdx *)t_getbytes (x->x_clusters[i].numMembers * sizeof (t_instanceIdx));
 
         x->x_clusters[i].members[0] = i; // first member of the cluster is the instance index
         x->x_clusters[i].members[1] = UINT_MAX;
@@ -2860,15 +2860,15 @@ static void timbreID_readText(t_timbreID *x, t_symbol *s)
     fclose(filePtr);
     filePtr = fopen(fileNameBuf, "r");
 
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
         featurePtr = x->x_instances[i].data;
 
-        for(j=0; j<x->x_instances[i].length; j++, featurePtr++)
+        for (j=0; j<x->x_instances[i].length; j++, featurePtr++)
             fscanf(filePtr, "%f", featurePtr);
     };
 
-    post("%s: read %i instances from %s.\n", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
+    post ("%s: read %i instances from %s.\n", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
 
     fclose(filePtr);
 }
@@ -2890,22 +2890,22 @@ static void timbreID_ARFF(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
 
     argCount = (argc<0)?0:argc;
 
-    filenameSymbol = atom_getsymbol(argv);
+    filenameSymbol = atom_getsymbol (argv);
     fileName = filenameSymbol->s_name;
 
     canvas_makefilename(x->x_canvas, fileName, fileNameBuf, MAXPDSTRING);
 
     filePtr = fopen(fileNameBuf, "w");
 
-    if(!filePtr)
+    if ( !filePtr)
     {
-        pd_error(x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
     }
 
-    if(argCount>1)
+    if (argCount>1)
     {
-        relationSymbol = atom_getsymbol(argv + 1);
+        relationSymbol = atom_getsymbol (argv + 1);
         relation = relationSymbol->s_name;
     }
     else
@@ -2913,24 +2913,24 @@ static void timbreID_ARFF(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
 
     fprintf(filePtr, "@RELATION %s\n\n\n", relation);
 
-    if(argCount>2)
+    if (argCount>2)
     {
-        for(i=2; i<argCount; i++)
+        for (i=2; i<argCount; i++)
         {
 
-            switch((i-2)%3)
+            switch ((i-2)%3)
             {
                 case 0:
-                    attRangeLow = atom_getfloat(argv + i);
+                    attRangeLow = atom_getfloat (argv + i);
                     break;
                 case 1:
-                    attRangeHi = atom_getfloat(argv + i);
+                    attRangeHi = atom_getfloat (argv + i);
                     break;
                 case 2:
-                    attSymbol = atom_getsymbol(argv + i);
+                    attSymbol = atom_getsymbol (argv + i);
                     attName = attSymbol->s_name;
 
-                    for(j=0; j<=attRangeHi-attRangeLow; j++)
+                    for (j=0; j<=attRangeHi-attRangeLow; j++)
                         fprintf(filePtr, "@ATTRIBUTE %s-%i NUMERIC\n", attName, j);
                     break;
                 default:
@@ -2941,26 +2941,26 @@ static void timbreID_ARFF(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
         // BUG: this was causing a crash because x_maxFeatureLength and attRangeHi are unsigned integers, so we won't get a negative number as expected when there are indeed enough arguments. This came up with version 0.7 because of typedefs - no longer using int. Quick fix is to typecast back to int during the arithmetic
 
         // in case the argument list was incomplete
-        if((x->x_maxFeatureLength-1) > attRangeHi)
+        if ((x->x_maxFeatureLength-1) > attRangeHi)
         {
-            for(i=attRangeHi+1, j=0; i<x->x_maxFeatureLength; i++, j++)
+            for (i=attRangeHi+1, j=0; i<x->x_maxFeatureLength; i++, j++)
                 fprintf(filePtr, "@ATTRIBUTE undefined-attribute-%i NUMERIC\n", j);
         }
     }
     else
     {
-        for(i = 0; i < x->x_maxFeatureLength; i++)
+        for (i = 0; i < x->x_maxFeatureLength; i++)
             fprintf(filePtr, "@ATTRIBUTE undefined-attribute-%i NUMERIC\n", i);
     }
 
     fprintf(filePtr, "\n\n");
     fprintf(filePtr, "@DATA\n\n");
 
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
         featurePtr = x->x_instances[i].data;
 
-        for(j=0; j<x->x_instances[i].length-1; j++)
+        for (j=0; j<x->x_instances[i].length-1; j++)
             fprintf(filePtr, "%0.20f, ", *featurePtr++);
 
         // last attribute shouldn't be followed by a comma and space
@@ -2969,7 +2969,7 @@ static void timbreID_ARFF(t_timbreID *x, t_symbol *s, int argc, t_atom *argv)
         fprintf(filePtr, "\n");
        };
 
-    post("%s: wrote %i non-normalized instances to %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
+    post ("%s: wrote %i non-normalized instances to %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
 
     fclose(filePtr);
 }
@@ -2986,15 +2986,15 @@ static void timbreID_MATLAB(t_timbreID *x, t_symbol *file_symbol, t_symbol *var_
 
     filePtr = fopen(fileNameBuf, "w");
 
-    if(!filePtr)
+    if ( !filePtr)
     {
-        pd_error(x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
     }
 
-    if(x->x_maxFeatureLength != x->x_minFeatureLength)
+    if (x->x_maxFeatureLength != x->x_minFeatureLength)
     {
-        pd_error(x, "%s: database instances must have uniform length for MATLAB matrix formatting. failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: database instances must have uniform length for MATLAB matrix formatting. failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
         fclose(filePtr);
         return;
     }
@@ -3004,7 +3004,7 @@ static void timbreID_MATLAB(t_timbreID *x, t_symbol *file_symbol, t_symbol *var_
     fprintf(filePtr, "%% rows: %i\n", x->x_numInstances);
     fprintf(filePtr, "%% columns: %i\n\n", x->x_maxFeatureLength);
 
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
         featurePtr = x->x_instances[i].data;
 
@@ -3012,7 +3012,7 @@ static void timbreID_MATLAB(t_timbreID *x, t_symbol *file_symbol, t_symbol *var_
 
         while(1)
         {
-            if(featuresWritten++ == (x->x_instances[i].length-1))
+            if (featuresWritten++ == (x->x_instances[i].length-1))
             {
                 fprintf(filePtr, "%0.20f", *featurePtr++);
                 break;
@@ -3024,7 +3024,7 @@ static void timbreID_MATLAB(t_timbreID *x, t_symbol *file_symbol, t_symbol *var_
         fprintf(filePtr, "\n");
        };
 
-    post("%s: wrote %i non-normalized instances to %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
+    post ("%s: wrote %i non-normalized instances to %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
 
     fclose(filePtr);
 }
@@ -3041,15 +3041,15 @@ static void timbreID_OCTAVE(t_timbreID *x, t_symbol *file_symbol, t_symbol *var_
 
     filePtr = fopen(fileNameBuf, "w");
 
-    if(!filePtr)
+    if ( !filePtr)
     {
-        pd_error(x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
     }
 
-    if(x->x_maxFeatureLength != x->x_minFeatureLength)
+    if (x->x_maxFeatureLength != x->x_minFeatureLength)
     {
-        pd_error(x, "%s: database instances must have uniform length for MATLAB matrix formatting. failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: database instances must have uniform length for MATLAB matrix formatting. failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
         fclose(filePtr);
         return;
     }
@@ -3060,7 +3060,7 @@ static void timbreID_OCTAVE(t_timbreID *x, t_symbol *file_symbol, t_symbol *var_
     fprintf(filePtr, "# rows: %i\n", x->x_numInstances);
     fprintf(filePtr, "# columns: %i\n", x->x_maxFeatureLength);
 
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
         featurePtr = x->x_instances[i].data;
 
@@ -3068,7 +3068,7 @@ static void timbreID_OCTAVE(t_timbreID *x, t_symbol *file_symbol, t_symbol *var_
 
         while(1)
         {
-            if(featuresWritten++ == (x->x_instances[i].length-1))
+            if (featuresWritten++ == (x->x_instances[i].length-1))
             {
                 fprintf(filePtr, " %0.20f\n", *featurePtr++);
                 break;
@@ -3078,7 +3078,7 @@ static void timbreID_OCTAVE(t_timbreID *x, t_symbol *file_symbol, t_symbol *var_
         };
        };
 
-    post("%s: wrote %i non-normalized instances to %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
+    post ("%s: wrote %i non-normalized instances to %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
 
     fclose(filePtr);
 }
@@ -3094,9 +3094,9 @@ static void timbreID_FANN(t_timbreID *x, t_symbol *s, t_floatarg normRange)
 
     filePtr = fopen(fileNameBuf, "w");
 
-    if(!filePtr)
+    if ( !filePtr)
     {
-        pd_error(x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
     }
 
@@ -3110,9 +3110,9 @@ static void timbreID_FANN(t_timbreID *x, t_symbol *s, t_floatarg normRange)
     normRange = (normRange < 0) ? 0 : normRange;
     normRange = (normRange > 1) ? 1 : normRange;
 
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
-        for(j=0; j<x->x_minFeatureLength; j++)
+        for (j=0; j<x->x_minFeatureLength; j++)
         {
             if (x->x_normalize)
             {
@@ -3129,9 +3129,9 @@ static void timbreID_FANN(t_timbreID *x, t_symbol *s, t_floatarg normRange)
         fprintf(filePtr, "\n");
 
         // TODO: fill with all zeros, except a 1.0 in the slot of the cluster idx
-        for(j=0; j<x->x_numClusters; j++)
+        for (j=0; j<x->x_numClusters; j++)
         {
-            if(j==x->x_instances[i].clusterMembership)
+            if (j==x->x_instances[i].clusterMembership)
                 fprintf(filePtr, "%i ", 1);
             else
                 fprintf(filePtr, "%i ", 0);
@@ -3141,7 +3141,7 @@ static void timbreID_FANN(t_timbreID *x, t_symbol *s, t_floatarg normRange)
         fprintf(filePtr, "\n");
        };
 
-    post("%s: wrote %i training instances and labels to %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
+    post ("%s: wrote %i training instances and labels to %s.", x->x_objSymbol->s_name, x->x_numInstances, fileNameBuf);
 
     fclose(filePtr);
 }
@@ -3157,28 +3157,28 @@ static void timbreID_writeClusters(t_timbreID *x, t_symbol *s)
 
     filePtr = fopen(fileNameBuf, "wb");
 
-    if(!filePtr)
+    if ( !filePtr)
     {
-        pd_error(x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
     }
 
     // write a header indicating the number of clusters (x->x_numClusters)
-    fwrite(&x->x_numClusters, sizeof(t_instanceIdx), 1, filePtr);
+    fwrite(&x->x_numClusters, sizeof (t_instanceIdx), 1, filePtr);
 
     // write the cluster memberships next
-    for(i = 0; i < x->x_numInstances; i++)
-        fwrite(&x->x_instances[i].clusterMembership, sizeof(t_instanceIdx), 1, filePtr);
+    for (i = 0; i < x->x_numInstances; i++)
+        fwrite(&x->x_instances[i].clusterMembership, sizeof (t_instanceIdx), 1, filePtr);
 
     // write the number of members for each cluster
-    for(i = 0; i < x->x_numInstances; i++)
-        fwrite(&x->x_clusters[i].numMembers, sizeof(t_instanceIdx), 1, filePtr);
+    for (i = 0; i < x->x_numInstances; i++)
+        fwrite(&x->x_clusters[i].numMembers, sizeof (t_instanceIdx), 1, filePtr);
 
     // finally, write the members data
-    for(i = 0; i < x->x_numInstances; i++)
-        fwrite(x->x_clusters[i].members, sizeof(t_instanceIdx), x->x_clusters[i].numMembers, filePtr);
+    for (i = 0; i < x->x_numInstances; i++)
+        fwrite(x->x_clusters[i].members, sizeof (t_instanceIdx), x->x_clusters[i].numMembers, filePtr);
 
-    post("%s: wrote %i clusters to %s.", x->x_objSymbol->s_name, x->x_numClusters, fileNameBuf);
+    post ("%s: wrote %i clusters to %s.", x->x_objSymbol->s_name, x->x_numClusters, fileNameBuf);
 
     fclose(filePtr);
 }
@@ -3196,9 +3196,9 @@ static void timbreID_readClusters(t_timbreID *x, t_symbol *s)
 
     filePtr = fopen(fileNameBuf, "rb");
 
-    if(!filePtr)
+    if ( !filePtr)
     {
-        pd_error(x, "%s: failed to open %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: failed to open %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
     }
 
@@ -3213,7 +3213,7 @@ static void timbreID_readClusters(t_timbreID *x, t_symbol *s)
 
     if (txtFlag)
     {
-        pd_error(x, "%s: data in file %s is plain text (.txt), not binary (.clu). use read_clusters_text instead.", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: data in file %s is plain text (.txt), not binary (.clu). use read_clusters_text instead.", x->x_objSymbol->s_name, fileNameBuf);
         fclose(filePtr);
         return;
     }
@@ -3225,11 +3225,11 @@ static void timbreID_readClusters(t_timbreID *x, t_symbol *s)
     }
 
     // read header indicating number of clusters
-    fread(&numClusters, sizeof(t_instanceIdx), 1, filePtr);
+    fread(&numClusters, sizeof (t_instanceIdx), 1, filePtr);
 
-    if(numClusters>x->x_numInstances)
+    if (numClusters>x->x_numInstances)
     {
-        pd_error(x, "%s: %s contains more clusters than current number of database instances. read failed.", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: %s contains more clusters than current number of database instances. read failed.", x->x_objSymbol->s_name, fileNameBuf);
         fclose(filePtr);
         return;
     }
@@ -3237,22 +3237,22 @@ static void timbreID_readClusters(t_timbreID *x, t_symbol *s)
     x->x_numClusters = numClusters;
 
     // read the cluster memberships next
-    for(i = 0; i < x->x_numInstances; i++)
-        fread(&x->x_instances[i].clusterMembership, sizeof(t_instanceIdx), 1, filePtr);
+    for (i = 0; i < x->x_numInstances; i++)
+        fread(&x->x_instances[i].clusterMembership, sizeof (t_instanceIdx), 1, filePtr);
 
     // free members memory, read the number of members and get new members memory
-    for(i = 0; i < x->x_numInstances; i++)
+    for (i = 0; i < x->x_numInstances; i++)
     {
-        t_freebytes(x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof(t_instanceIdx));
-        fread(&x->x_clusters[i].numMembers, sizeof(t_instanceIdx), 1, filePtr);
-        x->x_clusters[i].members = (t_instanceIdx *)t_getbytes(x->x_clusters[i].numMembers * sizeof(t_instanceIdx));
+        t_freebytes (x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof (t_instanceIdx));
+        fread(&x->x_clusters[i].numMembers, sizeof (t_instanceIdx), 1, filePtr);
+        x->x_clusters[i].members = (t_instanceIdx *)t_getbytes (x->x_clusters[i].numMembers * sizeof (t_instanceIdx));
     }
 
     // read the actual members data
-    for(i = 0; i < x->x_numInstances; i++)
-        fread(x->x_clusters[i].members, sizeof(t_instanceIdx), x->x_clusters[i].numMembers, filePtr);
+    for (i = 0; i < x->x_numInstances; i++)
+        fread(x->x_clusters[i].members, sizeof (t_instanceIdx), x->x_clusters[i].numMembers, filePtr);
 
-    post("%s: read %i clusters from %s.", x->x_objSymbol->s_name, x->x_numClusters, fileNameBuf);
+    post ("%s: read %i clusters from %s.", x->x_objSymbol->s_name, x->x_numClusters, fileNameBuf);
 
     fclose(filePtr);
 }
@@ -3268,17 +3268,17 @@ static void timbreID_writeClustersText(t_timbreID *x, t_symbol *s)
 
     filePtr = fopen(fileNameBuf, "w");
 
-    if(!filePtr)
+    if ( !filePtr)
     {
-        pd_error(x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: failed to create %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
     }
 
-    for(i = 0; i < x->x_numClusters; i++)
+    for (i = 0; i < x->x_numClusters; i++)
     {
         clusterPtr = x->x_clusters[i].members;
 
-        for(j=0; j<x->x_clusters[i].numMembers-2; j++)
+        for (j=0; j<x->x_clusters[i].numMembers-2; j++)
             fprintf(filePtr, "%i ", *clusterPtr++);
 
         // no space for the final instance given on the line for cluster i
@@ -3288,7 +3288,7 @@ static void timbreID_writeClustersText(t_timbreID *x, t_symbol *s)
         fprintf(filePtr, "\n");
        };
 
-    post("%s: wrote %i clusters to %s.", x->x_objSymbol->s_name, x->x_numClusters, fileNameBuf);
+    post ("%s: wrote %i clusters to %s.", x->x_objSymbol->s_name, x->x_numClusters, fileNameBuf);
 
     fclose(filePtr);
 }
@@ -3304,9 +3304,9 @@ static void timbreID_readClustersText(t_timbreID *x, t_symbol *s)
 
     filePtr = fopen(fileNameBuf, "r");
 
-    if(!filePtr)
+    if ( !filePtr)
     {
-        pd_error(x, "%s: failed to open %s", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: failed to open %s", x->x_objSymbol->s_name, fileNameBuf);
         return;
     }
 
@@ -3315,9 +3315,9 @@ static void timbreID_readClustersText(t_timbreID *x, t_symbol *s)
     while(fgets(textLine, TID_MAXTEXTSTRING, filePtr))
         numClusters++;
 
-    if(numClusters>x->x_numInstances)
+    if (numClusters>x->x_numInstances)
     {
-        pd_error(x, "%s: %s contains more clusters than current number of database instances. read failed.", x->x_objSymbol->s_name, fileNameBuf);
+        pd_error (x, "%s: %s contains more clusters than current number of database instances. read failed.", x->x_objSymbol->s_name, fileNameBuf);
         fclose(filePtr);
         return;
     }
@@ -3325,8 +3325,8 @@ static void timbreID_readClustersText(t_timbreID *x, t_symbol *s)
     x->x_numClusters = numClusters;
 
     // free existing x->x_clusters[i].members memory
-    for(i = 0; i < x->x_numInstances; i++)
-        t_freebytes(x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof(t_instanceIdx));
+    for (i = 0; i < x->x_numInstances; i++)
+        t_freebytes (x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof (t_instanceIdx));
 
 
     fclose(filePtr);
@@ -3339,19 +3339,19 @@ static void timbreID_readClustersText(t_timbreID *x, t_symbol *s)
 
         // check to see if there's a space after the last data entry on the line. if so, our space counter loop below should stop prior to that final space. this allows us to read text files written both with and without spaces after the final entry of a line
         // stringLength-2 would be the position for this space, because the final character is a carriage return (10) at position stringLength-1
-        if(textLine[stringLength-2]==32)
+        if (textLine[stringLength-2]==32)
             stringLength = stringLength-2; // lop off the final space and CR
 
         numSpaces = 0;
-        for(j=0; j<stringLength; j++)
-            if(textLine[j]==32)
+        for (j=0; j<stringLength; j++)
+            if (textLine[j]==32)
                 numSpaces++;
 
         // there's a space after each entry in a file written by write_clusters_text(), except for the final instance on the line. So numMembers should be numSpaces+1. However, we must add one more slot for the terminating UINT_MAX of each cluster list. So in the end, numMembers should be numSpaces+2
         x->x_clusters[i].numMembers = numSpaces+2;
 
         // get the appropriate number of bytes for the data
-       x->x_clusters[i].members = (t_instanceIdx *)t_getbytes(x->x_clusters[i].numMembers * sizeof(t_instanceIdx));
+       x->x_clusters[i].members = (t_instanceIdx *)t_getbytes (x->x_clusters[i].numMembers * sizeof (t_instanceIdx));
 
         i++;
     }
@@ -3359,11 +3359,11 @@ static void timbreID_readClustersText(t_timbreID *x, t_symbol *s)
     fclose(filePtr);
     filePtr = fopen(fileNameBuf, "r");
 
-    for(i = 0; i < x->x_numClusters; i++)
+    for (i = 0; i < x->x_numClusters; i++)
     {
         featurePtr = x->x_clusters[i].members;
 
-        for(j=0; j<x->x_clusters[i].numMembers-1; j++, featurePtr++)
+        for (j=0; j<x->x_clusters[i].numMembers-1; j++, featurePtr++)
             fscanf(filePtr, "%i", featurePtr);
 
         // don't forget to terminate with UINT_MAX
@@ -3371,10 +3371,10 @@ static void timbreID_readClustersText(t_timbreID *x, t_symbol *s)
     };
 
     // fill out any remaining with the default setup
-    for(; i<x->x_numInstances; i++)
+    for (; i<x->x_numInstances; i++)
     {
         x->x_clusters[i].numMembers = 2;
-        x->x_clusters[i].members = (t_instanceIdx *)t_getbytes(x->x_clusters[i].numMembers * sizeof(t_instanceIdx));
+        x->x_clusters[i].members = (t_instanceIdx *)t_getbytes (x->x_clusters[i].numMembers * sizeof (t_instanceIdx));
         x->x_clusters[i].members[0] = i;
         x->x_clusters[i].members[1] = UINT_MAX;
 
@@ -3382,7 +3382,7 @@ static void timbreID_readClustersText(t_timbreID *x, t_symbol *s)
         x->x_instances[i].clusterMembership = i;
     }
 
-    for(i = 0; i < x->x_numClusters; i++)
+    for (i = 0; i < x->x_numClusters; i++)
     {
         j=0;
         while(x->x_clusters[i].members[j] != UINT_MAX)
@@ -3394,30 +3394,30 @@ static void timbreID_readClustersText(t_timbreID *x, t_symbol *s)
         };
     };
 
-    post("%s: read %i clusters from %s", x->x_objSymbol->s_name, x->x_numClusters, fileNameBuf);
+    post ("%s: read %i clusters from %s", x->x_objSymbol->s_name, x->x_numClusters, fileNameBuf);
 
     fclose(filePtr);
 }
 
 
-static void *timbreID_new(void)
+static void *timbreID_new (void)
 {
-    t_timbreID *x = (t_timbreID *)pd_new(timbreID_class);
+    t_timbreID *x = (t_timbreID *)pd_new (timbreID_class);
 
     // define outlets
-    x->x_id = outlet_new(&x->x_obj, &s_float);
-    x->x_nearestDist = outlet_new(&x->x_obj, &s_float);
-    x->x_confidence = outlet_new(&x->x_obj, &s_float);
-    x->x_listOut = outlet_new(&x->x_obj, gensym("list"));
-    inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("list"), gensym("id"));
-    inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("list"), gensym("concat_id"));
+    x->x_id = outlet_new (&x->x_obj, &s_float);
+    x->x_nearestDist = outlet_new (&x->x_obj, &s_float);
+    x->x_confidence = outlet_new (&x->x_obj, &s_float);
+    x->x_listOut = outlet_new (&x->x_obj, gensym ("list"));
+    inlet_new (&x->x_obj, &x->x_obj.ob_pd, gensym ("list"), gensym ("id"));
+    inlet_new (&x->x_obj, &x->x_obj.ob_pd, gensym ("list"), gensym ("concat_id"));
 
-    x->x_objSymbol = gensym("timbreID");
+    x->x_objSymbol = gensym ("timbreID");
 
-    x->x_instances = (t_instance *)t_getbytes(0);
-    x->x_classRefs = (t_instance *)t_getbytes(0);
-    x->x_clusters = (t_cluster *)t_getbytes(0);
-    x->x_attributeData = (t_attributeData *)t_getbytes(0);
+    x->x_instances = (t_instance *)t_getbytes (0);
+    x->x_classRefs = (t_instance *)t_getbytes (0);
+    x->x_clusters = (t_cluster *)t_getbytes (0);
+    x->x_attributeData = (t_attributeData *)t_getbytes (0);
 
     x->x_maxFeatureLength = 0;
     x->x_minFeatureLength = INT_MAX;
@@ -3445,178 +3445,178 @@ static void *timbreID_new(void)
 }
 
 
-static void timbreID_free(t_timbreID *x)
+static void timbreID_free (t_timbreID *x)
 {
     t_instanceIdx i;
 
     // free the database memory per instance
-    for(i = 0; i < x->x_numInstances; i++)
-        t_freebytes(x->x_instances[i].data, x->x_instances[i].length * sizeof(t_float));
+    for (i = 0; i < x->x_numInstances; i++)
+        t_freebytes (x->x_instances[i].data, x->x_instances[i].length * sizeof (t_float));
 
-    t_freebytes(x->x_instances, x->x_numInstances * sizeof(t_instance));
+    t_freebytes (x->x_instances, x->x_numInstances * sizeof (t_instance));
 
     // free the class reference memory per instance
-    for(i = 0; i < x->x_numClassRefs; i++)
-        t_freebytes(x->x_classRefs[i].data, x->x_classRefs[i].length * sizeof(t_float));
+    for (i = 0; i < x->x_numClassRefs; i++)
+        t_freebytes (x->x_classRefs[i].data, x->x_classRefs[i].length * sizeof (t_float));
 
-    t_freebytes(x->x_classRefs, x->x_numClassRefs * sizeof(t_instance));
+    t_freebytes (x->x_classRefs, x->x_numClassRefs * sizeof (t_instance));
 
     // free the cluster memory
-    for(i = 0; i < x->x_numInstances; i++)
-        t_freebytes(x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof(t_instanceIdx));
+    for (i = 0; i < x->x_numInstances; i++)
+        t_freebytes (x->x_clusters[i].members, x->x_clusters[i].numMembers * sizeof (t_instanceIdx));
 
-    t_freebytes(x->x_clusters, x->x_numInstances * sizeof(t_cluster));
+    t_freebytes (x->x_clusters, x->x_numInstances * sizeof (t_cluster));
 
     // free the attribute data memory
-    t_freebytes(x->x_attributeData, x->x_maxFeatureLength * sizeof(t_attributeData));
+    t_freebytes (x->x_attributeData, x->x_maxFeatureLength * sizeof (t_attributeData));
 }
 
 
-void timbreID_setup(void)
+void timbreID_setup (void)
 {
     timbreID_class =
-    class_new(
-        gensym("timbreID"),
+    class_new (
+        gensym ("timbreID"),
         (t_newmethod)timbreID_new,
         (t_method)timbreID_free,
-        sizeof(t_timbreID),
+        sizeof (t_timbreID),
         CLASS_DEFAULT,
         0
     );
 
-    class_addcreator(
+    class_addcreator (
         (t_newmethod)timbreID_new,
-        gensym("timbreIDLib/timbreID"),
+        gensym ("timbreIDLib/timbreID"),
         0
     );
 
-    class_addlist(
+    class_addlist (
         timbreID_class,
         (t_method)timbreID_train
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_id,
-        gensym("id"),
+        gensym ("id"),
         A_GIMME,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_worstMatch,
-        gensym("worst_match"),
+        gensym ("worst_match"),
         A_GIMME,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_concatId,
-        gensym("concat_id"),
+        gensym ("concat_id"),
         A_GIMME,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_concatSearchWrap,
-        gensym("concat_search_wrap"),
+        gensym ("concat_search_wrap"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_concatNeighborhood,
-        gensym("neighborhood"),
+        gensym ("neighborhood"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_concatJumpProb,
-        gensym("jump_prob"),
+        gensym ("jump_prob"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_concatReorient,
-        gensym("reorient"),
+        gensym ("reorient"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_concatSearchCenter,
-        gensym("search_center"),
+        gensym ("search_center"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_concatMaxMatches,
-        gensym("max_matches"),
+        gensym ("max_matches"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_concatStutterProtect,
-        gensym("stutter_protect"),
+        gensym ("stutter_protect"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_knn,
-        gensym("knn"),
+        gensym ("knn"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_outputKnnMatches,
-        gensym("output_knn_matches"),
+        gensym ("output_knn_matches"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_normalize,
-        gensym("normalize"),
+        gensym ("normalize"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_print,
-        gensym("print"),
+        gensym ("print"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_numInstances,
-        gensym("num_instances"),
+        gensym ("num_instances"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_manualCluster,
-        gensym("manual_cluster"),
+        gensym ("manual_cluster"),
         A_DEFFLOAT,
         A_DEFFLOAT,
         A_DEFFLOAT,
@@ -3624,318 +3624,318 @@ void timbreID_setup(void)
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_computeCluster,
-        gensym("cluster"),
+        gensym ("cluster"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_uncluster,
-        gensym("uncluster"),
+        gensym ("uncluster"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_clustersList,
-        gensym("clusters_list"),
+        gensym ("clusters_list"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_clusterList,
-        gensym("cluster_list"),
+        gensym ("cluster_list"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_clusterMembership,
-        gensym("cluster_membership"),
+        gensym ("cluster_membership"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_computeOrder,
-        gensym("order"),
+        gensym ("order"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_relativeOrdering,
-        gensym("relative_ordering"),
+        gensym ("relative_ordering"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_computeVariance,
-        gensym("order_attributes_by_variance"),
+        gensym ("order_attributes_by_variance"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_distMetric,
-        gensym("dist_metric"),
+        gensym ("dist_metric"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_weights,
-        gensym("weights"),
+        gensym ("weights"),
         A_GIMME,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_attributeNames,
-        gensym("attribute_names"),
+        gensym ("attribute_names"),
         A_GIMME,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_attributeInfo,
-        gensym("attribute_info"),
+        gensym ("attribute_info"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_attributeOrder,
-        gensym("attribute_order"),
+        gensym ("attribute_order"),
         A_GIMME,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_attributeRange,
-        gensym("attribute_range"),
+        gensym ("attribute_range"),
         A_DEFFLOAT,
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_reorderAttributes,
-        gensym("reorder_attributes"),
+        gensym ("reorder_attributes"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_featureList,
-        gensym("feature_list"),
+        gensym ("feature_list"),
         A_DEFFLOAT,
         A_DEFFLOAT,
         0
     );
 
 // adding this additional method name to retrieve an instance. makes it more consistent with new attribute_list name. adding a warning that feature_list is deprecated
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_instanceList,
-        gensym("instance_list"),
+        gensym ("instance_list"),
         A_DEFFLOAT,
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_attributeList,
-        gensym("attribute_list"),
+        gensym ("attribute_list"),
         A_DEFFLOAT,
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_similarityMatrix,
-        gensym("similarity_matrix"),
+        gensym ("similarity_matrix"),
         A_DEFFLOAT,
         A_DEFFLOAT,
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_maxValues,
-        gensym("max_values"),
+        gensym ("max_values"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_minValues,
-        gensym("min_values"),
+        gensym ("min_values"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_maxk,
-        gensym("max_k_values"),
+        gensym ("max_k_values"),
         A_DEFFLOAT,
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_mink,
-        gensym("min_k_values"),
+        gensym ("min_k_values"),
         A_DEFFLOAT,
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_classReference,
-        gensym("class_reference"),
+        gensym ("class_reference"),
         A_GIMME,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_maxFeatureLength,
-        gensym("max_feature_length"),
+        gensym ("max_feature_length"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_minFeatureLength,
-        gensym("min_feature_length"),
+        gensym ("min_feature_length"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_clear,
-        gensym("clear"),
+        gensym ("clear"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_write,
-        gensym("write"),
+        gensym ("write"),
         A_SYMBOL,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_read,
-        gensym("read"),
+        gensym ("read"),
         A_SYMBOL,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_writeText,
-        gensym("write_text"),
+        gensym ("write_text"),
         A_SYMBOL,
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_readText,
-        gensym("read_text"),
+        gensym ("read_text"),
         A_SYMBOL,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_ARFF,
-        gensym("ARFF"),
+        gensym ("ARFF"),
         A_GIMME,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_MATLAB,
-        gensym("MATLAB"),
+        gensym ("MATLAB"),
         A_SYMBOL,
         A_SYMBOL,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_OCTAVE,
-        gensym("OCTAVE"),
+        gensym ("OCTAVE"),
         A_SYMBOL,
         A_SYMBOL,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_FANN,
-        gensym("FANN"),
+        gensym ("FANN"),
         A_SYMBOL,
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_writeClusters,
-        gensym("write_clusters"),
+        gensym ("write_clusters"),
         A_SYMBOL,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_readClusters,
-        gensym("read_clusters"),
+        gensym ("read_clusters"),
         A_SYMBOL,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_writeClustersText,
-        gensym("write_clusters_text"),
+        gensym ("write_clusters_text"),
         A_SYMBOL,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         timbreID_class,
         (t_method)timbreID_readClustersText,
-        gensym("read_clusters_text"),
+        gensym ("read_clusters_text"),
         A_SYMBOL,
         0
     );

@@ -34,14 +34,14 @@ typedef struct _peakSample
 
 /* ------------------------ peakSample -------------------------------- */
 
-static void peakSample_analyze(t_peakSample *x, t_floatarg start, t_floatarg n)
+static void peakSample_analyze (t_peakSample *x, t_floatarg start, t_floatarg n)
 {
     t_garray *a;
 
-    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-        pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
+        pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
     else
     {
         t_sampIdx i, j, oldWindow, window, startSamp, endSamp, peakIdx;
@@ -49,211 +49,211 @@ static void peakSample_analyze(t_peakSample *x, t_floatarg start, t_floatarg n)
 
         startSamp = (start < 0) ? 0 : start;
 
-        if(n)
+        if (n)
             endSamp = startSamp + n - 1;
         else
             endSamp = startSamp + x->x_window - 1;
 
-        if(endSamp >= x->x_arrayPoints)
+        if (endSamp >= x->x_arrayPoints)
             endSamp = x->x_arrayPoints - 1;
 
         window = endSamp - startSamp + 1;
 
-        if(endSamp <= startSamp)
+        if (endSamp <= startSamp)
         {
-            post("%s: bad range of samples.", x->x_objSymbol->s_name);
+            post ("%s: bad range of samples.", x->x_objSymbol->s_name);
             return;
         }
 
-        if(x->x_window != window)
+        if (x->x_window != window)
         {
             oldWindow = x->x_window;
 
             // window must be at least 4 points long
-            if(window < TID_MINWINDOWSIZE)
+            if (window < TID_MINWINDOWSIZE)
             {
                 window = TID_WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
+                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             // hang on to these values for next time
             x->x_window = window;
 
             endSamp = startSamp + x->x_window - 1;
-            if(endSamp > x->x_arrayPoints)
+            if (endSamp > x->x_arrayPoints)
                 endSamp = x->x_arrayPoints - 1;
 
-            x->x_analysisBuffer = (t_float *)t_resizebytes(x->x_analysisBuffer, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+            x->x_analysisBuffer = (t_float *)t_resizebytes (x->x_analysisBuffer, oldWindow * sizeof (t_float), x->x_window * sizeof (t_float));
 
         }
 
         // construct analysis window
-        for(i = 0, j = startSamp; j <= endSamp; i++, j++)
+        for (i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
         tIDLib_peakSample(window, x->x_analysisBuffer, &peakIdx, &peakVal);
 
-        outlet_float(x->x_peakIdx, peakIdx);
-        outlet_float(x->x_peak, peakVal);
+        outlet_float (x->x_peakIdx, peakIdx);
+        outlet_float (x->x_peak, peakVal);
     }
 }
 
 
 // analyze the whole damn array
-static void peakSample_bang(t_peakSample *x)
+static void peakSample_bang (t_peakSample *x)
 {
     t_garray *a;
 
-    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-        pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
+        pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
     else
     {
         t_sampIdx window, startSamp;
         startSamp = 0;
         window = x->x_arrayPoints;
-        peakSample_analyze(x, startSamp, window);
+        peakSample_analyze (x, startSamp, window);
     }
 }
 
 
-static void peakSample_set(t_peakSample *x, t_symbol *s)
+static void peakSample_set (t_peakSample *x, t_symbol *s)
 {
     t_garray *a;
 
-    if(!(a = (t_garray *)pd_findbyclass(s, garray_class)))
-        pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
-    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-        pd_error(x, "%s: bad template for %s", s->s_name, x->x_objSymbol->s_name);
+    if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
+        pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
+    else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error (x, "%s: bad template for %s", s->s_name, x->x_objSymbol->s_name);
     else
         x->x_arrayName = s;
 }
 
 
-static void peakSample_print(t_peakSample *x)
+static void peakSample_print (t_peakSample *x)
 {
-    post("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-    post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
+    post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
 }
 
 
-static void peakSample_samplerate(t_peakSample *x, t_floatarg sr)
+static void peakSample_samplerate (t_peakSample *x, t_floatarg sr)
 {
-    if(sr < TID_MINSAMPLERATE)
+    if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 }
 
 
-static void *peakSample_new(t_symbol *s, int argc, t_atom *argv)
+static void *peakSample_new (t_symbol *s, int argc, t_atom *argv)
 {
-    t_peakSample *x = (t_peakSample *)pd_new(peakSample_class);
+    t_peakSample *x = (t_peakSample *)pd_new (peakSample_class);
 //	t_garray *a;
 
-    x->x_peak = outlet_new(&x->x_obj, &s_float);
-    x->x_peakIdx = outlet_new(&x->x_obj, &s_float);
+    x->x_peak = outlet_new (&x->x_obj, &s_float);
+    x->x_peakIdx = outlet_new (&x->x_obj, &s_float);
 
     // store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
     x->x_objSymbol = s;
 
-    switch(argc)
+    switch (argc)
     {
         case 1:
-            x->x_arrayName = atom_getsymbol(argv);
+            x->x_arrayName = atom_getsymbol (argv);
             /*
-            if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-                pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-            else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-                pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+            if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
+                pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+            else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+                pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             break;
 
         case 0:
-            post("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze()
-            x->x_arrayName = gensym("NOARRAYSPECIFIED");
+            post ("%s: no array specified.", x->x_objSymbol->s_name);
+            // a bogus array name to trigger the safety check in _analyze ()
+            x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
         default:
-            x->x_arrayName = atom_getsymbol(argv);
+            x->x_arrayName = atom_getsymbol (argv);
             /*
-            if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-                pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-            else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-                pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+            if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
+                pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+            else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+                pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            post("%s WARNING: extra arguments ignored.", x->x_objSymbol->s_name);
+            post ("%s WARNING: extra arguments ignored.", x->x_objSymbol->s_name);
             break;
     }
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
     x->x_window = TID_WINDOWSIZEDEFAULT;
 
-    x->x_analysisBuffer = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
+    x->x_analysisBuffer = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
 
     return (x);
 }
 
 
-static void peakSample_free(t_peakSample *x)
+static void peakSample_free (t_peakSample *x)
 {
     // free the input buffer memory
-    t_freebytes(x->x_analysisBuffer, x->x_window * sizeof(t_sample));
+    t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_sample));
 }
 
 
-void peakSample_setup(void)
+void peakSample_setup (void)
 {
     peakSample_class =
-    class_new(
-        gensym("peakSample"),
+    class_new (
+        gensym ("peakSample"),
         (t_newmethod)peakSample_new,
         (t_method)peakSample_free,
-        sizeof(t_peakSample),
+        sizeof (t_peakSample),
         CLASS_DEFAULT,
         A_GIMME,
         0
     );
 
-    class_addcreator(
+    class_addcreator (
         (t_newmethod)peakSample_new,
-        gensym("timbreIDLib/peakSample"),
+        gensym ("timbreIDLib/peakSample"),
         A_GIMME,
         0
     );
 
-    class_addbang(peakSample_class, peakSample_bang);
+    class_addbang (peakSample_class, peakSample_bang);
 
-    class_addmethod(
+    class_addmethod (
         peakSample_class,
         (t_method)peakSample_analyze,
-        gensym("analyze"),
+        gensym ("analyze"),
         A_DEFFLOAT,
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         peakSample_class,
         (t_method)peakSample_set,
-        gensym("set"),
+        gensym ("set"),
         A_SYMBOL,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         peakSample_class,
         (t_method)peakSample_print,
-        gensym("print"),
+        gensym ("print"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         peakSample_class,
         (t_method)peakSample_samplerate,
-        gensym("samplerate"),
+        gensym ("samplerate"),
         A_DEFFLOAT,
         0
     );

@@ -34,7 +34,7 @@ typedef struct _nearestPoint
 
 /* ------------------------ nearestPoint -------------------------------- */
 
-static void nearestPoint_add(t_nearestPoint *x, t_symbol *s, int argc, t_atom *argv)
+static void nearestPoint_add (t_nearestPoint *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_attributeIdx i, dimensions;
     t_instanceIdx pointIdx;
@@ -42,19 +42,19 @@ static void nearestPoint_add(t_nearestPoint *x, t_symbol *s, int argc, t_atom *a
     pointIdx = x->x_numInstances;
     dimensions = argc;
 
-    if(dimensions == x->x_dimensions)
+    if (dimensions == x->x_dimensions)
     {
-        x->x_instances = (t_instance *)t_resizebytes(x->x_instances, x->x_numInstances * sizeof(t_instance), (x->x_numInstances+1) * sizeof(t_instance));
+        x->x_instances = (t_instance *)t_resizebytes (x->x_instances, x->x_numInstances * sizeof (t_instance), (x->x_numInstances+1) * sizeof (t_instance));
 
-        x->x_instances[pointIdx].data = (t_float *)t_getbytes(dimensions * sizeof(t_float));
+        x->x_instances[pointIdx].data = (t_float *)t_getbytes (dimensions * sizeof (t_float));
 
         x->x_numInstances++;
 
-        for(i=0; i<dimensions; i++)
-            x->x_instances[pointIdx].data[i] = atom_getfloat(argv + i);
+        for (i=0; i<dimensions; i++)
+            x->x_instances[pointIdx].data[i] = atom_getfloat (argv + i);
     }
     else
-        pd_error(x, "%s: dimensionality mismatch. input ignored", x->x_objSymbol->s_name);
+        pd_error (x, "%s: dimensionality mismatch. input ignored", x->x_objSymbol->s_name);
 }
 
 
@@ -64,21 +64,21 @@ static void nearestPoint_nearest(t_nearestPoint *x, t_symbol *s, int argc, t_ato
     t_attributeIdx j, dimensions;
     t_instanceIdx i;
 
-    if(x->x_numInstances)
+    if (x->x_numInstances)
     {
         dimensions = argc;
 
-        if(dimensions == x->x_dimensions)
+        if (dimensions == x->x_dimensions)
         {
-            inputBuffer = (t_float *)t_getbytes(dimensions * sizeof(t_float));
-            instanceBuffer = (t_float *)t_getbytes(dimensions * sizeof(t_float));
-            weights = (t_float *)t_getbytes(dimensions * sizeof(t_float));
+            inputBuffer = (t_float *)t_getbytes (dimensions * sizeof (t_float));
+            instanceBuffer = (t_float *)t_getbytes (dimensions * sizeof (t_float));
+            weights = (t_float *)t_getbytes (dimensions * sizeof (t_float));
 
-            for(i = 0; i < x->x_numInstances; i++)
+            for (i = 0; i < x->x_numInstances; i++)
             {
-                for(j=0; j<dimensions; j++)
+                for (j=0; j<dimensions; j++)
                 {
-                    x->x_attributeData[j].inputData = atom_getfloat(argv+j);
+                    x->x_attributeData[j].inputData = atom_getfloat (argv+j);
                     inputBuffer[j] = x->x_attributeData[j].inputData;
                     instanceBuffer[j] = x->x_instances[i].data[j];
                     weights[j] = x->x_attributeData[j].weight;
@@ -93,36 +93,36 @@ static void nearestPoint_nearest(t_nearestPoint *x, t_symbol *s, int argc, t_ato
 
             tIDLib_sortKnnInfo(x->x_numMatches, x->x_numInstances, UINT_MAX, x->x_instances);
 
-            for(i = 0; i < x->x_numMatches; i++)
+            for (i = 0; i < x->x_numMatches; i++)
             {
-                outlet_float(x->x_nearestDist, x->x_instances[i].knnInfo.safeDist);
-                outlet_float(x->x_nearest, x->x_instances[i].knnInfo.idx);
+                outlet_float (x->x_nearestDist, x->x_instances[i].knnInfo.safeDist);
+                outlet_float (x->x_nearest, x->x_instances[i].knnInfo.idx);
             }
 
             // free local memory
-            t_freebytes(inputBuffer, dimensions * sizeof(t_float));
-            t_freebytes(instanceBuffer, dimensions * sizeof(t_float));
-            t_freebytes(weights, dimensions * sizeof(t_float));
+            t_freebytes (inputBuffer, dimensions * sizeof (t_float));
+            t_freebytes (instanceBuffer, dimensions * sizeof (t_float));
+            t_freebytes (weights, dimensions * sizeof (t_float));
         }
         else
-            pd_error(x, "%s: dimensionality mismatch.", x->x_objSymbol->s_name);
+            pd_error (x, "%s: dimensionality mismatch.", x->x_objSymbol->s_name);
     }
 }
 
 
 static void nearestPoint_dimensions(t_nearestPoint *x, t_floatarg dim)
 {
-    if(x->x_numInstances > 0)
+    if (x->x_numInstances > 0)
     {
-        pd_error(x, "%s: clear all coordinates before changing dimensionality.", x->x_objSymbol->s_name);
+        pd_error (x, "%s: clear all coordinates before changing dimensionality.", x->x_objSymbol->s_name);
         return;
     }
-    else if(dim<=0)
+    else if (dim<=0)
         x->x_dimensions = 1;
     else
         x->x_dimensions = dim;
 
-    post("%s dimensionality: %i.", x->x_objSymbol->s_name, x->x_dimensions);
+    post ("%s dimensionality: %i.", x->x_objSymbol->s_name, x->x_dimensions);
 }
 
 
@@ -133,15 +133,15 @@ static void nearestPoint_num_matches(t_nearestPoint *x, t_floatarg n)
 
     x->x_numMatches = n;
 
-    post("%s num_matches: %i.", x->x_objSymbol->s_name, x->x_numMatches);
+    post ("%s num_matches: %i.", x->x_objSymbol->s_name, x->x_numMatches);
 }
 
 
-static void nearestPoint_print(t_nearestPoint *x)
+static void nearestPoint_print (t_nearestPoint *x)
 {
-    post("%s dimensions: %i", x->x_objSymbol->s_name, x->x_dimensions);
-    post("%s number of points: %i", x->x_objSymbol->s_name, x->x_numInstances);
-    post("%s num_matches: %i", x->x_objSymbol->s_name, x->x_numMatches);
+    post ("%s dimensions: %i", x->x_objSymbol->s_name, x->x_dimensions);
+    post ("%s number of points: %i", x->x_objSymbol->s_name, x->x_numInstances);
+    post ("%s num_matches: %i", x->x_objSymbol->s_name, x->x_numMatches);
 }
 
 
@@ -149,27 +149,27 @@ static void nearestPoint_clear(t_nearestPoint *x)
 {
     t_instanceIdx i;
 
-    for(i = 0; i < x->x_numInstances; i++)
-        t_freebytes(x->x_instances[i].data, x->x_dimensions * sizeof(t_float));
+    for (i = 0; i < x->x_numInstances; i++)
+        t_freebytes (x->x_instances[i].data, x->x_dimensions * sizeof (t_float));
 
-    x->x_instances = (t_instance *)t_resizebytes(x->x_instances, x->x_numInstances * sizeof(t_instance), 0);
+    x->x_instances = (t_instance *)t_resizebytes (x->x_instances, x->x_numInstances * sizeof (t_instance), 0);
 
     x->x_numInstances = 0;
 }
 
 
-static void *nearestPoint_new(t_float dim)
+static void *nearestPoint_new (t_float dim)
 {
-    t_nearestPoint *x = (t_nearestPoint *)pd_new(nearestPoint_class);
+    t_nearestPoint *x = (t_nearestPoint *)pd_new (nearestPoint_class);
     t_attributeIdx i;
 
-    x->x_nearest = outlet_new(&x->x_obj, &s_float);
-    x->x_nearestDist = outlet_new(&x->x_obj, &s_float);
-    inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("list"), gensym("nearest"));
+    x->x_nearest = outlet_new (&x->x_obj, &s_float);
+    x->x_nearestDist = outlet_new (&x->x_obj, &s_float);
+    inlet_new (&x->x_obj, &x->x_obj.ob_pd, gensym ("list"), gensym ("nearest"));
 
-    x->x_objSymbol = gensym("nearestPoint");
+    x->x_objSymbol = gensym ("nearestPoint");
 
-    if(dim)
+    if (dim)
         x->x_dimensions = dim;
     else
         x->x_dimensions = 2;
@@ -177,96 +177,96 @@ static void *nearestPoint_new(t_float dim)
     x->x_numInstances = 0;
     x->x_numMatches = 1;
 
-    x->x_instances = (t_instance *)t_getbytes(0);
+    x->x_instances = (t_instance *)t_getbytes (0);
 
     // resize feature input buffer to default dimensions
-    x->x_attributeData = (t_attributeData *)t_getbytes(x->x_dimensions * sizeof(t_attributeData));
+    x->x_attributeData = (t_attributeData *)t_getbytes (x->x_dimensions * sizeof (t_attributeData));
 
     // initialize feature input buffer
-    for(i = 0; i < x->x_dimensions; i++)
+    for (i = 0; i < x->x_dimensions; i++)
     {
         x->x_attributeData[i].inputData = 0.0;
         x->x_attributeData[i].weight = 1.0;
     }
 
-    post("%s dimensionality: %i.", x->x_objSymbol->s_name, x->x_dimensions);
+    post ("%s dimensionality: %i.", x->x_objSymbol->s_name, x->x_dimensions);
 
     return (x);
 }
 
 
-static void nearestPoint_free(t_nearestPoint *x)
+static void nearestPoint_free (t_nearestPoint *x)
 {
     t_instanceIdx i;
 
-    for(i = 0; i < x->x_numInstances; i++)
-        t_freebytes(x->x_instances[i].data, x->x_dimensions * sizeof(t_float));
+    for (i = 0; i < x->x_numInstances; i++)
+        t_freebytes (x->x_instances[i].data, x->x_dimensions * sizeof (t_float));
 
-    t_freebytes(x->x_instances, x->x_numInstances * sizeof(t_instance));
-    t_freebytes(x->x_attributeData, x->x_dimensions * sizeof(t_attributeData));
+    t_freebytes (x->x_instances, x->x_numInstances * sizeof (t_instance));
+    t_freebytes (x->x_attributeData, x->x_dimensions * sizeof (t_attributeData));
 }
 
 
-void nearestPoint_setup(void)
+void nearestPoint_setup (void)
 {
     nearestPoint_class =
-    class_new(
-        gensym("nearestPoint"),
+    class_new (
+        gensym ("nearestPoint"),
         (t_newmethod)nearestPoint_new,
         (t_method)nearestPoint_free,
-        sizeof(t_nearestPoint),
+        sizeof (t_nearestPoint),
         CLASS_DEFAULT,
         A_DEFFLOAT,
         0
     );
 
-    class_addcreator(
+    class_addcreator (
         (t_newmethod)nearestPoint_new,
-        gensym("timbreIDLib/nearestPoint"),
+        gensym ("timbreIDLib/nearestPoint"),
         A_DEFFLOAT,
         0
     );
 
-    class_addlist(
+    class_addlist (
         nearestPoint_class,
         (t_method)nearestPoint_add
     );
 
-    class_addmethod(
+    class_addmethod (
         nearestPoint_class,
         (t_method)nearestPoint_nearest,
-        gensym("nearest"),
+        gensym ("nearest"),
         A_GIMME,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         nearestPoint_class,
         (t_method)nearestPoint_dimensions,
-        gensym("dimensions"),
+        gensym ("dimensions"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         nearestPoint_class,
         (t_method)nearestPoint_num_matches,
-        gensym("num_matches"),
+        gensym ("num_matches"),
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         nearestPoint_class,
         (t_method)nearestPoint_print,
-        gensym("print"),
+        gensym ("print"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         nearestPoint_class,
         (t_method)nearestPoint_clear,
-        gensym("clear"),
+        gensym ("clear"),
         0
     );
 }

@@ -34,14 +34,14 @@ typedef struct _maxSampleDelta
 
 /* ------------------------ maxSampleDelta -------------------------------- */
 
-static void maxSampleDelta_analyze(t_maxSampleDelta *x, t_floatarg start, t_floatarg n)
+static void maxSampleDelta_analyze (t_maxSampleDelta *x, t_floatarg start, t_floatarg n)
 {
     t_garray *a;
 
-    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-        pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
+        pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
     else
     {
         t_sampIdx i, j, oldWindow, window, startSamp, endSamp, maxIdx;
@@ -49,49 +49,49 @@ static void maxSampleDelta_analyze(t_maxSampleDelta *x, t_floatarg start, t_floa
 
         startSamp = (start < 0) ? 0 : start;
 
-        if(n)
+        if (n)
             endSamp = startSamp + n - 1;
         else
             endSamp = startSamp + x->x_window - 1;
 
-        if(endSamp >= x->x_arrayPoints)
+        if (endSamp >= x->x_arrayPoints)
             endSamp = x->x_arrayPoints - 1;
 
         window = endSamp - startSamp + 1;
 
-        if(endSamp <= startSamp)
+        if (endSamp <= startSamp)
         {
-            post("%s: bad range of samples.", x->x_objSymbol->s_name);
+            post ("%s: bad range of samples.", x->x_objSymbol->s_name);
             return;
         }
 
-        if(x->x_window != window)
+        if (x->x_window != window)
         {
             oldWindow = x->x_window;
 
             // window must be at least 4 points long
-            if(window < TID_MINWINDOWSIZE)
+            if (window < TID_MINWINDOWSIZE)
             {
                 window = TID_WINDOWSIZEDEFAULT;
-                post("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
+                post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
             // hang on to these values for next time
             x->x_window = window;
 
             endSamp = startSamp + x->x_window - 1;
-            if(endSamp > x->x_arrayPoints)
+            if (endSamp > x->x_arrayPoints)
                 endSamp = x->x_arrayPoints - 1;
 
-            x->x_analysisBuffer = (t_float *)t_resizebytes(x->x_analysisBuffer, oldWindow * sizeof(t_float), x->x_window * sizeof(t_float));
+            x->x_analysisBuffer = (t_float *)t_resizebytes (x->x_analysisBuffer, oldWindow * sizeof (t_float), x->x_window * sizeof (t_float));
 
         }
 
         // construct analysis window
-        for(i = 0, j = startSamp; j <= endSamp; i++, j++)
+        for (i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
-        if(startSamp>0)
+        if (startSamp>0)
         {
             max = fabs(x->x_analysisBuffer[0] - x->x_vec[startSamp-1].w_float);
             maxIdx = 0;
@@ -102,180 +102,180 @@ static void maxSampleDelta_analyze(t_maxSampleDelta *x, t_floatarg start, t_floa
             maxIdx = ULONG_MAX;
         }
 
-        for(i=1; i<x->x_window; i++)
+        for (i=1; i<x->x_window; i++)
         {
             t_float thisDiff;
 
             thisDiff = fabs(x->x_analysisBuffer[i] - x->x_analysisBuffer[i-1]);
 
-            if(thisDiff>max)
+            if (thisDiff>max)
             {
                 max = thisDiff;
                 maxIdx = i;
             }
         }
 
-        outlet_float(x->x_maxSampleDeltaIdx, maxIdx);
-        outlet_float(x->x_maxSampleDelta, max);
+        outlet_float (x->x_maxSampleDeltaIdx, maxIdx);
+        outlet_float (x->x_maxSampleDelta, max);
     }
 }
 
 
 // analyze the whole damn array
-static void maxSampleDelta_bang(t_maxSampleDelta *x)
+static void maxSampleDelta_bang (t_maxSampleDelta *x)
 {
     t_garray *a;
 
-    if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-        pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-        pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
+        pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
     else
     {
         t_sampIdx window, startSamp;
         startSamp = 0;
         window = x->x_arrayPoints;
-        maxSampleDelta_analyze(x, startSamp, window);
+        maxSampleDelta_analyze (x, startSamp, window);
     }
 }
 
 
-static void maxSampleDelta_set(t_maxSampleDelta *x, t_symbol *s)
+static void maxSampleDelta_set (t_maxSampleDelta *x, t_symbol *s)
 {
     t_garray *a;
 
-    if(!(a = (t_garray *)pd_findbyclass(s, garray_class)))
-        pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
-    else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-        pd_error(x, "%s: bad template for %s", s->s_name, x->x_objSymbol->s_name);
+    if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
+        pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
+    else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error (x, "%s: bad template for %s", s->s_name, x->x_objSymbol->s_name);
     else
         x->x_arrayName = s;
 }
 
 
-static void maxSampleDelta_print(t_maxSampleDelta *x)
+static void maxSampleDelta_print (t_maxSampleDelta *x)
 {
-    post("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-    post("%s window: %i", x->x_objSymbol->s_name, x->x_window);
+    post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
 }
 
 
-static void maxSampleDelta_samplerate(t_maxSampleDelta *x, t_floatarg sr)
+static void maxSampleDelta_samplerate (t_maxSampleDelta *x, t_floatarg sr)
 {
-    if(sr < TID_MINSAMPLERATE)
+    if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
     else
         x->x_sr = sr;
 }
 
 
-static void *maxSampleDelta_new(t_symbol *s, int argc, t_atom *argv)
+static void *maxSampleDelta_new (t_symbol *s, int argc, t_atom *argv)
 {
-    t_maxSampleDelta *x = (t_maxSampleDelta *)pd_new(maxSampleDelta_class);
+    t_maxSampleDelta *x = (t_maxSampleDelta *)pd_new (maxSampleDelta_class);
 //	t_garray *a;
 
-    x->x_maxSampleDelta = outlet_new(&x->x_obj, &s_float);
-    x->x_maxSampleDeltaIdx = outlet_new(&x->x_obj, &s_float);
+    x->x_maxSampleDelta = outlet_new (&x->x_obj, &s_float);
+    x->x_maxSampleDeltaIdx = outlet_new (&x->x_obj, &s_float);
 
     // store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
     x->x_objSymbol = s;
 
-    switch(argc)
+    switch (argc)
     {
         case 1:
-            x->x_arrayName = atom_getsymbol(argv);
+            x->x_arrayName = atom_getsymbol (argv);
             /*
-            if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-                pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-            else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-                pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+            if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
+                pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+            else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+                pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             break;
 
         case 0:
-            post("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze()
-            x->x_arrayName = gensym("NOARRAYSPECIFIED");
+            post ("%s: no array specified.", x->x_objSymbol->s_name);
+            // a bogus array name to trigger the safety check in _analyze ()
+            x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
         default:
-            x->x_arrayName = atom_getsymbol(argv);
+            x->x_arrayName = atom_getsymbol (argv);
             /*
-            if(!(a = (t_garray *)pd_findbyclass(x->x_arrayName, garray_class)))
-                pd_error(x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-            else if(!garray_getfloatwords(a, (int *)&x->x_arrayPoints, &x->x_vec))
-                pd_error(x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+            if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
+                pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+            else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+                pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            post("%s WARNING: extra arguments ignored.", x->x_objSymbol->s_name);
+            post ("%s WARNING: extra arguments ignored.", x->x_objSymbol->s_name);
             break;
     }
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
     x->x_window = TID_WINDOWSIZEDEFAULT;
 
-    x->x_analysisBuffer = (t_sample *)t_getbytes(x->x_window * sizeof(t_sample));
+    x->x_analysisBuffer = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
 
     return (x);
 }
 
 
-static void maxSampleDelta_free(t_maxSampleDelta *x)
+static void maxSampleDelta_free (t_maxSampleDelta *x)
 {
     // free the input buffer memory
-    t_freebytes(x->x_analysisBuffer, x->x_window * sizeof(t_sample));
+    t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_sample));
 }
 
 
-void maxSampleDelta_setup(void)
+void maxSampleDelta_setup (void)
 {
     maxSampleDelta_class =
-    class_new(
-        gensym("maxSampleDelta"),
+    class_new (
+        gensym ("maxSampleDelta"),
         (t_newmethod)maxSampleDelta_new,
         (t_method)maxSampleDelta_free,
-        sizeof(t_maxSampleDelta),
+        sizeof (t_maxSampleDelta),
         CLASS_DEFAULT,
         A_GIMME,
         0
     );
 
-    class_addcreator(
+    class_addcreator (
         (t_newmethod)maxSampleDelta_new,
-        gensym("timbreIDLib/maxSampleDelta"),
+        gensym ("timbreIDLib/maxSampleDelta"),
         A_GIMME,
         0
     );
 
-    class_addbang(maxSampleDelta_class, maxSampleDelta_bang);
+    class_addbang (maxSampleDelta_class, maxSampleDelta_bang);
 
-    class_addmethod(
+    class_addmethod (
         maxSampleDelta_class,
         (t_method)maxSampleDelta_analyze,
-        gensym("analyze"),
+        gensym ("analyze"),
         A_DEFFLOAT,
         A_DEFFLOAT,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         maxSampleDelta_class,
         (t_method)maxSampleDelta_set,
-        gensym("set"),
+        gensym ("set"),
         A_SYMBOL,
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         maxSampleDelta_class,
         (t_method)maxSampleDelta_print,
-        gensym("print"),
+        gensym ("print"),
         0
     );
 
-    class_addmethod(
+    class_addmethod (
         maxSampleDelta_class,
         (t_method)maxSampleDelta_samplerate,
-        gensym("samplerate"),
+        gensym ("samplerate"),
         A_DEFFLOAT,
         0
     );

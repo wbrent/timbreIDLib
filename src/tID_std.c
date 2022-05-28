@@ -35,19 +35,19 @@ static void tID_std_calculate(t_tID_std *x, t_symbol *s, int argc, t_atom *argv)
 
     n = argc;
 
-    if(n <= 1)
-        pd_error(x, "%s: too few elements in list.", x->x_objSymbol->s_name);
+    if (n <= 1)
+        pd_error (x, "%s: too few elements in list.", x->x_objSymbol->s_name);
     else
     {
         // create local memory
-        input = (t_float *)t_getbytes(n * sizeof(t_float));
+        input = (t_float *)t_getbytes (n * sizeof (t_float));
 
-        for(i = 0; i < n; i++)
-            input[i] = atom_getfloat(argv + i);
+        for (i = 0; i < n; i++)
+            input[i] = atom_getfloat (argv + i);
 
         sum = 0.0;
 
-        for(i = 0; i < n; i++)
+        for (i = 0; i < n; i++)
             sum += input[i];
 
         mean = sum/n;
@@ -55,7 +55,7 @@ static void tID_std_calculate(t_tID_std *x, t_symbol *s, int argc, t_atom *argv)
         sum = 0.0;
 
         // center & square the data
-        for(i = 0; i < n; i++)
+        for (i = 0; i < n; i++)
         {
             input[i] -= mean;
             input[i] *= input[i];
@@ -65,43 +65,43 @@ static void tID_std_calculate(t_tID_std *x, t_symbol *s, int argc, t_atom *argv)
         std = sum/(n - 1.0);
         std = sqrt(std);
 
-        outlet_float(x->x_std, std);
+        outlet_float (x->x_std, std);
 
         // free local memory
-        t_freebytes(input, n * sizeof(t_float));
+        t_freebytes (input, n * sizeof (t_float));
     }
 }
 
-static void *tID_std_new(void)
+static void *tID_std_new (void)
 {
-    t_tID_std *x = (t_tID_std *)pd_new(tID_std_class);
-    x->x_std = outlet_new(&x->x_obj, &s_float);
+    t_tID_std *x = (t_tID_std *)pd_new (tID_std_class);
+    x->x_std = outlet_new (&x->x_obj, &s_float);
 
-    x->x_objSymbol = gensym("tID_std");
+    x->x_objSymbol = gensym ("tID_std");
 
     return (x);
 }
 
-void tID_std_setup(void)
+void tID_std_setup (void)
 {
     tID_std_class =
-    class_new(
-        gensym("tID_std"),
+    class_new (
+        gensym ("tID_std"),
         (t_newmethod)tID_std_new,
         0,
-        sizeof(t_tID_std),
+        sizeof (t_tID_std),
         CLASS_DEFAULT,
         0
     );
 
-    class_addcreator(
+    class_addcreator (
         (t_newmethod)tID_std_new,
-        gensym("timbreIDLib/tID_std"),
+        gensym ("timbreIDLib/tID_std"),
         A_GIMME,
         0
     );
 
-    class_addlist(
+    class_addlist (
         tID_std_class,
         (t_method)tID_std_calculate
     );

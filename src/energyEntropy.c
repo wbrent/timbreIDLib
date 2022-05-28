@@ -38,9 +38,9 @@ static void energyEntropy_analyze (t_energyEntropy* x, t_floatarg start, t_float
 {
     t_garray *a;
 
-    if (!(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
+    if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-    else if (!garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+    else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
         pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
     else
     {
@@ -100,9 +100,9 @@ static void energyEntropy_bang (t_energyEntropy* x)
 {
     t_garray *a;
 
-    if (!(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
+    if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-    else if (!garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+    else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
         pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
     else
     {
@@ -118,9 +118,9 @@ static void energyEntropy_set (t_energyEntropy* x, t_symbol* s)
 {
     t_garray *a;
 
-    if (!(a = (t_garray *)pd_findbyclass (s, garray_class)))
+    if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
-    else if (!garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+    else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
         pd_error (x, "%s: bad template for %s", s->s_name, x->x_objSymbol->s_name);
     else
         x->x_arrayName = s;
@@ -250,7 +250,7 @@ static void *energyEntropy_new (t_symbol* s, int argc, t_atom* argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze()
+            // a bogus array name to trigger the safety check in _analyze ()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_subWindowSize = TID_WINDOWSIZEDEFAULT;
             x->x_subWindowsPerMidTermWindow = TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT;
