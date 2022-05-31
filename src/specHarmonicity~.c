@@ -159,7 +159,7 @@ static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde *x)
 
     if (fund<x->x_minFund || fund>x->x_maxFund)
     {
-        harmDividend = -numPeaks; // to make harm value  - 1.0
+        harmDividend = -numPeaks; // to make harm value  -1.0
         goto earlyExit;
     }
 

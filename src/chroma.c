@@ -572,7 +572,7 @@ static void chroma_microtune(t_chroma *x, t_floatarg cents)
 {
     t_uChar i;
 
-    cents = (cents <  - 100.0)? - 100.0:cents;
+    cents = (cents <  -100.0)? -100.0:cents;
     cents = (cents > 100.0)?100.0:cents;
 
     x->x_microtune = cents/100.0;

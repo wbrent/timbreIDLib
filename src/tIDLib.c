@@ -83,11 +83,11 @@ t_float tIDLib_bark2freq (t_float bark)
             freq = 53548.0 / (bark * bark - 52.56 * bark + 690.39);
             break;
         case bark2freqFormula2:
-            freq = 1960 / (26.81 / (bark + 0.53) - 1);
-            freq = (freq < 0) ? 0 : freq;
+            freq = 1960.0 / (26.81 / (bark + 0.53) - 1.0);
+            freq = (freq < 0.0) ? 0.0 : freq;
             break;
         default:
-            freq = 0;
+            freq = 0.0;
     }
 
     return (freq);
@@ -97,8 +97,8 @@ t_float tIDLib_freq2mel (t_float freq)
 {
     t_float mel;
 
-    mel = 1127 * log (1 + (freq / 700));
-    mel = (mel < 0) ? 0 : mel;
+    mel = 1127.0 * log (1.0 + (freq / 700.0));
+    mel = (mel < 0.0) ? 0.0 : mel;
     return (mel);
 }
 
@@ -106,9 +106,9 @@ t_float tIDLib_mel2freq (t_float mel)
 {
     t_float freq;
 
-    freq = 700 * (exp (mel / 1127) - 1);
-//	freq = 700 * (exp (mel / 1127.01048) - 1);
-    freq = (freq < 0) ? 0 : freq;
+    freq = 700.0 * (exp (mel / 1127.0) - 1.0);
+//	freq = 700.0 * (exp (mel / 1127.01048) - 1.0);
+    freq = (freq < 0.0) ? 0.0 : freq;
     return (freq);
 }
 /* ---------------- END conversion functions ---------------------- */
@@ -242,10 +242,10 @@ t_float tIDLib_hps (t_float* data, t_uInt n, t_float loIdx, t_float hiIdx, t_uSh
 
     *maxYValue = maxVal;
 
-    // if maxIdx is somehow not updated, output  - 1 to indicate failure.
+    // if maxIdx is somehow not updated, output  -1 to indicate failure.
     // if the largest value in yValues was the initialized value of 0, also indicate failure
     if (maxIdx == UINT_MAX || maxVal == 0.0)
-        return ( - 1.0);
+        return ( -1.0);
     else
         return (maxIdx); // previously added loIdx offset when the yValues memory was numIndices in length rather than n
 }
@@ -964,7 +964,7 @@ t_float tIDLib_computeCentroid (t_binIdx n, t_float* spectrum, t_float* freqList
         dividend += spectrum[i] * freqList[i];  // weight by bin freq
 
     if (divisor <= 0.0)
-        return ( - 1.0);
+        return (-1.0);
     else
     {
         centroid = dividend / divisor;
@@ -984,7 +984,7 @@ t_float tIDLib_computeSpread (t_binIdx n, t_float* spectrum, t_float* freqList, 
         dividend += powf ((freqList[i] - centroid), 2) * spectrum[i];
 
     if (divisor <= 0.0)
-        return ( - 1.0);
+        return (-1.0);
     else
     {
         spread = sqrt (dividend / divisor);
@@ -1004,7 +1004,7 @@ t_float tIDLib_computeSkewness (t_binIdx n, t_float* spectrum, t_float* freqList
         dividend += powf ((freqList[i] - centroid), 3) * spectrum[i];
 
     if (divisor <= 0.0 || spread <= 0.0)
-        return ( - 1.0);
+        return (-1.0);
     else
     {
         spread = powf (spread, 3);
@@ -1026,7 +1026,7 @@ t_float tIDLib_computeKurtosis (t_binIdx n, t_float* spectrum, t_float* freqList
 
 
     if (divisor <= 0.0 || spread <= 0.0)
-        return ( - 1.0);
+        return (-1.0);
     else
     {
         spread = powf (spread, 4);

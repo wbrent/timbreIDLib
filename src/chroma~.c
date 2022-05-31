@@ -361,7 +361,7 @@ static void chroma_tilde_microtune (t_chroma_tilde *x, t_floatarg cents)
 {
     t_uChar i;
 
-    cents = (cents <  - 100.0) ?  - 100.0 : cents;
+    cents = (cents <  -100.0) ?  -100.0 : cents;
     cents = (cents > 100.0) ? 100.0 : cents;
 
     x->x_microtune = cents / 100.0;

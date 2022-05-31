@@ -514,7 +514,7 @@ static void timbreID_id (t_timbreID* x, t_symbol* s, int argc, t_atom* argv)
             x->x_clusters[thisCluster].votes++;
         }
 
-        // TODO: potential issue is that i'm using t_uInt for t_cluster.votes and topVote, so can no longer have  - 1 as the initialized value. should be that initializing to 0 is actually ok, even in the case of a tie for 0. originally this was topVote = -1;
+        // TODO: potential issue is that i'm using t_uInt for t_cluster.votes and topVote, so can no longer have -1 as the initialized value. should be that initializing to 0 is actually ok, even in the case of a tie for 0. originally this was topVote = -1;
         topVote = 0;
 
         for (i = 0; i < x->x_numClusters; i++)
@@ -1147,7 +1147,7 @@ static void timbreID_computeCluster (t_timbreID* x, t_floatarg numClusters)
                         if (clusterData[i+j].data[0] != FLT_MAX)
                         {
                             pairDists[k] = timbreID_getDist (x, clusterData[i], clusterData[i + j]);
-                            numClusterMembers1 = x->x_clusters[i].numMembers - 1; //  - 1 because the list is terminated with UINT_MAX
+                            numClusterMembers1 = x->x_clusters[i].numMembers - 1; // -1 because the list is terminated with UINT_MAX
                             numClusterMembers2 = x->x_clusters[i+j].numMembers - 1;
 
                             // definition of Ward's linkage from MATLAB linkage doc
@@ -1418,7 +1418,7 @@ static void timbreID_clustersList (t_timbreID* x)
     listOut = (t_atom *)t_getbytes (x->x_numInstances * sizeof (t_atom));
 
     for (i = 0, k = 0; i < x->x_numClusters; i++)
-        for (j = 0; j < x->x_clusters[i].numMembers - 1; j++, k++) //  - 1 because it's terminated by UINT_MAX
+        for (j = 0; j < x->x_clusters[i].numMembers - 1; j++, k++) // -1 because it's terminated by UINT_MAX
             SETFLOAT (listOut + k, x->x_clusters[i].members[j]);
 
     selector = gensym ("clusters_list");

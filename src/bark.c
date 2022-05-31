@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-t_float bark_weights_dB[] = {-69.9, -60.4, -51.4, -43.3, -36.6, -30.3, -24.3,  - 19.5,  - 14.8,  - 10.7, -7.5, -4.8, -2.6, -0.8, 0.0, 0.6, 0.5, 0.0, -0.1, 0.5, 1.5, 3.6, 5.9, 6.5, 4.2, -2.6,  - 10.2,  - 10.0, -2.8};
+t_float bark_weights_dB[] = {-69.9, -60.4, -51.4, -43.3, -36.6, -30.3, -24.3,  -19.5,  -14.8,  -10.7, -7.5, -4.8, -2.6, -0.8, 0.0, 0.6, 0.5, 0.0, -0.1, 0.5, 1.5, 3.6, 5.9, 6.5, 4.2, -2.6,  -10.2,  -10.0, -2.8};
 
 t_float bark_weights_freqs[] = {20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500};
 
@@ -182,7 +182,7 @@ static void bark_thresh(t_bark *x, t_floatarg lo, t_floatarg hi)
         x->x_hiThresh = lo;
         x->x_loThresh = hi;
 
-        x->x_loThresh = (x->x_loThresh<0)? - 1:x->x_loThresh;
+        x->x_loThresh = (x->x_loThresh<0)? -1:x->x_loThresh;
 
 //		post ("bark: low thresh: %f, high thresh: %f", x->x_loThresh, x->x_hiThresh);
     }
@@ -191,7 +191,7 @@ static void bark_thresh(t_bark *x, t_floatarg lo, t_floatarg hi)
         x->x_hiThresh = hi;
         x->x_loThresh = lo;
 
-        x->x_loThresh = (x->x_loThresh<0) ? - 1:x->x_loThresh;
+        x->x_loThresh = (x->x_loThresh<0) ? -1:x->x_loThresh;
 
 //		post ("bark: low thresh: %0.2f, high thresh: %0.2f", x->x_loThresh, x->x_hiThresh);
     }
@@ -760,7 +760,7 @@ static void bark_analyze (t_bark *x, t_floatarg startTime, t_floatarg endTime)
                 x->x_haveHit = true;
                 x->x_debounceActive = frame*hop+startSamp + x->x_debounceSamp;
             }
-            else if (x->x_haveHit && x->x_loThresh>0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not  - 1), then wait until growth drops below that value before reporting attack
+            else if (x->x_haveHit && x->x_loThresh>0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not  -1), then wait until growth drops below that value before reporting attack
             {
                 if (x->x_debug)
                     post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);

@@ -495,7 +495,7 @@ static void tabletool_equals(t_tabletool *x, t_float val)
             t_freebytes (listOut, numMatches * sizeof (t_atom));
         }
         else
-            outlet_float (x->x_info,  - 1);
+            outlet_float (x->x_info, -1);
 
         // free local memory
         t_freebytes (indices, numMatches * sizeof (t_sampIdx));
@@ -545,7 +545,7 @@ static void tabletool_greater(t_tabletool *x, t_float val)
             t_freebytes (listOut, numMatches * sizeof (t_atom));
         }
         else
-            outlet_float (x->x_info,  - 1);
+            outlet_float (x->x_info, -1);
 
         // free local memory
         t_freebytes (indices, numMatches * sizeof (t_sampIdx));
@@ -595,7 +595,7 @@ static void tabletool_less(t_tabletool *x, t_float val)
             t_freebytes (listOut, numMatches * sizeof (t_atom));
         }
         else
-            outlet_float (x->x_info,  - 1);
+            outlet_float (x->x_info, -1);
 
         // free local memory
         t_freebytes (indices, numMatches * sizeof (t_sampIdx));
@@ -645,7 +645,7 @@ static void tabletool_between(t_tabletool *x, t_float lowBound, t_float hiBound)
             t_freebytes (listOut, numMatches * sizeof (t_atom));
         }
         else
-            outlet_float (x->x_info,  - 1);
+            outlet_float (x->x_info, -1);
 
         // free local memory
         t_freebytes (indices, numMatches * sizeof (t_sampIdx));
@@ -2629,7 +2629,7 @@ static void tabletool_median(t_tabletool *x)
             median = tableVals[medIdx] + tableVals[medIdx+1];
             median *= 0.5;
 
-            SETFLOAT (&indexOut,  - 1);
+            SETFLOAT (&indexOut, -1);
             outlet_list (x->x_list, 0, 1, &indexOut);
         }
         else
@@ -3538,10 +3538,10 @@ static void tabletool_hps(t_tabletool *x, t_float loIdx, t_float hiIdx, t_float 
 
         outlet_list (x->x_list, 0, numIndices, yValuesOut);
 
-        // if maxIdx is somehow not updated, output  - 1 to indicate failure.
+        // if maxIdx is somehow not updated, output -1 to indicate failure.
         // otherwise, add the loIdx offset back in to get the array index of the HPS peak
         if (maxIdx==UINT_MAX)
-            outlet_float (x->x_info,  - 1);
+            outlet_float (x->x_info, -1);
         else
             outlet_float (x->x_info, loIdx + maxIdx);
 

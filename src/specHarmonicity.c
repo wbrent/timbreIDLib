@@ -216,7 +216,7 @@ static void specHarmonicity_analyze (t_specHarmonicity *x, t_floatarg start, t_f
 
         if (fund<x->x_minFund || fund>x->x_maxFund)
         {
-            harmDividend = -numPeaks; // to make harm value  - 1.0
+            harmDividend = -numPeaks; // to make harm value  -1.0
             goto earlyExit;
         }
 
@@ -346,7 +346,7 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity *x, t_symbol *s, in
 
     if (fund<x->x_minFund || fund>x->x_maxFund)
     {
-        harmDividend = -numPeaks; // to make harm value  - 1.0
+        harmDividend = -numPeaks; // to make harm value  -1.0
         goto earlyExit;
     }
 
@@ -466,7 +466,7 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity *x, t_symbol *s, in
 
     if (fund<x->x_minFund || fund>x->x_maxFund)
     {
-        harmDividend = -numPeaks; // to make harm value  - 1.0
+        harmDividend = -numPeaks; // to make harm value  -1.0
         goto earlyExit;
     }
 
