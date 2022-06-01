@@ -115,7 +115,7 @@ static void cepstrumPitch_analyze (t_cepstrumPitch* x, t_floatarg start, t_float
             endSamp = x->x_arrayPoints - 1;
 
         window = endSamp - startSamp + 1;
-        nRecip = 1.0/window;
+        nRecip = 1.0 / window;
 
         if (endSamp <= startSamp)
         {
@@ -126,15 +126,15 @@ static void cepstrumPitch_analyze (t_cepstrumPitch* x, t_floatarg start, t_float
         if (x->x_window != window)
             cepstrumPitch_resizeWindow (x, x->x_window, window, startSamp, &endSamp);
 
-        loFreqBinFloat = roundf (x->x_sr/x->x_loFreq);
-        hiFreqBinFloat = roundf (x->x_sr/x->x_hiFreq);
+        loFreqBinFloat = roundf (x->x_sr / x->x_loFreq);
+        hiFreqBinFloat = roundf (x->x_sr / x->x_hiFreq);
 
         // these must be after the potential window resize, which would change x_windowHalf and therefore valid bounds for hiFreqBin and loFreqBin
-        hiFreqBin = (hiFreqBinFloat<0)?0:hiFreqBinFloat;
-        hiFreqBin = (hiFreqBin>x->x_windowHalf)?x->x_windowHalf:hiFreqBin;
+        hiFreqBin = (hiFreqBinFloat < 0) ? 0 : hiFreqBinFloat;
+        hiFreqBin = (hiFreqBin > x->x_windowHalf) ? x->x_windowHalf : hiFreqBin;
 
-        loFreqBin = (loFreqBinFloat<0)?0:loFreqBinFloat;
-        loFreqBin = (loFreqBin>x->x_windowHalf)?x->x_windowHalf:loFreqBin;
+        loFreqBin = (loFreqBinFloat < 0) ? 0 : loFreqBinFloat;
+        loFreqBin = (loFreqBin > x->x_windowHalf) ? x->x_windowHalf : loFreqBin;
 
         // construct analysis window
         for (i = 0, j = startSamp; j <= endSamp; i++, j++)
@@ -197,7 +197,7 @@ static void cepstrumPitch_analyze (t_cepstrumPitch* x, t_floatarg start, t_float
         // optionally square the cepstrum results for power cepstrum
         if (x->x_powerCepstrum)
             for (i = 0; i < x->x_windowHalf + 1; i++)
-                x->x_fftwIn[i] = x->x_fftwIn[i]*x->x_fftwIn[i];
+                x->x_fftwIn[i] = x->x_fftwIn[i] * x->x_fftwIn[i];
 
         maxVal = 0.0;
         maxValIdx = 0;
@@ -358,8 +358,8 @@ static void cepstrumPitch_powerSpectrum (t_cepstrumPitch* x, t_floatarg spec)
 
 static void cepstrumPitch_powerCepstrum (t_cepstrumPitch* x, t_floatarg power)
 {
-    power = (power<0)?0:power;
-    power = (power>1)?1:power;
+    power = (power < 0) ? 0 : power;
+    power = (power > 1) ? 1 : power;
     x->x_powerCepstrum = power;
 
     if (x->x_powerCepstrum)
@@ -371,8 +371,8 @@ static void cepstrumPitch_powerCepstrum (t_cepstrumPitch* x, t_floatarg power)
 
 static void cepstrumPitch_spectrumOffset (t_cepstrumPitch* x, t_floatarg offset)
 {
-    offset = (offset<0)?0:offset;
-    offset = (offset>1)?1:offset;
+    offset = (offset < 0) ? 0 : offset;
+    offset = (offset > 1) ? 1 : offset;
     x->x_spectrumOffset = offset;
 
     if (x->x_spectrumOffset)
@@ -384,13 +384,13 @@ static void cepstrumPitch_spectrumOffset (t_cepstrumPitch* x, t_floatarg offset)
 
 static void cepstrumPitch_pitchRange (t_cepstrumPitch* x, t_floatarg low, t_floatarg hi)
 {
-    low = (low<0)?0:low;
-    low = (low>20000)?20000:low;
+    low = (low < 0) ? 0 : low;
+    low = (low > 20000) ? 20000 : low;
 
-    hi = (hi < 0)?0:hi;
-    hi = (hi>20000)?20000:hi;
+    hi = (hi < 0) ? 0 : hi;
+    hi = (hi > 20000) ? 20000 : hi;
 
-    if (low>hi)
+    if (low > hi)
     {
         t_float tmp;
         tmp = hi;
@@ -407,7 +407,7 @@ static void cepstrumPitch_pitchRange (t_cepstrumPitch* x, t_floatarg low, t_floa
 
 static void cepstrumPitch_threshold (t_cepstrumPitch* x, t_floatarg thresh)
 {
-    x->x_thresh = (thresh<0)?0:thresh;
+    x->x_thresh = (thresh < 0) ? 0 : thresh;
 
     post ("%s peak threshold: %0.4f standard deviations above mean", x->x_objSymbol->s_name, x->x_thresh);
 }
@@ -432,22 +432,22 @@ static void* cepstrumPitch_new (t_symbol* s, int argc, t_atom* argv)
             x->x_hiFreq = atom_getfloat (argv + 2);
             x->x_loFreq = mtof (x->x_loFreq);
             x->x_hiFreq = mtof (x->x_hiFreq);
-            x->x_loFreq = (x->x_loFreq<0)?0:x->x_loFreq;
-            x->x_hiFreq = (x->x_hiFreq<0)?0:x->x_hiFreq;
-            x->x_loFreq = (x->x_loFreq>20000)?20000:x->x_loFreq;
-            x->x_hiFreq = (x->x_hiFreq>20000)?20000:x->x_hiFreq;
+            x->x_loFreq = (x->x_loFreq < 0) ? 0 : x->x_loFreq;
+            x->x_hiFreq = (x->x_hiFreq < 0) ? 0 : x->x_hiFreq;
+            x->x_loFreq = (x->x_loFreq > 20000) ? 20000 : x->x_loFreq;
+            x->x_hiFreq = (x->x_hiFreq > 20000) ? 20000 : x->x_hiFreq;
             break;
 
         case 2:
             x->x_arrayName = atom_getsymbol (argv);
             x->x_loFreq = atom_getfloat (argv + 1);
-            x->x_hiFreq = x->x_loFreq+12;
+            x->x_hiFreq = x->x_loFreq + 12;
             x->x_loFreq = mtof (x->x_loFreq);
             x->x_hiFreq = mtof (x->x_hiFreq);
-            x->x_loFreq = (x->x_loFreq<0)?0:x->x_loFreq;
-            x->x_hiFreq = (x->x_hiFreq<0)?0:x->x_hiFreq;
-            x->x_loFreq = (x->x_loFreq>20000)?20000:x->x_loFreq;
-            x->x_hiFreq = (x->x_hiFreq>20000)?20000:x->x_hiFreq;
+            x->x_loFreq = (x->x_loFreq < 0) ? 0 : x->x_loFreq;
+            x->x_hiFreq = (x->x_hiFreq < 0) ? 0 : x->x_hiFreq;
+            x->x_loFreq = (x->x_loFreq > 20000) ? 20000 : x->x_loFreq;
+            x->x_hiFreq = (x->x_hiFreq > 20000) ? 20000 : x->x_hiFreq;
             break;
 
         case 1:
@@ -484,7 +484,7 @@ static void* cepstrumPitch_new (t_symbol* s, int argc, t_atom* argv)
             break;
     }
 
-    if (x->x_loFreq>x->x_hiFreq)
+    if (x->x_loFreq > x->x_hiFreq)
     {
         t_float tmp;
         tmp = x->x_hiFreq;

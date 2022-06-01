@@ -177,8 +177,8 @@ static void phaseSpec_tilde_overlap (t_phaseSpec_tilde* x, t_floatarg o)
 
 static void phaseSpec_tilde_windowFunction (t_phaseSpec_tilde* x, t_floatarg f)
 {
-    f = (f<0.0)?0.0:f;
-    f = (f>4.0)?4.0:f;
+    f = (f < 0.0) ? 0.0 : f;
+    f = (f > 4.0) ? 4.0 : f;
     x->x_windowFunction = f;
 
     switch (x->x_windowFunction)

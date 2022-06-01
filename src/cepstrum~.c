@@ -58,7 +58,7 @@ static void cepstrum_tilde_bang (t_cepstrum_tilde* x)
     window = x->x_window;
     windowHalf = x->x_windowHalf;
 
-    nRecip = 1.0/window;
+    nRecip = 1.0 / window;
 
     currentTime = clock_gettimesince (x->x_lastDspTime);
     bangSample = roundf ((currentTime / 1000.0) * x->x_sr);
@@ -128,7 +128,7 @@ static void cepstrum_tilde_bang (t_cepstrum_tilde* x)
     // optionally square the cepstrum results for power cepstrum
     if (x->x_powerCepstrum)
         for (i = 0; i < windowHalf + 1; i++)
-            x->x_fftwIn[i] = x->x_fftwIn[i]*x->x_fftwIn[i];
+            x->x_fftwIn[i] = x->x_fftwIn[i] * x->x_fftwIn[i];
 
     for (i = 0; i < windowHalf + 1; i++)
         SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
@@ -262,8 +262,8 @@ static void cepstrum_tilde_powerSpectrum (t_cepstrum_tilde* x, t_floatarg spec)
 
 static void cepstrum_tilde_powerCepstrum (t_cepstrum_tilde* x, t_floatarg power)
 {
-    power = (power<0)?0:power;
-    power = (power>1)?1:power;
+    power = (power < 0) ? 0 : power;
+    power = (power > 1) ? 1 : power;
     x->x_powerCepstrum = power;
 
     if (x->x_powerCepstrum)
@@ -275,8 +275,8 @@ static void cepstrum_tilde_powerCepstrum (t_cepstrum_tilde* x, t_floatarg power)
 
 static void cepstrum_tilde_spectrumOffset (t_cepstrum_tilde* x, t_floatarg offset)
 {
-    offset = (offset<0)?0:offset;
-    offset = (offset>1)?1:offset;
+    offset = (offset < 0) ? 0 : offset;
+    offset = (offset > 1) ? 1 : offset;
     x->x_spectrumOffset = offset;
 
     if (x->x_spectrumOffset)

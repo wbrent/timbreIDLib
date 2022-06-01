@@ -128,7 +128,7 @@ static void barkSpecRolloff_tilde_bang (t_barkSpecRolloff_tilde* x)
         energySum += x->x_fftwIn[i];
         i++;
 
-        if (i>x->x_numFilters)
+        if (i > x->x_numFilters)
             break;
     }
 
@@ -164,7 +164,7 @@ static void barkSpecRolloff_tilde_createFilterbank (t_barkSpecRolloff_tilde* x, 
     x->x_barkFreqList = (t_float *)t_resizebytes (x->x_barkFreqList, oldNumFilters * sizeof (t_float), x->x_numFilters * sizeof (t_float));
 
      for (i = 0; i < x->x_numFilters; i++)
-        x->x_barkFreqList[i] = i*x->x_barkSpacing;
+        x->x_barkFreqList[i] = i * x->x_barkSpacing;
 }
 
 
@@ -320,8 +320,8 @@ static void barkSpecRolloff_tilde_windowFunction (t_barkSpecRolloff_tilde* x, t_
 
 static void barkSpecRolloff_tilde_powerSpectrum (t_barkSpecRolloff_tilde* x, t_floatarg power)
 {
-    power = (power<0)?0:power;
-    power = (power>1)?1:power;
+    power = (power < 0) ? 0 : power;
+    power = (power > 1) ? 1 : power;
     x->x_powerSpectrum = power;
 
     if (x->x_powerSpectrum)
@@ -359,8 +359,8 @@ static void* barkSpecRolloff_tilde_new (t_symbol* s, int argc, t_atom* argv)
             }
 
             x->x_concentration = atom_getfloat (argv + 2);
-            x->x_concentration = (x->x_concentration<0)?0:x->x_concentration;
-            x->x_concentration = (x->x_concentration>1)?1:x->x_concentration;
+            x->x_concentration = (x->x_concentration < 0) ? 0 : x->x_concentration;
+            x->x_concentration = (x->x_concentration > 1) ? 1 : x->x_concentration;
             break;
 
         case 2:
@@ -459,7 +459,7 @@ static void* barkSpecRolloff_tilde_new (t_symbol* s, int argc, t_atom* argv)
     x->x_barkFreqList = (t_float *)t_getbytes (x->x_numFilters * sizeof (t_float));
 
      for (i = 0; i < x->x_numFilters; i++)
-        x->x_barkFreqList[i] = i*x->x_barkSpacing;
+        x->x_barkFreqList[i] = i * x->x_barkSpacing;
 
     return (x);
 }

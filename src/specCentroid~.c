@@ -221,8 +221,8 @@ static void specCentroid_tilde_windowFunction (t_specCentroid_tilde* x, t_floata
 
 static void specCentroid_tilde_powerSpectrum (t_specCentroid_tilde* x, t_floatarg power)
 {
-    power = (power<0)?0:power;
-    power = (power>1)?1:power;
+    power = (power < 0) ? 0 : power;
+    power = (power > 1) ? 1 : power;
     x->x_powerSpectrum = power;
 
     if (x->x_powerSpectrum)

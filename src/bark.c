@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-t_float bark_weights_dB[] = {-69.9, -60.4, -51.4, -43.3, -36.6, -30.3, -24.3,  -19.5,  -14.8,  -10.7, -7.5, -4.8, -2.6, -0.8, 0.0, 0.6, 0.5, 0.0, -0.1, 0.5, 1.5, 3.6, 5.9, 6.5, 4.2, -2.6,  -10.2,  -10.0, -2.8};
+t_float bark_weights_dB[] = {-69.9, -60.4, -51.4, -43.3, -36.6, -30.3, -24.3, -19.5, -14.8, -10.7, -7.5, -4.8, -2.6, -0.8, 0.0, 0.6, 0.5, 0.0, -0.1, 0.5, 1.5, 3.6, 5.9, 6.5, 4.2, -2.6, -10.2, -10.0, -2.8};
 
 t_float bark_weights_freqs[] = {20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500};
 
@@ -116,8 +116,8 @@ static void bark_create_loudness_weighting (t_bark* x)
         {
             if (nearIdx <= TID_NUMWEIGHTPOINTS-2)
             {
-                diffFreq = (barkFreqs[i] - nearFreq)/(bark_weights_freqs[nearIdx+1] - nearFreq);
-                diffdB = diffFreq * (bark_weights_dB[nearIdx+1] - bark_weights_dB[nearIdx]);
+                diffFreq = (barkFreqs[i] - nearFreq)/(bark_weights_freqs[nearIdx + 1] - nearFreq);
+                diffdB = diffFreq * (bark_weights_dB[nearIdx + 1] - bark_weights_dB[nearIdx]);
             }
 
             dBint = bark_weights_dB[nearIdx] + diffdB;
@@ -182,7 +182,7 @@ static void bark_thresh (t_bark* x, t_floatarg lo, t_floatarg hi)
         x->x_hiThresh = lo;
         x->x_loThresh = hi;
 
-        x->x_loThresh = (x->x_loThresh<0)? -1:x->x_loThresh;
+        x->x_loThresh = (x->x_loThresh < 0) ? -1 : x->x_loThresh;
 
 //		post ("bark: low thresh: %f, high thresh: %f", x->x_loThresh, x->x_hiThresh);
     }
@@ -191,7 +191,7 @@ static void bark_thresh (t_bark* x, t_floatarg lo, t_floatarg hi)
         x->x_hiThresh = hi;
         x->x_loThresh = lo;
 
-        x->x_loThresh = (x->x_loThresh<0) ? -1:x->x_loThresh;
+        x->x_loThresh = (x->x_loThresh < 0) ? -1 : x->x_loThresh;
 
 //		post ("bark: low thresh: %0.2f, high thresh: %0.2f", x->x_loThresh, x->x_hiThresh);
     }
@@ -199,7 +199,7 @@ static void bark_thresh (t_bark* x, t_floatarg lo, t_floatarg hi)
 
 static void bark_minvel (t_bark* x, t_floatarg mv)
 {
-    x->x_minvel = (mv<0)?0:mv;
+    x->x_minvel = (mv < 0) ? 0 : mv;
 }
 
 static void bark_filter_range (t_bark* x, t_floatarg lo, t_floatarg hi)
@@ -212,15 +212,15 @@ static void bark_filter_range (t_bark* x, t_floatarg lo, t_floatarg hi)
         hi = lo;
         lo = tmp;
 
-        x->x_loBin = (lo<0)?0:lo;
-        x->x_hiBin = (hi>=x->x_numFilters)?x->x_numFilters - 1:hi;
+        x->x_loBin = (lo < 0) ? 0 : lo;
+        x->x_hiBin = (hi >= x->x_numFilters) ? x->x_numFilters - 1 : hi;
 
         post ("%s WARNING: high band less than low band. Reversing order.", x->x_objSymbol->s_name);
     }
     else
     {
-        x->x_loBin = (lo<0)?0:lo;
-        x->x_hiBin = (hi>=x->x_numFilters)?x->x_numFilters - 1:hi;
+        x->x_loBin = (lo < 0) ? 0 : lo;
+        x->x_hiBin = (hi >= x->x_numFilters) ? x->x_numFilters - 1 : hi;
     }
 }
 
@@ -229,18 +229,18 @@ static void bark_mask (t_bark* x, t_floatarg per, t_floatarg dec)
     x->x_maskPeriods = per;
     x->x_maskDecay = dec;
 
-    x->x_maskDecay = (x->x_maskDecay<0.05)?0.05:x->x_maskDecay;
-    x->x_maskDecay = (x->x_maskDecay>0.95)?0.95:x->x_maskDecay;
+    x->x_maskDecay = (x->x_maskDecay < 0.05) ? 0.05 : x->x_maskDecay;
+    x->x_maskDecay = (x->x_maskDecay > 0.95) ? 0.95 : x->x_maskDecay;
 
 //	post ("bark: masking for %i periods and decaying by %i%% thereafter.", x->x_maskPeriods, (int)(x->x_maskDecay*100));
 }
 
 static void bark_debounce (t_bark* x, t_floatarg db)
 {
-    if (x->x_debounceTime>=0)
+    if (x->x_debounceTime >= 0)
     {
         x->x_debounceTime = db;
-        x->x_debounceSamp = x->x_debounceTime*0.001*x->x_sr;
+        x->x_debounceSamp = x->x_debounceTime * 0.001 * x->x_sr;
         post ("%s debounce time: %0.2f ms, %i samples", x->x_objSymbol->s_name, x->x_debounceTime, x->x_debounceSamp);
     }
     else
@@ -267,7 +267,7 @@ static void bark_print (t_bark* x)
     else
     {
         post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-        post ("%s total frames in array: %i", x->x_objSymbol->s_name, (int)floor ((x->x_arrayPoints - x->x_window)/x->x_hop));
+        post ("%s total frames in array: %i", x->x_objSymbol->s_name, (int)floor ((x->x_arrayPoints - x->x_window) / x->x_hop));
     }
 
     post ("%s window size: %i", x->x_objSymbol->s_name, (t_sampIdx)x->x_window);
@@ -291,8 +291,8 @@ static void bark_print (t_bark* x)
 
 static void bark_debug (t_bark* x, t_floatarg debug)
 {
-    debug = (debug<0)?0:debug;
-    debug = (debug>1)?1:debug;
+    debug = (debug < 0) ? 0 : debug;
+    debug = (debug > 1) ? 1 : debug;
     x->x_debug = debug;
 
     if (x->x_debug)
@@ -303,8 +303,8 @@ static void bark_debug (t_bark* x, t_floatarg debug)
 
 static void bark_use_weights (t_bark* x, t_floatarg w)
 {
-    w = (w<0)?0:w;
-    w = (w>1)?1:w;
+    w = (w < 0) ? 0 : w;
+    w = (w > 1) ? 1 : w;
     x->x_useWeights = w;
 
     if (x->x_useWeights)
@@ -342,8 +342,8 @@ static void bark_filter_avg (t_bark* x, t_floatarg avg)
 
 static void bark_powerSpectrum (t_bark* x, t_floatarg spec)
 {
-    spec = (spec<0) ? 0 : spec;
-    spec = (spec>1) ? 1 : spec;
+    spec = (spec < 0) ? 0 : spec;
+    spec = (spec > 1) ? 1 : spec;
     x->x_powerSpectrum = spec;
 
     bark_create_loudness_weighting (x);
@@ -357,8 +357,8 @@ static void bark_powerSpectrum (t_bark* x, t_floatarg spec)
 
 static void bark_normalize (t_bark* x, t_floatarg norm)
 {
-    norm = (norm<0) ? 0 : norm;
-    norm = (norm>1) ? 1 : norm;
+    norm = (norm < 0) ? 0 : norm;
+    norm = (norm > 1) ? 1 : norm;
     x->x_normalize = norm;
 
     if (x->x_normalize)
@@ -382,7 +382,7 @@ static void bark_samplerate (t_bark* x, t_floatarg sr)
     else
         x->x_sr = sr;
 
-    x->x_debounceSamp = x->x_debounceTime*0.001*x->x_sr;
+    x->x_debounceSamp = x->x_debounceTime*0.001 * x->x_sr;
 
     x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs (&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
 
@@ -405,7 +405,7 @@ static void bark_samplerate (t_bark* x, t_floatarg sr)
         x->x_mask[i] = 0.0;
         x->x_growth[i] = 0.0;
         x->x_numPeriods[i] = 0.0;
-        SETFLOAT (x->x_growthList+i, 0.0);
+        SETFLOAT (x->x_growthList + i, 0.0);
         x->x_loudWeights[i] = 0.0;
     }
 }
@@ -550,7 +550,7 @@ static void* bark_new (t_symbol* s, int argc, t_atom* argv)
     x->x_minvel = 1.0;
     x->x_haveHit = false;
     x->x_debounceTime = 100;
-    x->x_debounceSamp = x->x_debounceTime*0.001*x->x_sr;
+    x->x_debounceSamp = x->x_debounceTime*0.001 * x->x_sr;
     x->x_debounceActive = 0;
     x->x_maskDecay = 0.7;
     x->x_maskPeriods = 4;
@@ -611,7 +611,7 @@ static void* bark_new (t_symbol* s, int argc, t_atom* argv)
         x->x_mask[i] = 0.0;
         x->x_growth[i] = 0.0;
         x->x_numPeriods[i] = 0.0;
-        SETFLOAT (x->x_growthList+i, 0.0);
+        SETFLOAT (x->x_growthList + i, 0.0);
         x->x_loudWeights[i] = 0.0;
     }
 
@@ -647,13 +647,13 @@ static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
         }
         else if (startTime<endTime)
         {
-            startTime = (startTime<0.0)?0.0:startTime;
-            endTime = (endTime<0.0)?0.0:endTime;
+            startTime = (startTime < 0.0) ? 0.0 : startTime;
+            endTime = (endTime < 0.0) ? 0.0 : endTime;
 
-            startSamp = floor (startTime*x->x_sr);
-            endSamp = floor (endTime*x->x_sr);
+            startSamp = floor (startTime * x->x_sr);
+            endSamp = floor (endTime * x->x_sr);
 
-            if (endSamp<x->x_arrayPoints)
+            if (endSamp < x->x_arrayPoints)
                 sampRange = endSamp - startSamp + 1;
             else
             {
@@ -741,12 +741,12 @@ static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
                 // from p.3 of Puckette/Apel/Zicarelli, 1998
                 // salt divisor with + 1.0e-15 in case previous power was zero
                 if (x->x_fftwIn[i] > x->x_mask[i])
-                    x->x_growth[i] = x->x_fftwIn[i]/(x->x_mask[i] + 1.0e-15) - 1.0;
+                    x->x_growth[i] = x->x_fftwIn[i] / (x->x_mask[i] + 1.0e-15) - 1.0;
 
                 if (i>=x->x_loBin && i <= x->x_hiBin && x->x_growth[i]>0)
                     totalGrowth += x->x_growth[i];
 
-                SETFLOAT (x->x_growthList+i, x->x_growth[i]);
+                SETFLOAT (x->x_growthList + i, x->x_growth[i]);
             }
 
             if (frame*hop+startSamp >= x->x_debounceActive)
@@ -760,7 +760,7 @@ static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
                 x->x_haveHit = true;
                 x->x_debounceActive = frame*hop+startSamp + x->x_debounceSamp;
             }
-            else if (x->x_haveHit && x->x_loThresh>0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not  -1), then wait until growth drops below that value before reporting attack
+            else if (x->x_haveHit && x->x_loThresh>0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not -1), then wait until growth drops below that value before reporting attack
             {
                 if (x->x_debug)
                     post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);
@@ -775,7 +775,7 @@ static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
                 }
 
                 // add half a window of samples as a fudge factor. note that since this NRT and we can look into the future, all attack reports will be roughly a half window EARLY.  in RT, everything is a half window LATE because the point of reference is the END of the window.  here, it's the BEGINNING of the window.
-                outlet_float (x->x_timeOut, (frame*hop+startSamp + windowHalf)/x->x_sr);
+                outlet_float (x->x_timeOut, (frame*hop+startSamp + windowHalf) / x->x_sr);
             }
             else if (x->x_haveHit && x->x_loThresh<0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh == -1, report attack as soon as growth shows any decay at all
             {
@@ -792,7 +792,7 @@ static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
                 }
 
                 // add half a window of samples as a fudge factor. note that since this NRT and we can look into the future, all attack reports will be roughly a half window EARLY.  in RT, everything is a half window LATE because the point of reference is the END of the window.  here, it's the BEGINNING of the window.
-                outlet_float (x->x_timeOut, (frame*hop+startSamp + windowHalf)/x->x_sr);
+                outlet_float (x->x_timeOut, (frame*hop+startSamp + windowHalf) / x->x_sr);
             }
 
             if (x->x_spew)

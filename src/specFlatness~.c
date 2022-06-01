@@ -54,7 +54,7 @@ static void specFlatness_tilde_bang (t_specFlatness_tilde* x)
 
     window = x->x_window;
     windowHalf = x->x_windowHalf;
-    windowHalfPlusOneRecip = 1.0/(double)(windowHalf + 1);
+    windowHalfPlusOneRecip = 1.0 / (double)(windowHalf + 1);
 
     currentTime = clock_gettimesince (x->x_lastDspTime);
     bangSample = roundf ((currentTime / 1000.0) * x->x_sr);
@@ -238,8 +238,8 @@ static void specFlatness_tilde_windowFunction (t_specFlatness_tilde* x, t_floata
 
 static void specFlatness_tilde_powerSpectrum (t_specFlatness_tilde* x, t_floatarg power)
 {
-    power = (power<0)?0:power;
-    power = (power>1)?1:power;
+    power = (power < 0) ? 0 : power;
+    power = (power > 1) ? 1 : power;
     x->x_powerSpectrum = power;
 
     if (x->x_powerSpectrum)

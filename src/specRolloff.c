@@ -177,7 +177,7 @@ static void specRolloff_analyze (t_specRolloff* x, t_floatarg start, t_floatarg 
             energySum += x->x_fftwIn[i];
             i++;
 
-            if (i>x->x_windowHalf)
+            if (i > x->x_windowHalf)
                 break;
         }
 
@@ -233,7 +233,7 @@ static void specRolloff_chain_fftData (t_specRolloff* x, t_symbol* s, int argc, 
         energySum += x->x_fftwIn[i];
         i++;
 
-        if (i>x->x_windowHalf)
+        if (i > x->x_windowHalf)
             break;
     }
 
@@ -279,7 +279,7 @@ static void specRolloff_chain_magSpec (t_specRolloff* x, t_symbol* s, int argc, 
         energySum += x->x_fftwIn[i];
         i++;
 
-        if (i>x->x_windowHalf)
+        if (i > x->x_windowHalf)
             break;
     }
 

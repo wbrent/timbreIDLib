@@ -362,8 +362,8 @@ static void barkSpecIrregularity_tilde_normalize (t_barkSpecIrregularity_tilde* 
 
 static void barkSpecIrregularity_tilde_powerSpectrum (t_barkSpecIrregularity_tilde* x, t_floatarg power)
 {
-    power = (power<0)?0:power;
-    power = (power>1)?1:power;
+    power = (power < 0) ? 0 : power;
+    power = (power > 1) ? 1 : power;
     x->x_powerSpectrum = power;
 
     if (x->x_powerSpectrum)

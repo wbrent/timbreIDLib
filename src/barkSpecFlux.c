@@ -326,8 +326,8 @@ static void barkSpecFlux_chain_fftData (t_barkSpecFlux* x, t_symbol* s, int argc
     {
         x->x_fftwOutForwardWindow[i][0] = atom_getfloat (argv + i);
         x->x_fftwOutForwardWindow[i][1] = atom_getfloat (argv + (x->x_windowHalf + 1) + i);
-        x->x_fftwOutBackWindow[i][0] = atom_getfloat (argv+(x->x_window+2)+i);
-        x->x_fftwOutBackWindow[i][1] = atom_getfloat (argv+(x->x_window+x->x_windowHalf+3)+i);
+        x->x_fftwOutBackWindow[i][0] = atom_getfloat (argv+(x->x_window+2) + i);
+        x->x_fftwOutBackWindow[i][1] = atom_getfloat (argv+(x->x_window+x->x_windowHalf+3) + i);
     }
 
     // put the result of power calc back in x_fftwIn
@@ -505,7 +505,7 @@ static void barkSpecFlux_chain_barkSpec (t_barkSpecFlux* x, t_symbol* s, int arg
     for (i = 0; i < x->x_numFilters; i++)
     {
         x->x_fftwInForwardWindow[i] = atom_getfloat (argv + i);
-        x->x_fftwInBackWindow[i] = atom_getfloat (argv+x->x_numFilters+i);
+        x->x_fftwInBackWindow[i] = atom_getfloat (argv+x->x_numFilters + i);
     }
 
     flux = 0.0;

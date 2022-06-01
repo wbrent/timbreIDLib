@@ -360,7 +360,7 @@ static void barkSpecBrightness_createFilterbank (t_barkSpecBrightness* x, t_floa
     x->x_barkFreqList = (t_float *)t_resizebytes (x->x_barkFreqList, oldNumFilters * sizeof (t_float), x->x_numFilters * sizeof (t_float));
 
      for (i = 0; i < x->x_numFilters; i++)
-        x->x_barkFreqList[i] = i*x->x_barkSpacing;
+        x->x_barkFreqList[i] = i * x->x_barkSpacing;
 
     // update bandBoundary since barkFreqList and numFilters changed
        x->x_bandBoundary = tIDLib_nearestBinIndex (x->x_barkBoundary, x->x_barkFreqList, x->x_numFilters);
@@ -643,7 +643,7 @@ static void* barkSpecBrightness_new (t_symbol* s, int argc, t_atom* argv)
     x->x_barkFreqList = (t_float *)t_getbytes (x->x_numFilters * sizeof (t_float));
 
      for (i = 0; i < x->x_numFilters; i++)
-        x->x_barkFreqList[i] = i*x->x_barkSpacing;
+        x->x_barkFreqList[i] = i * x->x_barkSpacing;
 
     x->x_bandBoundary = tIDLib_nearestBinIndex (x->x_barkBoundary, x->x_barkFreqList, x->x_numFilters);
 

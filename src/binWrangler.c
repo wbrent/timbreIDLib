@@ -49,7 +49,7 @@ static void binWrangler_accum (t_binWrangler* x, t_symbol* s, int argc, t_atom* 
 
     if ((x->x_currentFrame == x->x_numFrames) || x->x_spew)
     {
-        totalbins = x->x_numFrames*x->x_featureLength;
+        totalbins = x->x_numFrames * x->x_featureLength;
 
         for (i = 0; i < x->x_featureLength; i++)
             for (count = 0, j = x->x_numFrames - x->x_currentFrame; count < x->x_numFrames; count++, j++)

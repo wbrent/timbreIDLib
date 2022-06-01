@@ -61,19 +61,19 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde* x)
     window = x->x_window;
     windowHalf = x->x_windowHalf;
 
-    nRecip = 1.0/window;
+    nRecip = 1.0 / window;
 
     currentTime = clock_gettimesince (x->x_lastDspTime);
     bangSample = roundf ((currentTime / 1000.0) * x->x_sr);
 
-    loFreqBinFloat = roundf (x->x_sr/x->x_loFreq);
-    hiFreqBinFloat = roundf (x->x_sr/x->x_hiFreq);
+    loFreqBinFloat = roundf (x->x_sr / x->x_loFreq);
+    hiFreqBinFloat = roundf (x->x_sr / x->x_hiFreq);
 
-    hiFreqBin = (hiFreqBinFloat<0)?0:hiFreqBinFloat;
-    hiFreqBin = (hiFreqBin>windowHalf)?windowHalf:hiFreqBin;
+    hiFreqBin = (hiFreqBinFloat < 0) ? 0 : hiFreqBinFloat;
+    hiFreqBin = (hiFreqBin > windowHalf) ? windowHalf : hiFreqBin;
 
-    loFreqBin = (loFreqBinFloat<0)?0:loFreqBinFloat;
-    loFreqBin = (loFreqBin>windowHalf)?windowHalf:loFreqBin;
+    loFreqBin = (loFreqBinFloat < 0) ? 0 : loFreqBinFloat;
+    loFreqBin = (loFreqBin > windowHalf) ? windowHalf : loFreqBin;
 
     if (bangSample >= x->x_n)
         bangSample = x->x_n - 1;
@@ -140,7 +140,7 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde* x)
     // optionally square the cepstrum results for power cepstrum
     if (x->x_powerCepstrum)
         for (i = 0; i < windowHalf + 1; i++)
-            x->x_fftwIn[i] = x->x_fftwIn[i]*x->x_fftwIn[i];
+            x->x_fftwIn[i] = x->x_fftwIn[i] * x->x_fftwIn[i];
 
     maxVal = 0;
     maxValIdx = 0;
@@ -317,8 +317,8 @@ static void cepstrumPitch_tilde_powerSpectrum (t_cepstrumPitch_tilde* x, t_float
 
 static void cepstrumPitch_tilde_powerCepstrum (t_cepstrumPitch_tilde* x, t_floatarg power)
 {
-    power = (power<0)?0:power;
-    power = (power>1)?1:power;
+    power = (power < 0) ? 0 : power;
+    power = (power > 1) ? 1 : power;
     x->x_powerCepstrum = power;
 
     if (x->x_powerCepstrum)
@@ -330,8 +330,8 @@ static void cepstrumPitch_tilde_powerCepstrum (t_cepstrumPitch_tilde* x, t_float
 
 static void cepstrumPitch_tilde_spectrumOffset (t_cepstrumPitch_tilde* x, t_floatarg offset)
 {
-    offset = (offset<0)?0:offset;
-    offset = (offset>1)?1:offset;
+    offset = (offset < 0) ? 0 : offset;
+    offset = (offset > 1) ? 1 : offset;
     x->x_spectrumOffset = offset;
 
     if (x->x_spectrumOffset)
@@ -343,13 +343,13 @@ static void cepstrumPitch_tilde_spectrumOffset (t_cepstrumPitch_tilde* x, t_floa
 
 static void cepstrumPitch_tilde_pitchRange (t_cepstrumPitch_tilde* x, t_floatarg low, t_floatarg hi)
 {
-    low = (low<0)?0:low;
-    low = (low>20000)?20000:low;
+    low = (low < 0) ? 0 : low;
+    low = (low > 20000) ? 20000 : low;
 
-    hi = (hi < 0)?0:hi;
-    hi = (hi>20000)?20000:hi;
+    hi = (hi < 0) ? 0 : hi;
+    hi = (hi > 20000) ? 20000 : hi;
 
-    if (low>hi)
+    if (low > hi)
     {
         t_float tmp;
         tmp = hi;
@@ -366,7 +366,7 @@ static void cepstrumPitch_tilde_pitchRange (t_cepstrumPitch_tilde* x, t_floatarg
 
 static void cepstrumPitch_tilde_threshold (t_cepstrumPitch_tilde* x, t_floatarg thresh)
 {
-    x->x_thresh = (thresh<0)?0:thresh;
+    x->x_thresh = (thresh < 0) ? 0 : thresh;
 
     post ("%s peak threshold: %0.4f standard deviations above mean", x->x_objSymbol->s_name, x->x_thresh);
 }
@@ -395,10 +395,10 @@ static void* cepstrumPitch_tilde_new (t_symbol* s, int argc, t_atom* argv)
             x->x_hiFreq = atom_getfloat (argv + 2);
             x->x_loFreq = mtof (x->x_loFreq);
             x->x_hiFreq = mtof (x->x_hiFreq);
-            x->x_loFreq = (x->x_loFreq<0)?0:x->x_loFreq;
-            x->x_hiFreq = (x->x_hiFreq<0)?0:x->x_hiFreq;
-            x->x_loFreq = (x->x_loFreq>20000)?20000:x->x_loFreq;
-            x->x_hiFreq = (x->x_hiFreq>20000)?20000:x->x_hiFreq;
+            x->x_loFreq = (x->x_loFreq < 0) ? 0 : x->x_loFreq;
+            x->x_hiFreq = (x->x_hiFreq < 0) ? 0 : x->x_hiFreq;
+            x->x_loFreq = (x->x_loFreq > 20000) ? 20000 : x->x_loFreq;
+            x->x_hiFreq = (x->x_hiFreq > 20000) ? 20000 : x->x_hiFreq;
             break;
 
         case 2:
@@ -409,13 +409,13 @@ static void* cepstrumPitch_tilde_new (t_symbol* s, int argc, t_atom* argv)
                 post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
             x->x_loFreq = atom_getfloat (argv + 1);
-            x->x_hiFreq = x->x_loFreq+12; // if no upper limit specified, make it an octave higher
+            x->x_hiFreq = x->x_loFreq + 12; // if no upper limit specified, make it an octave higher
             x->x_loFreq = mtof (x->x_loFreq);
             x->x_hiFreq = mtof (x->x_hiFreq);
-            x->x_loFreq = (x->x_loFreq<0)?0:x->x_loFreq;
-            x->x_hiFreq = (x->x_hiFreq<0)?0:x->x_hiFreq;
-            x->x_loFreq = (x->x_loFreq>20000)?20000:x->x_loFreq;
-            x->x_hiFreq = (x->x_hiFreq>20000)?20000:x->x_hiFreq;
+            x->x_loFreq = (x->x_loFreq < 0) ? 0 : x->x_loFreq;
+            x->x_hiFreq = (x->x_hiFreq < 0) ? 0 : x->x_hiFreq;
+            x->x_loFreq = (x->x_loFreq > 20000) ? 20000 : x->x_loFreq;
+            x->x_hiFreq = (x->x_hiFreq > 20000) ? 20000 : x->x_hiFreq;
             break;
 
         case 1:
@@ -443,7 +443,7 @@ static void* cepstrumPitch_tilde_new (t_symbol* s, int argc, t_atom* argv)
             break;
     }
 
-    if (x->x_loFreq>x->x_hiFreq)
+    if (x->x_loFreq > x->x_hiFreq)
     {
         t_float tmp;
         tmp = x->x_hiFreq;

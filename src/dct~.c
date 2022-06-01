@@ -175,8 +175,8 @@ static void dct_tilde_overlap (t_dct_tilde* x, t_floatarg o)
 
 static void dct_tilde_windowFunction (t_dct_tilde* x, t_floatarg f)
 {
-    f = (f<0.0)?0.0:f;
-    f = (f>4.0)?4.0:f;
+    f = (f < 0.0) ? 0.0 : f;
+    f = (f > 4.0) ? 4.0 : f;
     x->x_windowFunction = f;
 
     switch (x->x_windowFunction)
@@ -204,8 +204,8 @@ static void dct_tilde_windowFunction (t_dct_tilde* x, t_floatarg f)
 
 static void dct_tilde_normalize (t_dct_tilde* x, t_floatarg norm)
 {
-    norm = (norm<0.0)?0.0:norm;
-    norm = (norm>1.0)?1.0:norm;
+    norm = (norm < 0.0) ? 0.0 : norm;
+    norm = (norm > 1.0) ? 1.0 : norm;
     x->x_normalize = norm;
 
     if (x->x_normalize)

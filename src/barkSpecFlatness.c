@@ -173,7 +173,7 @@ static void barkSpecFlatness_analyze (t_barkSpecFlatness* x, t_floatarg start, t
         else
             tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
-        numFiltersRecip = 1.0/(double)x->x_numFilters;
+        numFiltersRecip = 1.0 / (double)x->x_numFilters;
 
         dividend=1.0; // to get the product of all terms for geometric mean
         divisor=flatness=0.0;
@@ -235,7 +235,7 @@ static void barkSpecFlatness_chain_fftData (t_barkSpecFlatness* x, t_symbol* s, 
     else
         tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
-    numFiltersRecip = 1.0/(double)x->x_numFilters;
+    numFiltersRecip = 1.0 / (double)x->x_numFilters;
 
     dividend=1.0; // to get the product of all terms for geometric mean
     divisor=flatness=0.0;
@@ -287,7 +287,7 @@ static void barkSpecFlatness_chain_magSpec (t_barkSpecFlatness* x, t_symbol* s, 
     else
         tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
-    numFiltersRecip = 1.0/(double)x->x_numFilters;
+    numFiltersRecip = 1.0 / (double)x->x_numFilters;
 
     dividend=1.0; // to get the product of all terms for geometric mean
     divisor=flatness=0.0;
@@ -331,7 +331,7 @@ static void barkSpecFlatness_chain_barkSpec (t_barkSpecFlatness* x, t_symbol* s,
     for (i = 0; i < x->x_numFilters; i++)
         x->x_fftwIn[i] = atom_getfloat (argv + i);
 
-    numFiltersRecip = 1.0/(double)x->x_numFilters;
+    numFiltersRecip = 1.0 / (double)x->x_numFilters;
 
     dividend=1.0; // to get the product of all terms for geometric mean
     divisor=flatness=0.0;

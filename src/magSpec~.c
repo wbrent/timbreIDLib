@@ -190,8 +190,8 @@ static void magSpec_tilde_overlap (t_magSpec_tilde* x, t_floatarg o)
 
 static void magSpec_tilde_windowFunction (t_magSpec_tilde* x, t_floatarg f)
 {
-    f = (f<0.0)?0.0:f;
-    f = (f>4.0)?4.0:f;
+    f = (f < 0.0) ? 0.0 : f;
+    f = (f > 4.0) ? 4.0 : f;
     x->x_windowFunction = f;
 
     switch (x->x_windowFunction)
@@ -219,8 +219,8 @@ static void magSpec_tilde_windowFunction (t_magSpec_tilde* x, t_floatarg f)
 
 static void magSpec_tilde_normalize (t_magSpec_tilde* x, t_floatarg norm)
 {
-    norm = (norm<0.0)?0.0:norm;
-    norm = (norm>1.0)?1.0:norm;
+    norm = (norm < 0.0) ? 0.0 : norm;
+    norm = (norm > 1.0) ? 1.0 : norm;
     x->x_normalize = norm;
 
     if (x->x_normalize)
@@ -232,8 +232,8 @@ static void magSpec_tilde_normalize (t_magSpec_tilde* x, t_floatarg norm)
 
 static void magSpec_tilde_powerSpectrum (t_magSpec_tilde* x, t_floatarg spec)
 {
-    spec = (spec<0.0)?0.0:spec;
-    spec = (spec>1.0)?1.0:spec;
+    spec = (spec < 0.0) ? 0.0 : spec;
+    spec = (spec > 1.0) ? 1.0 : spec;
     x->x_powerSpectrum = spec;
 
     if (x->x_powerSpectrum)

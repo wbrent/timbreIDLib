@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-t_float bark_tilde_weights_dB[] = {-69.9, -60.4, -51.4, -43.3, -36.6, -30.3, -24.3,  -19.5,  -14.8,  -10.7, -7.5, -4.8, -2.6, -0.8, 0.0, 0.6, 0.5, 0.0, -0.1, 0.5, 1.5, 3.6, 5.9, 6.5, 4.2, -2.6,  -10.2,  -10.0, -2.8};
+t_float bark_tilde_weights_dB[] = {-69.9, -60.4, -51.4, -43.3, -36.6, -30.3, -24.3, -19.5, -14.8, -10.7, -7.5, -4.8, -2.6, -0.8, 0.0, 0.6, 0.5, 0.0, -0.1, 0.5, 1.5, 3.6, 5.9, 6.5, 4.2, -2.6, -10.2, -10.0, -2.8};
 
 t_float bark_tilde_weights_freqs[] = {20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500};
 
@@ -120,8 +120,8 @@ static void bark_tilde_create_loudness_weighting (t_bark_tilde* x)
         {
             if (nearIdx <= TID_NUMWEIGHTPOINTS-2)
             {
-                diffFreq = (barkFreqs[i] - nearFreq)/(bark_tilde_weights_freqs[nearIdx+1] - nearFreq);
-                diffdB = diffFreq * (bark_tilde_weights_dB[nearIdx+1] - bark_tilde_weights_dB[nearIdx]);
+                diffFreq = (barkFreqs[i] - nearFreq)/(bark_tilde_weights_freqs[nearIdx + 1] - nearFreq);
+                diffdB = diffFreq * (bark_tilde_weights_dB[nearIdx + 1] - bark_tilde_weights_dB[nearIdx]);
             }
 
             dBint = bark_tilde_weights_dB[nearIdx] + diffdB;
@@ -196,20 +196,20 @@ static void bark_tilde_thresh (t_bark_tilde* x, t_floatarg lo, t_floatarg hi)
         x->x_hiThresh = lo;
         x->x_loThresh = hi;
 
-        x->x_loThresh = (x->x_loThresh<0)? -1:x->x_loThresh;
+        x->x_loThresh = (x->x_loThresh < 0) ? -1 : x->x_loThresh;
     }
     else
     {
         x->x_hiThresh = hi;
         x->x_loThresh = lo;
 
-        x->x_loThresh = (x->x_loThresh<0)? -1:x->x_loThresh;
+        x->x_loThresh = (x->x_loThresh < 0) ? -1 : x->x_loThresh;
     }
 }
 
 static void bark_tilde_minvel (t_bark_tilde* x, t_floatarg mv)
 {
-    x->x_minvel = (mv<0)?0:mv;
+    x->x_minvel = (mv < 0) ? 0 : mv;
 }
 
 static void bark_tilde_spec_band_avg (t_bark_tilde* x, t_floatarg avg)
@@ -247,15 +247,15 @@ static void bark_tilde_filter_range (t_bark_tilde* x, t_floatarg lo, t_floatarg 
         hi = lo;
         lo = tmp;
 
-        x->x_loBin = (lo<0)?0:lo;
-        x->x_hiBin = (hi>=x->x_numFilters)?x->x_numFilters - 1:hi;
+        x->x_loBin = (lo < 0) ? 0 : lo;
+        x->x_hiBin = (hi >= x->x_numFilters) ? x->x_numFilters - 1 : hi;
 
         post ("%s WARNING: high bin less than low bin.", x->x_objSymbol->s_name);
     }
     else
     {
-        x->x_loBin = (lo<0)?0:lo;
-        x->x_hiBin = (hi>=x->x_numFilters)?x->x_numFilters - 1:hi;
+        x->x_loBin = (lo < 0) ? 0 : lo;
+        x->x_hiBin = (hi >= x->x_numFilters) ? x->x_numFilters - 1 : hi;
     }
 }
 
@@ -264,13 +264,13 @@ static void bark_tilde_mask (t_bark_tilde* x, t_floatarg per, t_floatarg dec)
     x->x_maskPeriods = per;
     x->x_maskDecay = dec;
 
-    x->x_maskDecay = (x->x_maskDecay<0.05) ? 0.05 : x->x_maskDecay;
-    x->x_maskDecay = (x->x_maskDecay>0.95) ? 0.95 : x->x_maskDecay;
+    x->x_maskDecay = (x->x_maskDecay < 0.05) ? 0.05 : x->x_maskDecay;
+    x->x_maskDecay = (x->x_maskDecay > 0.95) ? 0.95 : x->x_maskDecay;
 }
 
 static void bark_tilde_debounce (t_bark_tilde* x, t_floatarg deb)
 {
-    if (x->x_debounceTime>=0)
+    if (x->x_debounceTime >= 0)
     {
         x->x_debounceTime = deb;
     }
@@ -303,8 +303,8 @@ static void bark_tilde_print (t_bark_tilde* x)
 
 static void bark_tilde_debug (t_bark_tilde* x, t_floatarg debug)
 {
-    debug = (debug<0)?0:debug;
-    debug = (debug>1)?1:debug;
+    debug = (debug < 0) ? 0 : debug;
+    debug = (debug > 1) ? 1 : debug;
     x->x_debug = debug;
 
     if (x->x_debug)
@@ -335,7 +335,7 @@ static void bark_tilde_measure (t_bark_tilde* x, t_floatarg m)
     else
     {
         post ("%s number of ticks: %i", x->x_objSymbol->s_name, x->x_measureTicks);
-        post ("%s average growth: %f", x->x_objSymbol->s_name, x->x_avgGrowth/x->x_measureTicks);
+        post ("%s average growth: %f", x->x_objSymbol->s_name, x->x_avgGrowth / x->x_measureTicks);
         post ("%s peak growth: %f", x->x_objSymbol->s_name, x->x_peakGrowth);
         x->x_avgGrowth = 0.0;
         x->x_peakGrowth = 0.0;
@@ -345,8 +345,8 @@ static void bark_tilde_measure (t_bark_tilde* x, t_floatarg m)
 
 static void bark_tilde_use_weights (t_bark_tilde* x, t_floatarg w)
 {
-    w = (w<0)?0:w;
-    w = (w>1)?1:w;
+    w = (w < 0) ? 0 : w;
+    w = (w > 1) ? 1 : w;
     x->x_useWeights = w;
 
     if (x->x_useWeights)
@@ -367,8 +367,8 @@ static void bark_tilde_filterFreqs (t_bark_tilde* x)
 
 static void bark_tilde_powerSpectrum (t_bark_tilde* x, t_floatarg spec)
 {
-    spec = (spec<0) ? 0 : spec;
-    spec = (spec>1) ? 1 : spec;
+    spec = (spec < 0) ? 0 : spec;
+    spec = (spec > 1) ? 1 : spec;
     x->x_powerSpectrum = spec;
 
     bark_tilde_create_loudness_weighting (x);
@@ -382,8 +382,8 @@ static void bark_tilde_powerSpectrum (t_bark_tilde* x, t_floatarg spec)
 
 static void bark_tilde_normalize (t_bark_tilde* x, t_floatarg norm)
 {
-    norm = (norm<0) ? 0 : norm;
-    norm = (norm>1) ? 1 : norm;
+    norm = (norm < 0) ? 0 : norm;
+    norm = (norm > 1) ? 1 : norm;
     x->x_normalize = norm;
 
     if (x->x_normalize)
@@ -570,7 +570,7 @@ static void* bark_tilde_new (t_symbol* s, int argc, t_atom* argv)
         x->x_mask[i] = 0.0;
         x->x_growth[i] = 0.0;
         x->x_numPeriods[i] = 0.0;
-        SETFLOAT (x->x_growthList+i, 0.0);
+        SETFLOAT (x->x_growthList + i, 0.0);
         x->x_loudWeights[i] = 0.0;
     }
 
@@ -671,12 +671,12 @@ static t_int* bark_tilde_perform (t_int* w)
             // from p.3 of Puckette/Apel/Zicarelli, 1998
             // salt divisor with + 1.0e-15 in case previous power was zero
             if (x->x_fftwIn[i] > x->x_mask[i])
-                x->x_growth[i] = x->x_fftwIn[i]/(x->x_mask[i] + 1.0e-15) - 1.0;
+                x->x_growth[i] = x->x_fftwIn[i] / (x->x_mask[i] + 1.0e-15) - 1.0;
 
             if (i>=x->x_loBin && i <= x->x_hiBin && x->x_growth[i]>0)
                 totalGrowth += x->x_growth[i];
 
-            SETFLOAT (x->x_growthList+i, x->x_growth[i]);
+            SETFLOAT (x->x_growthList + i, x->x_growth[i]);
         }
 
         if (x->x_measureTicks != UINT_MAX)
@@ -698,7 +698,7 @@ static t_int* bark_tilde_perform (t_int* w)
             clock_delay (x->x_clock, x->x_debounceTime); // wait debounceTime ms before allowing another attack
             x->x_lastDspTime = clock_getlogicaltime();
         }
-        else if (x->x_haveHit && x->x_loThresh>0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not  -1), then wait until growth drops below that value before reporting attack
+        else if (x->x_haveHit && x->x_loThresh>0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not -1), then wait until growth drops below that value before reporting attack
         {
             if (x->x_debug)
                 post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);

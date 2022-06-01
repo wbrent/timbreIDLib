@@ -124,7 +124,7 @@ static void specFlatness_analyze (t_specFlatness* x, t_floatarg start, t_floatar
         if (x->x_window != window)
             specFlatness_resizeWindow (x, x->x_window, window, startSamp, &endSamp);
 
-        windowHalfPlusOneRecip = 1.0/(double)(x->x_windowHalf + 1);
+        windowHalfPlusOneRecip = 1.0 / (double)(x->x_windowHalf + 1);
 
         // construct analysis window
         for (i = 0, j = startSamp; j <= endSamp; i++, j++)
@@ -222,7 +222,7 @@ static void specFlatness_chain_fftData (t_specFlatness* x, t_symbol* s, int argc
 
     dividend=1.0; // to get the product of all terms for geometric mean
     divisor=flatness=0.0;
-    windowHalfPlusOneRecip = 1.0/(double)(x->x_windowHalf + 1);
+    windowHalfPlusOneRecip = 1.0 / (double)(x->x_windowHalf + 1);
 
     // geometric mean
     // take the nth roots first so as not to lose data to precision error.
@@ -268,7 +268,7 @@ static void specFlatness_chain_magSpec (t_specFlatness* x, t_symbol* s, int argc
 
     dividend=1.0; // to get the product of all terms for geometric mean
     divisor=flatness=0.0;
-    windowHalfPlusOneRecip = 1.0/(double)(x->x_windowHalf + 1);
+    windowHalfPlusOneRecip = 1.0 / (double)(x->x_windowHalf + 1);
 
     // geometric mean
     // take the nth roots first so as not to lose data to precision error.

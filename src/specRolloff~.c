@@ -252,8 +252,8 @@ static void specRolloff_tilde_windowFunction (t_specRolloff_tilde* x, t_floatarg
 
 static void specRolloff_tilde_powerSpectrum (t_specRolloff_tilde* x, t_floatarg power)
 {
-    power = (power<0)?0:power;
-    power = (power>1)?1:power;
+    power = (power < 0) ? 0 : power;
+    power = (power > 1) ? 1 : power;
     x->x_powerSpectrum = power;
 
     if (x->x_powerSpectrum)

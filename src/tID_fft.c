@@ -189,36 +189,36 @@ static void tID_fft_analyze (t_tID_fft* x, t_floatarg start, t_floatarg n)
                     thisReal = fabsf (x->x_fftwOutZeroPad[i][0]);
                     thisImag = fabsf (x->x_fftwOutZeroPad[i][1]);
 
-                    if (thisReal>realMax)
+                    if (thisReal > realMax)
                         realMax = thisReal;
 
-                    if (thisImag>imagMax)
+                    if (thisImag > imagMax)
                         imagMax = thisImag;
                 }
 
                 realMax = (realMax == 0.0) ? 1.0 : realMax;
                 imagMax = (imagMax == 0.0) ? 1.0 : imagMax;
 
-                realMax = 1.0/realMax;
-                imagMax = 1.0/imagMax;
+                realMax = 1.0 / realMax;
+                imagMax = 1.0 / imagMax;
             }
 
             for (i = 0; i <= x->x_zeroPadHalf; i++)
             {
                 if (x->x_normalize)
                 {
-                    SETFLOAT (x->x_listOutRealZeroPad+i, x->x_fftwOutZeroPad[i][0]*realMax);
-                    SETFLOAT (x->x_listOutImagZeroPad+i, x->x_fftwOutZeroPad[i][1]*imagMax);
+                    SETFLOAT (x->x_listOutRealZeroPad + i, x->x_fftwOutZeroPad[i][0] * realMax);
+                    SETFLOAT (x->x_listOutImagZeroPad + i, x->x_fftwOutZeroPad[i][1] * imagMax);
                 }
                 else
                 {
-                    SETFLOAT (x->x_listOutRealZeroPad+i, x->x_fftwOutZeroPad[i][0]);
-                    SETFLOAT (x->x_listOutImagZeroPad+i, x->x_fftwOutZeroPad[i][1]);
+                    SETFLOAT (x->x_listOutRealZeroPad + i, x->x_fftwOutZeroPad[i][0]);
+                    SETFLOAT (x->x_listOutImagZeroPad + i, x->x_fftwOutZeroPad[i][1]);
                 }
             }
 
-            outlet_list (x->x_imagOut, 0, x->x_zeroPadHalf+1, x->x_listOutImagZeroPad);
-            outlet_list (x->x_realOut, 0, x->x_zeroPadHalf+1, x->x_listOutRealZeroPad);
+            outlet_list (x->x_imagOut, 0, x->x_zeroPadHalf + 1, x->x_listOutImagZeroPad);
+            outlet_list (x->x_realOut, 0, x->x_zeroPadHalf + 1, x->x_listOutRealZeroPad);
         }
         else
         {
@@ -236,31 +236,31 @@ static void tID_fft_analyze (t_tID_fft* x, t_floatarg start, t_floatarg n)
                     thisReal = fabsf (x->x_fftwOut[i][0]);
                     thisImag = fabsf (x->x_fftwOut[i][1]);
 
-                    if (thisReal>realMax)
+                    if (thisReal > realMax)
                         realMax = thisReal;
 
-                    if (thisImag>imagMax)
+                    if (thisImag > imagMax)
                         imagMax = thisImag;
                 }
 
                 realMax = (realMax == 0.0) ? 1.0 : realMax;
                 imagMax = (imagMax == 0.0) ? 1.0 : imagMax;
 
-                realMax = 1.0/realMax;
-                imagMax = 1.0/imagMax;
+                realMax = 1.0 / realMax;
+                imagMax = 1.0 / imagMax;
             }
 
             for (i = 0; i <= x->x_windowHalf; i++)
             {
                 if (x->x_normalize)
                 {
-                    SETFLOAT (x->x_listOutReal+i, x->x_fftwOut[i][0]*realMax);
-                    SETFLOAT (x->x_listOutImag+i, x->x_fftwOut[i][1]*imagMax);
+                    SETFLOAT (x->x_listOutReal + i, x->x_fftwOut[i][0] * realMax);
+                    SETFLOAT (x->x_listOutImag + i, x->x_fftwOut[i][1] * imagMax);
                 }
                 else
                 {
-                    SETFLOAT (x->x_listOutReal+i, x->x_fftwOut[i][0]);
-                    SETFLOAT (x->x_listOutImag+i, x->x_fftwOut[i][1]);
+                    SETFLOAT (x->x_listOutReal + i, x->x_fftwOut[i][0]);
+                    SETFLOAT (x->x_listOutImag + i, x->x_fftwOut[i][1]);
                 }
             }
 
@@ -311,7 +311,7 @@ static void tID_fft_print (t_tID_fft* x)
     post ("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
     post ("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
 
-    if (x->x_zeroPad>x->x_window)
+    if (x->x_zeroPad > x->x_window)
         post ("%s zero padding size: %i", x->x_objSymbol->s_name, x->x_zeroPad);
     else
         post ("%s zero padding OFF", x->x_objSymbol->s_name);
@@ -375,7 +375,7 @@ static void tID_fft_zeroPad (t_tID_fft* x, t_floatarg z)
     oldZeroPadHalf = x->x_zeroPadHalf;
 
     // if the requested zero pad size is less or equal to current window size, zero pad should be 0 (OFF)
-    z = (z<=x->x_window)?0.0:z;
+    z = (z <= x->x_window) ? 0.0 : z;
     x->x_zeroPad = z;
     x->x_zeroPadHalf = x->x_zeroPad * 0.5;
 
@@ -389,13 +389,13 @@ static void tID_fft_zeroPad (t_tID_fft* x, t_floatarg z)
     fftwf_destroy_plan (x->x_fftwPlanZeroPad);
 
     // allocate new fftwf_complex memory for the plan based on new zero pad size
-    x->x_fftwOutZeroPad = (fftwf_complex *) fftwf_alloc_complex (x->x_zeroPadHalf+1);
+    x->x_fftwOutZeroPad = (fftwf_complex *) fftwf_alloc_complex (x->x_zeroPadHalf + 1);
 
     // create a new DFT plan based on new window size
     x->x_fftwPlanZeroPad = fftwf_plan_dft_r2c_1d (x->x_zeroPad, x->x_fftwInZeroPad, x->x_fftwOutZeroPad, FFTWPLANNERFLAG);
 
-    x->x_listOutRealZeroPad = (t_atom *)t_resizebytes (x->x_listOutRealZeroPad, (oldZeroPadHalf+1) * sizeof (t_atom), (x->x_zeroPadHalf+1) * sizeof (t_atom));
-    x->x_listOutImagZeroPad = (t_atom *)t_resizebytes (x->x_listOutImagZeroPad, (oldZeroPadHalf+1) * sizeof (t_atom), (x->x_zeroPadHalf+1) * sizeof (t_atom));
+    x->x_listOutRealZeroPad = (t_atom *)t_resizebytes (x->x_listOutRealZeroPad, (oldZeroPadHalf + 1) * sizeof (t_atom), (x->x_zeroPadHalf + 1) * sizeof (t_atom));
+    x->x_listOutImagZeroPad = (t_atom *)t_resizebytes (x->x_listOutImagZeroPad, (oldZeroPadHalf + 1) * sizeof (t_atom), (x->x_zeroPadHalf + 1) * sizeof (t_atom));
 
     // we're supposed to initialize the input array after we create the plan
      for (i = 0; i < x->x_zeroPad; i++)
@@ -475,12 +475,12 @@ static void* tID_fft_new (t_symbol* s, int argc, t_atom* argv)
     x->x_fftwInZeroPad = (t_sample *)t_getbytes (x->x_zeroPad * sizeof (t_sample));
     x->x_listOutReal = (t_atom *)t_getbytes ((x->x_windowHalf + 1) * sizeof (t_atom));
     x->x_listOutImag = (t_atom *)t_getbytes ((x->x_windowHalf + 1) * sizeof (t_atom));
-    x->x_listOutRealZeroPad = (t_atom *)t_getbytes ((x->x_zeroPadHalf+1) * sizeof (t_atom));
-    x->x_listOutImagZeroPad = (t_atom *)t_getbytes ((x->x_zeroPadHalf+1) * sizeof (t_atom));
+    x->x_listOutRealZeroPad = (t_atom *)t_getbytes ((x->x_zeroPadHalf + 1) * sizeof (t_atom));
+    x->x_listOutImagZeroPad = (t_atom *)t_getbytes ((x->x_zeroPadHalf + 1) * sizeof (t_atom));
 
     // set up the FFTW output buffer. Is there no function to initialize it?
     x->x_fftwOut = (fftwf_complex *)fftwf_alloc_complex (x->x_windowHalf + 1);
-    x->x_fftwOutZeroPad = (fftwf_complex *)fftwf_alloc_complex (x->x_zeroPadHalf+1);
+    x->x_fftwOutZeroPad = (fftwf_complex *)fftwf_alloc_complex (x->x_zeroPadHalf + 1);
 
     // FFTW plan
     x->x_fftwPlan = fftwf_plan_dft_r2c_1d (x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG); // FFTWPLANNERFLAG may be slower than FFTWPLANNERFLAG but more efficient after the first run?
@@ -509,8 +509,8 @@ static void tID_fft_free (t_tID_fft* x)
     // free the list out memory
     t_freebytes (x->x_listOutReal, (x->x_windowHalf + 1) * sizeof (t_atom));
     t_freebytes (x->x_listOutImag, (x->x_windowHalf + 1) * sizeof (t_atom));
-    t_freebytes (x->x_listOutRealZeroPad, (x->x_zeroPadHalf+1) * sizeof (t_atom));
-    t_freebytes (x->x_listOutImagZeroPad, (x->x_zeroPadHalf+1) * sizeof (t_atom));
+    t_freebytes (x->x_listOutRealZeroPad, (x->x_zeroPadHalf + 1) * sizeof (t_atom));
+    t_freebytes (x->x_listOutImagZeroPad, (x->x_zeroPadHalf + 1) * sizeof (t_atom));
 
     // free FFTW stuff
     t_freebytes (x->x_fftwIn, x->x_window * sizeof (t_sample));

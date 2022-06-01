@@ -130,8 +130,8 @@ static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde* x)
 
             if (thisAmp>=thresh)
             {
-                peakFreqs = (t_float *)t_resizebytes (peakFreqs, numPeaks * sizeof (t_float), (numPeaks+1) * sizeof (t_float));
-                peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks+1) * sizeof (t_float));
+                peakFreqs = (t_float *)t_resizebytes (peakFreqs, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
+                peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
 
                 peakAmps[numPeaks] = thisAmp;
                 peakFreqs[numPeaks] = tIDLib_bin2freq (i, window, x->x_sr);
@@ -157,7 +157,7 @@ static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde* x)
             fund = peakFreqs[0];
     }
 
-    if (fund<x->x_minFund || fund>x->x_maxFund)
+    if (fund < x->x_minFund || fund > x->x_maxFund)
     {
         harmDividend = -numPeaks; // to make harm value  -1.0
         goto earlyExit;
@@ -290,8 +290,8 @@ static void specHarmonicity_tilde_overlap (t_specHarmonicity_tilde* x, t_floatar
 
 static void specHarmonicity_tilde_windowFunction (t_specHarmonicity_tilde* x, t_floatarg f)
 {
-    f = (f<0.0)?0.0:f;
-    f = (f>4.0)?4.0:f;
+    f = (f < 0.0) ? 0.0 : f;
+    f = (f > 4.0) ? 4.0 : f;
     x->x_windowFunction = f;
 
     switch (x->x_windowFunction)
@@ -319,8 +319,8 @@ static void specHarmonicity_tilde_windowFunction (t_specHarmonicity_tilde* x, t_
 
 static void specHarmonicity_tilde_powerSpectrum (t_specHarmonicity_tilde* x, t_floatarg spec)
 {
-    spec = (spec<0.0)?0.0:spec;
-    spec = (spec>1.0)?1.0:spec;
+    spec = (spec < 0.0) ? 0.0 : spec;
+    spec = (spec > 1.0) ? 1.0 : spec;
     x->x_powerSpectrum = spec;
 
     if (x->x_powerSpectrum)
@@ -332,8 +332,8 @@ static void specHarmonicity_tilde_powerSpectrum (t_specHarmonicity_tilde* x, t_f
 
 static void specHarmonicity_tilde_maxPeaks (t_specHarmonicity_tilde* x, t_floatarg max)
 {
-    max = (max<1.0)?1.0:max;
-    max = (max>(x->x_window/4.0))?(x->x_window/4.0):max;
+    max = (max < 1.0) ? 1.0 : max;
+    max = (max > x->x_window / 4.0) ? x->x_window / 4.0 : max;
     x->x_maxPeaks = max;
 
     post ("%s maximum spectral peaks to consider: %i.", x->x_objSymbol->s_name, x->x_maxPeaks);
@@ -342,8 +342,8 @@ static void specHarmonicity_tilde_maxPeaks (t_specHarmonicity_tilde* x, t_floata
 
 static void specHarmonicity_tilde_inputFund (t_specHarmonicity_tilde* x, t_floatarg useFund)
 {
-    useFund = (useFund<0)?0:useFund;
-    useFund = (useFund>1)?1:useFund;
+    useFund = (useFund < 0) ? 0 : useFund;
+    useFund = (useFund > 1) ? 1 : useFund;
     x->x_inputFund = useFund;
 
     if (x->x_inputFund)
@@ -355,8 +355,8 @@ static void specHarmonicity_tilde_inputFund (t_specHarmonicity_tilde* x, t_float
 
 static void specHarmonicity_tilde_peakThresh (t_specHarmonicity_tilde* x, t_floatarg thresh)
 {
-    thresh = (thresh<0.0)?0.0:thresh;
-    thresh = (thresh>100.0)?100.0:thresh;
+    thresh = (thresh < 0.0) ? 0.0 : thresh;
+    thresh = (thresh > 100.0) ? 100.0 : thresh;
     x->x_threshPct = thresh;
 
     post ("%s spectral peak thresh: %0.2f%% of maximum peak amplitude.", x->x_objSymbol->s_name, x->x_threshPct);

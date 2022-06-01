@@ -62,7 +62,7 @@ static void barkSpecFlatness_tilde_bang (t_barkSpecFlatness_tilde* x)
 
     window = x->x_window;
     windowHalf = x->x_windowHalf;
-    numFiltersRecip = 1.0/(double)x->x_numFilters;
+    numFiltersRecip = 1.0 / (double)x->x_numFilters;
 
     currentTime = clock_gettimesince (x->x_lastDspTime);
     bangSample = roundf ((currentTime / 1000.0) * x->x_sr);
@@ -308,8 +308,8 @@ static void barkSpecFlatness_tilde_windowFunction (t_barkSpecFlatness_tilde* x, 
 
 static void barkSpecFlatness_tilde_powerSpectrum (t_barkSpecFlatness_tilde* x, t_floatarg power)
 {
-    power = (power<0)?0:power;
-    power = (power>1)?1:power;
+    power = (power < 0) ? 0 : power;
+    power = (power > 1) ? 1 : power;
     x->x_powerSpectrum = power;
 
     if (x->x_powerSpectrum)

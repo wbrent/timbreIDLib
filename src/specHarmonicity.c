@@ -187,8 +187,8 @@ static void specHarmonicity_analyze (t_specHarmonicity* x, t_floatarg start, t_f
 
                 if (thisAmp>=thresh)
                 {
-                    peakFreqs = (t_float *)t_resizebytes (peakFreqs, numPeaks * sizeof (t_float), (numPeaks+1) * sizeof (t_float));
-                    peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks+1) * sizeof (t_float));
+                    peakFreqs = (t_float *)t_resizebytes (peakFreqs, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
+                    peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
 
                     peakAmps[numPeaks] = thisAmp;
                     peakFreqs[numPeaks] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
@@ -214,7 +214,7 @@ static void specHarmonicity_analyze (t_specHarmonicity* x, t_floatarg start, t_f
                 fund = peakFreqs[0];
         }
 
-        if (fund<x->x_minFund || fund>x->x_maxFund)
+        if (fund < x->x_minFund || fund > x->x_maxFund)
         {
             harmDividend = -numPeaks; // to make harm value  -1.0
             goto earlyExit;
@@ -271,7 +271,7 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity* x, t_symbol* s, in
     t_uShortInt numPeaks;
     t_float fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor, *flagsBuf, minPeakVal, maxPeakVal, thresh, *peakFreqs, *peakAmps;
 
-    // incoming fftData list should be 2*(N/2+1) elements long, so windowHalf is:
+    // incoming fftData list should be 2*(N/2 + 1) elements long, so windowHalf is:
     windowHalf = argc - 2;
     windowHalf *= 0.5;
 
@@ -317,8 +317,8 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity* x, t_symbol* s, in
 
             if (thisAmp>=thresh)
             {
-                peakFreqs = (t_float *)t_resizebytes (peakFreqs, numPeaks * sizeof (t_float), (numPeaks+1) * sizeof (t_float));
-                peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks+1) * sizeof (t_float));
+                peakFreqs = (t_float *)t_resizebytes (peakFreqs, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
+                peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
 
                 peakAmps[numPeaks] = thisAmp;
                 peakFreqs[numPeaks] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
@@ -344,7 +344,7 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity* x, t_symbol* s, in
             fund = peakFreqs[0];
     }
 
-    if (fund<x->x_minFund || fund>x->x_maxFund)
+    if (fund < x->x_minFund || fund > x->x_maxFund)
     {
         harmDividend = -numPeaks; // to make harm value  -1.0
         goto earlyExit;
@@ -400,7 +400,7 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity* x, t_symbol* s, in
     t_uShortInt numPeaks;
     t_float fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor, *flagsBuf, minPeakVal, maxPeakVal, thresh, *peakFreqs, *peakAmps;
 
-    // incoming magSpec list should be N/2+1 elements long, so windowHalf is one less than this
+    // incoming magSpec list should be N/2 + 1 elements long, so windowHalf is one less than this
     windowHalf = argc - 1;
 
     // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
@@ -437,8 +437,8 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity* x, t_symbol* s, in
 
             if (thisAmp>=thresh)
             {
-                peakFreqs = (t_float *)t_resizebytes (peakFreqs, numPeaks * sizeof (t_float), (numPeaks+1) * sizeof (t_float));
-                peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks+1) * sizeof (t_float));
+                peakFreqs = (t_float *)t_resizebytes (peakFreqs, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
+                peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
 
                 peakAmps[numPeaks] = thisAmp;
                 peakFreqs[numPeaks] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
@@ -464,7 +464,7 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity* x, t_symbol* s, in
             fund = peakFreqs[0];
     }
 
-    if (fund<x->x_minFund || fund>x->x_maxFund)
+    if (fund < x->x_minFund || fund > x->x_maxFund)
     {
         harmDividend = -numPeaks; // to make harm value  -1.0
         goto earlyExit;
@@ -626,8 +626,8 @@ static void specHarmonicity_powerSpectrum (t_specHarmonicity* x, t_floatarg spec
 
 static void specHarmonicity_maxPeaks (t_specHarmonicity* x, t_floatarg max)
 {
-    max = (max<1.0)?1.0:max;
-    max = (max>(x->x_window/4.0))?(x->x_window/4.0):max;
+    max = (max < 1.0) ? 1.0 : max;
+    max = (max > x->x_window / 4.0) ? x->x_window / 4.0 : max;
     x->x_maxPeaks = max;
 
     post ("%s maximum spectral peaks to consider: %i.", x->x_objSymbol->s_name, x->x_maxPeaks);
@@ -636,8 +636,8 @@ static void specHarmonicity_maxPeaks (t_specHarmonicity* x, t_floatarg max)
 
 static void specHarmonicity_inputFund (t_specHarmonicity* x, t_floatarg useFund)
 {
-    useFund = (useFund<0)?0:useFund;
-    useFund = (useFund>1)?1:useFund;
+    useFund = (useFund < 0) ? 0 : useFund;
+    useFund = (useFund > 1) ? 1 : useFund;
     x->x_inputFund = useFund;
 
     if (x->x_inputFund)
@@ -649,8 +649,8 @@ static void specHarmonicity_inputFund (t_specHarmonicity* x, t_floatarg useFund)
 
 static void specHarmonicity_peakThresh (t_specHarmonicity* x, t_floatarg thresh)
 {
-    thresh = (thresh<0.0)?0.0:thresh;
-    thresh = (thresh>100.0)?100.0:thresh;
+    thresh = (thresh < 0.0) ? 0.0 : thresh;
+    thresh = (thresh > 100.0) ? 100.0 : thresh;
     x->x_threshPct = thresh;
 
     post ("%s spectral peak thresh: %0.2f%% of maximum peak amplitude.", x->x_objSymbol->s_name, x->x_threshPct);

@@ -361,7 +361,7 @@ static void chroma_tilde_microtune (t_chroma_tilde* x, t_floatarg cents)
 {
     t_uChar i;
 
-    cents = (cents <  -100.0) ?  -100.0 : cents;
+    cents = (cents < -100.0) ? -100.0 : cents;
     cents = (cents > 100.0) ? 100.0 : cents;
 
     x->x_microtune = cents / 100.0;
@@ -529,8 +529,8 @@ static void* chroma_tilde_new (t_symbol* s, int argc, t_atom* argv)
 
     chroma_tilde_freqRange (x, x->x_loFreq, x->x_hiFreq);
 
-    x->x_pitchTolerance = (x->x_pitchTolerance<0)?0:x->x_pitchTolerance;
-    x->x_pitchTolerance = (x->x_pitchTolerance>0.5)?0.5:x->x_pitchTolerance;
+    x->x_pitchTolerance = (x->x_pitchTolerance < 0) ? 0 : x->x_pitchTolerance;
+    x->x_pitchTolerance = (x->x_pitchTolerance > 0.5) ? 0.5 : x->x_pitchTolerance;
     x->x_energyThresh = 0.0;
 
     x->x_windowHalf = x->x_window * 0.5;

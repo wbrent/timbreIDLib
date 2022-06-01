@@ -338,7 +338,7 @@ static void barkSpecSkewness_createFilterbank (t_barkSpecSkewness* x, t_floatarg
     x->x_barkFreqList = (t_float *)t_resizebytes (x->x_barkFreqList, oldNumFilters * sizeof (t_float), x->x_numFilters * sizeof (t_float));
 
      for (i = 0; i < x->x_numFilters; i++)
-        x->x_barkFreqList[i] = i*x->x_barkSpacing;
+        x->x_barkFreqList[i] = i * x->x_barkSpacing;
 }
 
 
@@ -567,7 +567,7 @@ static void* barkSpecSkewness_new (t_symbol* s, int argc, t_atom* argv)
     x->x_barkFreqList = (t_float *)t_getbytes (x->x_numFilters * sizeof (t_float));
 
      for (i = 0; i < x->x_numFilters; i++)
-        x->x_barkFreqList[i] = i*x->x_barkSpacing;
+        x->x_barkFreqList[i] = i * x->x_barkSpacing;
 
     return (x);
 }

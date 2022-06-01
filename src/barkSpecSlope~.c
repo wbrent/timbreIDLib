@@ -189,7 +189,7 @@ static void barkSpecSlope_tilde_hat (t_barkSpecSlope_tilde* x, t_floatarg filt)
 {
     t_filterIdx i, idx;
 
-    idx = (filt<0)?0:filt;
+    idx = (filt < 0) ? 0 : filt;
 
     if (idx >= x->x_numFilters)
         post ("%s filter %i does not exist.", x->x_objSymbol->s_name, idx);

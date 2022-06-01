@@ -189,10 +189,10 @@ static void chroma_analyze (t_chroma* x, t_floatarg start, t_floatarg n)
                 //startpost ("%lu ", x->x_binRanges[j+1]);
 
                 // just in case j+1 is somehow ULONG_MAX, abort
-                if (x->x_binRanges[j+1] == ULONG_MAX)
+                if (x->x_binRanges[j + 1] == ULONG_MAX)
                     break;
 
-                numBins = x->x_binRanges[j+1] - x->x_binRanges[j] + 1;
+                numBins = x->x_binRanges[j + 1] - x->x_binRanges[j] + 1;
 
                 // sum all the energy in the binRange for thisPitch
                 for (k=0; k<numBins; k++)
@@ -216,14 +216,14 @@ static void chroma_analyze (t_chroma* x, t_floatarg start, t_floatarg n)
         }
 
         // safety to make sure we don't get a division by zero
-        maxEnergySum = (maxEnergySum <= 0.0)?1.0:maxEnergySum;
+        maxEnergySum = (maxEnergySum <= 0.0) ? 1.0 : maxEnergySum;
 
         // neutralize maxEnergySum if not normalizing
         if ( !x->x_normalize)
             maxEnergySum = 1.0;
 
         for (i = 0; i < x->x_numChroma; i++)
-            SETFLOAT (x->x_listOut + i, chromaSums[i]/maxEnergySum);
+            SETFLOAT (x->x_listOut + i, chromaSums[i] / maxEnergySum);
 
         outlet_list (x->x_chroma, 0, x->x_numChroma, x->x_listOut);
     }
@@ -278,10 +278,10 @@ static void chroma_chain_fftData (t_chroma* x, t_symbol* s, int argc, t_atom* ar
             //startpost ("%lu ", x->x_binRanges[j+1]);
 
             // just in case j+1 is somehow ULONG_MAX, abort
-            if (x->x_binRanges[j+1] == ULONG_MAX)
+            if (x->x_binRanges[j + 1] == ULONG_MAX)
                 break;
 
-            numBins = x->x_binRanges[j+1] - x->x_binRanges[j] + 1;
+            numBins = x->x_binRanges[j + 1] - x->x_binRanges[j] + 1;
 
             // sum all the energy in the binRange for thisPitch
             for (k=0; k<numBins; k++)
@@ -305,14 +305,14 @@ static void chroma_chain_fftData (t_chroma* x, t_symbol* s, int argc, t_atom* ar
     }
 
     // safety to make sure we don't get a division by zero
-    maxEnergySum = (maxEnergySum <= 0.0)?1.0:maxEnergySum;
+    maxEnergySum = (maxEnergySum <= 0.0) ? 1.0 : maxEnergySum;
 
     // neutralize maxEnergySum if not normalizing
     if ( !x->x_normalize)
         maxEnergySum = 1.0;
 
     for (i = 0; i < x->x_numChroma; i++)
-        SETFLOAT (x->x_listOut + i, chromaSums[i]/maxEnergySum);
+        SETFLOAT (x->x_listOut + i, chromaSums[i] / maxEnergySum);
 
     outlet_list (x->x_chroma, 0, x->x_numChroma, x->x_listOut);
 }
@@ -357,10 +357,10 @@ static void chroma_chain_magSpec (t_chroma* x, t_symbol* s, int argc, t_atom* ar
             //startpost ("%lu ", x->x_binRanges[j+1]);
 
             // just in case j+1 is somehow ULONG_MAX, abort
-            if (x->x_binRanges[j+1] == ULONG_MAX)
+            if (x->x_binRanges[j + 1] == ULONG_MAX)
                 break;
 
-            numBins = x->x_binRanges[j+1] - x->x_binRanges[j] + 1;
+            numBins = x->x_binRanges[j + 1] - x->x_binRanges[j] + 1;
 
             // sum all the energy in the binRange for thisPitch
             for (k=0; k<numBins; k++)
@@ -384,14 +384,14 @@ static void chroma_chain_magSpec (t_chroma* x, t_symbol* s, int argc, t_atom* ar
     }
 
     // safety to make sure we don't get a division by zero
-    maxEnergySum = (maxEnergySum <= 0.0)?1.0:maxEnergySum;
+    maxEnergySum = (maxEnergySum <= 0.0) ? 1.0 : maxEnergySum;
 
     // neutralize maxEnergySum if not normalizing
     if ( !x->x_normalize)
         maxEnergySum = 1.0;
 
     for (i = 0; i < x->x_numChroma; i++)
-        SETFLOAT (x->x_listOut + i, chromaSums[i]/maxEnergySum);
+        SETFLOAT (x->x_listOut + i, chromaSums[i] / maxEnergySum);
 
     outlet_list (x->x_chroma, 0, x->x_numChroma, x->x_listOut);
 }
@@ -530,8 +530,8 @@ static void chroma_normalize (t_chroma* x, t_floatarg norm)
 
 static void chroma_pitchTol (t_chroma* x, t_floatarg tol)
 {
-    tol = (tol<0)?0:tol;
-    tol = (tol>0.5)?0.5:tol;
+    tol = (tol < 0) ? 0 : tol;
+    tol = (tol > 0.5) ? 0.5 : tol;
     x->x_pitchTolerance = tol;
 }
 
@@ -542,13 +542,13 @@ static void chroma_freqRange (t_chroma* x, t_floatarg loFreq, t_floatarg hiFreq)
 
     nyquist = x->x_sr * 0.5;
 
-    loFreq = (loFreq<0)?0:loFreq;
-    loFreq = (loFreq>nyquist)?nyquist:loFreq;
+    loFreq = (loFreq < 0) ? 0 : loFreq;
+    loFreq = (loFreq > nyquist) ? nyquist : loFreq;
 
-    hiFreq = (hiFreq<0)?0:hiFreq;
-    hiFreq = (hiFreq>nyquist)?nyquist:hiFreq;
+    hiFreq = (hiFreq < 0) ? 0 : hiFreq;
+    hiFreq = (hiFreq > nyquist) ? nyquist : hiFreq;
 
-    if (hiFreq<loFreq)
+    if (hiFreq < loFreq)
     {
         t_float tmpFreq;
         tmpFreq = hiFreq;
@@ -563,7 +563,7 @@ static void chroma_freqRange (t_chroma* x, t_floatarg loFreq, t_floatarg hiFreq)
 
 static void chroma_energyThresh (t_chroma* x, t_floatarg thresh)
 {
-    thresh = (thresh<0)?0:thresh;
+    thresh = (thresh < 0) ? 0 : thresh;
     x->x_energyThresh = thresh;
 }
 
@@ -572,10 +572,10 @@ static void chroma_microtune (t_chroma* x, t_floatarg cents)
 {
     t_uChar i;
 
-    cents = (cents <  -100.0)? -100.0:cents;
-    cents = (cents > 100.0)?100.0:cents;
+    cents = (cents < -100.0) ? -100.0 : cents;
+    cents = (cents > 100.0) ? 100.0 : cents;
 
-    x->x_microtune = cents/100.0;
+    x->x_microtune = cents / 100.0;
 
     for (i = 0; i < x->x_numChroma; i++)
         x->x_pitchClasses[i] += x->x_microtune;
@@ -618,7 +618,7 @@ static void chroma_resolution (t_chroma* x, t_symbol* r)
     // beginning of pitch class array starts at lowest C on piano
     basePitch = 24 + x->x_microtune;
 
-    for (i = 0; i < x->x_numChroma-(3/x->x_resolution); i++)
+    for (i = 0; i < x->x_numChroma-(3 / x->x_resolution); i++)
     {
         x->x_pitchClasses[i] = basePitch;
         basePitch += x->x_resolution;
@@ -717,8 +717,8 @@ static void* chroma_new (t_symbol* s, int argc, t_atom* argv)
 
     chroma_freqRange (x, x->x_loFreq, x->x_hiFreq);
 
-    x->x_pitchTolerance = (x->x_pitchTolerance<0)?0:x->x_pitchTolerance;
-    x->x_pitchTolerance = (x->x_pitchTolerance>0.5)?0.5:x->x_pitchTolerance;
+    x->x_pitchTolerance = (x->x_pitchTolerance < 0) ? 0 : x->x_pitchTolerance;
+    x->x_pitchTolerance = (x->x_pitchTolerance > 0.5) ? 0.5 : x->x_pitchTolerance;
     x->x_energyThresh = 0.0;
 
     x->x_window = TID_WINDOWSIZEDEFAULT;

@@ -148,7 +148,7 @@ static void barkSpecSkewness_tilde_createFilterbank (t_barkSpecSkewness_tilde* x
     x->x_barkFreqList = (t_float *)t_resizebytes (x->x_barkFreqList, oldNumFilters * sizeof (t_float), x->x_numFilters * sizeof (t_float));
 
      for (i = 0; i < x->x_numFilters; i++)
-        x->x_barkFreqList[i] = i*x->x_barkSpacing;
+        x->x_barkFreqList[i] = i * x->x_barkSpacing;
 }
 
 
@@ -291,8 +291,8 @@ static void barkSpecSkewness_tilde_windowFunction (t_barkSpecSkewness_tilde* x, 
 
 static void barkSpecSkewness_tilde_powerSpectrum (t_barkSpecSkewness_tilde* x, t_floatarg power)
 {
-    power = (power<0)?0:power;
-    power = (power>1)?1:power;
+    power = (power < 0) ? 0 : power;
+    power = (power > 1) ? 1 : power;
     x->x_powerSpectrum = power;
 
     if (x->x_powerSpectrum)
@@ -406,7 +406,7 @@ static void* barkSpecSkewness_tilde_new (t_symbol* s, int argc, t_atom* argv)
     x->x_barkFreqList = (t_float *)t_getbytes (x->x_numFilters * sizeof (t_float));
 
      for (i = 0; i < x->x_numFilters; i++)
-        x->x_barkFreqList[i] = i*x->x_barkSpacing;
+        x->x_barkFreqList[i] = i * x->x_barkSpacing;
 
     return (x);
 }

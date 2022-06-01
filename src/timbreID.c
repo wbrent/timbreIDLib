@@ -154,7 +154,7 @@ static t_float timbreID_getInputDist (t_timbreID* x, t_instanceIdx instanceID)
         t_attributeIdx thisAttribute;
         thisAttribute = x->x_attributeData[i].order;
 
-        if (thisAttribute>x->x_instances[instanceID].length)
+        if (thisAttribute > x->x_instances[instanceID].length)
         {
             pd_error (x, "%s: attribute %i out of range for database instance %i.", x->x_objSymbol->s_name, thisAttribute, instanceID);
 
@@ -1042,7 +1042,7 @@ static void timbreID_manualCluster (t_timbreID* x, t_floatarg numClusters, t_flo
         t_freebytes (x->x_clusters[clusterIdxInt].members, x->x_clusters[clusterIdxInt].numMembers * sizeof (t_instanceIdx));
 
         // update the .numMembers value
-        x->x_clusters[clusterIdxInt].numMembers = numMembers+1; // +1 for the terminating UINT_MAX
+        x->x_clusters[clusterIdxInt].numMembers = numMembers + 1; // +1 for the terminating UINT_MAX
 
         // get new memory for this cluster's members
         x->x_clusters[clusterIdxInt].members = (t_instanceIdx *)t_getbytes (x->x_clusters[clusterIdxInt].numMembers * sizeof (t_instanceIdx));
@@ -1675,7 +1675,7 @@ static void timbreID_attributeOrder (t_timbreID* x, t_symbol* s, int argc, t_ato
     {
         x->x_attributeData[i].order = atom_getfloat (argv + i);
 
-        if (x->x_attributeData[i].order>x->x_maxFeatureLength - 1)
+        if (x->x_attributeData[i].order > x->x_maxFeatureLength - 1)
         {
             // initialize attributeOrder
             for (j = 0; j < x->x_maxFeatureLength; j++)
