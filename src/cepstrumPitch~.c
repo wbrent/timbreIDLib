@@ -496,7 +496,7 @@ static void* cepstrumPitch_tilde_new (t_symbol* s, int argc, t_atom* argv)
 }
 
 
-static t_int *cepstrumPitch_tilde_perform (t_int *w)
+static t_int* cepstrumPitch_tilde_perform (t_int* w)
 {
     t_uShortInt n;
     t_sampIdx i;
@@ -520,7 +520,7 @@ static t_int *cepstrumPitch_tilde_perform (t_int *w)
 }
 
 
-static void cepstrumPitch_tilde_dsp (t_cepstrumPitch_tilde* x, t_signal **sp)
+static void cepstrumPitch_tilde_dsp (t_cepstrumPitch_tilde* x, t_signal** sp)
 {
     dsp_add (
         cepstrumPitch_tilde_perform,

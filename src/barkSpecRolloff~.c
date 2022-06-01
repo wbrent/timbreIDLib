@@ -465,7 +465,7 @@ static void* barkSpecRolloff_tilde_new (t_symbol* s, int argc, t_atom* argv)
 }
 
 
-static t_int *barkSpecRolloff_tilde_perform (t_int *w)
+static t_int* barkSpecRolloff_tilde_perform (t_int* w)
 {
     t_uShortInt n;
     t_sampIdx i;
@@ -489,7 +489,7 @@ static t_int *barkSpecRolloff_tilde_perform (t_int *w)
 }
 
 
-static void barkSpecRolloff_tilde_dsp (t_barkSpecRolloff_tilde* x, t_signal **sp)
+static void barkSpecRolloff_tilde_dsp (t_barkSpecRolloff_tilde* x, t_signal** sp)
 {
     dsp_add (
         barkSpecRolloff_tilde_perform,

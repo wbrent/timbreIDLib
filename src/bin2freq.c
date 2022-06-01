@@ -30,7 +30,7 @@ typedef struct _bin2freq
 /* ------------------------ bin2freq -------------------------------- */
 static void bin2freq_calculate (t_bin2freq* x, t_float bin)
 {
-    if (bin>=0.0 && bin<x->x_n)
+    if (bin >= 0.0 && bin < x->x_n)
     {
         t_float freq;
 

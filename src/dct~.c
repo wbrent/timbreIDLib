@@ -167,7 +167,7 @@ static void dct_tilde_window (t_dct_tilde* x, t_floatarg w)
 static void dct_tilde_overlap (t_dct_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
-    x->x_overlap = (o<1.0)?1.0:o;
+    x->x_overlap = (o < 1.0) ? 1.0 : o;
 
     post ("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
 }
@@ -286,7 +286,7 @@ static void* dct_tilde_new (t_symbol* s, int argc, t_atom* argv)
 }
 
 
-static t_int *dct_tilde_perform (t_int *w)
+static t_int* dct_tilde_perform (t_int* w)
 {
     t_uShortInt n;
     t_sampIdx i;
@@ -310,7 +310,7 @@ static t_int *dct_tilde_perform (t_int *w)
 }
 
 
-static void dct_tilde_dsp (t_dct_tilde* x, t_signal **sp)
+static void dct_tilde_dsp (t_dct_tilde* x, t_signal** sp)
 {
     dsp_add (
         dct_tilde_perform,

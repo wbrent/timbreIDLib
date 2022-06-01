@@ -884,7 +884,7 @@ static void* tempo_tilde_new (t_symbol* s, int argc, t_atom* argv)
 }
 
 
-static t_int *tempo_tilde_perform (t_int *w)
+static t_int* tempo_tilde_perform (t_int* w)
 {
     t_uShortInt n;
     t_sampIdx i;
@@ -916,7 +916,7 @@ static t_int *tempo_tilde_perform (t_int *w)
 }
 
 
-static void tempo_tilde_dsp (t_tempo_tilde* x, t_signal **sp)
+static void tempo_tilde_dsp (t_tempo_tilde* x, t_signal** sp)
 {
     dsp_add (
         tempo_tilde_perform,

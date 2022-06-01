@@ -34,7 +34,7 @@ static void freq2bin_calculate (t_freq2bin* x, t_float f)
 
     freq = f;
 
-    if (freq>=0.0 && freq<x->x_sr)
+    if (freq >= 0.0 && freq < x->x_sr)
     {
         t_float bin;
 

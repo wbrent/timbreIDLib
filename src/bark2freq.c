@@ -35,7 +35,7 @@ static void bark2freq_calculate (t_bark2freq* x, t_float b)
 
     bark = b;
 
-    if (bark>=0.0 && bark<=TID_MAXBARKS)
+    if (bark >= 0.0 && bark <= TID_MAXBARKS)
     {
         t_float freq;
 

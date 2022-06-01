@@ -171,7 +171,7 @@ static void* minSample_tilde_new (t_symbol* s, int argc, t_atom* argv)
 }
 
 
-static t_int *minSample_tilde_perform (t_int *w)
+static t_int* minSample_tilde_perform (t_int* w)
 {
     t_uShortInt n;
     t_sampIdx i;
@@ -195,7 +195,7 @@ static t_int *minSample_tilde_perform (t_int *w)
 }
 
 
-static void minSample_tilde_dsp (t_minSample_tilde* x, t_signal **sp)
+static void minSample_tilde_dsp (t_minSample_tilde* x, t_signal** sp)
 {
     dsp_add (
         minSample_tilde_perform,

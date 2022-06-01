@@ -53,11 +53,11 @@ static void binWrangler_accum (t_binWrangler* x, t_symbol* s, int argc, t_atom* 
 
         for (i = 0; i < x->x_featureLength; i++)
             for (count = 0, j = x->x_numFrames - x->x_currentFrame; count < x->x_numFrames; count++, j++)
-                SETFLOAT (x->x_listOut+(i*x->x_numFrames)+(j%x->x_numFrames), x->x_instances[count].data[i]);
+                SETFLOAT (x->x_listOut + (i * x->x_numFrames) + (j % x->x_numFrames), x->x_instances[count].data[i]);
 
         outlet_list (x->x_binList, 0, totalbins, x->x_listOut);
 
-        x->x_currentFrame = (x->x_currentFrame == x->x_numFrames)?0:x->x_currentFrame;
+        x->x_currentFrame = (x->x_currentFrame == x->x_numFrames) ? 0 : x->x_currentFrame;
     }
 }
 
@@ -99,7 +99,7 @@ static void binWrangler_numFrames (t_binWrangler* x, t_float num)
 
     num = (num < 1) ? 1 : num;
 
-    x->x_listOut = (t_atom *)t_resizebytes (x->x_listOut, x->x_featureLength * x->x_numFrames * sizeof (t_atom), (x->x_featureLength*num) * sizeof (t_atom));
+    x->x_listOut = (t_atom *)t_resizebytes (x->x_listOut, x->x_featureLength * x->x_numFrames * sizeof (t_atom), (x->x_featureLength * num) * sizeof (t_atom));
 
     // free the database memory
     for (i = 0; i < x->x_numFrames; i++)
@@ -129,7 +129,7 @@ static void binWrangler_length (t_binWrangler* x, t_float len)
 
     len = (len < 1) ? 1 : len;
 
-    x->x_listOut = (t_atom *)t_resizebytes (x->x_listOut, x->x_featureLength * x->x_numFrames * sizeof (t_atom), (len*x->x_numFrames) * sizeof (t_atom));
+    x->x_listOut = (t_atom *)t_resizebytes (x->x_listOut, x->x_featureLength * x->x_numFrames * sizeof (t_atom), (len * x->x_numFrames) * sizeof (t_atom));
 
     // free the database memory
     for (i = 0; i < x->x_numFrames; i++)
@@ -169,7 +169,7 @@ static void* binWrangler_new (t_float numFrames, t_float length, t_float spew)
 
     x->x_objSymbol = gensym ("binWrangler");
 
-    length = (length<1)?1:length;
+    length = (length < 1) ? 1 : length;
     x->x_featureLength = length;
     numFrames = (numFrames < 1) ? 1 : numFrames;
     x->x_numFrames = numFrames;

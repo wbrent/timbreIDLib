@@ -310,7 +310,7 @@ static void* specKurtosis_tilde_new (t_symbol* s, int argc, t_atom* argv)
 }
 
 
-static t_int *specKurtosis_tilde_perform (t_int *w)
+static t_int* specKurtosis_tilde_perform (t_int* w)
 {
     t_uShortInt n;
     t_sampIdx i;
@@ -334,7 +334,7 @@ static t_int *specKurtosis_tilde_perform (t_int *w)
 }
 
 
-static void specKurtosis_tilde_dsp (t_specKurtosis_tilde* x, t_signal **sp)
+static void specKurtosis_tilde_dsp (t_specKurtosis_tilde* x, t_signal** sp)
 {
     dsp_add (
         specKurtosis_tilde_perform,

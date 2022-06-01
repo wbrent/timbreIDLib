@@ -44,7 +44,7 @@ static void nearestPoint_add (t_nearestPoint* x, t_symbol* s, int argc, t_atom* 
 
     if (dimensions == x->x_dimensions)
     {
-        x->x_instances = (t_instance *)t_resizebytes (x->x_instances, x->x_numInstances * sizeof (t_instance), (x->x_numInstances+1) * sizeof (t_instance));
+        x->x_instances = (t_instance *)t_resizebytes (x->x_instances, x->x_numInstances * sizeof (t_instance), (x->x_numInstances + 1) * sizeof (t_instance));
 
         x->x_instances[pointIdx].data = (t_float *)t_getbytes (dimensions * sizeof (t_float));
 
@@ -128,8 +128,8 @@ static void nearestPoint_dimensions (t_nearestPoint* x, t_floatarg dim)
 
 static void nearestPoint_num_matches (t_nearestPoint* x, t_floatarg n)
 {
-    n = (n>x->x_numInstances)?x->x_numInstances:n;
-    n = (n<1)?1:n;
+    n = (n > x->x_numInstances) ? x->x_numInstances : n;
+    n = (n < 1) ? 1 : n;
 
     x->x_numMatches = n;
 

@@ -114,7 +114,7 @@ static void bark_create_loudness_weighting (t_bark* x)
         // this doesn't have to be if/else'd into a greater/less situation.  later on i should write a more general interpolation solution, and maybe move it up to 4 points instead.
         if (barkFreqs[i]>nearFreq)
         {
-            if (nearIdx<=TID_NUMWEIGHTPOINTS-2)
+            if (nearIdx <= TID_NUMWEIGHTPOINTS-2)
             {
                 diffFreq = (barkFreqs[i] - nearFreq)/(bark_weights_freqs[nearIdx+1] - nearFreq);
                 diffdB = diffFreq * (bark_weights_dB[nearIdx+1] - bark_weights_dB[nearIdx]);

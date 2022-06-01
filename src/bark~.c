@@ -118,7 +118,7 @@ static void bark_tilde_create_loudness_weighting (t_bark_tilde* x)
         // this doesn't have to be if/else'd into a greater/less situation.  later on i should write a more general interpolation solution, and maybe move it up to 4 points instead.
         if (barkFreqs[i]>nearFreq)
         {
-            if (nearIdx<=TID_NUMWEIGHTPOINTS-2)
+            if (nearIdx <= TID_NUMWEIGHTPOINTS-2)
             {
                 diffFreq = (barkFreqs[i] - nearFreq)/(bark_tilde_weights_freqs[nearIdx+1] - nearFreq);
                 diffdB = diffFreq * (bark_tilde_weights_dB[nearIdx+1] - bark_tilde_weights_dB[nearIdx]);
@@ -580,7 +580,7 @@ static void* bark_tilde_new (t_symbol* s, int argc, t_atom* argv)
 }
 
 
-static t_int *bark_tilde_perform (t_int *w)
+static t_int* bark_tilde_perform (t_int* w)
 {
     t_uShortInt n;
     t_sampIdx i, window, windowHalf;
@@ -758,7 +758,7 @@ static t_int *bark_tilde_perform (t_int *w)
 }
 
 
-static void bark_tilde_dsp (t_bark_tilde* x, t_signal **sp)
+static void bark_tilde_dsp (t_bark_tilde* x, t_signal** sp)
 {
     dsp_add (
         bark_tilde_perform,

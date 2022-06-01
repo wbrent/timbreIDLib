@@ -83,8 +83,7 @@ static void featureAccum_free (t_featureAccum* x)
         t_freebytes (x->x_instances[i].data, x->x_featureLength * sizeof (float));
 
     // free the database memory itself
-    t_freebytes (x->x_instances, x->x_numFrames + 1 * sizeof (t_instance));
-
+    t_freebytes (x->x_instances, (x->x_numFrames + 1) * sizeof (t_instance));
 }
 
 static void featureAccum_sum (t_featureAccum* x)
@@ -146,7 +145,7 @@ static void featureAccum_accum (t_featureAccum* x, t_symbol* s, int argc, t_atom
 
                 for (count = 0, i = x->x_numFrames - x->x_concatCurrentFrame; count < x->x_numFrames; count++, i++)
                     for (j = 0; j < x->x_featureLength; j++)
-                        SETFLOAT (x->x_listOut+((i % x->x_numFrames) * x->x_featureLength) + j, x->x_instances[count].data[j]);
+                        SETFLOAT (x->x_listOut + ((i % x->x_numFrames) * x->x_featureLength) + j, x->x_instances[count].data[j]);
 
                 outlet_list (x->x_featureList, 0, totalFeat, x->x_listOut);
                 // reset currentFrame if we've hit numFrames only

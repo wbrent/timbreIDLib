@@ -34,7 +34,7 @@ static void freq2mel_calculate (t_freq2mel* x, t_float f)
 
     freq = f;
 
-    if (freq>=0.0 && freq<=TID_MAXMELFREQ)
+    if (freq >= 0.0 && freq <= TID_MAXMELFREQ)
     {
         t_float melFreq;
 
