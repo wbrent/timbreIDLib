@@ -106,7 +106,8 @@ static void barkSpecSlope_analyze (t_barkSpecSlope* x, t_floatarg start, t_float
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float slope, *windowFuncPtr;
+        t_float slope;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 

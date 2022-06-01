@@ -54,7 +54,11 @@ typedef struct _specHarmonicity_tilde
 static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float* windowFuncPtr, *flagsBuf, *peakFreqs, *peakAmps, minPeakVal, maxPeakVal, thresh, fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor;
+    t_float* windowFuncPtr;
+    t_float* flagsBuf;
+    t_float* peakFreqs;
+    t_float* peakAmps;
+    t_float minPeakVal, maxPeakVal, thresh, fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor;
     t_uShortInt numPeaks;
     double currentTime;
 

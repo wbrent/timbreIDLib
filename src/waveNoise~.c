@@ -40,7 +40,8 @@ typedef struct _waveNoise_tilde
 static void waveNoise_tilde_bang (t_waveNoise_tilde* x)
 {
     t_sampIdx i, j, window, bangSample;
-    t_float changes, *flagsBuf, minVal, maxVal;
+    t_float changes, minVal, maxVal;
+    t_float* flagsBuf;
     double currentTime;
 
     window = x->x_window;

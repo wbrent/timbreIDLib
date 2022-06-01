@@ -44,7 +44,8 @@ static void waveNoise_analyze (t_waveNoise* x, t_floatarg start, t_floatarg n)
     else
     {
         t_sampIdx i, j, oldWindow, window, startSamp, endSamp;
-        t_float changes, *flagsBuf, minVal, maxVal;
+        t_float changes, minVal, maxVal;
+        t_float* flagsBuf;
 
         startSamp = (start < 0) ? 0 : start;
 

@@ -120,7 +120,10 @@ static void tempo_tilde_analyze (t_tempo_tilde* x)
     t_sInt periodIdx;
     t_uInt onsetBufferShiftedSize;
     t_uLongInt modeCount;
-    t_float growth, tempo, tempoMode, tempoConf, peakSlope, *windowFuncPtr, *onsetsBufferShifted, *yValues, maxYValue;
+    t_float* windowFuncPtr;
+    t_float* onsetsBufferShifted;
+    t_float* yValues;
+    t_float growth, tempo, tempoMode, tempoConf, peakSlope, maxYValue;
     t_bool hpsFlag;
 
 

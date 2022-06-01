@@ -65,7 +65,8 @@ typedef struct _barkSpecFlux_tilde
 static void barkSpecFlux_tilde_bang (t_barkSpecFlux_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float flux, *windowFuncPtr;
+    t_float flux;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

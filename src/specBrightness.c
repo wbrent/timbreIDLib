@@ -102,7 +102,8 @@ static void specBrightness_analyze (t_specBrightness* x, t_floatarg start, t_flo
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float dividend, divisor, brightness, *windowFuncPtr;
+        t_float dividend, divisor, brightness;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 

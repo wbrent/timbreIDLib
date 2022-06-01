@@ -96,7 +96,8 @@ static void cepstrum_resizeWindow (t_cepstrum* x, t_sampIdx oldWindow, t_sampIdx
 static void cepstrum_analyze (t_cepstrum* x, t_floatarg start, t_floatarg n)
 {
     t_sampIdx i, j, window, startSamp, endSamp;
-    t_float nRecip, *windowFuncPtr;
+    t_float nRecip;
+    t_float* windowFuncPtr;
     t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))

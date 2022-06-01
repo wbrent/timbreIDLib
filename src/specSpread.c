@@ -100,7 +100,8 @@ static void specSpread_analyze (t_specSpread* x, t_floatarg start, t_floatarg n)
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float energySum, centroid, spread, *windowFuncPtr;
+        t_float energySum, centroid, spread;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 

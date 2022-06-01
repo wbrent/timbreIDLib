@@ -49,7 +49,8 @@ typedef struct _specSpread_tilde
 static void specSpread_tilde_bang (t_specSpread_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float energySum, centroid, spread, *windowFuncPtr;
+    t_float energySum, centroid, spread;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

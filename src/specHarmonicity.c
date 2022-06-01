@@ -102,7 +102,11 @@ static void specHarmonicity_analyze (t_specHarmonicity* x, t_floatarg start, t_f
     {
         t_sampIdx i, j, window, startSamp, endSamp;
         t_uShortInt numPeaks;
-        t_float* windowFuncPtr, fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor, *flagsBuf, minPeakVal, maxPeakVal, thresh, *peakFreqs, *peakAmps;
+        t_float* windowFuncPtr;
+        t_float* flagsBuf;
+        t_float* peakFreqs;
+        t_float* peakAmps;
+        t_float fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor, minPeakVal, maxPeakVal, thresh;
 
         startSamp = (start < 0) ? 0 : start;
 
@@ -269,7 +273,10 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity* x, t_symbol* s, in
 {
     t_sampIdx i, windowHalf;
     t_uShortInt numPeaks;
-    t_float fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor, *flagsBuf, minPeakVal, maxPeakVal, thresh, *peakFreqs, *peakAmps;
+    t_float fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor, minPeakVal, maxPeakVal, thresh;
+    t_float* flagsBuf;
+    t_float* peakFreqs;
+    t_float* peakAmps;
 
     // incoming fftData list should be 2*(N/2 + 1) elements long, so windowHalf is:
     windowHalf = argc - 2;
@@ -398,7 +405,10 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity* x, t_symbol* s, in
 {
     t_sampIdx i, windowHalf;
     t_uShortInt numPeaks;
-    t_float fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor, *flagsBuf, minPeakVal, maxPeakVal, thresh, *peakFreqs, *peakAmps;
+    t_float fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor, minPeakVal, maxPeakVal, thresh;
+    t_float* flagsBuf;
+    t_float* peakFreqs;
+    t_float* peakAmps;
 
     // incoming magSpec list should be N/2 + 1 elements long, so windowHalf is one less than this
     windowHalf = argc - 1;

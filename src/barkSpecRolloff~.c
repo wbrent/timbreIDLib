@@ -57,7 +57,8 @@ typedef struct _barkSpecRolloff_tilde
 static void barkSpecRolloff_tilde_bang (t_barkSpecRolloff_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float energyTarget, energySum, rolloff, *windowFuncPtr;
+    t_float energyTarget, energySum, rolloff;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

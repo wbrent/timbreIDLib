@@ -94,7 +94,8 @@ typedef struct _bark_tilde
 static void bark_tilde_create_loudness_weighting (t_bark_tilde* x)
 {
     t_filterIdx i;
-    t_float barkSum, *barkFreqs;
+    t_float barkSum;
+    t_float* barkFreqs;
 
     barkFreqs = (t_float *)t_getbytes (x->x_numFilters * sizeof (t_float));
 
@@ -584,7 +585,8 @@ static t_int* bark_tilde_perform (t_int* w)
 {
     t_uShortInt n;
     t_sampIdx i, window, windowHalf;
-    t_float totalGrowth, totalVel, *windowFuncPtr;
+    t_float totalGrowth, totalVel;
+    t_float* windowFuncPtr;
 
     t_bark_tilde* x = (t_bark_tilde *)(w[1]);
 

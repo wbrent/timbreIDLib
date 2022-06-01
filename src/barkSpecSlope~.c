@@ -56,7 +56,8 @@ typedef struct _barkSpecSlope_tilde
 static void barkSpecSlope_tilde_bang (t_barkSpecSlope_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float slope, *windowFuncPtr;
+    t_float slope;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

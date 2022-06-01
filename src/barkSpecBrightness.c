@@ -101,7 +101,8 @@ static void barkSpecBrightness_resizeWindow (t_barkSpecBrightness* x, t_sampIdx 
 static void barkSpecBrightness_analyze (t_barkSpecBrightness* x, t_floatarg start, t_floatarg n)
 {
     t_sampIdx i, j, window, startSamp, endSamp;
-    t_float dividend, divisor, brightness, *windowFuncPtr;
+    t_float dividend, divisor, brightness;
+    t_float* windowFuncPtr;
     t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))

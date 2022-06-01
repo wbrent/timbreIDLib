@@ -95,7 +95,8 @@ static void specSlope_analyze (t_specSlope* x, t_floatarg start, t_floatarg n)
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float slope, *windowFuncPtr;
+        t_float slope;
+        t_float* windowFuncPtr;
 
         startSamp = start;
         startSamp = (start < 0) ? 0 : start;

@@ -98,7 +98,8 @@ static void barkSpecCentroid_resizeWindow (t_barkSpecCentroid* x, t_sampIdx oldW
 static void barkSpecCentroid_analyze (t_barkSpecCentroid* x, t_floatarg start, t_floatarg n)
 {
     t_sampIdx i, j, window, startSamp, endSamp;
-    t_float energySum, centroid, *windowFuncPtr;
+    t_float energySum, centroid;
+    t_float* windowFuncPtr;
     t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))

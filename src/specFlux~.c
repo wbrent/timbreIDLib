@@ -58,7 +58,8 @@ typedef struct _specFlux_tilde
 static void specFlux_tilde_bang (t_specFlux_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float flux, *windowFuncPtr;
+    t_float flux;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

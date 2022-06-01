@@ -49,7 +49,8 @@ typedef struct _specSlope_tilde
 static void specSlope_tilde_bang (t_specSlope_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float slope, *windowFuncPtr;
+    t_float slope;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

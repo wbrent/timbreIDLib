@@ -100,7 +100,8 @@ static void specSkewness_analyze (t_specSkewness* x, t_floatarg start, t_floatar
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float energySum, centroid, spread, skewness, *windowFuncPtr;
+        t_float energySum, centroid, spread, skewness;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 

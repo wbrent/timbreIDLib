@@ -125,7 +125,8 @@ static void barkSpecFlux_resizeWindow (t_barkSpecFlux* x, t_sampIdx oldWindow, t
 static void barkSpecFlux_analyze (t_barkSpecFlux* x, t_floatarg start, t_floatarg n)
 {
     t_sampIdx i, j, window, startSamp, endSamp, startSampBack, endSampBack;
-    t_float flux, *windowFuncPtr;
+    t_float flux;
+    t_float* windowFuncPtr;
     t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))

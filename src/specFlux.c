@@ -127,7 +127,8 @@ static void specFlux_analyze (t_specFlux* x, t_floatarg start, t_floatarg n)
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp, startSampBack, endSampBack;
-        t_float flux, *windowFuncPtr;
+        t_float flux;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 

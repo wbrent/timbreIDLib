@@ -56,7 +56,8 @@ typedef struct _barkSpecSpread_tilde
 static void barkSpecSpread_tilde_bang (t_barkSpecSpread_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float energySum, centroid, spread, *windowFuncPtr;
+    t_float energySum, centroid, spread;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

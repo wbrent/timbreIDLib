@@ -56,7 +56,8 @@ typedef struct _barkSpecKurtosis_tilde
 static void barkSpecKurtosis_tilde_bang (t_barkSpecKurtosis_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float energySum, centroid, spread, kurtosis, *windowFuncPtr;
+    t_float energySum, centroid, spread, kurtosis;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

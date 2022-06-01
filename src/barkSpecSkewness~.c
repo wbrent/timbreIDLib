@@ -56,7 +56,8 @@ typedef struct _barkSpecSkewness_tilde
 static void barkSpecSkewness_tilde_bang (t_barkSpecSkewness_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float energySum, centroid, spread, skewness, *windowFuncPtr;
+    t_float energySum, centroid, spread, skewness;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

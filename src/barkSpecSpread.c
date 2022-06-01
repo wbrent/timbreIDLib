@@ -106,7 +106,8 @@ static void barkSpecSpread_analyze (t_barkSpecSpread* x, t_floatarg start, t_flo
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float energySum, centroid, spread, *windowFuncPtr;
+        t_float energySum, centroid, spread;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 

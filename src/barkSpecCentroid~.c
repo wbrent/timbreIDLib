@@ -56,7 +56,8 @@ typedef struct _barkSpecCentroid_tilde
 static void barkSpecCentroid_tilde_bang (t_barkSpecCentroid_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float energySum, centroid, *windowFuncPtr;
+    t_float energySum, centroid;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

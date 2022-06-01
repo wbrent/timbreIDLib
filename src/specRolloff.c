@@ -101,7 +101,8 @@ static void specRolloff_analyze (t_specRolloff* x, t_floatarg start, t_floatarg 
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float energyTarget, energySum, rolloff, *windowFuncPtr;
+        t_float energyTarget, energySum, rolloff;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 

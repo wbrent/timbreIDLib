@@ -100,7 +100,8 @@ static void specCentroid_analyze (t_specCentroid* x, t_floatarg start, t_floatar
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float energySum, centroid, *windowFuncPtr;
+        t_float energySum, centroid;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 

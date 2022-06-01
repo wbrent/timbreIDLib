@@ -49,7 +49,8 @@ typedef struct _specCentroid_tilde
 static void specCentroid_tilde_bang (t_specCentroid_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float energySum, centroid, *windowFuncPtr;
+    t_float energySum, centroid;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

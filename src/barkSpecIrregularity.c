@@ -113,7 +113,8 @@ static void barkSpecIrregularity_analyze (t_barkSpecIrregularity* x, t_floatarg 
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float divisor, irregularity, *windowFuncPtr;
+        t_float divisor, irregularity;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 

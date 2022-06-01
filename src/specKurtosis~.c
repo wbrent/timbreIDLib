@@ -49,7 +49,8 @@ typedef struct _specKurtosis_tilde
 static void specKurtosis_tilde_bang (t_specKurtosis_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float energySum, centroid, spread, kurtosis, *windowFuncPtr;
+    t_float energySum, centroid, spread, kurtosis;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

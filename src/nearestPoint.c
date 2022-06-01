@@ -60,7 +60,10 @@ static void nearestPoint_add (t_nearestPoint* x, t_symbol* s, int argc, t_atom* 
 
 static void nearestPoint_nearest (t_nearestPoint* x, t_symbol* s, int argc, t_atom* argv)
 {
-    t_float dist, *inputBuffer, *instanceBuffer, *weights;
+    t_float dist;
+    t_float* inputBuffer;
+    t_float* instanceBuffer;
+    t_float* weights;
     t_attributeIdx j, dimensions;
     t_instanceIdx i;
 

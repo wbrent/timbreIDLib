@@ -98,7 +98,8 @@ static void barkSpecKurtosis_resizeWindow (t_barkSpecKurtosis* x, t_sampIdx oldW
 static void barkSpecKurtosis_analyze (t_barkSpecKurtosis* x, t_floatarg start, t_floatarg n)
 {
     t_sampIdx i, j, window, startSamp, endSamp;
-    t_float energySum, centroid, spread, kurtosis, *windowFuncPtr;
+    t_float energySum, centroid, spread, kurtosis;
+    t_float* windowFuncPtr;
     t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))

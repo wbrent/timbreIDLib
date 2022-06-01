@@ -50,7 +50,8 @@ typedef struct _specBrightness_tilde
 static void specBrightness_tilde_bang (t_specBrightness_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float dividend, divisor, brightness, *windowFuncPtr;
+    t_float dividend, divisor, brightness;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

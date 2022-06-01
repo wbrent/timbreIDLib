@@ -63,7 +63,8 @@ typedef struct _barkSpecIrregularity_tilde
 static void barkSpecIrregularity_tilde_bang (t_barkSpecIrregularity_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float divisor, irregularity, *windowFuncPtr;
+    t_float divisor, irregularity;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;

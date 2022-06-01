@@ -106,7 +106,8 @@ static void barkSpecSkewness_analyze (t_barkSpecSkewness* x, t_floatarg start, t
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float energySum, centroid, spread, skewness, *windowFuncPtr;
+        t_float energySum, centroid, spread, skewness;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 

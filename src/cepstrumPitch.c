@@ -95,7 +95,8 @@ static void cepstrumPitch_analyze (t_cepstrumPitch* x, t_floatarg start, t_float
 {
     t_sampIdx i, j, binCount, window, startSamp, endSamp;
     t_binIdx loFreqBin, hiFreqBin, maxValIdx;
-    t_float nRecip, *windowFuncPtr, maxVal, pitch, loFreqBinFloat, hiFreqBinFloat, mean, std, sum;
+    t_float nRecip, maxVal, pitch, loFreqBinFloat, hiFreqBinFloat, mean, std, sum;
+    t_float* windowFuncPtr;
     t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))

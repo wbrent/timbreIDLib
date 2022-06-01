@@ -90,7 +90,8 @@ typedef struct _bark
 static void bark_create_loudness_weighting (t_bark* x)
 {
     t_filterIdx i;
-    t_float barkSum, *barkFreqs;
+    t_float barkSum;
+    t_float* barkFreqs;
 
     barkFreqs = (t_float *)t_getbytes (x->x_numFilters * sizeof (t_float));
 
@@ -632,7 +633,8 @@ static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
     else
     {
         t_sampIdx i, j, window, windowHalf, hop, nFrames, frame, sampRange, startSamp, endSamp;
-        t_float totalGrowth, totalVel, *windowFuncPtr;
+        t_float totalGrowth, totalVel;
+        t_float* windowFuncPtr;
 
         nFrames = 0;
 

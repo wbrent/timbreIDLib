@@ -100,7 +100,8 @@ static void specKurtosis_analyze (t_specKurtosis* x, t_floatarg start, t_floatar
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float energySum, centroid, spread, kurtosis, *windowFuncPtr;
+        t_float energySum, centroid, spread, kurtosis;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 

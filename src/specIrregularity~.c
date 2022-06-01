@@ -56,7 +56,8 @@ typedef struct _specIrregularity_tilde
 static void specIrregularity_tilde_bang (t_specIrregularity_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float divisor, irregularity, *windowFuncPtr;
+    t_float divisor, irregularity;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;
