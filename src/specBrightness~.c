@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *specBrightness_tilde_class;
+static t_class* specBrightness_tilde_class;
 
 typedef struct _specBrightness_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -29,25 +29,25 @@ typedef struct _specBrightness_tilde
     t_uShortInt x_overlap;
     t_bool x_powerSpectrum;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
     t_float x_freqBoundary;
     t_binIdx x_binBoundary;
-    t_float *x_binFreqs;
-    t_outlet *x_brightness;
+    t_float* x_binFreqs;
+    t_outlet* x_brightness;
     t_float x_f;
 } t_specBrightness_tilde;
 
 
 /* ------------------------ specBrightness~ -------------------------------- */
 
-static void specBrightness_tilde_bang (t_specBrightness_tilde *x)
+static void specBrightness_tilde_bang (t_specBrightness_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
     t_float dividend, divisor, brightness, *windowFuncPtr;
@@ -119,7 +119,7 @@ static void specBrightness_tilde_bang (t_specBrightness_tilde *x)
 }
 
 
-static void specBrightness_tilde_boundary(t_specBrightness_tilde *x, t_floatarg b)
+static void specBrightness_tilde_boundary (t_specBrightness_tilde* x, t_floatarg b)
 {
     if (b < 0 || b > x->x_sr * 0.5)
     {
@@ -129,14 +129,14 @@ static void specBrightness_tilde_boundary(t_specBrightness_tilde *x, t_floatarg 
     else
     {
         x->x_freqBoundary = b;
-        x->x_binBoundary = tIDLib_nearestBinIndex(x->x_freqBoundary, x->x_binFreqs, x->x_windowHalf + 1);
+        x->x_binBoundary = tIDLib_nearestBinIndex (x->x_freqBoundary, x->x_binFreqs, x->x_windowHalf + 1);
 
         post ("%s boundary frequency: %0.2f", x->x_objSymbol->s_name, x->x_freqBoundary);
     }
 }
 
 
-static void specBrightness_tilde_print (t_specBrightness_tilde *x)
+static void specBrightness_tilde_print (t_specBrightness_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -149,7 +149,7 @@ static void specBrightness_tilde_print (t_specBrightness_tilde *x)
 }
 
 
-static void specBrightness_tilde_window (t_specBrightness_tilde *x, t_floatarg w)
+static void specBrightness_tilde_window (t_specBrightness_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -203,15 +203,15 @@ static void specBrightness_tilde_window (t_specBrightness_tilde *x, t_floatarg w
 
     // freqs for each bin based on current window size and sample rate
     for (i = 0; i <= x->x_windowHalf; i++)
-        x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+        x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
 
-    x->x_binBoundary = tIDLib_nearestBinIndex(x->x_freqBoundary, x->x_binFreqs, x->x_windowHalf + 1);
+    x->x_binBoundary = tIDLib_nearestBinIndex (x->x_freqBoundary, x->x_binFreqs, x->x_windowHalf + 1);
 
     post ("%s window size: %i", x->x_objSymbol->s_name, x->x_window);
 }
 
 
-static void specBrightness_tilde_overlap (t_specBrightness_tilde *x, t_floatarg o)
+static void specBrightness_tilde_overlap (t_specBrightness_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -220,7 +220,7 @@ static void specBrightness_tilde_overlap (t_specBrightness_tilde *x, t_floatarg 
 }
 
 
-static void specBrightness_tilde_windowFunction (t_specBrightness_tilde *x, t_floatarg f)
+static void specBrightness_tilde_windowFunction (t_specBrightness_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -249,7 +249,7 @@ static void specBrightness_tilde_windowFunction (t_specBrightness_tilde *x, t_fl
 }
 
 
-static void specBrightness_tilde_powerSpectrum (t_specBrightness_tilde *x, t_floatarg spec)
+static void specBrightness_tilde_powerSpectrum (t_specBrightness_tilde* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -262,9 +262,9 @@ static void specBrightness_tilde_powerSpectrum (t_specBrightness_tilde *x, t_flo
 }
 
 
-static void *specBrightness_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* specBrightness_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_specBrightness_tilde *x = (t_specBrightness_tilde *)pd_new (specBrightness_tilde_class);
+    t_specBrightness_tilde* x = (t_specBrightness_tilde *)pd_new (specBrightness_tilde_class);
     t_sampIdx i;
 
     x->x_brightness = outlet_new (&x->x_obj, &s_float);
@@ -272,7 +272,7 @@ static void *specBrightness_tilde_new (t_symbol *s, int argc, t_atom *argv)
     // store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
     x->x_objSymbol = s;
 
-    // need samplerate in the switch () below, so assigning that here
+    // need samplerate in the switch() below, so assigning that here
     x->x_sr = TID_SAMPLERATEDEFAULT;
 
     switch (argc)
@@ -359,9 +359,9 @@ static void *specBrightness_tilde_new (t_symbol *s, int argc, t_atom *argv)
 
     // freqs for each bin based on current window size and sample rate
     for (i = 0; i <= x->x_windowHalf; i++)
-        x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+        x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
 
-    x->x_binBoundary = tIDLib_nearestBinIndex(x->x_freqBoundary, x->x_binFreqs, x->x_windowHalf + 1);
+    x->x_binBoundary = tIDLib_nearestBinIndex (x->x_freqBoundary, x->x_binFreqs, x->x_windowHalf + 1);
 
     return (x);
 }
@@ -372,9 +372,9 @@ static t_int *specBrightness_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_specBrightness_tilde *x = (t_specBrightness_tilde *)(w[1]);
+    t_specBrightness_tilde* x = (t_specBrightness_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -391,7 +391,7 @@ static t_int *specBrightness_tilde_perform (t_int *w)
 }
 
 
-static void specBrightness_tilde_dsp (t_specBrightness_tilde *x, t_signal **sp)
+static void specBrightness_tilde_dsp (t_specBrightness_tilde* x, t_signal **sp)
 {
     dsp_add (
         specBrightness_tilde_perform,
@@ -411,9 +411,9 @@ static void specBrightness_tilde_dsp (t_specBrightness_tilde *x, t_signal **sp)
 
         // freqs for each bin based on current window size and sample rate
         for (i = 0; i <= x->x_windowHalf; i++)
-            x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+            x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
 
-        x->x_binBoundary = tIDLib_nearestBinIndex(x->x_freqBoundary, x->x_binFreqs, x->x_windowHalf + 1);
+        x->x_binBoundary = tIDLib_nearestBinIndex (x->x_freqBoundary, x->x_binFreqs, x->x_windowHalf + 1);
     };
 
 // compare n to stored n and update/resize buffer if different
@@ -433,7 +433,7 @@ static void specBrightness_tilde_dsp (t_specBrightness_tilde *x, t_signal **sp)
 };
 
 
-static void specBrightness_tilde_free (t_specBrightness_tilde *x)
+static void specBrightness_tilde_free (t_specBrightness_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

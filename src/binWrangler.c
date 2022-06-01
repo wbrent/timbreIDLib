@@ -16,23 +16,23 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *binWrangler_class;
+static t_class* binWrangler_class;
 
 typedef struct _binWrangler
 {
     t_object  x_obj;
-    t_symbol *x_objSymbol;
-    t_instance *x_instances;
+    t_symbol* x_objSymbol;
+    t_instance* x_instances;
     t_bool x_spew;
     t_attributeIdx x_featureLength;
     t_attributeIdx x_numFrames;
     t_attributeIdx x_currentFrame;
-    t_atom *x_listOut;
-    t_outlet *x_binList;
+    t_atom* x_listOut;
+    t_outlet* x_binList;
 } t_binWrangler;
 
 
-static void binWrangler_accum (t_binWrangler *x, t_symbol *s, int argc, t_atom *argv)
+static void binWrangler_accum (t_binWrangler* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_attributeIdx i, j, count, totalbins;
 
@@ -52,7 +52,7 @@ static void binWrangler_accum (t_binWrangler *x, t_symbol *s, int argc, t_atom *
         totalbins = x->x_numFrames*x->x_featureLength;
 
         for (i = 0; i < x->x_featureLength; i++)
-            for (count = 0, j=x->x_numFrames - x->x_currentFrame; count < x->x_numFrames; count++, j++)
+            for (count = 0, j = x->x_numFrames - x->x_currentFrame; count < x->x_numFrames; count++, j++)
                 SETFLOAT (x->x_listOut+(i*x->x_numFrames)+(j%x->x_numFrames), x->x_instances[count].data[i]);
 
         outlet_list (x->x_binList, 0, totalbins, x->x_listOut);
@@ -61,14 +61,14 @@ static void binWrangler_accum (t_binWrangler *x, t_symbol *s, int argc, t_atom *
     }
 }
 
-static void binWrangler_print (t_binWrangler *x)
+static void binWrangler_print (t_binWrangler* x)
 {
     post ("%s num_frames: %i", x->x_objSymbol->s_name, x->x_numFrames);
     post ("%s feature length: %i", x->x_objSymbol->s_name, x->x_featureLength);
     post ("%s spew mode: %i", x->x_objSymbol->s_name, x->x_spew);
 }
 
-static void binWrangler_clear (t_binWrangler *x)
+static void binWrangler_clear (t_binWrangler* x)
 {
     t_attributeIdx i, j;
 
@@ -93,7 +93,7 @@ static void binWrangler_clear (t_binWrangler *x)
             x->x_instances[i].data[j] = 0.0;
 }
 
-static void binWrangler_numFrames (t_binWrangler *x, t_float num)
+static void binWrangler_numFrames (t_binWrangler* x, t_float num)
 {
     t_attributeIdx i, j;
 
@@ -123,7 +123,7 @@ static void binWrangler_numFrames (t_binWrangler *x, t_float num)
             x->x_instances[i].data[j] = 0.0;
 }
 
-static void binWrangler_length (t_binWrangler *x, t_float len)
+static void binWrangler_length (t_binWrangler* x, t_float len)
 {
     t_attributeIdx i, j;
 
@@ -153,16 +153,16 @@ static void binWrangler_length (t_binWrangler *x, t_float len)
             x->x_instances[i].data[j] = 0.0;
 }
 
-static void binWrangler_spew (t_binWrangler *x, t_floatarg s)
+static void binWrangler_spew (t_binWrangler* x, t_floatarg s)
 {
     s = (s <= 0) ? 0 : s;
     s = (s >= 1) ? 1 : s;
     x->x_spew = s;
 }
 
-static void *binWrangler_new (t_float numFrames, t_float length, t_float spew)
+static void* binWrangler_new (t_float numFrames, t_float length, t_float spew)
 {
-    t_binWrangler *x = (t_binWrangler *)pd_new (binWrangler_class);
+    t_binWrangler* x = (t_binWrangler *)pd_new (binWrangler_class);
     t_attributeIdx i, j;
 
     x->x_binList = outlet_new (&x->x_obj, gensym ("list"));
@@ -195,7 +195,7 @@ static void *binWrangler_new (t_float numFrames, t_float length, t_float spew)
     return (void *)x;
 }
 
-static void binWrangler_free (t_binWrangler *x)
+static void binWrangler_free (t_binWrangler* x)
 {
     t_attributeIdx i;
 

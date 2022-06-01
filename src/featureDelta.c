@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *featureDelta_class;
+static t_class* featureDelta_class;
 
 typedef enum
 {
@@ -34,17 +34,17 @@ typedef enum
 typedef struct _featureDelta
 {
     t_object  x_obj;
-    t_symbol *x_objSymbol;
-    t_float *x_prevFeature;
+    t_symbol* x_objSymbol;
+    t_float* x_prevFeature;
     t_attributeIdx x_featureLength;
     t_deltaMode x_mode;
     t_deltaDirection x_direction;
-    t_atom *x_listOut;
-    t_outlet *x_featureList;
+    t_atom* x_listOut;
+    t_outlet* x_featureList;
 } t_featureDelta;
 
 
-static void featureDelta_allocMem (t_featureDelta *x)
+static void featureDelta_allocMem (t_featureDelta* x)
 {
     // grab atom list memory
     x->x_listOut = (t_atom *)t_getbytes (x->x_featureLength * sizeof (t_atom));
@@ -53,7 +53,7 @@ static void featureDelta_allocMem (t_featureDelta *x)
     x->x_prevFeature = (t_float *)t_getbytes (x->x_featureLength * sizeof (t_float));
 }
 
-static void featureDelta_initMem (t_featureDelta *x)
+static void featureDelta_initMem (t_featureDelta* x)
 {
     t_attributeIdx i;
 
@@ -65,7 +65,7 @@ static void featureDelta_initMem (t_featureDelta *x)
     }
 }
 
-static void featureDelta_free (t_featureDelta *x)
+static void featureDelta_free (t_featureDelta* x)
 {
     // free listOut memory
     t_freebytes (x->x_listOut, x->x_featureLength * sizeof (t_atom));
@@ -74,7 +74,7 @@ static void featureDelta_free (t_featureDelta *x)
     t_freebytes (x->x_prevFeature, x->x_featureLength * sizeof (t_float));
 }
 
-static void featureDelta_delta (t_featureDelta *x, t_symbol *s, int argc, t_atom *argv)
+static void featureDelta_delta (t_featureDelta* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_attributeIdx i;
 
@@ -123,7 +123,7 @@ static void featureDelta_delta (t_featureDelta *x, t_symbol *s, int argc, t_atom
 }
 
 
-static void featureDelta_prevFeature (t_featureDelta *x, t_symbol *s, int argc, t_atom *argv)
+static void featureDelta_prevFeature (t_featureDelta* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_attributeIdx i;
 
@@ -140,7 +140,7 @@ static void featureDelta_prevFeature (t_featureDelta *x, t_symbol *s, int argc, 
 }
 
 
-static void featureDelta_print (t_featureDelta *x)
+static void featureDelta_print (t_featureDelta* x)
 {
     post ("%s feature length: %i", x->x_objSymbol->s_name, x->x_featureLength);
     switch (x->x_mode)
@@ -176,14 +176,14 @@ static void featureDelta_print (t_featureDelta *x)
     }
 }
 
-static void featureDelta_clear (t_featureDelta *x)
+static void featureDelta_clear (t_featureDelta* x)
 {
     featureDelta_free (x);
     featureDelta_allocMem (x);
     featureDelta_initMem (x);
 }
 
-static void featureDelta_length (t_featureDelta *x, t_floatarg len)
+static void featureDelta_length (t_featureDelta* x, t_floatarg len)
 {
     len = (len < 1) ? 1 : len;
 
@@ -196,7 +196,7 @@ static void featureDelta_length (t_featureDelta *x, t_floatarg len)
     featureDelta_initMem (x);
 }
 
-static void featureDelta_mode (t_featureDelta *x, t_symbol *m)
+static void featureDelta_mode (t_featureDelta* x, t_symbol* m)
 {
     if ( !strcmp (m->s_name, "diff"))
         x->x_mode = deltaDiff;
@@ -208,7 +208,7 @@ static void featureDelta_mode (t_featureDelta *x, t_symbol *m)
         x->x_mode = deltaDiff;
 }
 
-static void featureDelta_direction (t_featureDelta *x, t_symbol *d)
+static void featureDelta_direction (t_featureDelta* x, t_symbol* d)
 {
     if ( !strcmp (d->s_name, "pos"))
         x->x_direction = deltaPos;
@@ -220,12 +220,12 @@ static void featureDelta_direction (t_featureDelta *x, t_symbol *d)
         x->x_direction = deltaBoth;
 }
 
-static void *featureDelta_new (t_symbol *s, int argc, t_atom *argv)
+static void* featureDelta_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_featureDelta *x = (t_featureDelta *)pd_new (featureDelta_class);
+    t_featureDelta* x = (t_featureDelta *)pd_new (featureDelta_class);
     t_float featureLength;
-    t_symbol *mode;
-    t_symbol *direction;
+    t_symbol* mode;
+    t_symbol* direction;
 
     x->x_featureList = outlet_new (&x->x_obj, gensym ("list"));
     inlet_new (&x->x_obj, &x->x_obj.ob_pd, gensym ("list"), gensym ("prevFeature"));

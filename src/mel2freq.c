@@ -15,20 +15,20 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *mel2freq_class;
+static t_class* mel2freq_class;
 
 typedef struct _mel2freq
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_mel2freqFormula x_formula;
-    t_outlet *x_freq;
+    t_outlet* x_freq;
 
 } t_mel2freq;
 
 
 /* ------------------------ mel2freq -------------------------------- */
-static void mel2freq_calculate(t_mel2freq *x, t_float m)
+static void mel2freq_calculate (t_mel2freq* x, t_float m)
 {
     t_float mel, freq;
 
@@ -36,16 +36,16 @@ static void mel2freq_calculate(t_mel2freq *x, t_float m)
 
     if (mel>=0.0 && mel<=TID_MAXMELS)
     {
-        freq = tIDLib_mel2freq(mel);
+        freq = tIDLib_mel2freq (mel);
         outlet_float (x->x_freq, freq);
     }
     else
         pd_error (x, "%s: mel frequency must be between 0 and %f mels", x->x_objSymbol->s_name, TID_MAXMELS);
 }
 
-static void *mel2freq_new (t_symbol *s, int argc, t_atom *argv)
+static void* mel2freq_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_mel2freq *x = (t_mel2freq *)pd_new (mel2freq_class);
+    t_mel2freq* x = (t_mel2freq *)pd_new (mel2freq_class);
     x->x_freq = outlet_new (&x->x_obj, &s_float);
 
     x->x_objSymbol = s;

@@ -15,33 +15,33 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *dct_class;
+static t_class* dct_class;
 
 typedef struct _dct
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_windowFunction x_windowFunction;
     t_bool x_normalize;
-    t_float *x_dctIn;
-    t_float *x_dctOut;
+    t_float* x_dctIn;
+    t_float* x_dctOut;
     fftwf_plan x_fftwDctPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_atom *x_listOut;
-    t_outlet *x_dct;
+    t_atom* x_listOut;
+    t_outlet* x_dct;
 } t_dct;
 
 
 /* ------------------------ dct -------------------------------- */
-static void dct_resizeWindow (t_dct *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void dct_resizeWindow (t_dct* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     if (window < TID_MINWINDOWSIZE)
     {
@@ -78,9 +78,9 @@ static void dct_resizeWindow (t_dct *x, t_sampIdx oldWindow, t_sampIdx window, t
 }
 
 
-static void dct_analyze (t_dct *x, t_floatarg start, t_floatarg n)
+static void dct_analyze (t_dct* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -89,7 +89,7 @@ static void dct_analyze (t_dct *x, t_floatarg start, t_floatarg n)
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float *windowFuncPtr;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 
@@ -147,7 +147,7 @@ static void dct_analyze (t_dct *x, t_floatarg start, t_floatarg n)
         fftwf_execute (x->x_fftwDctPlan);
 
         if (x->x_normalize)
-            tIDLib_normalPeak(x->x_window, x->x_dctOut);
+            tIDLib_normalPeak (x->x_window, x->x_dctOut);
 
         for (i = 0; i < x->x_window; i++)
             SETFLOAT (x->x_listOut + i, x->x_dctOut[i]);
@@ -158,9 +158,9 @@ static void dct_analyze (t_dct *x, t_floatarg start, t_floatarg n)
 
 
 // analyze the whole damn array
-static void dct_bang (t_dct *x)
+static void dct_bang (t_dct* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -176,9 +176,9 @@ static void dct_bang (t_dct *x)
 }
 
 
-static void dct_set (t_dct *x, t_symbol *s)
+static void dct_set (t_dct* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -189,7 +189,7 @@ static void dct_set (t_dct *x, t_symbol *s)
 }
 
 
-static void dct_print (t_dct *x)
+static void dct_print (t_dct* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -199,7 +199,7 @@ static void dct_print (t_dct *x)
 }
 
 
-static void dct_samplerate (t_dct *x, t_floatarg sr)
+static void dct_samplerate (t_dct* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -208,18 +208,18 @@ static void dct_samplerate (t_dct *x, t_floatarg sr)
 }
 
 
-static void dct_window (t_dct *x, t_floatarg w)
+static void dct_window (t_dct* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     dct_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void dct_windowFunction (t_dct *x, t_floatarg f)
+static void dct_windowFunction (t_dct* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -248,7 +248,7 @@ static void dct_windowFunction (t_dct *x, t_floatarg f)
 }
 
 
-static void dct_normalize (t_dct *x, t_floatarg norm)
+static void dct_normalize (t_dct* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -261,9 +261,9 @@ static void dct_normalize (t_dct *x, t_floatarg norm)
 }
 
 
-static void *dct_new (t_symbol *s, int argc, t_atom *argv)
+static void* dct_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_dct *x = (t_dct *)pd_new (dct_class);
+    t_dct* x = (t_dct *)pd_new (dct_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -286,7 +286,7 @@ static void *dct_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -335,7 +335,7 @@ static void *dct_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void dct_free (t_dct *x)
+static void dct_free (t_dct* x)
 {
     // free the list out memory
     t_freebytes (x->x_listOut, x->x_window * sizeof (t_atom));

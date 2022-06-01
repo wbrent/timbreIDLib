@@ -15,22 +15,22 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *featureNorm_class;
+static t_class* featureNorm_class;
 
 typedef struct _featureNorm
 {
     t_object  x_obj;
-    t_symbol *x_objSymbol;
-    t_float *x_minValues;
-    t_float *x_maxValues;
+    t_symbol* x_objSymbol;
+    t_float* x_minValues;
+    t_float* x_maxValues;
     t_attributeIdx x_featureLength;
     t_bool x_mode;
-    t_atom *x_listOut;
-    t_outlet *x_featureList;
+    t_atom* x_listOut;
+    t_outlet* x_featureList;
 } t_featureNorm;
 
 
-static void featureNorm_allocMem (t_featureNorm *x)
+static void featureNorm_allocMem (t_featureNorm* x)
 {
     // grab atom list memory
     x->x_listOut = (t_atom *)t_getbytes (x->x_featureLength * sizeof (t_atom));
@@ -40,7 +40,7 @@ static void featureNorm_allocMem (t_featureNorm *x)
     x->x_maxValues = (t_float *)t_getbytes (x->x_featureLength * sizeof (t_float));
 }
 
-static void featureNorm_initMem (t_featureNorm *x)
+static void featureNorm_initMem (t_featureNorm* x)
 {
     t_attributeIdx i;
 
@@ -53,7 +53,7 @@ static void featureNorm_initMem (t_featureNorm *x)
     }
 }
 
-static void featureNorm_free (t_featureNorm *x)
+static void featureNorm_free (t_featureNorm* x)
 {
     // free listOut memory
     t_freebytes (x->x_listOut, x->x_featureLength * sizeof (t_atom));
@@ -63,7 +63,7 @@ static void featureNorm_free (t_featureNorm *x)
     t_freebytes (x->x_maxValues, x->x_featureLength * sizeof (t_float));
 }
 
-static void featureNorm_normalize (t_featureNorm *x, t_symbol *s, int argc, t_atom *argv)
+static void featureNorm_normalize (t_featureNorm* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_attributeIdx i;
 
@@ -128,7 +128,7 @@ static void featureNorm_normalize (t_featureNorm *x, t_symbol *s, int argc, t_at
     outlet_list (x->x_featureList, 0, x->x_featureLength, x->x_listOut);
 }
 
-static void featureNorm_minValues (t_featureNorm *x, t_symbol *s, int argc, t_atom *argv)
+static void featureNorm_minValues (t_featureNorm* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_attributeIdx i;
 
@@ -144,7 +144,7 @@ static void featureNorm_minValues (t_featureNorm *x, t_symbol *s, int argc, t_at
     }
 }
 
-static void featureNorm_maxValues (t_featureNorm *x, t_symbol *s, int argc, t_atom *argv)
+static void featureNorm_maxValues (t_featureNorm* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_attributeIdx i;
 
@@ -160,7 +160,7 @@ static void featureNorm_maxValues (t_featureNorm *x, t_symbol *s, int argc, t_at
     }
 }
 
-static void featureNorm_print (t_featureNorm *x)
+static void featureNorm_print (t_featureNorm* x)
 {
     t_attributeIdx i;
 
@@ -182,23 +182,23 @@ static void featureNorm_print (t_featureNorm *x)
     for (i = 0; i < x->x_featureLength; i++)
         startpost ("%f ", x->x_minValues[i]);
 
-    endpost ();
+    endpost();
 
     startpost ("maximum values: ");
     for (i = 0; i < x->x_featureLength; i++)
         startpost ("%f ", x->x_maxValues[i]);
 
-    endpost ();
+    endpost();
 }
 
-static void featureNorm_clear (t_featureNorm *x)
+static void featureNorm_clear (t_featureNorm* x)
 {
     featureNorm_free (x);
     featureNorm_allocMem (x);
     featureNorm_initMem (x);
 }
 
-static void featureNorm_length (t_featureNorm *x, t_floatarg len)
+static void featureNorm_length (t_featureNorm* x, t_floatarg len)
 {
     len = (len < 1) ? 1 : len;
 
@@ -211,7 +211,7 @@ static void featureNorm_length (t_featureNorm *x, t_floatarg len)
     featureNorm_initMem (x);
 }
 
-static void featureNorm_mode (t_featureNorm *x, t_floatarg m)
+static void featureNorm_mode (t_featureNorm* x, t_floatarg m)
 {
     m = (m < 0) ? 0 : m;
     m = (m > 1) ? 1 : m;
@@ -219,9 +219,9 @@ static void featureNorm_mode (t_featureNorm *x, t_floatarg m)
     x->x_mode = m;
 }
 
-static void *featureNorm_new (t_symbol *s, int argc, t_atom *argv)
+static void* featureNorm_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_featureNorm *x = (t_featureNorm *)pd_new (featureNorm_class);
+    t_featureNorm* x = (t_featureNorm *)pd_new (featureNorm_class);
     t_float featureLength;
 
     x->x_featureList = outlet_new (&x->x_obj, gensym ("list"));

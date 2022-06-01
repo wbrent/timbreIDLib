@@ -15,26 +15,26 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *nearestPoint_class;
+static t_class* nearestPoint_class;
 
 typedef struct _nearestPoint
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
-    t_instance *x_instances;
-    t_attributeData *x_attributeData;
+    t_symbol* x_objSymbol;
+    t_instance* x_instances;
+    t_attributeData* x_attributeData;
     t_attributeIdx x_dimensions;
     t_instanceIdx x_numInstances;
     t_instanceIdx x_numMatches;
-    t_outlet *x_nearest;
-    t_outlet *x_nearestDist;
+    t_outlet* x_nearest;
+    t_outlet* x_nearestDist;
 
 } t_nearestPoint;
 
 
 /* ------------------------ nearestPoint -------------------------------- */
 
-static void nearestPoint_add (t_nearestPoint *x, t_symbol *s, int argc, t_atom *argv)
+static void nearestPoint_add (t_nearestPoint* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_attributeIdx i, dimensions;
     t_instanceIdx pointIdx;
@@ -58,7 +58,7 @@ static void nearestPoint_add (t_nearestPoint *x, t_symbol *s, int argc, t_atom *
 }
 
 
-static void nearestPoint_nearest(t_nearestPoint *x, t_symbol *s, int argc, t_atom *argv)
+static void nearestPoint_nearest (t_nearestPoint* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_float dist, *inputBuffer, *instanceBuffer, *weights;
     t_attributeIdx j, dimensions;
@@ -76,22 +76,22 @@ static void nearestPoint_nearest(t_nearestPoint *x, t_symbol *s, int argc, t_ato
 
             for (i = 0; i < x->x_numInstances; i++)
             {
-                for (j = 0; j<dimensions; j++)
+                for (j = 0; j < dimensions; j++)
                 {
-                    x->x_attributeData[j].inputData = atom_getfloat (argv+j);
+                    x->x_attributeData[j].inputData = atom_getfloat (argv + j);
                     inputBuffer[j] = x->x_attributeData[j].inputData;
                     instanceBuffer[j] = x->x_instances[i].data[j];
                     weights[j] = x->x_attributeData[j].weight;
                 }
 
                 dist = 0.0;
-                dist = tIDLib_euclidDist(dimensions, inputBuffer, instanceBuffer, weights, true);
+                dist = tIDLib_euclidDist (dimensions, inputBuffer, instanceBuffer, weights, true);
 
                 x->x_instances[i].knnInfo.dist = x->x_instances[i].knnInfo.safeDist = dist; // store the distance
                 x->x_instances[i].knnInfo.idx = i; // store the idx
             };
 
-            tIDLib_sortKnnInfo(x->x_numMatches, x->x_numInstances, UINT_MAX, x->x_instances);
+            tIDLib_sortKnnInfo (x->x_numMatches, x->x_numInstances, UINT_MAX, x->x_instances);
 
             for (i = 0; i < x->x_numMatches; i++)
             {
@@ -110,7 +110,7 @@ static void nearestPoint_nearest(t_nearestPoint *x, t_symbol *s, int argc, t_ato
 }
 
 
-static void nearestPoint_dimensions(t_nearestPoint *x, t_floatarg dim)
+static void nearestPoint_dimensions (t_nearestPoint* x, t_floatarg dim)
 {
     if (x->x_numInstances > 0)
     {
@@ -126,7 +126,7 @@ static void nearestPoint_dimensions(t_nearestPoint *x, t_floatarg dim)
 }
 
 
-static void nearestPoint_num_matches(t_nearestPoint *x, t_floatarg n)
+static void nearestPoint_num_matches (t_nearestPoint* x, t_floatarg n)
 {
     n = (n>x->x_numInstances)?x->x_numInstances:n;
     n = (n<1)?1:n;
@@ -137,7 +137,7 @@ static void nearestPoint_num_matches(t_nearestPoint *x, t_floatarg n)
 }
 
 
-static void nearestPoint_print (t_nearestPoint *x)
+static void nearestPoint_print (t_nearestPoint* x)
 {
     post ("%s dimensions: %i", x->x_objSymbol->s_name, x->x_dimensions);
     post ("%s number of points: %i", x->x_objSymbol->s_name, x->x_numInstances);
@@ -145,7 +145,7 @@ static void nearestPoint_print (t_nearestPoint *x)
 }
 
 
-static void nearestPoint_clear (t_nearestPoint *x)
+static void nearestPoint_clear (t_nearestPoint* x)
 {
     t_instanceIdx i;
 
@@ -158,9 +158,9 @@ static void nearestPoint_clear (t_nearestPoint *x)
 }
 
 
-static void *nearestPoint_new (t_float dim)
+static void* nearestPoint_new (t_float dim)
 {
-    t_nearestPoint *x = (t_nearestPoint *)pd_new (nearestPoint_class);
+    t_nearestPoint* x = (t_nearestPoint *)pd_new (nearestPoint_class);
     t_attributeIdx i;
 
     x->x_nearest = outlet_new (&x->x_obj, &s_float);
@@ -195,7 +195,7 @@ static void *nearestPoint_new (t_float dim)
 }
 
 
-static void nearestPoint_free (t_nearestPoint *x)
+static void nearestPoint_free (t_nearestPoint* x)
 {
     t_instanceIdx i;
 

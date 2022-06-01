@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *specSkewness_tilde_class;
+static t_class* specSkewness_tilde_class;
 
 typedef struct _specSkewness_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -29,16 +29,16 @@ typedef struct _specSkewness_tilde
     t_uShortInt x_overlap;
     t_bool x_powerSpectrum;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_float *x_binFreqs;
-    t_outlet *x_skewness;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_float* x_binFreqs;
+    t_outlet* x_skewness;
     t_float x_f;
 
 } t_specSkewness_tilde;
@@ -46,7 +46,7 @@ typedef struct _specSkewness_tilde
 
 /* ------------------------ specSkewness~ -------------------------------- */
 
-static void specSkewness_tilde_bang (t_specSkewness_tilde *x)
+static void specSkewness_tilde_bang (t_specSkewness_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
     t_float energySum, centroid, spread, skewness, *windowFuncPtr;
@@ -105,15 +105,15 @@ static void specSkewness_tilde_bang (t_specSkewness_tilde *x)
     for (i = 0; i <= windowHalf; i++)
         energySum += x->x_fftwIn[i];
 
-    centroid = tIDLib_computeCentroid(windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum);
-    spread = tIDLib_computeSpread(windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
-    skewness = tIDLib_computeSkewness(windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid, spread);
+    centroid = tIDLib_computeCentroid (windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum);
+    spread = tIDLib_computeSpread (windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
+    skewness = tIDLib_computeSkewness (windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid, spread);
 
     outlet_float (x->x_skewness, skewness);
 }
 
 
-static void specSkewness_tilde_print (t_specSkewness_tilde *x)
+static void specSkewness_tilde_print (t_specSkewness_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -124,7 +124,7 @@ static void specSkewness_tilde_print (t_specSkewness_tilde *x)
 }
 
 
-static void specSkewness_tilde_window (t_specSkewness_tilde *x, t_floatarg w)
+static void specSkewness_tilde_window (t_specSkewness_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -177,13 +177,13 @@ static void specSkewness_tilde_window (t_specSkewness_tilde *x, t_floatarg w)
     tIDLib_hannWindow (x->x_hann, x->x_window);
 
      for (i = 0; i <= x->x_windowHalf; i++)
-        x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+        x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
 
     post ("%s window size: %i", x->x_objSymbol->s_name, x->x_window);
 }
 
 
-static void specSkewness_tilde_overlap (t_specSkewness_tilde *x, t_floatarg o)
+static void specSkewness_tilde_overlap (t_specSkewness_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -192,7 +192,7 @@ static void specSkewness_tilde_overlap (t_specSkewness_tilde *x, t_floatarg o)
 }
 
 
-static void specSkewness_tilde_windowFunction (t_specSkewness_tilde *x, t_floatarg f)
+static void specSkewness_tilde_windowFunction (t_specSkewness_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -221,7 +221,7 @@ static void specSkewness_tilde_windowFunction (t_specSkewness_tilde *x, t_floata
 }
 
 
-static void specSkewness_tilde_powerSpectrum (t_specSkewness_tilde *x, t_floatarg power)
+static void specSkewness_tilde_powerSpectrum (t_specSkewness_tilde* x, t_floatarg power)
 {
     power = (power<0)?0:power;
     power = (power>1)?1:power;
@@ -234,9 +234,9 @@ static void specSkewness_tilde_powerSpectrum (t_specSkewness_tilde *x, t_floatar
 }
 
 
-static void *specSkewness_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* specSkewness_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_specSkewness_tilde *x = (t_specSkewness_tilde *)pd_new (specSkewness_tilde_class);
+    t_specSkewness_tilde* x = (t_specSkewness_tilde *)pd_new (specSkewness_tilde_class);
     t_sampIdx i;
 
     x->x_skewness = outlet_new (&x->x_obj, &s_float);
@@ -304,7 +304,7 @@ static void *specSkewness_tilde_new (t_symbol *s, int argc, t_atom *argv)
     x->x_binFreqs = (t_float *)t_getbytes ((x->x_windowHalf + 1) * sizeof (t_float));
 
      for (i = 0; i <= x->x_windowHalf; i++)
-        x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+        x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
 
     return (x);
 }
@@ -315,9 +315,9 @@ static t_int *specSkewness_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_specSkewness_tilde *x = (t_specSkewness_tilde *)(w[1]);
+    t_specSkewness_tilde* x = (t_specSkewness_tilde *)(w[1]);
 
-    t_sample *in = (t_sample *)(w[2]);
+    t_sample* in = (t_sample *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -334,7 +334,7 @@ static t_int *specSkewness_tilde_perform (t_int *w)
 }
 
 
-static void specSkewness_tilde_dsp (t_specSkewness_tilde *x, t_signal **sp)
+static void specSkewness_tilde_dsp (t_specSkewness_tilde* x, t_signal **sp)
 {
     dsp_add (
         specSkewness_tilde_perform,
@@ -351,7 +351,7 @@ static void specSkewness_tilde_dsp (t_specSkewness_tilde *x, t_signal **sp)
         x->x_sr = sp[0]->s_sr / x->x_overlap;
 
         for (i = 0; i <= x->x_windowHalf; i++)
-            x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+            x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
     };
 
 // compare n to stored n and update/resize buffer if different
@@ -371,7 +371,7 @@ static void specSkewness_tilde_dsp (t_specSkewness_tilde *x, t_signal **sp)
 };
 
 
-static void specSkewness_tilde_free (t_specSkewness_tilde *x)
+static void specSkewness_tilde_free (t_specSkewness_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

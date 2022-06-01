@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *specHarmonicity_class;
+static t_class* specHarmonicity_class;
 
 typedef struct _specHarmonicity
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
@@ -32,23 +32,23 @@ typedef struct _specHarmonicity
     t_float x_maxFund;
     t_float x_threshPct;
     t_uShortInt x_maxPeaks;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_outlet *x_harm;
-    t_outlet *x_inHarm;
+    t_outlet* x_harm;
+    t_outlet* x_inHarm;
 } t_specHarmonicity;
 
 
 /* ------------------------ specHarmonicity -------------------------------- */
-static void specHarmonicity_resizeWindow (t_specHarmonicity *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void specHarmonicity_resizeWindow (t_specHarmonicity* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx windowHalf;
 
@@ -90,9 +90,9 @@ static void specHarmonicity_resizeWindow (t_specHarmonicity *x, t_sampIdx oldWin
 }
 
 
-static void specHarmonicity_analyze (t_specHarmonicity *x, t_floatarg start, t_floatarg n)
+static void specHarmonicity_analyze (t_specHarmonicity* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -102,7 +102,7 @@ static void specHarmonicity_analyze (t_specHarmonicity *x, t_floatarg start, t_f
     {
         t_sampIdx i, j, window, startSamp, endSamp;
         t_uShortInt numPeaks;
-        t_float *windowFuncPtr, fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor, *flagsBuf, minPeakVal, maxPeakVal, thresh, *peakFreqs, *peakAmps;
+        t_float* windowFuncPtr, fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor, *flagsBuf, minPeakVal, maxPeakVal, thresh, *peakFreqs, *peakAmps;
 
         startSamp = (start < 0) ? 0 : start;
 
@@ -170,7 +170,7 @@ static void specHarmonicity_analyze (t_specHarmonicity *x, t_floatarg start, t_f
         maxPeakVal = -FLT_MAX;
         numPeaks = 0;
 
-        tIDLib_peaksValleys(x->x_windowHalf + 1, x->x_fftwIn, flagsBuf, &minPeakVal, &maxPeakVal);
+        tIDLib_peaksValleys (x->x_windowHalf + 1, x->x_fftwIn, flagsBuf, &minPeakVal, &maxPeakVal);
 
         thresh = maxPeakVal * (x->x_threshPct/100.0);
         peakFreqs = (t_float *)t_getbytes (0);
@@ -191,7 +191,7 @@ static void specHarmonicity_analyze (t_specHarmonicity *x, t_floatarg start, t_f
                     peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks+1) * sizeof (t_float));
 
                     peakAmps[numPeaks] = thisAmp;
-                    peakFreqs[numPeaks] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+                    peakFreqs[numPeaks] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
                     numPeaks++;
 
                     if (numPeaks>=x->x_maxPeaks)
@@ -265,7 +265,7 @@ static void specHarmonicity_analyze (t_specHarmonicity *x, t_floatarg start, t_f
 }
 
 
-static void specHarmonicity_chain_fftData (t_specHarmonicity *x, t_symbol *s, int argc, t_atom *argv)
+static void specHarmonicity_chain_fftData (t_specHarmonicity* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_uShortInt numPeaks;
@@ -300,7 +300,7 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity *x, t_symbol *s, in
     maxPeakVal = -FLT_MAX;
     numPeaks = 0;
 
-    tIDLib_peaksValleys(x->x_windowHalf + 1, x->x_fftwIn, flagsBuf, &minPeakVal, &maxPeakVal);
+    tIDLib_peaksValleys (x->x_windowHalf + 1, x->x_fftwIn, flagsBuf, &minPeakVal, &maxPeakVal);
 
     thresh = maxPeakVal * (x->x_threshPct/100.0);
     peakFreqs = (t_float *)t_getbytes (0);
@@ -321,7 +321,7 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity *x, t_symbol *s, in
                 peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks+1) * sizeof (t_float));
 
                 peakAmps[numPeaks] = thisAmp;
-                peakFreqs[numPeaks] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+                peakFreqs[numPeaks] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
                 numPeaks++;
 
                 if (numPeaks>=x->x_maxPeaks)
@@ -394,7 +394,7 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity *x, t_symbol *s, in
 }
 
 
-static void specHarmonicity_chain_magSpec (t_specHarmonicity *x, t_symbol *s, int argc, t_atom *argv)
+static void specHarmonicity_chain_magSpec (t_specHarmonicity* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_uShortInt numPeaks;
@@ -420,7 +420,7 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity *x, t_symbol *s, in
     maxPeakVal = -FLT_MAX;
     numPeaks = 0;
 
-    tIDLib_peaksValleys(x->x_windowHalf + 1, x->x_fftwIn, flagsBuf, &minPeakVal, &maxPeakVal);
+    tIDLib_peaksValleys (x->x_windowHalf + 1, x->x_fftwIn, flagsBuf, &minPeakVal, &maxPeakVal);
 
     thresh = maxPeakVal * (x->x_threshPct/100.0);
     peakFreqs = (t_float *)t_getbytes (0);
@@ -441,7 +441,7 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity *x, t_symbol *s, in
                 peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks+1) * sizeof (t_float));
 
                 peakAmps[numPeaks] = thisAmp;
-                peakFreqs[numPeaks] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+                peakFreqs[numPeaks] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
                 numPeaks++;
 
                 if (numPeaks>=x->x_maxPeaks)
@@ -515,9 +515,9 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity *x, t_symbol *s, in
 
 
 // analyze the whole damn array
-static void specHarmonicity_bang (t_specHarmonicity *x)
+static void specHarmonicity_bang (t_specHarmonicity* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -533,9 +533,9 @@ static void specHarmonicity_bang (t_specHarmonicity *x)
 }
 
 
-static void specHarmonicity_set (t_specHarmonicity *x, t_symbol *s)
+static void specHarmonicity_set (t_specHarmonicity* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -546,7 +546,7 @@ static void specHarmonicity_set (t_specHarmonicity *x, t_symbol *s)
 }
 
 
-static void specHarmonicity_print (t_specHarmonicity *x)
+static void specHarmonicity_print (t_specHarmonicity* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -562,7 +562,7 @@ static void specHarmonicity_print (t_specHarmonicity *x)
 }
 
 
-static void specHarmonicity_samplerate (t_specHarmonicity *x, t_floatarg sr)
+static void specHarmonicity_samplerate (t_specHarmonicity* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -571,18 +571,18 @@ static void specHarmonicity_samplerate (t_specHarmonicity *x, t_floatarg sr)
 }
 
 
-static void specHarmonicity_window (t_specHarmonicity *x, t_floatarg w)
+static void specHarmonicity_window (t_specHarmonicity* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     specHarmonicity_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void specHarmonicity_windowFunction (t_specHarmonicity *x, t_floatarg f)
+static void specHarmonicity_windowFunction (t_specHarmonicity* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -611,7 +611,7 @@ static void specHarmonicity_windowFunction (t_specHarmonicity *x, t_floatarg f)
 }
 
 
-static void specHarmonicity_powerSpectrum (t_specHarmonicity *x, t_floatarg spec)
+static void specHarmonicity_powerSpectrum (t_specHarmonicity* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -624,7 +624,7 @@ static void specHarmonicity_powerSpectrum (t_specHarmonicity *x, t_floatarg spec
 }
 
 
-static void specHarmonicity_maxPeaks(t_specHarmonicity *x, t_floatarg max)
+static void specHarmonicity_maxPeaks (t_specHarmonicity* x, t_floatarg max)
 {
     max = (max<1.0)?1.0:max;
     max = (max>(x->x_window/4.0))?(x->x_window/4.0):max;
@@ -634,7 +634,7 @@ static void specHarmonicity_maxPeaks(t_specHarmonicity *x, t_floatarg max)
 }
 
 
-static void specHarmonicity_inputFund(t_specHarmonicity *x, t_floatarg useFund)
+static void specHarmonicity_inputFund (t_specHarmonicity* x, t_floatarg useFund)
 {
     useFund = (useFund<0)?0:useFund;
     useFund = (useFund>1)?1:useFund;
@@ -647,7 +647,7 @@ static void specHarmonicity_inputFund(t_specHarmonicity *x, t_floatarg useFund)
 }
 
 
-static void specHarmonicity_peakThresh(t_specHarmonicity *x, t_floatarg thresh)
+static void specHarmonicity_peakThresh (t_specHarmonicity* x, t_floatarg thresh)
 {
     thresh = (thresh<0.0)?0.0:thresh;
     thresh = (thresh>100.0)?100.0:thresh;
@@ -657,7 +657,7 @@ static void specHarmonicity_peakThresh(t_specHarmonicity *x, t_floatarg thresh)
 }
 
 
-static void specHarmonicity_fundFreq(t_specHarmonicity *x, t_floatarg fund)
+static void specHarmonicity_fundFreq (t_specHarmonicity* x, t_floatarg fund)
 {
     if (fund <= 0.0)
         x->x_fundFreq = 0.0;
@@ -666,7 +666,7 @@ static void specHarmonicity_fundFreq(t_specHarmonicity *x, t_floatarg fund)
 }
 
 
-static void specHarmonicity_minFund(t_specHarmonicity *x, t_floatarg min)
+static void specHarmonicity_minFund (t_specHarmonicity* x, t_floatarg min)
 {
     if (min < 0.0 || min > 20000.0)
         pd_error (x, "%s: minimum fundamental frequency must be between 0 and 20kHz.", x->x_objSymbol->s_name);
@@ -675,7 +675,7 @@ static void specHarmonicity_minFund(t_specHarmonicity *x, t_floatarg min)
 }
 
 
-static void specHarmonicity_maxFund(t_specHarmonicity *x, t_floatarg max)
+static void specHarmonicity_maxFund (t_specHarmonicity* x, t_floatarg max)
 {
     if (max < 0.0 || max > 20000.0)
         pd_error (x, "%s: maximum fundamental frequency must be between 0 and 20kHz.", x->x_objSymbol->s_name);
@@ -684,9 +684,9 @@ static void specHarmonicity_maxFund(t_specHarmonicity *x, t_floatarg max)
 }
 
 
-static void *specHarmonicity_new (t_symbol *s, int argc, t_atom *argv)
+static void* specHarmonicity_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_specHarmonicity *x = (t_specHarmonicity *)pd_new (specHarmonicity_class);
+    t_specHarmonicity* x = (t_specHarmonicity *)pd_new (specHarmonicity_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -711,7 +711,7 @@ static void *specHarmonicity_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -765,7 +765,7 @@ static void *specHarmonicity_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void specHarmonicity_free (t_specHarmonicity *x)
+static void specHarmonicity_free (t_specHarmonicity* x)
 {
     // free FFTW stuff
     t_freebytes (x->x_fftwIn, x->x_window * sizeof (t_sample));

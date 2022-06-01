@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *dct_tilde_class;
+static t_class* dct_tilde_class;
 
 typedef struct _dct_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -28,26 +28,26 @@ typedef struct _dct_tilde
     t_uShortInt x_overlap;
     t_bool x_normalize;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_float *x_dctIn;
-    t_float *x_dctOut;
+    t_sample* x_signalBuffer;
+    t_float* x_dctIn;
+    t_float* x_dctOut;
     fftwf_plan x_fftwDctPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_atom *x_listOut;
-    t_outlet *x_dct;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_atom* x_listOut;
+    t_outlet* x_dct;
     t_float x_f;
 } t_dct_tilde;
 
 
 /* ------------------------ dct~ -------------------------------- */
 
-static void dct_tilde_bang (t_dct_tilde *x)
+static void dct_tilde_bang (t_dct_tilde* x)
 {
     t_sampIdx i, j, window, bangSample;
-    t_float *windowFuncPtr;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;
@@ -93,7 +93,7 @@ static void dct_tilde_bang (t_dct_tilde *x)
     fftwf_execute (x->x_fftwDctPlan);
 
     if (x->x_normalize)
-        tIDLib_normalPeak(x->x_window, x->x_dctOut);
+        tIDLib_normalPeak (x->x_window, x->x_dctOut);
 
     for (i = 0; i < window; i++)
         SETFLOAT (x->x_listOut + i, x->x_dctOut[i]);
@@ -102,7 +102,7 @@ static void dct_tilde_bang (t_dct_tilde *x)
 }
 
 
-static void dct_tilde_print (t_dct_tilde *x)
+static void dct_tilde_print (t_dct_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_sampIdx)x->x_n);
@@ -113,7 +113,7 @@ static void dct_tilde_print (t_dct_tilde *x)
 }
 
 
-static void dct_tilde_window (t_dct_tilde *x, t_floatarg w)
+static void dct_tilde_window (t_dct_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window;
 
@@ -164,7 +164,7 @@ static void dct_tilde_window (t_dct_tilde *x, t_floatarg w)
 }
 
 
-static void dct_tilde_overlap (t_dct_tilde *x, t_floatarg o)
+static void dct_tilde_overlap (t_dct_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o<1.0)?1.0:o;
@@ -173,7 +173,7 @@ static void dct_tilde_overlap (t_dct_tilde *x, t_floatarg o)
 }
 
 
-static void dct_tilde_windowFunction (t_dct_tilde *x, t_floatarg f)
+static void dct_tilde_windowFunction (t_dct_tilde* x, t_floatarg f)
 {
     f = (f<0.0)?0.0:f;
     f = (f>4.0)?4.0:f;
@@ -202,7 +202,7 @@ static void dct_tilde_windowFunction (t_dct_tilde *x, t_floatarg f)
 }
 
 
-static void dct_tilde_normalize (t_dct_tilde *x, t_floatarg norm)
+static void dct_tilde_normalize (t_dct_tilde* x, t_floatarg norm)
 {
     norm = (norm<0.0)?0.0:norm;
     norm = (norm>1.0)?1.0:norm;
@@ -215,9 +215,9 @@ static void dct_tilde_normalize (t_dct_tilde *x, t_floatarg norm)
 }
 
 
-static void *dct_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* dct_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_dct_tilde *x = (t_dct_tilde *)pd_new (dct_tilde_class);
+    t_dct_tilde* x = (t_dct_tilde *)pd_new (dct_tilde_class);
     t_sampIdx i;
 
     x->x_dct = outlet_new (&x->x_obj, gensym ("list"));
@@ -291,9 +291,9 @@ static t_int *dct_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_dct_tilde *x = (t_dct_tilde *)(w[1]);
+    t_dct_tilde* x = (t_dct_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -310,7 +310,7 @@ static t_int *dct_tilde_perform (t_int *w)
 }
 
 
-static void dct_tilde_dsp (t_dct_tilde *x, t_signal **sp)
+static void dct_tilde_dsp (t_dct_tilde* x, t_signal **sp)
 {
     dsp_add (
         dct_tilde_perform,
@@ -346,7 +346,7 @@ static void dct_tilde_dsp (t_dct_tilde *x, t_signal **sp)
 };
 
 
-static void dct_tilde_free (t_dct_tilde *x)
+static void dct_tilde_free (t_dct_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

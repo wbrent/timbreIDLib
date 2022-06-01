@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *specSlope_tilde_class;
+static t_class* specSlope_tilde_class;
 
 typedef struct _specSlope_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -30,15 +30,15 @@ typedef struct _specSlope_tilde
     t_bool x_normalize;
     t_bool x_powerSpectrum;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_outlet *x_slope;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_outlet* x_slope;
     t_float x_f;
 
 } t_specSlope_tilde;
@@ -46,7 +46,7 @@ typedef struct _specSlope_tilde
 
 /* ------------------------ specSlope~ -------------------------------- */
 
-static void specSlope_tilde_bang (t_specSlope_tilde *x)
+static void specSlope_tilde_bang (t_specSlope_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
     t_float slope, *windowFuncPtr;
@@ -104,13 +104,13 @@ static void specSlope_tilde_bang (t_specSlope_tilde *x)
     if (x->x_normalize)
         tIDLib_normal (windowHalf + 1, x->x_fftwIn);
 
-    slope = tIDLib_fitLineSlope(windowHalf + 1, x->x_fftwIn);
+    slope = tIDLib_fitLineSlope (windowHalf + 1, x->x_fftwIn);
 
     outlet_float (x->x_slope, slope);
 }
 
 
-static void specSlope_tilde_print (t_specSlope_tilde *x)
+static void specSlope_tilde_print (t_specSlope_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -122,7 +122,7 @@ static void specSlope_tilde_print (t_specSlope_tilde *x)
 }
 
 
-static void specSlope_tilde_window (t_specSlope_tilde *x, t_floatarg w)
+static void specSlope_tilde_window (t_specSlope_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -177,7 +177,7 @@ static void specSlope_tilde_window (t_specSlope_tilde *x, t_floatarg w)
 }
 
 
-static void specSlope_tilde_overlap (t_specSlope_tilde *x, t_floatarg o)
+static void specSlope_tilde_overlap (t_specSlope_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -186,7 +186,7 @@ static void specSlope_tilde_overlap (t_specSlope_tilde *x, t_floatarg o)
 }
 
 
-static void specSlope_tilde_windowFunction (t_specSlope_tilde *x, t_floatarg f)
+static void specSlope_tilde_windowFunction (t_specSlope_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -215,7 +215,7 @@ static void specSlope_tilde_windowFunction (t_specSlope_tilde *x, t_floatarg f)
 }
 
 
-static void specSlope_tilde_normalize (t_specSlope_tilde *x, t_floatarg norm)
+static void specSlope_tilde_normalize (t_specSlope_tilde* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -228,7 +228,7 @@ static void specSlope_tilde_normalize (t_specSlope_tilde *x, t_floatarg norm)
 }
 
 
-static void specSlope_tilde_powerSpectrum (t_specSlope_tilde *x, t_floatarg power)
+static void specSlope_tilde_powerSpectrum (t_specSlope_tilde* x, t_floatarg power)
 {
     power = (power<0)?0:power;
     power = (power>1)?1:power;
@@ -241,9 +241,9 @@ static void specSlope_tilde_powerSpectrum (t_specSlope_tilde *x, t_floatarg powe
 }
 
 
-static void *specSlope_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* specSlope_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_specSlope_tilde *x = (t_specSlope_tilde *)pd_new (specSlope_tilde_class);
+    t_specSlope_tilde* x = (t_specSlope_tilde *)pd_new (specSlope_tilde_class);
     t_sampIdx i;
 
     x->x_slope = outlet_new (&x->x_obj, &s_float);
@@ -318,9 +318,9 @@ static t_int *specSlope_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_specSlope_tilde *x = (t_specSlope_tilde *)(w[1]);
+    t_specSlope_tilde* x = (t_specSlope_tilde *)(w[1]);
 
-    t_sample *in = (t_sample *)(w[2]);
+    t_sample* in = (t_sample *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -337,7 +337,7 @@ static t_int *specSlope_tilde_perform (t_int *w)
 }
 
 
-static void specSlope_tilde_dsp (t_specSlope_tilde *x, t_signal **sp)
+static void specSlope_tilde_dsp (t_specSlope_tilde* x, t_signal **sp)
 {
     dsp_add (
         specSlope_tilde_perform,
@@ -370,7 +370,7 @@ static void specSlope_tilde_dsp (t_specSlope_tilde *x, t_signal **sp)
 };
 
 
-static void specSlope_tilde_free (t_specSlope_tilde *x)
+static void specSlope_tilde_free (t_specSlope_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

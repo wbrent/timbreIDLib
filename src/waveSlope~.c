@@ -15,21 +15,21 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *waveSlope_tilde_class;
+static t_class* waveSlope_tilde_class;
 
 typedef struct _waveSlope_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_uShortInt x_overlap;
     t_sampIdx x_window;
     t_bool x_normalize;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_float *x_analysisBuffer;
-    t_outlet *x_slope;
+    t_sample* x_signalBuffer;
+    t_float* x_analysisBuffer;
+    t_outlet* x_slope;
     t_float x_f;
 
 } t_waveSlope_tilde;
@@ -37,7 +37,7 @@ typedef struct _waveSlope_tilde
 
 /* ------------------------ waveSlope~ -------------------------------- */
 
-static void waveSlope_tilde_bang (t_waveSlope_tilde *x)
+static void waveSlope_tilde_bang (t_waveSlope_tilde* x)
 {
     t_sampIdx i, j, window, bangSample;
     t_float slope;
@@ -56,17 +56,17 @@ static void waveSlope_tilde_bang (t_waveSlope_tilde *x)
         x->x_analysisBuffer[i] = x->x_signalBuffer[j];
 
     if (x->x_normalize)
-        tIDLib_normalPeak(window, x->x_analysisBuffer);
+        tIDLib_normalPeak (window, x->x_analysisBuffer);
 
     slope=0.0;
 
-    slope = tIDLib_fitLineSlope(window, x->x_analysisBuffer);
+    slope = tIDLib_fitLineSlope (window, x->x_analysisBuffer);
 
     outlet_float (x->x_slope, slope);
 }
 
 
-static void waveSlope_tilde_window (t_waveSlope_tilde *x, t_floatarg w)
+static void waveSlope_tilde_window (t_waveSlope_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window;
 
@@ -95,7 +95,7 @@ static void waveSlope_tilde_window (t_waveSlope_tilde *x, t_floatarg w)
 }
 
 
-static void waveSlope_tilde_overlap (t_waveSlope_tilde *x, t_floatarg o)
+static void waveSlope_tilde_overlap (t_waveSlope_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -104,7 +104,7 @@ static void waveSlope_tilde_overlap (t_waveSlope_tilde *x, t_floatarg o)
 }
 
 
-static void waveSlope_tilde_normalize (t_waveSlope_tilde *x, t_floatarg norm)
+static void waveSlope_tilde_normalize (t_waveSlope_tilde* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -117,7 +117,7 @@ static void waveSlope_tilde_normalize (t_waveSlope_tilde *x, t_floatarg norm)
 }
 
 
-static void waveSlope_tilde_print (t_waveSlope_tilde *x)
+static void waveSlope_tilde_print (t_waveSlope_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -127,9 +127,9 @@ static void waveSlope_tilde_print (t_waveSlope_tilde *x)
 }
 
 
-static void *waveSlope_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* waveSlope_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_waveSlope_tilde *x = (t_waveSlope_tilde *)pd_new (waveSlope_tilde_class);
+    t_waveSlope_tilde* x = (t_waveSlope_tilde *)pd_new (waveSlope_tilde_class);
     t_sampIdx i;
 
     x->x_slope = outlet_new (&x->x_obj, &s_float);
@@ -183,9 +183,9 @@ static t_int *waveSlope_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_waveSlope_tilde *x = (t_waveSlope_tilde *)(w[1]);
+    t_waveSlope_tilde* x = (t_waveSlope_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -202,7 +202,7 @@ static t_int *waveSlope_tilde_perform (t_int *w)
 }
 
 
-static void waveSlope_tilde_dsp (t_waveSlope_tilde *x, t_signal **sp)
+static void waveSlope_tilde_dsp (t_waveSlope_tilde* x, t_signal **sp)
 {
     dsp_add (
         waveSlope_tilde_perform,
@@ -235,7 +235,7 @@ static void waveSlope_tilde_dsp (t_waveSlope_tilde *x, t_signal **sp)
     };
 };
 
-static void waveSlope_tilde_free (t_waveSlope_tilde *x)
+static void waveSlope_tilde_free (t_waveSlope_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

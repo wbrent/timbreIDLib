@@ -26,12 +26,12 @@ Preprocesssing of onset peaks: find each peak and retain its value. then add a u
 
 #include "tIDLib.h"
 
-static t_class *tempo_tilde_class;
+static t_class* tempo_tilde_class;
 
 typedef struct _tempo_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_bool x_debug;
     t_float x_sr;
     t_float x_n;
@@ -64,30 +64,30 @@ typedef struct _tempo_tilde
     t_uInt x_dspTicks;
     t_uShortInt x_tempoBufferIdx;
     t_uShortInt x_tempoBufferSize;
-    t_float *x_tempoBuffer;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwInForwardWindow;
-    t_sample *x_fftwInBackWindow;
-    t_float *x_onsetsBuffer;
-    fftwf_complex *x_fftwOutForwardWindow;
-    fftwf_complex *x_fftwOutBackWindow;
+    t_float* x_tempoBuffer;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwInForwardWindow;
+    t_sample* x_fftwInBackWindow;
+    t_float* x_onsetsBuffer;
+    fftwf_complex* x_fftwOutForwardWindow;
+    fftwf_complex* x_fftwOutBackWindow;
     fftwf_plan x_fftwPlanForwardWindow;
     fftwf_plan x_fftwPlanBackWindow;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_atom *x_listOut;
-    t_outlet *x_onsetList;
-    t_outlet *x_tempoRaw;
-    t_outlet *x_conf;
-    t_outlet *x_tempo;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_atom* x_listOut;
+    t_outlet* x_onsetList;
+    t_outlet* x_tempoRaw;
+    t_outlet* x_conf;
+    t_outlet* x_tempo;
     t_float x_f;
 
 } t_tempo_tilde;
 
 
-static void tempo_tilde_resizeOnsetsBuffer(t_tempo_tilde *x, t_floatarg newSize)
+static void tempo_tilde_resizeOnsetsBuffer (t_tempo_tilde* x, t_floatarg newSize)
 {
     t_uInt minSize, i;
 
@@ -114,7 +114,7 @@ static void tempo_tilde_resizeOnsetsBuffer(t_tempo_tilde *x, t_floatarg newSize)
 
 /* ------------------------ tempo~ -------------------------------- */
 
-static void tempo_tilde_analyze (t_tempo_tilde *x)
+static void tempo_tilde_analyze (t_tempo_tilde* x)
 {
     t_sampIdx i, j, startIdx, window, windowHalf;
     t_sInt periodIdx;
@@ -229,7 +229,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
             if (x->x_squaredDiff)
                 diff = diff * diff;
             else
-                diff = fabsf(diff);
+                diff = fabsf (diff);
         }
         else
             diff = 0.0;
@@ -258,7 +258,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
     startIdx=0;
 
     // fast forward to the beginning of the first peak
-    while(x->x_onsetsBuffer[startIdx]==x->x_belowThreshDefault)
+    while (x->x_onsetsBuffer[startIdx]==x->x_belowThreshDefault)
     {
         startIdx++;
 
@@ -272,7 +272,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
     else
         peakSlope = 0.0;
 
-    while(peakSlope>0.0)
+    while (peakSlope>0.0)
     {
         startIdx++;
 
@@ -327,7 +327,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
         for (i = 0; i < onsetBufferShiftedSize; i++)
             yValues[i] = 0.0;
 
-        periodIdx = tIDLib_hps(onsetsBufferShifted, onsetBufferShiftedSize, x->x_hiTempoIdx, x->x_loTempoIdx, x->x_numHarm, yValues, &maxYValue, x->x_debug);
+        periodIdx = tIDLib_hps (onsetsBufferShifted, onsetBufferShiftedSize, x->x_hiTempoIdx, x->x_loTempoIdx, x->x_numHarm, yValues, &maxYValue, x->x_debug);
 
         // OUTLET 4: shifted onset peak buffer
         outlet_list (x->x_onsetList, 0, x->x_onsetsBufSize, x->x_listOut);
@@ -357,7 +357,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
 
             x->x_tempoBuffer[x->x_tempoBufferIdx] = roundf (tempo);
 
-            // modeCount must be t_uLongInt for tIDLib_mode ()
+            // modeCount must be t_uLongInt for tIDLib_mode()
             modeCount = 0;
             tempoMode = tIDLib_mode (x->x_tempoBuffer, x->x_tempoBufferSize, &modeCount);
 
@@ -381,7 +381,7 @@ static void tempo_tilde_analyze (t_tempo_tilde *x)
 }
 
 
-static void tempo_tilde_debug(t_tempo_tilde *x, t_floatarg d)
+static void tempo_tilde_debug (t_tempo_tilde* x, t_floatarg d)
 {
     d = (d<0)?0:d;
     d = (d>1)?1:d;
@@ -391,7 +391,7 @@ static void tempo_tilde_debug(t_tempo_tilde *x, t_floatarg d)
 }
 
 
-static void tempo_tilde_print (t_tempo_tilde *x)
+static void tempo_tilde_print (t_tempo_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -414,7 +414,7 @@ static void tempo_tilde_print (t_tempo_tilde *x)
 }
 
 
-static void tempo_tilde_window (t_tempo_tilde *x, t_floatarg w)
+static void tempo_tilde_window (t_tempo_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -483,7 +483,7 @@ static void tempo_tilde_window (t_tempo_tilde *x, t_floatarg w)
 }
 
 
-static void tempo_tilde_hop(t_tempo_tilde *x, t_floatarg h)
+static void tempo_tilde_hop (t_tempo_tilde* x, t_floatarg h)
 {
     t_float loTempo, hiTempo;
 
@@ -514,13 +514,13 @@ static void tempo_tilde_hop(t_tempo_tilde *x, t_floatarg h)
     x->x_hiTempoIdx = roundf (hiTempo);
 
     // since x_loTempoIdx changed, need to resize the onset buffer
-    tempo_tilde_resizeOnsetsBuffer(x, x->x_loTempoIdx*(x->x_numHarm+1));
+    tempo_tilde_resizeOnsetsBuffer (x, x->x_loTempoIdx*(x->x_numHarm+1));
 
     post ("%s analysis hop: %i", x->x_objSymbol->s_name, x->x_hop);
 }
 
 
-static void tempo_tilde_overlap (t_tempo_tilde *x, t_floatarg o)
+static void tempo_tilde_overlap (t_tempo_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -529,7 +529,7 @@ static void tempo_tilde_overlap (t_tempo_tilde *x, t_floatarg o)
 }
 
 
-static void tempo_tilde_squaredDiff (t_tempo_tilde *x, t_floatarg sd)
+static void tempo_tilde_squaredDiff (t_tempo_tilde* x, t_floatarg sd)
 {
     sd = (sd < 0) ? 0 : sd;
     sd = (sd > 1) ? 1 : sd;
@@ -542,7 +542,7 @@ static void tempo_tilde_squaredDiff (t_tempo_tilde *x, t_floatarg sd)
 }
 
 
-static void tempo_tilde_windowFunction (t_tempo_tilde *x, t_floatarg f)
+static void tempo_tilde_windowFunction (t_tempo_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -571,7 +571,7 @@ static void tempo_tilde_windowFunction (t_tempo_tilde *x, t_floatarg f)
 }
 
 
-static void tempo_tilde_powerSpectrum (t_tempo_tilde *x, t_floatarg spec)
+static void tempo_tilde_powerSpectrum (t_tempo_tilde* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -584,7 +584,7 @@ static void tempo_tilde_powerSpectrum (t_tempo_tilde *x, t_floatarg spec)
 }
 
 
-static void tempo_tilde_freqRange(t_tempo_tilde *x, t_floatarg loFreq, t_floatarg hiFreq)
+static void tempo_tilde_freqRange (t_tempo_tilde* x, t_floatarg loFreq, t_floatarg hiFreq)
 {
     loFreq = (loFreq<0)?0:loFreq;
     loFreq = (loFreq>(x->x_sr * 0.5))?x->x_sr * 0.5:loFreq;
@@ -592,29 +592,29 @@ static void tempo_tilde_freqRange(t_tempo_tilde *x, t_floatarg loFreq, t_floatar
     x->x_loFreq = loFreq;
     x->x_hiFreq = hiFreq;
 
-    x->x_loBin = tIDLib_freq2bin(loFreq, x->x_window, x->x_sr);
+    x->x_loBin = tIDLib_freq2bin (loFreq, x->x_window, x->x_sr);
 
     hiFreq = (hiFreq<0)?0:hiFreq;
     hiFreq = (hiFreq>(x->x_sr * 0.5))?x->x_sr * 0.5:hiFreq;
 
-    x->x_hiBin = tIDLib_freq2bin(hiFreq, x->x_window, x->x_sr);
+    x->x_hiBin = tIDLib_freq2bin (hiFreq, x->x_window, x->x_sr);
 
     post ("%s frequency range: %0.2fHz through %0.2fHz (bin %i through %i).", x->x_objSymbol->s_name, loFreq, hiFreq, x->x_loBin, x->x_hiBin);
 }
 
 
-static void tempo_tilde_numHarm(t_tempo_tilde *x, t_floatarg h)
+static void tempo_tilde_numHarm (t_tempo_tilde* x, t_floatarg h)
 {
     x->x_numHarm = (h<2)?2:h;
 
     // since numHarm changed, we need to resize the onsets buffer
-    tempo_tilde_resizeOnsetsBuffer(x, x->x_loTempoIdx*(x->x_numHarm+1));
+    tempo_tilde_resizeOnsetsBuffer (x, x->x_loTempoIdx*(x->x_numHarm+1));
 
     post ("%s HPS number of harmonics: %i", x->x_objSymbol->s_name, x->x_numHarm);
 }
 
 
-static void tempo_tilde_tempoRange(t_tempo_tilde *x, t_floatarg loTempo, t_floatarg hiTempo)
+static void tempo_tilde_tempoRange (t_tempo_tilde* x, t_floatarg loTempo, t_floatarg hiTempo)
 {
     loTempo = (loTempo<10)?10:loTempo;
     loTempo = (loTempo>500)?500:loTempo;
@@ -635,13 +635,13 @@ static void tempo_tilde_tempoRange(t_tempo_tilde *x, t_floatarg loTempo, t_float
     x->x_hiTempoIdx = roundf (hiTempo);
 
     // since loTempoIdx changed, we need to resize the onsets buffer
-    tempo_tilde_resizeOnsetsBuffer(x, x->x_loTempoIdx*(x->x_numHarm+1));
+    tempo_tilde_resizeOnsetsBuffer (x, x->x_loTempoIdx*(x->x_numHarm+1));
 
     post ("%s tempo range: %0.2fBPM through %0.2fBPM (frameIdx %i through %i).", x->x_objSymbol->s_name, x->x_loTempo, x->x_hiTempo, x->x_loTempoIdx, x->x_hiTempoIdx);
 }
 
 
-static void tempo_tilde_onsetsBufDur(t_tempo_tilde *x, t_floatarg dur)
+static void tempo_tilde_onsetsBufDur (t_tempo_tilde* x, t_floatarg dur)
 {
     t_float newSizeSamps;
     t_uInt newSize;
@@ -654,11 +654,11 @@ static void tempo_tilde_onsetsBufDur(t_tempo_tilde *x, t_floatarg dur)
     // samples to frames
     newSize = newSizeSamps/(t_float)x->x_hop;
 
-    tempo_tilde_resizeOnsetsBuffer(x, newSize);
+    tempo_tilde_resizeOnsetsBuffer (x, newSize);
 }
 
 
-static void tempo_tilde_thresh(t_tempo_tilde *x, t_floatarg thresh)
+static void tempo_tilde_thresh (t_tempo_tilde* x, t_floatarg thresh)
 {
     thresh = (thresh<0)?0:thresh;
     x->x_growthThresh = thresh;
@@ -667,7 +667,7 @@ static void tempo_tilde_thresh(t_tempo_tilde *x, t_floatarg thresh)
 }
 
 
-static void tempo_tilde_belowThreshDefault(t_tempo_tilde *x, t_floatarg val)
+static void tempo_tilde_belowThreshDefault (t_tempo_tilde* x, t_floatarg val)
 {
     x->x_belowThreshDefault = val;
 
@@ -675,7 +675,7 @@ static void tempo_tilde_belowThreshDefault(t_tempo_tilde *x, t_floatarg val)
 }
 
 
-static void tempo_tilde_resetMaxOnsetPeakVal(t_tempo_tilde *x)
+static void tempo_tilde_resetMaxOnsetPeakVal (t_tempo_tilde* x)
 {
     x->x_maxOnsetPeakVal = -1;
 
@@ -683,7 +683,7 @@ static void tempo_tilde_resetMaxOnsetPeakVal(t_tempo_tilde *x)
 }
 
 
-static void tempo_tilde_maxOnsetUpdate(t_tempo_tilde *x, t_floatarg update)
+static void tempo_tilde_maxOnsetUpdate (t_tempo_tilde* x, t_floatarg update)
 {
     update = (update<0)?0:update;
     update = (update>1)?1:update;
@@ -693,7 +693,7 @@ static void tempo_tilde_maxOnsetUpdate(t_tempo_tilde *x, t_floatarg update)
 }
 
 
-static void tempo_tilde_tempoBufferSize(t_tempo_tilde *x, t_floatarg n)
+static void tempo_tilde_tempoBufferSize (t_tempo_tilde* x, t_floatarg n)
 {
     t_uShortInt i;
 
@@ -710,7 +710,7 @@ static void tempo_tilde_tempoBufferSize(t_tempo_tilde *x, t_floatarg n)
 }
 
 
-static void tempo_tilde_tempoBufferConst(t_tempo_tilde *x, t_floatarg val)
+static void tempo_tilde_tempoBufferConst (t_tempo_tilde* x, t_floatarg val)
 {
     t_uShortInt i;
 
@@ -721,7 +721,7 @@ static void tempo_tilde_tempoBufferConst(t_tempo_tilde *x, t_floatarg val)
 }
 
 
-static void tempo_tilde_tempoBufferClear(t_tempo_tilde *x)
+static void tempo_tilde_tempoBufferClear (t_tempo_tilde* x)
 {
     t_uShortInt i;
 
@@ -732,9 +732,9 @@ static void tempo_tilde_tempoBufferClear(t_tempo_tilde *x)
 }
 
 
-static void *tempo_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* tempo_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_tempo_tilde *x = (t_tempo_tilde *)pd_new (tempo_tilde_class);
+    t_tempo_tilde* x = (t_tempo_tilde *)pd_new (tempo_tilde_class);
     t_float hopFloat, loTempo, hiTempo;
     t_sampIdx i;
 
@@ -889,9 +889,9 @@ static t_int *tempo_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_tempo_tilde *x = (t_tempo_tilde *)(w[1]);
+    t_tempo_tilde* x = (t_tempo_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -916,7 +916,7 @@ static t_int *tempo_tilde_perform (t_int *w)
 }
 
 
-static void tempo_tilde_dsp (t_tempo_tilde *x, t_signal **sp)
+static void tempo_tilde_dsp (t_tempo_tilde* x, t_signal **sp)
 {
     dsp_add (
         tempo_tilde_perform,
@@ -953,7 +953,7 @@ static void tempo_tilde_dsp (t_tempo_tilde *x, t_signal **sp)
         x->x_hiTempoIdx = roundf (hiTempo);
 
         // since x_loTempoIdx changed, need to resize the onset buffer
-        tempo_tilde_resizeOnsetsBuffer(x, x->x_loTempoIdx*(x->x_numHarm+1));
+        tempo_tilde_resizeOnsetsBuffer (x, x->x_loTempoIdx*(x->x_numHarm+1));
 
         post ("%s samplerate: %0.2f", x->x_objSymbol->s_name, x->x_sr);
     };
@@ -966,7 +966,7 @@ static void tempo_tilde_dsp (t_tempo_tilde *x, t_signal **sp)
     }
 };
 
-static void tempo_tilde_free (t_tempo_tilde *x)
+static void tempo_tilde_free (t_tempo_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window * 2) * sizeof (t_sample));

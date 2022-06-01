@@ -15,33 +15,33 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *attackTime_tilde_class;
+static t_class* attackTime_tilde_class;
 
 typedef struct _attackTime_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
     t_uShortInt x_overlap;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_float *x_analysisBuffer;
-    t_float *x_searchBuffer;
+    t_sample* x_signalBuffer;
+    t_float* x_analysisBuffer;
+    t_float* x_searchBuffer;
     t_uShortInt x_numSampsThresh;
     t_float x_sampMagThresh;
     t_sampIdx x_maxSearchRange;
-    t_outlet *x_peakSampIdx;
-    t_outlet *x_attackStartIdx;
-    t_outlet *x_attackTime;
+    t_outlet* x_peakSampIdx;
+    t_outlet* x_attackStartIdx;
+    t_outlet* x_attackTime;
     t_float x_f;
 } t_attackTime_tilde;
 
 
 /* ------------------------ attackTime~ -------------------------------- */
 
-static void attackTime_tilde_bang (t_attackTime_tilde *x)
+static void attackTime_tilde_bang (t_attackTime_tilde* x)
 {
     t_sampIdx i, j, window, bangSample, startSample, peakSampIdx, attackStartIdx;
     t_float attackTime, peakSampVal;
@@ -59,19 +59,19 @@ static void attackTime_tilde_bang (t_attackTime_tilde *x)
     startSample = (x->x_maxSearchRange+x->x_n) - bangSample - window - 1;
 
     // construct analysis window
-    for (i = 0, j=startSample; i < window; i++, j++)
+    for (i = 0, j = startSample; i < window; i++, j++)
         x->x_analysisBuffer[i] = x->x_signalBuffer[j];
 
-    tIDLib_peakSample(window, x->x_analysisBuffer, &peakSampIdx, &peakSampVal);
+    tIDLib_peakSample (window, x->x_analysisBuffer, &peakSampIdx, &peakSampVal);
 
     peakSampIdx += startSample; // add startSample back so we can find the peak sample index relative to x_signalBuffer
 
     i = x->x_maxSearchRange;
-    j=peakSampIdx;
+    j = peakSampIdx;
 
-    while(i--)
+    while (i--)
     {
-        if (j==0)
+        if (j == 0)
             x->x_searchBuffer[i] = x->x_signalBuffer[j];
         else
         {
@@ -83,7 +83,7 @@ static void attackTime_tilde_bang (t_attackTime_tilde *x)
     attackTime = 0.0;
 
     // send searchBuffer to routine to find the point where sample magnitude is below x_sampMagThresh for at least x_numSampsThresh samples
-    attackStartIdx = tIDLib_findAttackStartSamp(x->x_maxSearchRange, x->x_searchBuffer, x->x_sampMagThresh, x->x_numSampsThresh);
+    attackStartIdx = tIDLib_findAttackStartSamp (x->x_maxSearchRange, x->x_searchBuffer, x->x_sampMagThresh, x->x_numSampsThresh);
 
     // if the index returned is ULONG_MAX, the search failed
     if (attackStartIdx==ULONG_MAX)
@@ -103,7 +103,7 @@ static void attackTime_tilde_bang (t_attackTime_tilde *x)
 }
 
 
-static void attackTime_tilde_print (t_attackTime_tilde *x)
+static void attackTime_tilde_print (t_attackTime_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -115,7 +115,7 @@ static void attackTime_tilde_print (t_attackTime_tilde *x)
 }
 
 
-static void attackTime_tilde_maxSearchRange(t_attackTime_tilde *x, t_floatarg range)
+static void attackTime_tilde_maxSearchRange (t_attackTime_tilde* x, t_floatarg range)
 {
     t_sampIdx i, newRange;
 
@@ -138,7 +138,7 @@ static void attackTime_tilde_maxSearchRange(t_attackTime_tilde *x, t_floatarg ra
 }
 
 
-static void attackTime_tilde_sampMagThresh(t_attackTime_tilde *x, t_floatarg thresh)
+static void attackTime_tilde_sampMagThresh (t_attackTime_tilde* x, t_floatarg thresh)
 {
     x->x_sampMagThresh = (thresh<0.0)?0.0:thresh;
 
@@ -146,7 +146,7 @@ static void attackTime_tilde_sampMagThresh(t_attackTime_tilde *x, t_floatarg thr
 }
 
 
-static void attackTime_tilde_numSampsThresh(t_attackTime_tilde *x, t_floatarg thresh)
+static void attackTime_tilde_numSampsThresh (t_attackTime_tilde* x, t_floatarg thresh)
 {
     thresh = (thresh<0.0)?0.0:thresh;
     thresh = (thresh>x->x_maxSearchRange)?x->x_maxSearchRange:thresh;
@@ -156,7 +156,7 @@ static void attackTime_tilde_numSampsThresh(t_attackTime_tilde *x, t_floatarg th
 }
 
 
-static void attackTime_tilde_window (t_attackTime_tilde *x, t_floatarg w)
+static void attackTime_tilde_window (t_attackTime_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window;
 
@@ -179,7 +179,7 @@ static void attackTime_tilde_window (t_attackTime_tilde *x, t_floatarg w)
 }
 
 
-static void attackTime_tilde_overlap (t_attackTime_tilde *x, t_floatarg o)
+static void attackTime_tilde_overlap (t_attackTime_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -188,9 +188,9 @@ static void attackTime_tilde_overlap (t_attackTime_tilde *x, t_floatarg o)
 }
 
 
-static void *attackTime_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* attackTime_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_attackTime_tilde *x = (t_attackTime_tilde *)pd_new (attackTime_tilde_class);
+    t_attackTime_tilde* x = (t_attackTime_tilde *)pd_new (attackTime_tilde_class);
     t_sampIdx i;
 
     x->x_attackTime = outlet_new (&x->x_obj, &s_float);
@@ -254,9 +254,9 @@ static t_int *attackTime_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_attackTime_tilde *x = (t_attackTime_tilde *)(w[1]);
+    t_attackTime_tilde* x = (t_attackTime_tilde *)(w[1]);
 
-    t_sample *in = (t_sample *)(w[2]);
+    t_sample* in = (t_sample *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -273,7 +273,7 @@ static t_int *attackTime_tilde_perform (t_int *w)
 }
 
 
-static void attackTime_tilde_dsp (t_attackTime_tilde *x, t_signal **sp)
+static void attackTime_tilde_dsp (t_attackTime_tilde* x, t_signal **sp)
 {
     dsp_add (
         attackTime_tilde_perform,
@@ -329,7 +329,7 @@ static void attackTime_tilde_dsp (t_attackTime_tilde *x, t_signal **sp)
 };
 
 
-static void attackTime_tilde_free (t_attackTime_tilde *x)
+static void attackTime_tilde_free (t_attackTime_tilde* x)
 {
     t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_float));
     t_freebytes (x->x_signalBuffer, (x->x_maxSearchRange+x->x_n) * sizeof (t_sample));

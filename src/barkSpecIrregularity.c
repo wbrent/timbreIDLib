@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *barkSpecIrregularity_class;
+static t_class* barkSpecIrregularity_class;
 
 typedef enum
 {
@@ -26,37 +26,37 @@ typedef enum
 typedef struct _barkSpecIrregularity
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
     t_windowFunction x_windowFunction;
     t_bool x_normalize;
     t_bool x_powerSpectrum;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
     t_filterIdx x_sizeFilterFreqs;
     t_filterIdx x_numFilters;
     t_float x_barkSpacing;
-    t_float *x_filterFreqs;
-    t_filter *x_filterbank;
+    t_float* x_filterFreqs;
+    t_filter* x_filterbank;
     t_bool x_specBandAvg;
     t_bool x_filterAvg;
     t_algoChoice x_algorithm;
-    t_outlet *x_irregularity;
+    t_outlet* x_irregularity;
 } t_barkSpecIrregularity;
 
 
 /* ------------------------ barkSpecIrregularity -------------------------------- */
-static void barkSpecIrregularity_resizeWindow (t_barkSpecIrregularity *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void barkSpecIrregularity_resizeWindow (t_barkSpecIrregularity* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx windowHalf;
 
@@ -102,9 +102,9 @@ static void barkSpecIrregularity_resizeWindow (t_barkSpecIrregularity *x, t_samp
 }
 
 
-static void barkSpecIrregularity_analyze (t_barkSpecIrregularity *x, t_floatarg start, t_floatarg n)
+static void barkSpecIrregularity_analyze (t_barkSpecIrregularity* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -228,7 +228,7 @@ static void barkSpecIrregularity_analyze (t_barkSpecIrregularity *x, t_floatarg 
 }
 
 
-static void barkSpecIrregularity_chain_fftData (t_barkSpecIrregularity *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecIrregularity_chain_fftData (t_barkSpecIrregularity* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, j, windowHalf;
     t_float divisor, irregularity;
@@ -308,7 +308,7 @@ static void barkSpecIrregularity_chain_fftData (t_barkSpecIrregularity *x, t_sym
 }
 
 
-static void barkSpecIrregularity_chain_magSpec (t_barkSpecIrregularity *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecIrregularity_chain_magSpec (t_barkSpecIrregularity* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, j, windowHalf;
     t_float divisor, irregularity;
@@ -379,7 +379,7 @@ static void barkSpecIrregularity_chain_magSpec (t_barkSpecIrregularity *x, t_sym
 }
 
 
-static void barkSpecIrregularity_chain_barkSpec (t_barkSpecIrregularity *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecIrregularity_chain_barkSpec (t_barkSpecIrregularity* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_filterIdx i, j;
     t_float divisor, irregularity;
@@ -443,9 +443,9 @@ static void barkSpecIrregularity_chain_barkSpec (t_barkSpecIrregularity *x, t_sy
 
 
 // analyze the whole damn array
-static void barkSpecIrregularity_bang (t_barkSpecIrregularity *x)
+static void barkSpecIrregularity_bang (t_barkSpecIrregularity* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -462,7 +462,7 @@ static void barkSpecIrregularity_bang (t_barkSpecIrregularity *x)
 }
 
 
-static void barkSpecIrregularity_createFilterbank (t_barkSpecIrregularity *x, t_floatarg bs)
+static void barkSpecIrregularity_createFilterbank (t_barkSpecIrregularity* x, t_floatarg bs)
 {
     t_filterIdx oldNumFilters;
 
@@ -484,9 +484,9 @@ static void barkSpecIrregularity_createFilterbank (t_barkSpecIrregularity *x, t_
 }
 
 
-static void barkSpecIrregularity_set (t_barkSpecIrregularity *x, t_symbol *s)
+static void barkSpecIrregularity_set (t_barkSpecIrregularity* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -497,7 +497,7 @@ static void barkSpecIrregularity_set (t_barkSpecIrregularity *x, t_symbol *s)
 }
 
 
-static void barkSpecIrregularity_print (t_barkSpecIrregularity *x)
+static void barkSpecIrregularity_print (t_barkSpecIrregularity* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (int)x->x_sr);
@@ -522,7 +522,7 @@ static void barkSpecIrregularity_print (t_barkSpecIrregularity *x)
 }
 
 
-static void barkSpecIrregularity_algorithm (t_barkSpecIrregularity *x, t_floatarg a)
+static void barkSpecIrregularity_algorithm (t_barkSpecIrregularity* x, t_floatarg a)
 {
     a = (a < 0) ? 0 : a;
     a = (a > 1) ? 1 : a;
@@ -542,7 +542,7 @@ static void barkSpecIrregularity_algorithm (t_barkSpecIrregularity *x, t_floatar
 }
 
 
-static void barkSpecIrregularity_samplerate (t_barkSpecIrregularity *x, t_floatarg sr)
+static void barkSpecIrregularity_samplerate (t_barkSpecIrregularity* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -554,18 +554,18 @@ static void barkSpecIrregularity_samplerate (t_barkSpecIrregularity *x, t_floata
 }
 
 
-static void barkSpecIrregularity_window (t_barkSpecIrregularity *x, t_floatarg w)
+static void barkSpecIrregularity_window (t_barkSpecIrregularity* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     barkSpecIrregularity_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void barkSpecIrregularity_windowFunction (t_barkSpecIrregularity *x, t_floatarg f)
+static void barkSpecIrregularity_windowFunction (t_barkSpecIrregularity* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -594,7 +594,7 @@ static void barkSpecIrregularity_windowFunction (t_barkSpecIrregularity *x, t_fl
 }
 
 
-static void barkSpecIrregularity_spec_band_avg (t_barkSpecIrregularity *x, t_floatarg avg)
+static void barkSpecIrregularity_spec_band_avg (t_barkSpecIrregularity* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -607,7 +607,7 @@ static void barkSpecIrregularity_spec_band_avg (t_barkSpecIrregularity *x, t_flo
 }
 
 
-static void barkSpecIrregularity_filter_avg (t_barkSpecIrregularity *x, t_floatarg avg)
+static void barkSpecIrregularity_filter_avg (t_barkSpecIrregularity* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -620,7 +620,7 @@ static void barkSpecIrregularity_filter_avg (t_barkSpecIrregularity *x, t_floata
 }
 
 
-static void barkSpecIrregularity_powerSpectrum (t_barkSpecIrregularity *x, t_floatarg spec)
+static void barkSpecIrregularity_powerSpectrum (t_barkSpecIrregularity* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -633,7 +633,7 @@ static void barkSpecIrregularity_powerSpectrum (t_barkSpecIrregularity *x, t_flo
 }
 
 
-static void barkSpecIrregularity_normalize (t_barkSpecIrregularity *x, t_floatarg norm)
+static void barkSpecIrregularity_normalize (t_barkSpecIrregularity* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -646,9 +646,9 @@ static void barkSpecIrregularity_normalize (t_barkSpecIrregularity *x, t_floatar
 }
 
 
-static void *barkSpecIrregularity_new (t_symbol *s, int argc, t_atom *argv)
+static void* barkSpecIrregularity_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_barkSpecIrregularity *x = (t_barkSpecIrregularity *)pd_new (barkSpecIrregularity_class);
+    t_barkSpecIrregularity* x = (t_barkSpecIrregularity *)pd_new (barkSpecIrregularity_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -710,7 +710,7 @@ static void *barkSpecIrregularity_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             x->x_algorithm = TID_SPECIRREGULARITY_DEFAULTALGO;
@@ -778,7 +778,7 @@ static void *barkSpecIrregularity_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void barkSpecIrregularity_free (t_barkSpecIrregularity *x)
+static void barkSpecIrregularity_free (t_barkSpecIrregularity* x)
 {
     t_filterIdx i;
 

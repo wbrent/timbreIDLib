@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *barkSpecFlux_class;
+static t_class* barkSpecFlux_class;
 
 typedef struct _barkSpecFlux
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
@@ -28,37 +28,37 @@ typedef struct _barkSpecFlux
     t_bool x_normalize;
     t_bool x_powerSpectrum;
     t_bool x_logSpectrum;
-    t_sample *x_fftwInForwardWindow;
-    t_sample *x_fftwInBackWindow;
-    fftwf_complex *x_fftwOutForwardWindow;
-    fftwf_complex *x_fftwOutBackWindow;
+    t_sample* x_fftwInForwardWindow;
+    t_sample* x_fftwInBackWindow;
+    fftwf_complex* x_fftwOutForwardWindow;
+    fftwf_complex* x_fftwOutBackWindow;
     fftwf_plan x_fftwPlanForwardWindow;
     fftwf_plan x_fftwPlanBackWindow;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
     t_filterIdx x_sizeFilterFreqs;
     t_filterIdx x_numFilters;
     t_float x_barkSpacing;
-    t_float *x_filterFreqs;
-    t_filter *x_filterbank;
+    t_float* x_filterFreqs;
+    t_filter* x_filterbank;
     t_bool x_specBandAvg;
     t_bool x_filterAvg;
     t_fluxMode x_mode;
     t_bool x_squaredDiff;
     t_uInt x_separation;
-    t_atom *x_listOut;
-    t_outlet *x_fluxList;
-    t_outlet *x_flux;
+    t_atom* x_listOut;
+    t_outlet* x_fluxList;
+    t_outlet* x_flux;
 } t_barkSpecFlux;
 
 
 /* ------------------------ barkSpecFlux -------------------------------- */
-static void barkSpecFlux_resizeWindow (t_barkSpecFlux *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void barkSpecFlux_resizeWindow (t_barkSpecFlux* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx i, windowHalf;
 
@@ -122,11 +122,11 @@ static void barkSpecFlux_resizeWindow (t_barkSpecFlux *x, t_sampIdx oldWindow, t
 }
 
 
-static void barkSpecFlux_analyze (t_barkSpecFlux *x, t_floatarg start, t_floatarg n)
+static void barkSpecFlux_analyze (t_barkSpecFlux* x, t_floatarg start, t_floatarg n)
 {
     t_sampIdx i, j, window, startSamp, endSamp, startSampBack, endSampBack;
     t_float flux, *windowFuncPtr;
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -159,7 +159,7 @@ static void barkSpecFlux_analyze (t_barkSpecFlux *x, t_floatarg start, t_floatar
         for (i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_fftwInForwardWindow[i] = x->x_vec[j].w_float;
 
-        // do these sample start/end location calculations AFTER the potential call to resizeWindow (), as x->x_window may have changed
+        // do these sample start/end location calculations AFTER the potential call to resizeWindow(), as x->x_window may have changed
         if (startSamp>=x->x_separation)
             startSampBack = startSamp - x->x_separation;
         else
@@ -168,7 +168,7 @@ static void barkSpecFlux_analyze (t_barkSpecFlux *x, t_floatarg start, t_floatar
         endSampBack = startSampBack + x->x_window - 1;
 
         // construct back analysis window x->x_separation frames earlier
-        for (i = 0, j=startSampBack; j<=endSampBack; i++, j++)
+        for (i = 0, j = startSampBack; j <= endSampBack; i++, j++)
             x->x_fftwInBackWindow[i] = x->x_vec[j].w_float;
 
         windowFuncPtr = x->x_blackman;
@@ -303,7 +303,7 @@ static void barkSpecFlux_analyze (t_barkSpecFlux *x, t_floatarg start, t_floatar
 }
 
 
-static void barkSpecFlux_chain_fftData (t_barkSpecFlux *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecFlux_chain_fftData (t_barkSpecFlux* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float flux;
@@ -402,7 +402,7 @@ static void barkSpecFlux_chain_fftData (t_barkSpecFlux *x, t_symbol *s, int argc
 }
 
 
-static void barkSpecFlux_chain_magSpec (t_barkSpecFlux *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecFlux_chain_magSpec (t_barkSpecFlux* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float flux;
@@ -489,7 +489,7 @@ static void barkSpecFlux_chain_magSpec (t_barkSpecFlux *x, t_symbol *s, int argc
 }
 
 
-static void barkSpecFlux_chain_barkSpec (t_barkSpecFlux *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecFlux_chain_barkSpec (t_barkSpecFlux* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_filterIdx i;
     t_float flux;
@@ -560,10 +560,10 @@ static void barkSpecFlux_chain_barkSpec (t_barkSpecFlux *x, t_symbol *s, int arg
 
 
 // analyze the whole damn array
-static void barkSpecFlux_bang (t_barkSpecFlux *x)
+static void barkSpecFlux_bang (t_barkSpecFlux* x)
 {
     t_sampIdx window, startSamp;
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -578,7 +578,7 @@ static void barkSpecFlux_bang (t_barkSpecFlux *x)
 }
 
 
-static void barkSpecFlux_createFilterbank (t_barkSpecFlux *x, t_floatarg bs)
+static void barkSpecFlux_createFilterbank (t_barkSpecFlux* x, t_floatarg bs)
 {
     t_filterIdx oldNumFilters;
 
@@ -603,7 +603,7 @@ static void barkSpecFlux_createFilterbank (t_barkSpecFlux *x, t_floatarg bs)
 }
 
 
-static void barkSpecFlux_spec_band_avg (t_barkSpecFlux *x, t_floatarg avg)
+static void barkSpecFlux_spec_band_avg (t_barkSpecFlux* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -616,7 +616,7 @@ static void barkSpecFlux_spec_band_avg (t_barkSpecFlux *x, t_floatarg avg)
 }
 
 
-static void barkSpecFlux_filter_avg (t_barkSpecFlux *x, t_floatarg avg)
+static void barkSpecFlux_filter_avg (t_barkSpecFlux* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -629,9 +629,9 @@ static void barkSpecFlux_filter_avg (t_barkSpecFlux *x, t_floatarg avg)
 }
 
 
-static void barkSpecFlux_set (t_barkSpecFlux *x, t_symbol *s)
+static void barkSpecFlux_set (t_barkSpecFlux* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -642,7 +642,7 @@ static void barkSpecFlux_set (t_barkSpecFlux *x, t_symbol *s)
 }
 
 
-static void barkSpecFlux_print (t_barkSpecFlux *x)
+static void barkSpecFlux_print (t_barkSpecFlux* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)x->x_sr);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
@@ -671,7 +671,7 @@ static void barkSpecFlux_print (t_barkSpecFlux *x)
 }
 
 
-static void barkSpecFlux_samplerate (t_barkSpecFlux *x, t_floatarg sr)
+static void barkSpecFlux_samplerate (t_barkSpecFlux* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -680,18 +680,18 @@ static void barkSpecFlux_samplerate (t_barkSpecFlux *x, t_floatarg sr)
 }
 
 
-static void barkSpecFlux_window (t_barkSpecFlux *x, t_floatarg w)
+static void barkSpecFlux_window (t_barkSpecFlux* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     barkSpecFlux_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void barkSpecFlux_windowFunction (t_barkSpecFlux *x, t_floatarg f)
+static void barkSpecFlux_windowFunction (t_barkSpecFlux* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -720,7 +720,7 @@ static void barkSpecFlux_windowFunction (t_barkSpecFlux *x, t_floatarg f)
 }
 
 
-static void barkSpecFlux_powerSpectrum (t_barkSpecFlux *x, t_floatarg spec)
+static void barkSpecFlux_powerSpectrum (t_barkSpecFlux* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -733,7 +733,7 @@ static void barkSpecFlux_powerSpectrum (t_barkSpecFlux *x, t_floatarg spec)
 }
 
 
-static void barkSpecFlux_logSpectrum (t_barkSpecFlux *x, t_floatarg spec)
+static void barkSpecFlux_logSpectrum (t_barkSpecFlux* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -746,7 +746,7 @@ static void barkSpecFlux_logSpectrum (t_barkSpecFlux *x, t_floatarg spec)
 }
 
 
-static void barkSpecFlux_normalize (t_barkSpecFlux *x, t_floatarg norm)
+static void barkSpecFlux_normalize (t_barkSpecFlux* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -759,7 +759,7 @@ static void barkSpecFlux_normalize (t_barkSpecFlux *x, t_floatarg norm)
 }
 
 
-static void barkSpecFlux_separation (t_barkSpecFlux *x, t_floatarg s)
+static void barkSpecFlux_separation (t_barkSpecFlux* x, t_floatarg s)
 {
     if (s > x->x_window)
     {
@@ -781,7 +781,7 @@ static void barkSpecFlux_separation (t_barkSpecFlux *x, t_floatarg s)
 }
 
 
-static void barkSpecFlux_squaredDiff (t_barkSpecFlux *x, t_floatarg sd)
+static void barkSpecFlux_squaredDiff (t_barkSpecFlux* x, t_floatarg sd)
 {
     sd = (sd < 0) ? 0 : sd;
     sd = (sd > 1) ? 1 : sd;
@@ -794,7 +794,7 @@ static void barkSpecFlux_squaredDiff (t_barkSpecFlux *x, t_floatarg sd)
 }
 
 
-static void barkSpecFlux_mode (t_barkSpecFlux *x, t_symbol *m)
+static void barkSpecFlux_mode (t_barkSpecFlux* x, t_symbol* m)
 {
     if ( !strcmp (m->s_name, "flux"))
         x->x_mode = mFlux;
@@ -807,9 +807,9 @@ static void barkSpecFlux_mode (t_barkSpecFlux *x, t_symbol *m)
 }
 
 
-static void *barkSpecFlux_new (t_symbol *s, int argc, t_atom *argv)
+static void* barkSpecFlux_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_barkSpecFlux *x = (t_barkSpecFlux *)pd_new (barkSpecFlux_class);
+    t_barkSpecFlux* x = (t_barkSpecFlux *)pd_new (barkSpecFlux_class);
     t_sampIdx i;
     t_float sepFloat;
 //	t_garray *a;
@@ -884,7 +884,7 @@ static void *barkSpecFlux_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_separation = TID_WINDOWSIZEDEFAULT * 0.5;
             break;
@@ -964,7 +964,7 @@ static void *barkSpecFlux_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void barkSpecFlux_free (t_barkSpecFlux *x)
+static void barkSpecFlux_free (t_barkSpecFlux* x)
 {
     t_filterIdx i;
 

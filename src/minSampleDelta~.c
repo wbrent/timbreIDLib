@@ -15,22 +15,22 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *minSampleDelta_tilde_class;
+static t_class* minSampleDelta_tilde_class;
 
 typedef struct _minSampleDelta_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_uShortInt x_overlap;
     t_sampIdx x_window;
     t_sampIdx x_normalize;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_float *x_analysisBuffer;
-    t_outlet *x_minSampleDeltaIdx;
-    t_outlet *x_minSampleDelta;
+    t_sample* x_signalBuffer;
+    t_float* x_analysisBuffer;
+    t_outlet* x_minSampleDeltaIdx;
+    t_outlet* x_minSampleDelta;
     t_float x_f;
 
 } t_minSampleDelta_tilde;
@@ -38,7 +38,7 @@ typedef struct _minSampleDelta_tilde
 
 /* ------------------------ minSampleDelta~ -------------------------------- */
 
-static void minSampleDelta_tilde_bang (t_minSampleDelta_tilde *x)
+static void minSampleDelta_tilde_bang (t_minSampleDelta_tilde* x)
 {
     t_sampIdx i, j, window, bangSample, minIdx;
     t_float min;
@@ -85,7 +85,7 @@ static void minSampleDelta_tilde_bang (t_minSampleDelta_tilde *x)
 }
 
 
-static void minSampleDelta_tilde_window (t_minSampleDelta_tilde *x, t_floatarg w)
+static void minSampleDelta_tilde_window (t_minSampleDelta_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window;
 
@@ -114,7 +114,7 @@ static void minSampleDelta_tilde_window (t_minSampleDelta_tilde *x, t_floatarg w
 }
 
 
-static void minSampleDelta_tilde_overlap (t_minSampleDelta_tilde *x, t_floatarg o)
+static void minSampleDelta_tilde_overlap (t_minSampleDelta_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -123,7 +123,7 @@ static void minSampleDelta_tilde_overlap (t_minSampleDelta_tilde *x, t_floatarg 
 }
 
 
-static void minSampleDelta_tilde_print (t_minSampleDelta_tilde *x)
+static void minSampleDelta_tilde_print (t_minSampleDelta_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -132,9 +132,9 @@ static void minSampleDelta_tilde_print (t_minSampleDelta_tilde *x)
 }
 
 
-static void *minSampleDelta_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* minSampleDelta_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_minSampleDelta_tilde *x = (t_minSampleDelta_tilde *)pd_new (minSampleDelta_tilde_class);
+    t_minSampleDelta_tilde* x = (t_minSampleDelta_tilde *)pd_new (minSampleDelta_tilde_class);
     t_sampIdx i;
 
     x->x_minSampleDelta = outlet_new (&x->x_obj, &s_float);
@@ -188,9 +188,9 @@ static t_int *minSampleDelta_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_minSampleDelta_tilde *x = (t_minSampleDelta_tilde *)(w[1]);
+    t_minSampleDelta_tilde* x = (t_minSampleDelta_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -207,7 +207,7 @@ static t_int *minSampleDelta_tilde_perform (t_int *w)
 }
 
 
-static void minSampleDelta_tilde_dsp (t_minSampleDelta_tilde *x, t_signal **sp)
+static void minSampleDelta_tilde_dsp (t_minSampleDelta_tilde* x, t_signal **sp)
 {
     dsp_add (
         minSampleDelta_tilde_perform,
@@ -240,7 +240,7 @@ static void minSampleDelta_tilde_dsp (t_minSampleDelta_tilde *x, t_signal **sp)
     };
 };
 
-static void minSampleDelta_tilde_free (t_minSampleDelta_tilde *x)
+static void minSampleDelta_tilde_free (t_minSampleDelta_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

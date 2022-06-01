@@ -15,27 +15,27 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *waveNoise_class;
+static t_class* waveNoise_class;
 
 typedef struct _waveNoise
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
-    t_float *x_analysisBuffer;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_analysisBuffer;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_outlet *x_changes;
+    t_outlet* x_changes;
 } t_waveNoise;
 
 
 /* ------------------------ waveNoise -------------------------------- */
 
-static void waveNoise_analyze (t_waveNoise *x, t_floatarg start, t_floatarg n)
+static void waveNoise_analyze (t_waveNoise* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -96,10 +96,10 @@ static void waveNoise_analyze (t_waveNoise *x, t_floatarg start, t_floatarg n)
         for (i = 0; i < window; i++)
             flagsBuf[i] = 0.0;
 
-        tIDLib_peaksValleys(window, x->x_analysisBuffer, flagsBuf, &minVal, &maxVal);
+        tIDLib_peaksValleys (window, x->x_analysisBuffer, flagsBuf, &minVal, &maxVal);
 
         for (i = 0; i < window; i++)
-            changes += fabsf(flagsBuf[i]);
+            changes += fabsf (flagsBuf[i]);
 
         // free local memory
         t_freebytes (flagsBuf, window * sizeof (t_float));
@@ -110,9 +110,9 @@ static void waveNoise_analyze (t_waveNoise *x, t_floatarg start, t_floatarg n)
 
 
 // analyze the whole damn array
-static void waveNoise_bang (t_waveNoise *x)
+static void waveNoise_bang (t_waveNoise* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -128,9 +128,9 @@ static void waveNoise_bang (t_waveNoise *x)
 }
 
 
-static void waveNoise_set (t_waveNoise *x, t_symbol *s)
+static void waveNoise_set (t_waveNoise* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -141,14 +141,14 @@ static void waveNoise_set (t_waveNoise *x, t_symbol *s)
 }
 
 
-static void waveNoise_print (t_waveNoise *x)
+static void waveNoise_print (t_waveNoise* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
 }
 
 
-static void waveNoise_samplerate (t_waveNoise *x, t_floatarg sr)
+static void waveNoise_samplerate (t_waveNoise* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -157,9 +157,9 @@ static void waveNoise_samplerate (t_waveNoise *x, t_floatarg sr)
 }
 
 
-static void *waveNoise_new (t_symbol *s, int argc, t_atom *argv)
+static void* waveNoise_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_waveNoise *x = (t_waveNoise *)pd_new (waveNoise_class);
+    t_waveNoise* x = (t_waveNoise *)pd_new (waveNoise_class);
 //	t_garray *a;
 
     x->x_changes = outlet_new (&x->x_obj, &s_float);
@@ -181,7 +181,7 @@ static void *waveNoise_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -206,7 +206,7 @@ static void *waveNoise_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void waveNoise_free (t_waveNoise *x)
+static void waveNoise_free (t_waveNoise* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_sample));

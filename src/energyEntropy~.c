@@ -226,7 +226,7 @@ static t_int* energyEntropy_tilde_perform (t_int* w)
 
     t_energyEntropy_tilde* x = (t_energyEntropy_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
     bufLen = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;

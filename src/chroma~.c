@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *chroma_tilde_class;
+static t_class* chroma_tilde_class;
 
 typedef struct _chroma_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -29,7 +29,7 @@ typedef struct _chroma_tilde
     t_uShortInt x_overlap;
     t_bool x_normalize;
     t_bool x_powerSpectrum;
-    t_binIdx *x_binRanges;
+    t_binIdx* x_binRanges;
     t_float x_loFreq;
     t_float x_hiFreq;
     t_float x_pitchTolerance;
@@ -37,28 +37,28 @@ typedef struct _chroma_tilde
     t_uChar x_numChroma;
     t_float x_resolution;
     t_float x_microtune;
-    t_float *x_pitchClasses;
+    t_float* x_pitchClasses;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_atom *x_listOut;
-    t_outlet *x_chroma;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_atom* x_listOut;
+    t_outlet* x_chroma;
     t_float x_f;
 } t_chroma_tilde;
 
 
 /* ------------------------ chroma~ -------------------------------- */
 
-static void chroma_tilde_bang (t_chroma_tilde *x)
+static void chroma_tilde_bang (t_chroma_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float *windowFuncPtr, maxEnergySum, chromaSums[x->x_numChroma];
+    t_float* windowFuncPtr, maxEnergySum, chromaSums[x->x_numChroma];
     double currentTime;
 
     window = x->x_window;
@@ -117,7 +117,7 @@ static void chroma_tilde_bang (t_chroma_tilde *x)
         t_uInt cardinality;
         chromaSums[i] = 0.0;
 
-        cardinality = tIDLib_getPitchBinRanges(x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_hiFreq, x->x_pitchTolerance, x->x_window, x->x_sr);
+        cardinality = tIDLib_getPitchBinRanges (x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_hiFreq, x->x_pitchTolerance, x->x_window, x->x_sr);
 
         //post ("PC[%lu] cardinality: %i", i, cardinality);
         //startpost ("chroma %lu bin ranges ", i);
@@ -149,7 +149,7 @@ static void chroma_tilde_bang (t_chroma_tilde *x)
 
             j += 2;
         }
-        //endpost ();
+        //endpost();
 
         // divide by the cardinality to account for the fact that different pitch classes will have energy in a different number of bins
         chromaSums[i] /= cardinality;
@@ -172,7 +172,7 @@ static void chroma_tilde_bang (t_chroma_tilde *x)
 }
 
 
-static void chroma_tilde_print (t_chroma_tilde *x)
+static void chroma_tilde_print (t_chroma_tilde* x)
 {
     t_uChar i;
 
@@ -193,11 +193,11 @@ static void chroma_tilde_print (t_chroma_tilde *x)
     for (i = 0; i < x->x_numChroma; i++)
         startpost ("%0.2f ", x->x_pitchClasses[i]);
 
-    endpost ();
+    endpost();
 }
 
 
-static void chroma_tilde_window (t_chroma_tilde *x, t_floatarg w)
+static void chroma_tilde_window (t_chroma_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -253,7 +253,7 @@ static void chroma_tilde_window (t_chroma_tilde *x, t_floatarg w)
 }
 
 
-static void chroma_tilde_overlap (t_chroma_tilde *x, t_floatarg o)
+static void chroma_tilde_overlap (t_chroma_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1.0) ? 1.0 : o;
@@ -262,7 +262,7 @@ static void chroma_tilde_overlap (t_chroma_tilde *x, t_floatarg o)
 }
 
 
-static void chroma_tilde_windowFunction (t_chroma_tilde *x, t_floatarg f)
+static void chroma_tilde_windowFunction (t_chroma_tilde* x, t_floatarg f)
 {
     f = (f < 0.0) ? 0.0 : f;
     f = (f > 4.0) ? 4.0 : f;
@@ -291,7 +291,7 @@ static void chroma_tilde_windowFunction (t_chroma_tilde *x, t_floatarg f)
 }
 
 
-static void chroma_tilde_normalize (t_chroma_tilde *x, t_floatarg norm)
+static void chroma_tilde_normalize (t_chroma_tilde* x, t_floatarg norm)
 {
     norm = (norm < 0.0) ? 0.0 : norm;
     norm = (norm > 1.0) ? 1.0 : norm;
@@ -304,7 +304,7 @@ static void chroma_tilde_normalize (t_chroma_tilde *x, t_floatarg norm)
 }
 
 
-static void chroma_tilde_powerSpectrum (t_chroma_tilde *x, t_floatarg spec)
+static void chroma_tilde_powerSpectrum (t_chroma_tilde* x, t_floatarg spec)
 {
     spec = (spec < 0.0) ? 0.0 : spec;
     spec = (spec > 1.0) ? 1.0 : spec;
@@ -317,7 +317,7 @@ static void chroma_tilde_powerSpectrum (t_chroma_tilde *x, t_floatarg spec)
 }
 
 
-static void chroma_tilde_pitchTol (t_chroma_tilde *x, t_floatarg tol)
+static void chroma_tilde_pitchTol (t_chroma_tilde* x, t_floatarg tol)
 {
     tol = (tol < 0) ? 0 : tol;
     tol = (tol > 0.5) ? 0.5 : tol;
@@ -325,7 +325,7 @@ static void chroma_tilde_pitchTol (t_chroma_tilde *x, t_floatarg tol)
 }
 
 
-static void chroma_tilde_freqRange (t_chroma_tilde *x, t_floatarg loFreq, t_floatarg hiFreq)
+static void chroma_tilde_freqRange (t_chroma_tilde* x, t_floatarg loFreq, t_floatarg hiFreq)
 {
     t_float nyquist;
 
@@ -350,14 +350,14 @@ static void chroma_tilde_freqRange (t_chroma_tilde *x, t_floatarg loFreq, t_floa
 }
 
 
-static void chroma_tilde_energyThresh (t_chroma_tilde *x, t_floatarg thresh)
+static void chroma_tilde_energyThresh (t_chroma_tilde* x, t_floatarg thresh)
 {
     thresh = (thresh < 0) ? 0 : thresh;
     x->x_energyThresh = thresh;
 }
 
 
-static void chroma_tilde_microtune (t_chroma_tilde *x, t_floatarg cents)
+static void chroma_tilde_microtune (t_chroma_tilde* x, t_floatarg cents)
 {
     t_uChar i;
 
@@ -371,7 +371,7 @@ static void chroma_tilde_microtune (t_chroma_tilde *x, t_floatarg cents)
 }
 
 
-static void chroma_tilde_resolution (t_chroma_tilde *x, t_symbol *r)
+static void chroma_tilde_resolution (t_chroma_tilde* x, t_symbol* r)
 {
     t_uChar i, oldNumChroma;
     t_float basePitch;
@@ -424,9 +424,9 @@ static void chroma_tilde_resolution (t_chroma_tilde *x, t_symbol *r)
 }
 
 
-static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* chroma_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_chroma_tilde *x = (t_chroma_tilde *)pd_new (chroma_tilde_class);
+    t_chroma_tilde* x = (t_chroma_tilde *)pd_new (chroma_tilde_class);
     t_sampIdx i;
 
     x->x_chroma = outlet_new (&x->x_obj, gensym ("list"));
@@ -527,7 +527,7 @@ static void *chroma_tilde_new (t_symbol *s, int argc, t_atom *argv)
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
 
-    chroma_tilde_freqRange(x, x->x_loFreq, x->x_hiFreq);
+    chroma_tilde_freqRange (x, x->x_loFreq, x->x_hiFreq);
 
     x->x_pitchTolerance = (x->x_pitchTolerance<0)?0:x->x_pitchTolerance;
     x->x_pitchTolerance = (x->x_pitchTolerance>0.5)?0.5:x->x_pitchTolerance;
@@ -579,9 +579,9 @@ static t_int *chroma_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_chroma_tilde *x = (t_chroma_tilde *)(w[1]);
+    t_chroma_tilde* x = (t_chroma_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -598,7 +598,7 @@ static t_int *chroma_tilde_perform (t_int *w)
 }
 
 
-static void chroma_tilde_dsp (t_chroma_tilde *x, t_signal **sp)
+static void chroma_tilde_dsp (t_chroma_tilde* x, t_signal **sp)
 {
     dsp_add (
         chroma_tilde_perform,
@@ -634,7 +634,7 @@ static void chroma_tilde_dsp (t_chroma_tilde *x, t_signal **sp)
 };
 
 
-static void chroma_tilde_free (t_chroma_tilde *x)
+static void chroma_tilde_free (t_chroma_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

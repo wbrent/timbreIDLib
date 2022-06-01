@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *barkSpecSlope_tilde_class;
+static t_class* barkSpecSlope_tilde_class;
 
 typedef struct _barkSpecSlope_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -30,22 +30,22 @@ typedef struct _barkSpecSlope_tilde
     t_bool x_normalize;
     t_bool x_powerSpectrum;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
     t_filterIdx x_sizeFilterFreqs;
     t_filterIdx x_numFilters;
     t_float x_barkSpacing;
-    t_float *x_filterFreqs;
-    t_filter *x_filterbank;
+    t_float* x_filterFreqs;
+    t_filter* x_filterbank;
     t_bool x_specBandAvg;
     t_bool x_filterAvg;
-    t_outlet *x_slope;
+    t_outlet* x_slope;
     t_float x_f;
 
 } t_barkSpecSlope_tilde;
@@ -53,7 +53,7 @@ typedef struct _barkSpecSlope_tilde
 
 /* ------------------------ barkSpecSlope~ -------------------------------- */
 
-static void barkSpecSlope_tilde_bang (t_barkSpecSlope_tilde *x)
+static void barkSpecSlope_tilde_bang (t_barkSpecSlope_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
     t_float slope, *windowFuncPtr;
@@ -115,13 +115,13 @@ static void barkSpecSlope_tilde_bang (t_barkSpecSlope_tilde *x)
 
     slope=0.0;
 
-    slope = tIDLib_fitLineSlope(x->x_numFilters, x->x_fftwIn);
+    slope = tIDLib_fitLineSlope (x->x_numFilters, x->x_fftwIn);
 
     outlet_float (x->x_slope, slope);
 }
 
 
-static void barkSpecSlope_tilde_createFilterbank (t_barkSpecSlope_tilde *x, t_floatarg bs)
+static void barkSpecSlope_tilde_createFilterbank (t_barkSpecSlope_tilde* x, t_floatarg bs)
 {
     t_filterIdx oldNumFilters;
 
@@ -143,7 +143,7 @@ static void barkSpecSlope_tilde_createFilterbank (t_barkSpecSlope_tilde *x, t_fl
 }
 
 
-static void barkSpecSlope_tilde_spec_band_avg (t_barkSpecSlope_tilde *x, t_floatarg avg)
+static void barkSpecSlope_tilde_spec_band_avg (t_barkSpecSlope_tilde* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -156,7 +156,7 @@ static void barkSpecSlope_tilde_spec_band_avg (t_barkSpecSlope_tilde *x, t_float
 }
 
 
-static void barkSpecSlope_tilde_filter_avg (t_barkSpecSlope_tilde *x, t_floatarg avg)
+static void barkSpecSlope_tilde_filter_avg (t_barkSpecSlope_tilde* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -169,7 +169,7 @@ static void barkSpecSlope_tilde_filter_avg (t_barkSpecSlope_tilde *x, t_floatarg
 }
 
 
-static void barkSpecSlope_tilde_print (t_barkSpecSlope_tilde *x)
+static void barkSpecSlope_tilde_print (t_barkSpecSlope_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -185,7 +185,7 @@ static void barkSpecSlope_tilde_print (t_barkSpecSlope_tilde *x)
 }
 
 
-static void barkSpecSlope_tilde_hat (t_barkSpecSlope_tilde *x, t_floatarg filt)
+static void barkSpecSlope_tilde_hat (t_barkSpecSlope_tilde* x, t_floatarg filt)
 {
     t_filterIdx i, idx;
 
@@ -204,7 +204,7 @@ static void barkSpecSlope_tilde_hat (t_barkSpecSlope_tilde *x, t_floatarg filt)
 }
 
 
-static void barkSpecSlope_tilde_window (t_barkSpecSlope_tilde *x, t_floatarg w)
+static void barkSpecSlope_tilde_window (t_barkSpecSlope_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -262,7 +262,7 @@ static void barkSpecSlope_tilde_window (t_barkSpecSlope_tilde *x, t_floatarg w)
 }
 
 
-static void barkSpecSlope_tilde_overlap (t_barkSpecSlope_tilde *x, t_floatarg o)
+static void barkSpecSlope_tilde_overlap (t_barkSpecSlope_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -271,7 +271,7 @@ static void barkSpecSlope_tilde_overlap (t_barkSpecSlope_tilde *x, t_floatarg o)
 }
 
 
-static void barkSpecSlope_tilde_windowFunction (t_barkSpecSlope_tilde *x, t_floatarg f)
+static void barkSpecSlope_tilde_windowFunction (t_barkSpecSlope_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -300,7 +300,7 @@ static void barkSpecSlope_tilde_windowFunction (t_barkSpecSlope_tilde *x, t_floa
 }
 
 
-static void barkSpecSlope_tilde_powerSpectrum (t_barkSpecSlope_tilde *x, t_floatarg spec)
+static void barkSpecSlope_tilde_powerSpectrum (t_barkSpecSlope_tilde* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -313,7 +313,7 @@ static void barkSpecSlope_tilde_powerSpectrum (t_barkSpecSlope_tilde *x, t_float
 }
 
 
-static void barkSpecSlope_tilde_normalize (t_barkSpecSlope_tilde *x, t_floatarg norm)
+static void barkSpecSlope_tilde_normalize (t_barkSpecSlope_tilde* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -326,9 +326,9 @@ static void barkSpecSlope_tilde_normalize (t_barkSpecSlope_tilde *x, t_floatarg 
 }
 
 
-static void *barkSpecSlope_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* barkSpecSlope_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_barkSpecSlope_tilde *x = (t_barkSpecSlope_tilde *)pd_new (barkSpecSlope_tilde_class);
+    t_barkSpecSlope_tilde* x = (t_barkSpecSlope_tilde *)pd_new (barkSpecSlope_tilde_class);
     t_sampIdx i;
 
     x->x_slope = outlet_new (&x->x_obj, &s_float);
@@ -437,9 +437,9 @@ static t_int *barkSpecSlope_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_barkSpecSlope_tilde *x = (t_barkSpecSlope_tilde *)(w[1]);
+    t_barkSpecSlope_tilde* x = (t_barkSpecSlope_tilde *)(w[1]);
 
-    t_sample *in = (t_sample *)(w[2]);
+    t_sample* in = (t_sample *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -456,7 +456,7 @@ static t_int *barkSpecSlope_tilde_perform (t_int *w)
 }
 
 
-static void barkSpecSlope_tilde_dsp (t_barkSpecSlope_tilde *x, t_signal **sp)
+static void barkSpecSlope_tilde_dsp (t_barkSpecSlope_tilde* x, t_signal **sp)
 {
     dsp_add (
         barkSpecSlope_tilde_perform,
@@ -491,7 +491,7 @@ static void barkSpecSlope_tilde_dsp (t_barkSpecSlope_tilde *x, t_signal **sp)
 };
 
 
-static void barkSpecSlope_tilde_free (t_barkSpecSlope_tilde *x)
+static void barkSpecSlope_tilde_free (t_barkSpecSlope_tilde* x)
 {
     t_filterIdx i;
 

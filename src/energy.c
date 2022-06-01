@@ -15,30 +15,30 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *energy_class;
+static t_class* energy_class;
 
 typedef struct _energy
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_bool x_normalize;
     t_bool x_power;
     t_bool x_db;
-    t_float *x_analysisBuffer;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_analysisBuffer;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_outlet *x_energyOutlet;
+    t_outlet* x_energyOutlet;
 } t_energy;
 
 
 /* ------------------------ energy -------------------------------- */
 
-static void energy_analyze (t_energy *x, t_floatarg start, t_floatarg n)
+static void energy_analyze (t_energy* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -103,9 +103,9 @@ static void energy_analyze (t_energy *x, t_floatarg start, t_floatarg n)
 
 
 // analyze the whole damn array
-static void energy_bang (t_energy *x)
+static void energy_bang (t_energy* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -121,9 +121,9 @@ static void energy_bang (t_energy *x)
 }
 
 
-static void energy_set (t_energy *x, t_symbol *s)
+static void energy_set (t_energy* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -133,7 +133,7 @@ static void energy_set (t_energy *x, t_symbol *s)
         x->x_arrayName = s;
 }
 
-static void energy_normalize (t_energy *x, t_floatarg n)
+static void energy_normalize (t_energy* x, t_floatarg n)
 {
     n = (n < 0) ? 0 : n;
     x->x_normalize = (n > 1) ? 1 : n;
@@ -141,7 +141,7 @@ static void energy_normalize (t_energy *x, t_floatarg n)
     post ("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
 }
 
-static void energy_power (t_energy *x, t_floatarg p)
+static void energy_power (t_energy* x, t_floatarg p)
 {
     p = (p < 0) ? 0 : p;
     x->x_power = (p > 1) ? 1 : p;
@@ -155,7 +155,7 @@ static void energy_power (t_energy *x, t_floatarg p)
     }
 }
 
-static void energy_db(t_energy *x, t_floatarg d)
+static void energy_db (t_energy* x, t_floatarg d)
 {
     d = (d < 0) ? 0 : d;
     x->x_db = (d > 1) ? 1 : d;
@@ -169,7 +169,7 @@ static void energy_db(t_energy *x, t_floatarg d)
         post ("%s dB: %i", x->x_objSymbol->s_name, x->x_db);
 }
 
-static void energy_print (t_energy *x)
+static void energy_print (t_energy* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
@@ -179,7 +179,7 @@ static void energy_print (t_energy *x)
 }
 
 
-static void energy_samplerate (t_energy *x, t_floatarg sr)
+static void energy_samplerate (t_energy* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -188,9 +188,9 @@ static void energy_samplerate (t_energy *x, t_floatarg sr)
 }
 
 
-static void *energy_new (t_symbol *s, int argc, t_atom *argv)
+static void* energy_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_energy *x = (t_energy *)pd_new (energy_class);
+    t_energy* x = (t_energy *)pd_new (energy_class);
 //	t_garray *a;
 
     x->x_energyOutlet = outlet_new (&x->x_obj, &s_float);
@@ -212,7 +212,7 @@ static void *energy_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -240,7 +240,7 @@ static void *energy_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void energy_free (t_energy *x)
+static void energy_free (t_energy* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_sample));

@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *specFlux_class;
+static t_class* specFlux_class;
 
 typedef struct _specFlux
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
@@ -28,30 +28,30 @@ typedef struct _specFlux
     t_bool x_normalize;
     t_bool x_powerSpectrum;
     t_bool x_logSpectrum;
-    t_sample *x_fftwInForwardWindow;
-    t_sample *x_fftwInBackWindow;
-    fftwf_complex *x_fftwOutForwardWindow;
-    fftwf_complex *x_fftwOutBackWindow;
+    t_sample* x_fftwInForwardWindow;
+    t_sample* x_fftwInBackWindow;
+    fftwf_complex* x_fftwOutForwardWindow;
+    fftwf_complex* x_fftwOutBackWindow;
     fftwf_plan x_fftwPlanForwardWindow;
     fftwf_plan x_fftwPlanBackWindow;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
     t_fluxMode x_mode;
     t_bool x_squaredDiff;
     t_uInt x_separation;
-    t_atom *x_listOut;
-    t_outlet *x_fluxList;
-    t_outlet *x_flux;
+    t_atom* x_listOut;
+    t_outlet* x_fluxList;
+    t_outlet* x_flux;
 } t_specFlux;
 
 
 /* ------------------------ specFlux -------------------------------- */
-static void specFlux_resizeWindow (t_specFlux *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void specFlux_resizeWindow (t_specFlux* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx i, oldWindowHalf, windowHalf;
 
@@ -116,9 +116,9 @@ static void specFlux_resizeWindow (t_specFlux *x, t_sampIdx oldWindow, t_sampIdx
 }
 
 
-static void specFlux_analyze (t_specFlux *x, t_floatarg start, t_floatarg n)
+static void specFlux_analyze (t_specFlux* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -154,7 +154,7 @@ static void specFlux_analyze (t_specFlux *x, t_floatarg start, t_floatarg n)
         for (i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_fftwInForwardWindow[i] = x->x_vec[j].w_float;
 
-        // do these sample start/end location calculations AFTER the potential call to resizeWindow (), as x->x_window may have changed
+        // do these sample start/end location calculations AFTER the potential call to resizeWindow(), as x->x_window may have changed
         if (startSamp>=x->x_separation)
             startSampBack = startSamp - x->x_separation;
         else
@@ -163,7 +163,7 @@ static void specFlux_analyze (t_specFlux *x, t_floatarg start, t_floatarg n)
         endSampBack = startSampBack + x->x_window - 1;
 
         // construct back analysis window x->x_separation frames earlier
-        for (i = 0, j=startSampBack; j<=endSampBack; i++, j++)
+        for (i = 0, j = startSampBack; j <= endSampBack; i++, j++)
             x->x_fftwInBackWindow[i] = x->x_vec[j].w_float;
 
         windowFuncPtr = x->x_blackman;
@@ -294,7 +294,7 @@ static void specFlux_analyze (t_specFlux *x, t_floatarg start, t_floatarg n)
 }
 
 
-static void specFlux_chain_fftData (t_specFlux *x, t_symbol *s, int argc, t_atom *argv)
+static void specFlux_chain_fftData (t_specFlux* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float flux;
@@ -388,7 +388,7 @@ static void specFlux_chain_fftData (t_specFlux *x, t_symbol *s, int argc, t_atom
 }
 
 
-static void specFlux_chain_magSpec (t_specFlux *x, t_symbol *s, int argc, t_atom *argv)
+static void specFlux_chain_magSpec (t_specFlux* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float flux;
@@ -465,9 +465,9 @@ static void specFlux_chain_magSpec (t_specFlux *x, t_symbol *s, int argc, t_atom
 
 
 // analyze the whole damn array
-static void specFlux_bang (t_specFlux *x)
+static void specFlux_bang (t_specFlux* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -483,9 +483,9 @@ static void specFlux_bang (t_specFlux *x)
 }
 
 
-static void specFlux_set (t_specFlux *x, t_symbol *s)
+static void specFlux_set (t_specFlux* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -496,7 +496,7 @@ static void specFlux_set (t_specFlux *x, t_symbol *s)
 }
 
 
-static void specFlux_print (t_specFlux *x)
+static void specFlux_print (t_specFlux* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)x->x_sr);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
@@ -525,7 +525,7 @@ static void specFlux_print (t_specFlux *x)
 }
 
 
-static void specFlux_samplerate (t_specFlux *x, t_floatarg sr)
+static void specFlux_samplerate (t_specFlux* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -534,18 +534,18 @@ static void specFlux_samplerate (t_specFlux *x, t_floatarg sr)
 }
 
 
-static void specFlux_window (t_specFlux *x, t_floatarg w)
+static void specFlux_window (t_specFlux* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     specFlux_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void specFlux_windowFunction (t_specFlux *x, t_floatarg f)
+static void specFlux_windowFunction (t_specFlux* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -574,7 +574,7 @@ static void specFlux_windowFunction (t_specFlux *x, t_floatarg f)
 }
 
 
-static void specFlux_powerSpectrum (t_specFlux *x, t_floatarg spec)
+static void specFlux_powerSpectrum (t_specFlux* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -587,7 +587,7 @@ static void specFlux_powerSpectrum (t_specFlux *x, t_floatarg spec)
 }
 
 
-static void specFlux_logSpectrum (t_specFlux *x, t_floatarg spec)
+static void specFlux_logSpectrum (t_specFlux* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -600,7 +600,7 @@ static void specFlux_logSpectrum (t_specFlux *x, t_floatarg spec)
 }
 
 
-static void specFlux_normalize (t_specFlux *x, t_floatarg norm)
+static void specFlux_normalize (t_specFlux* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -613,7 +613,7 @@ static void specFlux_normalize (t_specFlux *x, t_floatarg norm)
 }
 
 
-static void specFlux_separation (t_specFlux *x, t_floatarg s)
+static void specFlux_separation (t_specFlux* x, t_floatarg s)
 {
     if (s > x->x_window)
     {
@@ -632,7 +632,7 @@ static void specFlux_separation (t_specFlux *x, t_floatarg s)
 }
 
 
-static void specFlux_squaredDiff (t_specFlux *x, t_floatarg sd)
+static void specFlux_squaredDiff (t_specFlux* x, t_floatarg sd)
 {
     sd = (sd < 0) ? 0 : sd;
     sd = (sd > 1) ? 1 : sd;
@@ -645,7 +645,7 @@ static void specFlux_squaredDiff (t_specFlux *x, t_floatarg sd)
 }
 
 
-static void specFlux_mode (t_specFlux *x, t_symbol *m)
+static void specFlux_mode (t_specFlux* x, t_symbol* m)
 {
     if ( !strcmp (m->s_name, "flux"))
         x->x_mode = mFlux;
@@ -658,9 +658,9 @@ static void specFlux_mode (t_specFlux *x, t_symbol *m)
 }
 
 
-static void *specFlux_new (t_symbol *s, int argc, t_atom *argv)
+static void* specFlux_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_specFlux *x = (t_specFlux *)pd_new (specFlux_class);
+    t_specFlux* x = (t_specFlux *)pd_new (specFlux_class);
     t_float sepFloat;
     t_sampIdx i;
 //	t_garray *a;
@@ -709,7 +709,7 @@ static void *specFlux_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_separation = TID_WINDOWSIZEDEFAULT * 0.5;
             break;
@@ -772,7 +772,7 @@ static void *specFlux_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void specFlux_free (t_specFlux *x)
+static void specFlux_free (t_specFlux* x)
 {
     // free the list out memory
     t_freebytes (x->x_listOut, (x->x_windowHalf + 1) * sizeof (t_atom));

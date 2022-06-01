@@ -15,22 +15,23 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *tID_std_class;
+static t_class* tID_std_class;
 
 typedef struct _tID_std
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
-    t_outlet *x_std;
+    t_symbol* x_objSymbol;
+    t_outlet* x_std;
 
 } t_tID_std;
 
 
 /* ------------------------ tID_std -------------------------------- */
 
-static void tID_std_calculate(t_tID_std *x, t_symbol *s, int argc, t_atom *argv)
+static void tID_std_calculate (t_tID_std* x, t_symbol* s, int argc, t_atom* argv)
 {
-    t_float n, sum, mean, std, *input;
+    t_float n, sum, mean, std;
+    t_float* input;
     t_sampIdx i;
 
     n = argc;
@@ -50,7 +51,7 @@ static void tID_std_calculate(t_tID_std *x, t_symbol *s, int argc, t_atom *argv)
         for (i = 0; i < n; i++)
             sum += input[i];
 
-        mean = sum/n;
+        mean = sum / n;
 
         sum = 0.0;
 
@@ -62,8 +63,8 @@ static void tID_std_calculate(t_tID_std *x, t_symbol *s, int argc, t_atom *argv)
             sum += input[i];
         }
 
-        std = sum/(n - 1.0);
-        std = sqrt(std);
+        std = sum / (n - 1.0);
+        std = sqrt (std);
 
         outlet_float (x->x_std, std);
 
@@ -72,9 +73,9 @@ static void tID_std_calculate(t_tID_std *x, t_symbol *s, int argc, t_atom *argv)
     }
 }
 
-static void *tID_std_new (void)
+static void* tID_std_new (void)
 {
-    t_tID_std *x = (t_tID_std *)pd_new (tID_std_class);
+    t_tID_std* x = (t_tID_std *)pd_new (tID_std_class);
     x->x_std = outlet_new (&x->x_obj, &s_float);
 
     x->x_objSymbol = gensym ("tID_std");

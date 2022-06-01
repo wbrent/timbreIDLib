@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *energyEntropy_class;
+static t_class* energyEntropy_class;
 
 typedef struct _energyEntropy
 {
@@ -36,7 +36,7 @@ typedef struct _energyEntropy
 
 static void energyEntropy_analyze (t_energyEntropy* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -98,7 +98,7 @@ static void energyEntropy_analyze (t_energyEntropy* x, t_floatarg start, t_float
 // analyze the whole damn array
 static void energyEntropy_bang (t_energyEntropy* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -116,7 +116,7 @@ static void energyEntropy_bang (t_energyEntropy* x)
 
 static void energyEntropy_set (t_energyEntropy* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -199,7 +199,7 @@ static void energyEntropy_samplerate (t_energyEntropy* x, t_floatarg sr)
 }
 
 
-static void *energyEntropy_new (t_symbol* s, int argc, t_atom* argv)
+static void* energyEntropy_new (t_symbol* s, int argc, t_atom* argv)
 {
     t_energyEntropy* x = (t_energyEntropy *)pd_new (energyEntropy_class);
     t_sampIdx i, bufLen;
@@ -250,7 +250,7 @@ static void *energyEntropy_new (t_symbol* s, int argc, t_atom* argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_subWindowSize = TID_WINDOWSIZEDEFAULT;
             x->x_subWindowsPerMidTermWindow = TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT;

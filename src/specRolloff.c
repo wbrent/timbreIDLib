@@ -15,35 +15,35 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *specRolloff_class;
+static t_class* specRolloff_class;
 
 typedef struct _specRolloff
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
     t_windowFunction x_windowFunction;
     t_bool x_powerSpectrum;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
     t_float x_concentration;
-    t_float *x_binFreqs;
-    t_outlet *x_rolloff;
+    t_float* x_binFreqs;
+    t_outlet* x_rolloff;
 } t_specRolloff;
 
 
 /* ------------------------ specRolloff -------------------------------- */
-static void specRolloff_resizeWindow (t_specRolloff *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void specRolloff_resizeWindow (t_specRolloff* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx i, oldWindowHalf, windowHalf;
 
@@ -86,13 +86,13 @@ static void specRolloff_resizeWindow (t_specRolloff *x, t_sampIdx oldWindow, t_s
     tIDLib_hannWindow (x->x_hann, x->x_window);
 
      for (i = 0; i <= x->x_windowHalf; i++)
-        x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+        x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
 }
 
 
-static void specRolloff_analyze (t_specRolloff *x, t_floatarg start, t_floatarg n)
+static void specRolloff_analyze (t_specRolloff* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -172,7 +172,7 @@ static void specRolloff_analyze (t_specRolloff *x, t_floatarg start, t_floatarg 
         energySum=0.0;
         i = 0;
 
-        while(energySum <= energyTarget)
+        while (energySum <= energyTarget)
         {
             energySum += x->x_fftwIn[i];
             i++;
@@ -191,7 +191,7 @@ static void specRolloff_analyze (t_specRolloff *x, t_floatarg start, t_floatarg 
 }
 
 
-static void specRolloff_chain_fftData (t_specRolloff *x, t_symbol *s, int argc, t_atom *argv)
+static void specRolloff_chain_fftData (t_specRolloff* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float energyTarget, energySum, rolloff;
@@ -228,7 +228,7 @@ static void specRolloff_chain_fftData (t_specRolloff *x, t_symbol *s, int argc, 
     energySum=0.0;
     i = 0;
 
-    while(energySum <= energyTarget)
+    while (energySum <= energyTarget)
     {
         energySum += x->x_fftwIn[i];
         i++;
@@ -246,7 +246,7 @@ static void specRolloff_chain_fftData (t_specRolloff *x, t_symbol *s, int argc, 
 }
 
 
-static void specRolloff_chain_magSpec (t_specRolloff *x, t_symbol *s, int argc, t_atom *argv)
+static void specRolloff_chain_magSpec (t_specRolloff* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float energyTarget, energySum, rolloff;
@@ -274,7 +274,7 @@ static void specRolloff_chain_magSpec (t_specRolloff *x, t_symbol *s, int argc, 
     energySum=0.0;
     i = 0;
 
-    while(energySum <= energyTarget)
+    while (energySum <= energyTarget)
     {
         energySum += x->x_fftwIn[i];
         i++;
@@ -293,9 +293,9 @@ static void specRolloff_chain_magSpec (t_specRolloff *x, t_symbol *s, int argc, 
 
 
 // analyze the whole damn array
-static void specRolloff_bang (t_specRolloff *x)
+static void specRolloff_bang (t_specRolloff* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -311,7 +311,7 @@ static void specRolloff_bang (t_specRolloff *x)
 }
 
 
-static void specRolloff_concentration(t_specRolloff *x, t_floatarg c)
+static void specRolloff_concentration (t_specRolloff* x, t_floatarg c)
 {
     if (c<0 || c>1.0)
         post ("%s concentration must be between 0.0 and 1.0.", x->x_objSymbol->s_name);
@@ -322,9 +322,9 @@ static void specRolloff_concentration(t_specRolloff *x, t_floatarg c)
 }
 
 
-static void specRolloff_set (t_specRolloff *x, t_symbol *s)
+static void specRolloff_set (t_specRolloff* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -335,7 +335,7 @@ static void specRolloff_set (t_specRolloff *x, t_symbol *s)
 }
 
 
-static void specRolloff_print (t_specRolloff *x)
+static void specRolloff_print (t_specRolloff* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -346,7 +346,7 @@ static void specRolloff_print (t_specRolloff *x)
 }
 
 
-static void specRolloff_samplerate (t_specRolloff *x, t_floatarg sr)
+static void specRolloff_samplerate (t_specRolloff* x, t_floatarg sr)
 {
     t_sampIdx i;
 
@@ -356,22 +356,22 @@ static void specRolloff_samplerate (t_specRolloff *x, t_floatarg sr)
         x->x_sr = sr;
 
      for (i = 0; i <= x->x_windowHalf; i++)
-        x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+        x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
 }
 
 
-static void specRolloff_window (t_specRolloff *x, t_floatarg w)
+static void specRolloff_window (t_specRolloff* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     specRolloff_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void specRolloff_windowFunction (t_specRolloff *x, t_floatarg f)
+static void specRolloff_windowFunction (t_specRolloff* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -400,7 +400,7 @@ static void specRolloff_windowFunction (t_specRolloff *x, t_floatarg f)
 }
 
 
-static void specRolloff_powerSpectrum (t_specRolloff *x, t_floatarg spec)
+static void specRolloff_powerSpectrum (t_specRolloff* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -413,9 +413,9 @@ static void specRolloff_powerSpectrum (t_specRolloff *x, t_floatarg spec)
 }
 
 
-static void *specRolloff_new (t_symbol *s, int argc, t_atom *argv)
+static void* specRolloff_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_specRolloff *x = (t_specRolloff *)pd_new (specRolloff_class);
+    t_specRolloff* x = (t_specRolloff *)pd_new (specRolloff_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -463,7 +463,7 @@ static void *specRolloff_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;
             break;
@@ -509,13 +509,13 @@ static void *specRolloff_new (t_symbol *s, int argc, t_atom *argv)
     x->x_binFreqs = (t_float *)t_getbytes ((x->x_windowHalf + 1) * sizeof (t_float));
 
      for (i = 0; i <= x->x_windowHalf; i++)
-        x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+        x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
 
     return (x);
 }
 
 
-static void specRolloff_free (t_specRolloff *x)
+static void specRolloff_free (t_specRolloff* x)
 {
     // free FFTW stuff
     t_freebytes (x->x_fftwIn, x->x_window * sizeof (t_sample));

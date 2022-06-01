@@ -15,33 +15,33 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *phaseSpec_class;
+static t_class* phaseSpec_class;
 
 typedef struct _phaseSpec
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
     t_windowFunction x_windowFunction;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_atom *x_listOut;
-    t_outlet *x_phase;
+    t_atom* x_listOut;
+    t_outlet* x_phase;
 } t_phaseSpec;
 
 
 /* ------------------------ phaseSpec -------------------------------- */
-static void phaseSpec_resizeWindow (t_phaseSpec *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void phaseSpec_resizeWindow (t_phaseSpec* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx windowHalf, oldWindowHalf;
 
@@ -87,9 +87,9 @@ static void phaseSpec_resizeWindow (t_phaseSpec *x, t_sampIdx oldWindow, t_sampI
 }
 
 
-static void phaseSpec_analyze (t_phaseSpec *x, t_floatarg start, t_floatarg n)
+static void phaseSpec_analyze (t_phaseSpec* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -98,7 +98,7 @@ static void phaseSpec_analyze (t_phaseSpec *x, t_floatarg start, t_floatarg n)
     else
     {
         t_sampIdx i, j, window, windowHalf, startSamp, endSamp;
-        t_float *windowFuncPtr;
+        t_float* windowFuncPtr;
 
         startSamp = start;
         startSamp = (start < 0) ? 0 : start;
@@ -166,7 +166,7 @@ static void phaseSpec_analyze (t_phaseSpec *x, t_floatarg start, t_floatarg n)
 }
 
 
-static void phaseSpec_chain_fftData (t_phaseSpec *x, t_symbol *s, int argc, t_atom *argv)
+static void phaseSpec_chain_fftData (t_phaseSpec* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
 
@@ -196,9 +196,9 @@ static void phaseSpec_chain_fftData (t_phaseSpec *x, t_symbol *s, int argc, t_at
 
 
 // analyze the whole damn array
-static void phaseSpec_bang (t_phaseSpec *x)
+static void phaseSpec_bang (t_phaseSpec* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -214,9 +214,9 @@ static void phaseSpec_bang (t_phaseSpec *x)
 }
 
 
-static void phaseSpec_set (t_phaseSpec *x, t_symbol *s)
+static void phaseSpec_set (t_phaseSpec* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -227,7 +227,7 @@ static void phaseSpec_set (t_phaseSpec *x, t_symbol *s)
 }
 
 
-static void phaseSpec_print (t_phaseSpec *x)
+static void phaseSpec_print (t_phaseSpec* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -236,7 +236,7 @@ static void phaseSpec_print (t_phaseSpec *x)
 }
 
 
-static void phaseSpec_samplerate (t_phaseSpec *x, t_floatarg sr)
+static void phaseSpec_samplerate (t_phaseSpec* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -245,18 +245,18 @@ static void phaseSpec_samplerate (t_phaseSpec *x, t_floatarg sr)
 }
 
 
-static void phaseSpec_window (t_phaseSpec *x, t_floatarg w)
+static void phaseSpec_window (t_phaseSpec* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     phaseSpec_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void phaseSpec_windowFunction (t_phaseSpec *x, t_floatarg f)
+static void phaseSpec_windowFunction (t_phaseSpec* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -285,9 +285,9 @@ static void phaseSpec_windowFunction (t_phaseSpec *x, t_floatarg f)
 }
 
 
-static void *phaseSpec_new (t_symbol *s, int argc, t_atom *argv)
+static void* phaseSpec_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_phaseSpec *x = (t_phaseSpec *)pd_new (phaseSpec_class);
+    t_phaseSpec* x = (t_phaseSpec *)pd_new (phaseSpec_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -310,7 +310,7 @@ static void *phaseSpec_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -360,7 +360,7 @@ static void *phaseSpec_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void phaseSpec_free (t_phaseSpec *x)
+static void phaseSpec_free (t_phaseSpec* x)
 {
     // free FFTW stuff
     t_freebytes (x->x_fftwIn, x->x_window * sizeof (t_sample));

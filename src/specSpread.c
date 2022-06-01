@@ -15,34 +15,34 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *specSpread_class;
+static t_class* specSpread_class;
 
 typedef struct _specSpread
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
     t_windowFunction x_windowFunction;
     t_bool x_powerSpectrum;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_float *x_binFreqs;
-    t_outlet *x_spread;
+    t_float* x_binFreqs;
+    t_outlet* x_spread;
 } t_specSpread;
 
 
 /* ------------------------ specSpread -------------------------------- */
-static void specSpread_resizeWindow (t_specSpread *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void specSpread_resizeWindow (t_specSpread* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx i, oldWindowHalf, windowHalf;
 
@@ -85,13 +85,13 @@ static void specSpread_resizeWindow (t_specSpread *x, t_sampIdx oldWindow, t_sam
     tIDLib_hannWindow (x->x_hann, x->x_window);
 
      for (i = 0; i <= x->x_windowHalf; i++)
-        x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+        x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
 }
 
 
-static void specSpread_analyze (t_specSpread *x, t_floatarg start, t_floatarg n)
+static void specSpread_analyze (t_specSpread* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -166,15 +166,15 @@ static void specSpread_analyze (t_specSpread *x, t_floatarg start, t_floatarg n)
         for (i = 0; i <= x->x_windowHalf; i++)
             energySum += x->x_fftwIn[i];
 
-        centroid = tIDLib_computeCentroid(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum);
-        spread = tIDLib_computeSpread(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
+        centroid = tIDLib_computeCentroid (x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum);
+        spread = tIDLib_computeSpread (x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
 
         outlet_float (x->x_spread, spread);
     }
 }
 
 
-static void specSpread_chain_fftData (t_specSpread *x, t_symbol *s, int argc, t_atom *argv)
+static void specSpread_chain_fftData (t_specSpread* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float energySum, centroid, spread;
@@ -206,14 +206,14 @@ static void specSpread_chain_fftData (t_specSpread *x, t_symbol *s, int argc, t_
     for (i = 0; i <= x->x_windowHalf; i++)
         energySum += x->x_fftwIn[i];
 
-    centroid = tIDLib_computeCentroid(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum);
-    spread = tIDLib_computeSpread(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
+    centroid = tIDLib_computeCentroid (x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum);
+    spread = tIDLib_computeSpread (x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
 
     outlet_float (x->x_spread, spread);
 }
 
 
-static void specSpread_chain_magSpec (t_specSpread *x, t_symbol *s, int argc, t_atom *argv)
+static void specSpread_chain_magSpec (t_specSpread* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float energySum, centroid, spread;
@@ -236,17 +236,17 @@ static void specSpread_chain_magSpec (t_specSpread *x, t_symbol *s, int argc, t_
     for (i = 0; i <= x->x_windowHalf; i++)
         energySum += x->x_fftwIn[i];
 
-    centroid = tIDLib_computeCentroid(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum);
-    spread = tIDLib_computeSpread(x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
+    centroid = tIDLib_computeCentroid (x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum);
+    spread = tIDLib_computeSpread (x->x_windowHalf + 1, x->x_fftwIn, x->x_binFreqs, energySum, centroid);
 
     outlet_float (x->x_spread, spread);
 }
 
 
 // analyze the whole damn array
-static void specSpread_bang (t_specSpread *x)
+static void specSpread_bang (t_specSpread* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -262,9 +262,9 @@ static void specSpread_bang (t_specSpread *x)
 }
 
 
-static void specSpread_set (t_specSpread *x, t_symbol *s)
+static void specSpread_set (t_specSpread* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -275,7 +275,7 @@ static void specSpread_set (t_specSpread *x, t_symbol *s)
 }
 
 
-static void specSpread_print (t_specSpread *x)
+static void specSpread_print (t_specSpread* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -285,7 +285,7 @@ static void specSpread_print (t_specSpread *x)
 }
 
 
-static void specSpread_samplerate (t_specSpread *x, t_floatarg sr)
+static void specSpread_samplerate (t_specSpread* x, t_floatarg sr)
 {
     t_sampIdx i;
 
@@ -295,22 +295,22 @@ static void specSpread_samplerate (t_specSpread *x, t_floatarg sr)
         x->x_sr = sr;
 
      for (i = 0; i <= x->x_windowHalf; i++)
-        x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+        x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
 }
 
 
-static void specSpread_window (t_specSpread *x, t_floatarg w)
+static void specSpread_window (t_specSpread* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     specSpread_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void specSpread_windowFunction (t_specSpread *x, t_floatarg f)
+static void specSpread_windowFunction (t_specSpread* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -339,7 +339,7 @@ static void specSpread_windowFunction (t_specSpread *x, t_floatarg f)
 }
 
 
-static void specSpread_powerSpectrum (t_specSpread *x, t_floatarg spec)
+static void specSpread_powerSpectrum (t_specSpread* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -352,9 +352,9 @@ static void specSpread_powerSpectrum (t_specSpread *x, t_floatarg spec)
 }
 
 
-static void *specSpread_new (t_symbol *s, int argc, t_atom *argv)
+static void* specSpread_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_specSpread *x = (t_specSpread *)pd_new (specSpread_class);
+    t_specSpread* x = (t_specSpread *)pd_new (specSpread_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -377,7 +377,7 @@ static void *specSpread_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -422,13 +422,13 @@ static void *specSpread_new (t_symbol *s, int argc, t_atom *argv)
     x->x_binFreqs = (t_float *)t_getbytes ((x->x_windowHalf + 1) * sizeof (t_float));
 
      for (i = 0; i <= x->x_windowHalf; i++)
-        x->x_binFreqs[i] = tIDLib_bin2freq(i, x->x_window, x->x_sr);
+        x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
 
     return (x);
 }
 
 
-static void specSpread_free (t_specSpread *x)
+static void specSpread_free (t_specSpread* x)
 {
     // free FFTW stuff
     t_freebytes (x->x_fftwIn, x->x_window * sizeof (t_sample));

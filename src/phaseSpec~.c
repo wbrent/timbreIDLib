@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *phaseSpec_tilde_class;
+static t_class* phaseSpec_tilde_class;
 
 typedef struct _phaseSpec_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -28,26 +28,26 @@ typedef struct _phaseSpec_tilde
     t_windowFunction x_windowFunction;
     t_uShortInt x_overlap;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_atom *x_listOut;
-    t_outlet *x_phase;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_atom* x_listOut;
+    t_outlet* x_phase;
     t_float x_f;
 } t_phaseSpec_tilde;
 
 
 /* ------------------------ phaseSpec~ -------------------------------- */
 
-static void phaseSpec_tilde_bang (t_phaseSpec_tilde *x)
+static void phaseSpec_tilde_bang (t_phaseSpec_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float *windowFuncPtr;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;
@@ -100,7 +100,7 @@ static void phaseSpec_tilde_bang (t_phaseSpec_tilde *x)
 }
 
 
-static void phaseSpec_tilde_print (t_phaseSpec_tilde *x)
+static void phaseSpec_tilde_print (t_phaseSpec_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_sampIdx)x->x_n);
@@ -110,7 +110,7 @@ static void phaseSpec_tilde_print (t_phaseSpec_tilde *x)
 }
 
 
-static void phaseSpec_tilde_window (t_phaseSpec_tilde *x, t_floatarg w)
+static void phaseSpec_tilde_window (t_phaseSpec_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -166,7 +166,7 @@ static void phaseSpec_tilde_window (t_phaseSpec_tilde *x, t_floatarg w)
 }
 
 
-static void phaseSpec_tilde_overlap (t_phaseSpec_tilde *x, t_floatarg o)
+static void phaseSpec_tilde_overlap (t_phaseSpec_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o<1.0)?1.0:o;
@@ -175,7 +175,7 @@ static void phaseSpec_tilde_overlap (t_phaseSpec_tilde *x, t_floatarg o)
 }
 
 
-static void phaseSpec_tilde_windowFunction (t_phaseSpec_tilde *x, t_floatarg f)
+static void phaseSpec_tilde_windowFunction (t_phaseSpec_tilde* x, t_floatarg f)
 {
     f = (f<0.0)?0.0:f;
     f = (f>4.0)?4.0:f;
@@ -204,9 +204,9 @@ static void phaseSpec_tilde_windowFunction (t_phaseSpec_tilde *x, t_floatarg f)
 }
 
 
-static void *phaseSpec_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* phaseSpec_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_phaseSpec_tilde *x = (t_phaseSpec_tilde *)pd_new (phaseSpec_tilde_class);
+    t_phaseSpec_tilde* x = (t_phaseSpec_tilde *)pd_new (phaseSpec_tilde_class);
     t_sampIdx i;
 
     x->x_phase = outlet_new (&x->x_obj, gensym ("list"));
@@ -279,9 +279,9 @@ static t_int *phaseSpec_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_phaseSpec_tilde *x = (t_phaseSpec_tilde *)(w[1]);
+    t_phaseSpec_tilde* x = (t_phaseSpec_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -298,7 +298,7 @@ static t_int *phaseSpec_tilde_perform (t_int *w)
 }
 
 
-static void phaseSpec_tilde_dsp (t_phaseSpec_tilde *x, t_signal **sp)
+static void phaseSpec_tilde_dsp (t_phaseSpec_tilde* x, t_signal **sp)
 {
     dsp_add (
         phaseSpec_tilde_perform,
@@ -334,7 +334,7 @@ static void phaseSpec_tilde_dsp (t_phaseSpec_tilde *x, t_signal **sp)
 };
 
 
-static void phaseSpec_tilde_free (t_phaseSpec_tilde *x)
+static void phaseSpec_tilde_free (t_phaseSpec_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

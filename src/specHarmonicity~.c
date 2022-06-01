@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *specHarmonicity_tilde_class;
+static t_class* specHarmonicity_tilde_class;
 
 typedef struct _specHarmonicity_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -35,26 +35,26 @@ typedef struct _specHarmonicity_tilde
     t_float x_threshPct;
     t_uShortInt x_maxPeaks;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_outlet *x_harm;
-    t_outlet *x_inHarm;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_outlet* x_harm;
+    t_outlet* x_inHarm;
     t_float x_f;
 } t_specHarmonicity_tilde;
 
 
 /* ------------------------ specHarmonicity~ -------------------------------- */
 
-static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde *x)
+static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float *windowFuncPtr, *flagsBuf, *peakFreqs, *peakAmps, minPeakVal, maxPeakVal, thresh, fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor;
+    t_float* windowFuncPtr, *flagsBuf, *peakFreqs, *peakAmps, minPeakVal, maxPeakVal, thresh, fund, harmSpacing, halfHarmSpacing, harm, inHarm, harmDividend, inHarmDividend, divisor;
     t_uShortInt numPeaks;
     double currentTime;
 
@@ -113,7 +113,7 @@ static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde *x)
     maxPeakVal = -FLT_MAX;
     numPeaks = 0;
 
-    tIDLib_peaksValleys(windowHalf + 1, x->x_fftwIn, flagsBuf, &minPeakVal, &maxPeakVal);
+    tIDLib_peaksValleys (windowHalf + 1, x->x_fftwIn, flagsBuf, &minPeakVal, &maxPeakVal);
 
     thresh = maxPeakVal * (x->x_threshPct/100.0);
     peakFreqs = (t_float *)t_getbytes (0);
@@ -134,7 +134,7 @@ static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde *x)
                 peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks+1) * sizeof (t_float));
 
                 peakAmps[numPeaks] = thisAmp;
-                peakFreqs[numPeaks] = tIDLib_bin2freq(i, window, x->x_sr);
+                peakFreqs[numPeaks] = tIDLib_bin2freq (i, window, x->x_sr);
                 numPeaks++;
 
                 if (numPeaks>=x->x_maxPeaks)
@@ -207,7 +207,7 @@ static void specHarmonicity_tilde_bang (t_specHarmonicity_tilde *x)
 }
 
 
-static void specHarmonicity_tilde_print (t_specHarmonicity_tilde *x)
+static void specHarmonicity_tilde_print (t_specHarmonicity_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_sampIdx)x->x_n);
@@ -224,7 +224,7 @@ static void specHarmonicity_tilde_print (t_specHarmonicity_tilde *x)
 }
 
 
-static void specHarmonicity_tilde_window (t_specHarmonicity_tilde *x, t_floatarg w)
+static void specHarmonicity_tilde_window (t_specHarmonicity_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -279,7 +279,7 @@ static void specHarmonicity_tilde_window (t_specHarmonicity_tilde *x, t_floatarg
 }
 
 
-static void specHarmonicity_tilde_overlap (t_specHarmonicity_tilde *x, t_floatarg o)
+static void specHarmonicity_tilde_overlap (t_specHarmonicity_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o<1.0)?1.0:o;
@@ -288,7 +288,7 @@ static void specHarmonicity_tilde_overlap (t_specHarmonicity_tilde *x, t_floatar
 }
 
 
-static void specHarmonicity_tilde_windowFunction (t_specHarmonicity_tilde *x, t_floatarg f)
+static void specHarmonicity_tilde_windowFunction (t_specHarmonicity_tilde* x, t_floatarg f)
 {
     f = (f<0.0)?0.0:f;
     f = (f>4.0)?4.0:f;
@@ -317,7 +317,7 @@ static void specHarmonicity_tilde_windowFunction (t_specHarmonicity_tilde *x, t_
 }
 
 
-static void specHarmonicity_tilde_powerSpectrum (t_specHarmonicity_tilde *x, t_floatarg spec)
+static void specHarmonicity_tilde_powerSpectrum (t_specHarmonicity_tilde* x, t_floatarg spec)
 {
     spec = (spec<0.0)?0.0:spec;
     spec = (spec>1.0)?1.0:spec;
@@ -330,7 +330,7 @@ static void specHarmonicity_tilde_powerSpectrum (t_specHarmonicity_tilde *x, t_f
 }
 
 
-static void specHarmonicity_tilde_maxPeaks(t_specHarmonicity_tilde *x, t_floatarg max)
+static void specHarmonicity_tilde_maxPeaks (t_specHarmonicity_tilde* x, t_floatarg max)
 {
     max = (max<1.0)?1.0:max;
     max = (max>(x->x_window/4.0))?(x->x_window/4.0):max;
@@ -340,7 +340,7 @@ static void specHarmonicity_tilde_maxPeaks(t_specHarmonicity_tilde *x, t_floatar
 }
 
 
-static void specHarmonicity_tilde_inputFund(t_specHarmonicity_tilde *x, t_floatarg useFund)
+static void specHarmonicity_tilde_inputFund (t_specHarmonicity_tilde* x, t_floatarg useFund)
 {
     useFund = (useFund<0)?0:useFund;
     useFund = (useFund>1)?1:useFund;
@@ -353,7 +353,7 @@ static void specHarmonicity_tilde_inputFund(t_specHarmonicity_tilde *x, t_floata
 }
 
 
-static void specHarmonicity_tilde_peakThresh(t_specHarmonicity_tilde *x, t_floatarg thresh)
+static void specHarmonicity_tilde_peakThresh (t_specHarmonicity_tilde* x, t_floatarg thresh)
 {
     thresh = (thresh<0.0)?0.0:thresh;
     thresh = (thresh>100.0)?100.0:thresh;
@@ -363,7 +363,7 @@ static void specHarmonicity_tilde_peakThresh(t_specHarmonicity_tilde *x, t_float
 }
 
 
-static void specHarmonicity_tilde_fundFreq(t_specHarmonicity_tilde *x, t_floatarg fund)
+static void specHarmonicity_tilde_fundFreq (t_specHarmonicity_tilde* x, t_floatarg fund)
 {
     if (fund <= 0.0)
         x->x_fundFreq = 0.0;
@@ -372,7 +372,7 @@ static void specHarmonicity_tilde_fundFreq(t_specHarmonicity_tilde *x, t_floatar
 }
 
 
-static void specHarmonicity_tilde_minFund(t_specHarmonicity_tilde *x, t_floatarg min)
+static void specHarmonicity_tilde_minFund (t_specHarmonicity_tilde* x, t_floatarg min)
 {
     if (min < 0.0 || min > 20000.0)
         pd_error (x, "%s: minimum fundamental frequency must be between 0 and 20kHz.", x->x_objSymbol->s_name);
@@ -381,7 +381,7 @@ static void specHarmonicity_tilde_minFund(t_specHarmonicity_tilde *x, t_floatarg
 }
 
 
-static void specHarmonicity_tilde_maxFund(t_specHarmonicity_tilde *x, t_floatarg max)
+static void specHarmonicity_tilde_maxFund (t_specHarmonicity_tilde* x, t_floatarg max)
 {
     if (max < 0.0 || max > 20000.0)
         pd_error (x, "%s: maximum fundamental frequency must be between 0 and 20kHz.", x->x_objSymbol->s_name);
@@ -390,9 +390,9 @@ static void specHarmonicity_tilde_maxFund(t_specHarmonicity_tilde *x, t_floatarg
 }
 
 
-static void *specHarmonicity_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* specHarmonicity_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_specHarmonicity_tilde *x = (t_specHarmonicity_tilde *)pd_new (specHarmonicity_tilde_class);
+    t_specHarmonicity_tilde* x = (t_specHarmonicity_tilde *)pd_new (specHarmonicity_tilde_class);
     t_sampIdx i;
 
     inlet_new (&x->x_obj, &x->x_obj.ob_pd, gensym ("float"), gensym ("fund"));
@@ -473,9 +473,9 @@ static t_int *specHarmonicity_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_specHarmonicity_tilde *x = (t_specHarmonicity_tilde *)(w[1]);
+    t_specHarmonicity_tilde* x = (t_specHarmonicity_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -492,7 +492,7 @@ static t_int *specHarmonicity_tilde_perform (t_int *w)
 }
 
 
-static void specHarmonicity_tilde_dsp (t_specHarmonicity_tilde *x, t_signal **sp)
+static void specHarmonicity_tilde_dsp (t_specHarmonicity_tilde* x, t_signal **sp)
 {
     dsp_add (
         specHarmonicity_tilde_perform,
@@ -528,7 +528,7 @@ static void specHarmonicity_tilde_dsp (t_specHarmonicity_tilde *x, t_signal **sp
 };
 
 
-static void specHarmonicity_tilde_free (t_specHarmonicity_tilde *x)
+static void specHarmonicity_tilde_free (t_specHarmonicity_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

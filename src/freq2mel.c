@@ -15,20 +15,20 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *freq2mel_class;
+static t_class* freq2mel_class;
 
 typedef struct _freq2mel
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_freq2melFormula x_formula;
-    t_outlet *x_melFreq;
+    t_outlet* x_melFreq;
 
 } t_freq2mel;
 
 
 /* ------------------------ freq2mel -------------------------------- */
-static void freq2mel_calculate(t_freq2mel *x, t_float f)
+static void freq2mel_calculate (t_freq2mel* x, t_float f)
 {
     t_float freq;
 
@@ -38,7 +38,7 @@ static void freq2mel_calculate(t_freq2mel *x, t_float f)
     {
         t_float melFreq;
 
-        melFreq = tIDLib_freq2mel(freq);
+        melFreq = tIDLib_freq2mel (freq);
 
         outlet_float (x->x_melFreq, melFreq);
     }
@@ -46,9 +46,9 @@ static void freq2mel_calculate(t_freq2mel *x, t_float f)
         pd_error (x, "%s: frequency must be between 0 and %f Hz", x->x_objSymbol->s_name, TID_MAXMELFREQ);
 }
 
-static void *freq2mel_new (t_symbol *s, int argc, t_atom *argv)
+static void* freq2mel_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_freq2mel *x = (t_freq2mel *)pd_new (freq2mel_class);
+    t_freq2mel* x = (t_freq2mel *)pd_new (freq2mel_class);
     x->x_melFreq = outlet_new (&x->x_obj, &s_float);
 
     x->x_objSymbol = s;

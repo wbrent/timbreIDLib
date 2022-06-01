@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *specFlux_tilde_class;
+static t_class* specFlux_tilde_class;
 
 typedef struct _specFlux_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -31,23 +31,23 @@ typedef struct _specFlux_tilde
     t_bool x_powerSpectrum;
     t_bool x_logSpectrum;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwInForwardWindow;
-    t_sample *x_fftwInBackWindow;
-    fftwf_complex *x_fftwOutForwardWindow;
-    fftwf_complex *x_fftwOutBackWindow;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwInForwardWindow;
+    t_sample* x_fftwInBackWindow;
+    fftwf_complex* x_fftwOutForwardWindow;
+    fftwf_complex* x_fftwOutBackWindow;
     fftwf_plan x_fftwPlanForwardWindow;
     fftwf_plan x_fftwPlanBackWindow;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
     t_fluxMode x_mode;
     t_bool x_squaredDiff;
     t_uInt x_separation;
-    t_atom *x_listOut;
-    t_outlet *x_fluxList;
-    t_outlet *x_flux;
+    t_atom* x_listOut;
+    t_outlet* x_fluxList;
+    t_outlet* x_flux;
     t_float x_f;
 
 } t_specFlux_tilde;
@@ -55,7 +55,7 @@ typedef struct _specFlux_tilde
 
 /* ------------------------ specFlux~ -------------------------------- */
 
-static void specFlux_tilde_bang (t_specFlux_tilde *x)
+static void specFlux_tilde_bang (t_specFlux_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
     t_float flux, *windowFuncPtr;
@@ -205,7 +205,7 @@ static void specFlux_tilde_bang (t_specFlux_tilde *x)
 }
 
 
-static void specFlux_tilde_print (t_specFlux_tilde *x)
+static void specFlux_tilde_print (t_specFlux_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -236,7 +236,7 @@ static void specFlux_tilde_print (t_specFlux_tilde *x)
 }
 
 
-static void specFlux_tilde_window (t_specFlux_tilde *x, t_floatarg w)
+static void specFlux_tilde_window (t_specFlux_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -305,7 +305,7 @@ static void specFlux_tilde_window (t_specFlux_tilde *x, t_floatarg w)
 }
 
 
-static void specFlux_tilde_overlap (t_specFlux_tilde *x, t_floatarg o)
+static void specFlux_tilde_overlap (t_specFlux_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -314,7 +314,7 @@ static void specFlux_tilde_overlap (t_specFlux_tilde *x, t_floatarg o)
 }
 
 
-static void specFlux_tilde_x_windowFunction (t_specFlux_tilde *x, t_floatarg f)
+static void specFlux_tilde_x_windowFunction (t_specFlux_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -343,7 +343,7 @@ static void specFlux_tilde_x_windowFunction (t_specFlux_tilde *x, t_floatarg f)
 }
 
 
-static void specFlux_tilde_powerSpectrum (t_specFlux_tilde *x, t_floatarg spec)
+static void specFlux_tilde_powerSpectrum (t_specFlux_tilde* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -356,7 +356,7 @@ static void specFlux_tilde_powerSpectrum (t_specFlux_tilde *x, t_floatarg spec)
 }
 
 
-static void specFlux_tilde_logSpectrum (t_specFlux_tilde *x, t_floatarg spec)
+static void specFlux_tilde_logSpectrum (t_specFlux_tilde* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -369,7 +369,7 @@ static void specFlux_tilde_logSpectrum (t_specFlux_tilde *x, t_floatarg spec)
 }
 
 
-static void specFlux_tilde_squaredDiff (t_specFlux_tilde *x, t_floatarg sd)
+static void specFlux_tilde_squaredDiff (t_specFlux_tilde* x, t_floatarg sd)
 {
     sd = (sd < 0) ? 0 : sd;
     sd = (sd > 1) ? 1 : sd;
@@ -382,7 +382,7 @@ static void specFlux_tilde_squaredDiff (t_specFlux_tilde *x, t_floatarg sd)
 }
 
 
-static void specFlux_tilde_normalize (t_specFlux_tilde *x, t_floatarg norm)
+static void specFlux_tilde_normalize (t_specFlux_tilde* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -395,7 +395,7 @@ static void specFlux_tilde_normalize (t_specFlux_tilde *x, t_floatarg norm)
 }
 
 
-static void specFlux_tilde_separation (t_specFlux_tilde *x, t_floatarg s)
+static void specFlux_tilde_separation (t_specFlux_tilde* x, t_floatarg s)
 {
     if (s > x->x_window)
     {
@@ -414,7 +414,7 @@ static void specFlux_tilde_separation (t_specFlux_tilde *x, t_floatarg s)
 }
 
 
-static void specFlux_tilde_mode (t_specFlux_tilde *x, t_symbol *m)
+static void specFlux_tilde_mode (t_specFlux_tilde* x, t_symbol* m)
 {
     if ( !strcmp (m->s_name, "flux"))
         x->x_mode = mFlux;
@@ -427,9 +427,9 @@ static void specFlux_tilde_mode (t_specFlux_tilde *x, t_symbol *m)
 }
 
 
-static void *specFlux_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* specFlux_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_specFlux_tilde *x = (t_specFlux_tilde *)pd_new (specFlux_tilde_class);
+    t_specFlux_tilde* x = (t_specFlux_tilde *)pd_new (specFlux_tilde_class);
     t_float sepFloat;
     t_sampIdx i;
 
@@ -544,9 +544,9 @@ static t_int *specFlux_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_specFlux_tilde *x = (t_specFlux_tilde *)(w[1]);
+    t_specFlux_tilde* x = (t_specFlux_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -563,7 +563,7 @@ static t_int *specFlux_tilde_perform (t_int *w)
 }
 
 
-static void specFlux_tilde_dsp (t_specFlux_tilde *x, t_signal **sp)
+static void specFlux_tilde_dsp (t_specFlux_tilde* x, t_signal **sp)
 {
     dsp_add (
         specFlux_tilde_perform,
@@ -595,7 +595,7 @@ static void specFlux_tilde_dsp (t_specFlux_tilde *x, t_signal **sp)
     }
 };
 
-static void specFlux_tilde_free (t_specFlux_tilde *x)
+static void specFlux_tilde_free (t_specFlux_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window * 2 + x->x_n) * sizeof (t_sample));

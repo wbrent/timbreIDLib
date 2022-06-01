@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *cepstrumPitch_class;
+static t_class* cepstrumPitch_class;
 
 typedef struct _cepstrumPitch
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
@@ -31,23 +31,23 @@ typedef struct _cepstrumPitch
     t_float x_loFreq;
     t_float x_hiFreq;
     t_float x_thresh;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwForwardPlan;
     fftwf_plan x_fftwBackwardPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_outlet *x_pitch;
+    t_outlet* x_pitch;
 } t_cepstrumPitch;
 
 
 /* ------------------------ cepstrumPitch -------------------------------- */
-static void cepstrumPitch_resizeWindow (t_cepstrumPitch *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void cepstrumPitch_resizeWindow (t_cepstrumPitch* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx windowHalf;
 
@@ -91,12 +91,12 @@ static void cepstrumPitch_resizeWindow (t_cepstrumPitch *x, t_sampIdx oldWindow,
 }
 
 
-static void cepstrumPitch_analyze (t_cepstrumPitch *x, t_floatarg start, t_floatarg n)
+static void cepstrumPitch_analyze (t_cepstrumPitch* x, t_floatarg start, t_floatarg n)
 {
     t_sampIdx i, j, binCount, window, startSamp, endSamp;
     t_binIdx loFreqBin, hiFreqBin, maxValIdx;
     t_float nRecip, *windowFuncPtr, maxVal, pitch, loFreqBinFloat, hiFreqBinFloat, mean, std, sum;
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -175,12 +175,12 @@ static void cepstrumPitch_analyze (t_cepstrumPitch *x, t_floatarg start, t_float
         if ( !x->x_powerSpectrum)
             tIDLib_mag (x->x_windowHalf + 1, x->x_fftwIn);
 
-        // add 1.0 to power or magnitude spectrum before taking the log and then IFT. Avoid large negative values from log(negativeNum). MPM (McCleod Pitch Method)
+        // add 1.0 to power or magnitude spectrum before taking the log and then IFT. Avoid large negative values from log (negativeNum). MPM (McCleod Pitch Method)
         if (x->x_spectrumOffset)
             for (i = 0; i < x->x_windowHalf + 1; i++)
                 x->x_fftwIn[i] += 1.0;
 
-        tIDLib_log(x->x_windowHalf + 1, x->x_fftwIn);
+        tIDLib_log (x->x_windowHalf + 1, x->x_fftwIn);
 
         // copy forward DFT magnitude result into real part of backward DFT complex input buffer, and zero out the imaginary part. fftwOut is only N/2+1 points long, while fftwIn is N points long
         for (i = 0; i < x->x_windowHalf + 1; i++)
@@ -236,11 +236,11 @@ static void cepstrumPitch_analyze (t_cepstrumPitch *x, t_floatarg start, t_float
 
         // get standard deviation
         std = sum/(binCount - 1);
-        std = sqrt(std);
+        std = sqrt (std);
 
         // see if maxVal is above the mean by more than x_thresh standard deviations
         if ( fabs (maxVal-mean) > (x->x_thresh*std) )
-            pitch = ftom(x->x_sr/((t_float)maxValIdx));
+            pitch = ftom (x->x_sr/((t_float)maxValIdx));
         else
             pitch = -1500.0;
 
@@ -250,9 +250,9 @@ static void cepstrumPitch_analyze (t_cepstrumPitch *x, t_floatarg start, t_float
 
 
 // analyze the whole damn array
-static void cepstrumPitch_bang (t_cepstrumPitch *x)
+static void cepstrumPitch_bang (t_cepstrumPitch* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -268,9 +268,9 @@ static void cepstrumPitch_bang (t_cepstrumPitch *x)
 }
 
 
-static void cepstrumPitch_set (t_cepstrumPitch *x, t_symbol *s)
+static void cepstrumPitch_set (t_cepstrumPitch* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -281,7 +281,7 @@ static void cepstrumPitch_set (t_cepstrumPitch *x, t_symbol *s)
 }
 
 
-static void cepstrumPitch_print (t_cepstrumPitch *x)
+static void cepstrumPitch_print (t_cepstrumPitch* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -289,12 +289,12 @@ static void cepstrumPitch_print (t_cepstrumPitch *x)
     post ("%s power spectrum: %i", x->x_objSymbol->s_name, x->x_powerSpectrum);
     post ("%s power cepstrum: %i", x->x_objSymbol->s_name, x->x_powerCepstrum);
     post ("%s spectrum offset: %i", x->x_objSymbol->s_name, x->x_spectrumOffset);
-    post ("%s pitch range: %0.2f to %0.2f", x->x_objSymbol->s_name, ftom(x->x_loFreq), ftom(x->x_hiFreq));
+    post ("%s pitch range: %0.2f to %0.2f", x->x_objSymbol->s_name, ftom (x->x_loFreq), ftom (x->x_hiFreq));
     post ("%s window function: %i", x->x_objSymbol->s_name, x->x_windowFunction);
 }
 
 
-static void cepstrumPitch_samplerate (t_cepstrumPitch *x, t_floatarg sr)
+static void cepstrumPitch_samplerate (t_cepstrumPitch* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -303,18 +303,18 @@ static void cepstrumPitch_samplerate (t_cepstrumPitch *x, t_floatarg sr)
 }
 
 
-static void cepstrumPitch_window (t_cepstrumPitch *x, t_floatarg w)
+static void cepstrumPitch_window (t_cepstrumPitch* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     cepstrumPitch_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void cepstrumPitch_windowFunction (t_cepstrumPitch *x, t_floatarg f)
+static void cepstrumPitch_windowFunction (t_cepstrumPitch* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -343,7 +343,7 @@ static void cepstrumPitch_windowFunction (t_cepstrumPitch *x, t_floatarg f)
 }
 
 
-static void cepstrumPitch_powerSpectrum (t_cepstrumPitch *x, t_floatarg spec)
+static void cepstrumPitch_powerSpectrum (t_cepstrumPitch* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -356,7 +356,7 @@ static void cepstrumPitch_powerSpectrum (t_cepstrumPitch *x, t_floatarg spec)
 }
 
 
-static void cepstrumPitch_powerCepstrum(t_cepstrumPitch *x, t_floatarg power)
+static void cepstrumPitch_powerCepstrum (t_cepstrumPitch* x, t_floatarg power)
 {
     power = (power<0)?0:power;
     power = (power>1)?1:power;
@@ -369,7 +369,7 @@ static void cepstrumPitch_powerCepstrum(t_cepstrumPitch *x, t_floatarg power)
 }
 
 
-static void cepstrumPitch_spectrumOffset (t_cepstrumPitch *x, t_floatarg offset)
+static void cepstrumPitch_spectrumOffset (t_cepstrumPitch* x, t_floatarg offset)
 {
     offset = (offset<0)?0:offset;
     offset = (offset>1)?1:offset;
@@ -382,7 +382,7 @@ static void cepstrumPitch_spectrumOffset (t_cepstrumPitch *x, t_floatarg offset)
 }
 
 
-static void cepstrumPitch_pitchRange(t_cepstrumPitch *x, t_floatarg low, t_floatarg hi)
+static void cepstrumPitch_pitchRange (t_cepstrumPitch* x, t_floatarg low, t_floatarg hi)
 {
     low = (low<0)?0:low;
     low = (low>20000)?20000:low;
@@ -398,14 +398,14 @@ static void cepstrumPitch_pitchRange(t_cepstrumPitch *x, t_floatarg low, t_float
         low = tmp;
     }
 
-    x->x_loFreq = mtof(low);
-    x->x_hiFreq = mtof(hi);
+    x->x_loFreq = mtof (low);
+    x->x_hiFreq = mtof (hi);
 
-    post ("%s pitch range: %0.2f to %0.2f", x->x_objSymbol->s_name, ftom(x->x_loFreq), ftom(x->x_hiFreq));
+    post ("%s pitch range: %0.2f to %0.2f", x->x_objSymbol->s_name, ftom (x->x_loFreq), ftom (x->x_hiFreq));
 }
 
 
-static void cepstrumPitch_threshold(t_cepstrumPitch *x, t_floatarg thresh)
+static void cepstrumPitch_threshold (t_cepstrumPitch* x, t_floatarg thresh)
 {
     x->x_thresh = (thresh<0)?0:thresh;
 
@@ -413,9 +413,9 @@ static void cepstrumPitch_threshold(t_cepstrumPitch *x, t_floatarg thresh)
 }
 
 
-static void *cepstrumPitch_new (t_symbol *s, int argc, t_atom *argv)
+static void* cepstrumPitch_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_cepstrumPitch *x = (t_cepstrumPitch *)pd_new (cepstrumPitch_class);
+    t_cepstrumPitch* x = (t_cepstrumPitch *)pd_new (cepstrumPitch_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -430,8 +430,8 @@ static void *cepstrumPitch_new (t_symbol *s, int argc, t_atom *argv)
             x->x_arrayName = atom_getsymbol (argv);
             x->x_loFreq = atom_getfloat (argv + 1);
             x->x_hiFreq = atom_getfloat (argv + 2);
-            x->x_loFreq = mtof(x->x_loFreq);
-            x->x_hiFreq = mtof(x->x_hiFreq);
+            x->x_loFreq = mtof (x->x_loFreq);
+            x->x_hiFreq = mtof (x->x_hiFreq);
             x->x_loFreq = (x->x_loFreq<0)?0:x->x_loFreq;
             x->x_hiFreq = (x->x_hiFreq<0)?0:x->x_hiFreq;
             x->x_loFreq = (x->x_loFreq>20000)?20000:x->x_loFreq;
@@ -442,8 +442,8 @@ static void *cepstrumPitch_new (t_symbol *s, int argc, t_atom *argv)
             x->x_arrayName = atom_getsymbol (argv);
             x->x_loFreq = atom_getfloat (argv + 1);
             x->x_hiFreq = x->x_loFreq+12;
-            x->x_loFreq = mtof(x->x_loFreq);
-            x->x_hiFreq = mtof(x->x_hiFreq);
+            x->x_loFreq = mtof (x->x_loFreq);
+            x->x_hiFreq = mtof (x->x_hiFreq);
             x->x_loFreq = (x->x_loFreq<0)?0:x->x_loFreq;
             x->x_hiFreq = (x->x_hiFreq<0)?0:x->x_hiFreq;
             x->x_loFreq = (x->x_loFreq>20000)?20000:x->x_loFreq;
@@ -464,7 +464,7 @@ static void *cepstrumPitch_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_loFreq = 50;
             x->x_hiFreq = 500;
@@ -530,7 +530,7 @@ static void *cepstrumPitch_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void cepstrumPitch_free (t_cepstrumPitch *x)
+static void cepstrumPitch_free (t_cepstrumPitch* x)
 {
     // free FFTW stuff
     t_freebytes (x->x_fftwIn, x->x_window * sizeof (t_sample));

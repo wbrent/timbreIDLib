@@ -15,13 +15,13 @@ You should have received a copy of the GNU General Public License along with thi
 
 ** 0.6.0 changed all floats to t_floats, got rid of unused headers, removed underscores from variable names.  FIXED concatenative_id function's search center/neighborhood bug.  Added a similarity matrix function.  Added a "print" method to show internal settings.  Made even or odd neighborhood settings valid since it will sometimes be important to pick an exact range.  Odd settings are fine - with n=5, we search from the center -/+ 2.  With n=6, it be center -2/+3 because of a special case for searchStart.
 ** 0.5.1 was just to remove the "no such table" error from the NRT externs when it doesn't find the specified table at load time. also, the max window size for all the NRT externs was set to 131072 because this seems to be the maximum allowable size for mayer_realfft().
-** 0.5 as part of the timbreID-0.5 update, this gets rid of unnecessary getbytes (0) calls in timbreID.c. does not yet use memset () or memcpy() where possible.  fixed lack of memory free for x->x_weights, x->x_attributeOrder, x->x_instanceFeatureLengths, x->x_normData in _free.
+** 0.5 as part of the timbreID-0.5 update, this gets rid of unnecessary getbytes (0) calls in timbreID.c. does not yet use memset() or memcpy() where possible.  fixed lack of memory free for x->x_weights, x->x_attributeOrder, x->x_instanceFeatureLengths, x->x_normData in _free.
 ** fixed small memory mismanagement in all _make_filterbank functions for bark-based externs.
 ** [timbreID] is unchanged - only updating for addition of [featureAccum] and [binWrangler], which streamline time-evolving feature extraction
 ** [timbreID] is unchanged - only updating version for [cepstrum] and [cepstrum~] changes.
 ** part of the update acknowledging the change to one tID folder full of sources and binaries. This update also included filter power averaging in barkSpec, bfcc, and mfcc.
 ** removed cosine similarity distance metric
-** 0.3.3 reflects the general package update, which includes specIrregularity(~), and fixes a bug in cepstrum(~). also, changed timbreID's default KNN setting to 1.  It should really only be anything different if clustering is done.
+** 0.3.3 reflects the general package update, which includes specIrregularity (~), and fixes a bug in cepstrum (~). also, changed timbreID's default KNN setting to 1.  It should really only be anything different if clustering is done.
 ** 0.3.3 is based on the windows source, where the _read functions were changed to avoid using fdopen.  also corrected the use of a resizable array for semicolon in the _read_cluster_text function. also added static to all functions except _setup.
 ** 0.3.2 no changes to [timbreID]. Added RT and NRT spectral spread externs, plus mean and standard deviation externs for summarizing spectro-temporal features of various lengths
 ** 0.3.1G this gets around to adding the cluster read/write functions. F is cleaned up version of D. 0.3.1G does work with read/write clusters.
@@ -1179,15 +1179,15 @@ static void timbreID_computeCluster (t_timbreID* x, t_floatarg numClusters)
         // in minDist. we've store the clusterData indices of the two elements in
         // minDistIdx[0] and minDistIdx[1].
 
-        // set i to the index for storing the new member(s) of the cluster.
+        // set i to the index for storing the new member (s) of the cluster.
         i = x->x_clusters[minDistIdx[0]].numMembers - 1;
 
-        // actually store the new member(s).
+        // actually store the new member (s).
         j = 0;
 
         while (x->x_clusters[minDistIdx[1]].members[j] != UINT_MAX)
         {
-            // make some more memory for the new member(s)
+            // make some more memory for the new member (s)
             x->x_clusters[minDistIdx[0]].members = (t_instanceIdx *)t_resizebytes (x->x_clusters[minDistIdx[0]].members, x->x_clusters[minDistIdx[0]].numMembers * sizeof (t_instanceIdx), (x->x_clusters[minDistIdx[0]].numMembers + 1) * sizeof (t_instanceIdx));
             (x->x_clusters[minDistIdx[0]].numMembers)++; // remember to update this member list's length
 
@@ -2648,7 +2648,7 @@ static void timbreID_read (t_timbreID* x, t_symbol* s)
         return;
     }
 
-    // test to see if it's a .timid or .txt file. if any fgetc () results are > 127, it's not a text file.
+    // test to see if it's a .timid or .txt file. if any fgetc() results are > 127, it's not a text file.
     txtFlag = true;
 
     while ((cTest = fgetc (filePtr)) != EOF)
@@ -2674,7 +2674,7 @@ static void timbreID_read (t_timbreID* x, t_symbol* s)
     maxLength = 0;
     minLength = INT_MAX;
 
-    // erase old instances & clusters and resize to 0. this also does a sub-call to timbreID_attributeDataResize ()
+    // erase old instances & clusters and resize to 0. this also does a sub-call to timbreID_attributeDataResize()
     timbreID_clear (x);
 
     // first item in the header is the number of instances
@@ -2821,7 +2821,7 @@ static void timbreID_readText (t_timbreID* x, t_symbol* s)
     maxLength = 0;
     minLength = INT_MAX;
 
-    // erase old instances & clusters and resize to 0. this also does a sub-call to timbreID_attributeDataResize ()
+    // erase old instances & clusters and resize to 0. this also does a sub-call to timbreID_attributeDataResize()
     timbreID_clear (x);
 
     x->x_numInstances = numInstances;
@@ -3238,7 +3238,7 @@ static void timbreID_readClusters (t_timbreID* x, t_symbol* s)
         return;
     }
 
-    // test to see if it's a .clu or .txt file. if any fgetc () results are > 127, it's not a text file.
+    // test to see if it's a .clu or .txt file. if any fgetc() results are > 127, it's not a text file.
     txtFlag = true;
 
     while ((cTest = fgetc (filePtr)) != EOF)

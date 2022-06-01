@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *specFlatness_tilde_class;
+static t_class* specFlatness_tilde_class;
 
 typedef struct _specFlatness_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -29,16 +29,16 @@ typedef struct _specFlatness_tilde
     t_uShortInt x_overlap;
     t_bool x_powerSpectrum;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    double *x_nthRoots;
-    t_outlet *x_flatness;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    double* x_nthRoots;
+    t_outlet* x_flatness;
     t_float x_f;
 
 } t_specFlatness_tilde;
@@ -46,11 +46,11 @@ typedef struct _specFlatness_tilde
 
 /* ------------------------ specFlatness~ -------------------------------- */
 
-static void specFlatness_tilde_bang (t_specFlatness_tilde *x)
+static void specFlatness_tilde_bang (t_specFlatness_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
     double currentTime, windowHalfPlusOneRecip, dividend, divisor, flatness;
-    t_float *windowFuncPtr;
+    t_float* windowFuncPtr;
 
     window = x->x_window;
     windowHalf = x->x_windowHalf;
@@ -108,7 +108,7 @@ static void specFlatness_tilde_bang (t_specFlatness_tilde *x)
     // geometric mean
     // take the nth roots first so as not to lose data to precision error.
     for (i = 0; i <= windowHalf; i++)
-        x->x_nthRoots[i] = pow(x->x_fftwIn[i], windowHalfPlusOneRecip);
+        x->x_nthRoots[i] = pow (x->x_fftwIn[i], windowHalfPlusOneRecip);
 
     // take the product of nth roots
     for (i = 0; i <= windowHalf; i++)
@@ -128,7 +128,7 @@ static void specFlatness_tilde_bang (t_specFlatness_tilde *x)
 }
 
 
-static void specFlatness_tilde_print (t_specFlatness_tilde *x)
+static void specFlatness_tilde_print (t_specFlatness_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -139,7 +139,7 @@ static void specFlatness_tilde_print (t_specFlatness_tilde *x)
 }
 
 
-static void specFlatness_tilde_window (t_specFlatness_tilde *x, t_floatarg w)
+static void specFlatness_tilde_window (t_specFlatness_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -198,7 +198,7 @@ static void specFlatness_tilde_window (t_specFlatness_tilde *x, t_floatarg w)
 }
 
 
-static void specFlatness_tilde_overlap (t_specFlatness_tilde *x, t_floatarg o)
+static void specFlatness_tilde_overlap (t_specFlatness_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -207,7 +207,7 @@ static void specFlatness_tilde_overlap (t_specFlatness_tilde *x, t_floatarg o)
 }
 
 
-static void specFlatness_tilde_windowFunction (t_specFlatness_tilde *x, t_floatarg f)
+static void specFlatness_tilde_windowFunction (t_specFlatness_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -236,7 +236,7 @@ static void specFlatness_tilde_windowFunction (t_specFlatness_tilde *x, t_floata
 }
 
 
-static void specFlatness_tilde_powerSpectrum (t_specFlatness_tilde *x, t_floatarg power)
+static void specFlatness_tilde_powerSpectrum (t_specFlatness_tilde* x, t_floatarg power)
 {
     power = (power<0)?0:power;
     power = (power>1)?1:power;
@@ -249,9 +249,9 @@ static void specFlatness_tilde_powerSpectrum (t_specFlatness_tilde *x, t_floatar
 }
 
 
-static void *specFlatness_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* specFlatness_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_specFlatness_tilde *x = (t_specFlatness_tilde *)pd_new (specFlatness_tilde_class);
+    t_specFlatness_tilde* x = (t_specFlatness_tilde *)pd_new (specFlatness_tilde_class);
     t_sampIdx i;
 
     x->x_flatness = outlet_new (&x->x_obj, &s_float);
@@ -330,9 +330,9 @@ static t_int *specFlatness_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_specFlatness_tilde *x = (t_specFlatness_tilde *)(w[1]);
+    t_specFlatness_tilde* x = (t_specFlatness_tilde *)(w[1]);
 
-    t_sample *in = (t_sample *)(w[2]);
+    t_sample* in = (t_sample *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -349,7 +349,7 @@ static t_int *specFlatness_tilde_perform (t_int *w)
 }
 
 
-static void specFlatness_tilde_dsp (t_specFlatness_tilde *x, t_signal **sp)
+static void specFlatness_tilde_dsp (t_specFlatness_tilde* x, t_signal **sp)
 {
     dsp_add (
         specFlatness_tilde_perform,
@@ -382,7 +382,7 @@ static void specFlatness_tilde_dsp (t_specFlatness_tilde *x, t_signal **sp)
 };
 
 
-static void specFlatness_tilde_free (t_specFlatness_tilde *x)
+static void specFlatness_tilde_free (t_specFlatness_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

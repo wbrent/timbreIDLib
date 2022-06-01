@@ -15,35 +15,35 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *magSpec_class;
+static t_class* magSpec_class;
 
 typedef struct _magSpec
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
     t_windowFunction x_windowFunction;
     t_bool x_normalize;
     t_bool x_powerSpectrum;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_atom *x_listOut;
-    t_outlet *x_mag;
+    t_atom* x_listOut;
+    t_outlet* x_mag;
 } t_magSpec;
 
 
 /* ------------------------ magSpec -------------------------------- */
-static void magSpec_resizeWindow (t_magSpec *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void magSpec_resizeWindow (t_magSpec* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx oldWindowHalf, windowHalf;
 
@@ -89,9 +89,9 @@ static void magSpec_resizeWindow (t_magSpec *x, t_sampIdx oldWindow, t_sampIdx w
 }
 
 
-static void magSpec_analyze (t_magSpec *x, t_floatarg start, t_floatarg n)
+static void magSpec_analyze (t_magSpec* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -100,7 +100,7 @@ static void magSpec_analyze (t_magSpec *x, t_floatarg start, t_floatarg n)
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float *windowFuncPtr;
+        t_float* windowFuncPtr;
 
         startSamp = (start < 0) ? 0 : start;
 
@@ -173,7 +173,7 @@ static void magSpec_analyze (t_magSpec *x, t_floatarg start, t_floatarg n)
 }
 
 
-static void magSpec_chain_fftData (t_magSpec *x, t_symbol *s, int argc, t_atom *argv)
+static void magSpec_chain_fftData (t_magSpec* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
 
@@ -211,9 +211,9 @@ static void magSpec_chain_fftData (t_magSpec *x, t_symbol *s, int argc, t_atom *
 
 
 // analyze the whole damn array
-static void magSpec_bang (t_magSpec *x)
+static void magSpec_bang (t_magSpec* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -229,9 +229,9 @@ static void magSpec_bang (t_magSpec *x)
 }
 
 
-static void magSpec_set (t_magSpec *x, t_symbol *s)
+static void magSpec_set (t_magSpec* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -242,7 +242,7 @@ static void magSpec_set (t_magSpec *x, t_symbol *s)
 }
 
 
-static void magSpec_print (t_magSpec *x)
+static void magSpec_print (t_magSpec* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -253,7 +253,7 @@ static void magSpec_print (t_magSpec *x)
 }
 
 
-static void magSpec_samplerate (t_magSpec *x, t_floatarg sr)
+static void magSpec_samplerate (t_magSpec* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -262,18 +262,18 @@ static void magSpec_samplerate (t_magSpec *x, t_floatarg sr)
 }
 
 
-static void magSpec_window (t_magSpec *x, t_floatarg w)
+static void magSpec_window (t_magSpec* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     magSpec_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void magSpec_windowFunction (t_magSpec *x, t_floatarg f)
+static void magSpec_windowFunction (t_magSpec* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -302,7 +302,7 @@ static void magSpec_windowFunction (t_magSpec *x, t_floatarg f)
 }
 
 
-static void magSpec_powerSpectrum (t_magSpec *x, t_floatarg spec)
+static void magSpec_powerSpectrum (t_magSpec* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -315,7 +315,7 @@ static void magSpec_powerSpectrum (t_magSpec *x, t_floatarg spec)
 }
 
 
-static void magSpec_normalize (t_magSpec *x, t_floatarg norm)
+static void magSpec_normalize (t_magSpec* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -328,9 +328,9 @@ static void magSpec_normalize (t_magSpec *x, t_floatarg norm)
 }
 
 
-static void *magSpec_new (t_symbol *s, int argc, t_atom *argv)
+static void* magSpec_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_magSpec *x = (t_magSpec *)pd_new (magSpec_class);
+    t_magSpec* x = (t_magSpec *)pd_new (magSpec_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -353,7 +353,7 @@ static void *magSpec_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -403,7 +403,7 @@ static void *magSpec_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void magSpec_free (t_magSpec *x)
+static void magSpec_free (t_magSpec* x)
 {
     // free the list out memory
     t_freebytes (x->x_listOut, (x->x_windowHalf + 1) * sizeof (t_atom));

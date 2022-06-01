@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *featureAccum_class;
+static t_class* featureAccum_class;
 
 typedef enum
 {
@@ -28,20 +28,20 @@ typedef enum
 typedef struct _featureAccum
 {
     t_object  x_obj;
-    t_symbol *x_objSymbol;
-    t_instance *x_instances;
+    t_symbol* x_objSymbol;
+    t_instance* x_instances;
     t_bool x_spew;
     t_accumMode x_mode;
     t_attributeIdx x_featureLength;
     t_attributeIdx x_numFrames;
     t_attributeIdx x_concatCurrentFrame;
     t_attributeIdx x_meanFrameCount;
-    t_atom *x_listOut;
-    t_outlet *x_featureList;
+    t_atom* x_listOut;
+    t_outlet* x_featureList;
 } t_featureAccum;
 
 
-static void featureAccum_allocMem (t_featureAccum *x)
+static void featureAccum_allocMem (t_featureAccum* x)
 {
     t_attributeIdx i;
 
@@ -57,7 +57,7 @@ static void featureAccum_allocMem (t_featureAccum *x)
         x->x_instances[i].data = (float *)t_getbytes (x->x_featureLength * sizeof (float));
 }
 
-static void featureAccum_initMem (t_featureAccum *x)
+static void featureAccum_initMem (t_featureAccum* x)
 {
     t_attributeIdx i, j;
 
@@ -71,7 +71,7 @@ static void featureAccum_initMem (t_featureAccum *x)
             x->x_instances[i].data[j] = 0.0;
 }
 
-static void featureAccum_free (t_featureAccum *x)
+static void featureAccum_free (t_featureAccum* x)
 {
     t_attributeIdx i;
 
@@ -87,7 +87,7 @@ static void featureAccum_free (t_featureAccum *x)
 
 }
 
-static void featureAccum_sum (t_featureAccum *x)
+static void featureAccum_sum (t_featureAccum* x)
 {
     t_attributeIdx i;
 
@@ -97,7 +97,7 @@ static void featureAccum_sum (t_featureAccum *x)
     outlet_list (x->x_featureList, 0, x->x_featureLength, x->x_listOut);
 }
 
-static void featureAccum_mean (t_featureAccum *x)
+static void featureAccum_mean (t_featureAccum* x)
 {
     t_attributeIdx i;
 
@@ -107,7 +107,7 @@ static void featureAccum_mean (t_featureAccum *x)
     outlet_list (x->x_featureList, 0, x->x_featureLength, x->x_listOut);
 }
 
-static void featureAccum_accum (t_featureAccum *x, t_symbol *s, int argc, t_atom *argv)
+static void featureAccum_accum (t_featureAccum* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_attributeIdx i, j, count, totalFeat;
 
@@ -190,7 +190,7 @@ static void featureAccum_accum (t_featureAccum *x, t_symbol *s, int argc, t_atom
     }
 }
 
-static void featureAccum_print (t_featureAccum *x)
+static void featureAccum_print (t_featureAccum* x)
 {
     post ("%s num_frames: %i", x->x_objSymbol->s_name, x->x_numFrames);
     post ("%s feature length: %i", x->x_objSymbol->s_name, x->x_featureLength);
@@ -215,7 +215,7 @@ static void featureAccum_print (t_featureAccum *x)
     }
 }
 
-static void featureAccum_clear (t_featureAccum *x)
+static void featureAccum_clear (t_featureAccum* x)
 {
     featureAccum_free (x);
     featureAccum_allocMem (x);
@@ -225,7 +225,7 @@ static void featureAccum_clear (t_featureAccum *x)
     x->x_meanFrameCount = 0;
 }
 
-static void featureAccum_numFrames (t_featureAccum *x, t_floatarg num)
+static void featureAccum_numFrames (t_featureAccum* x, t_floatarg num)
 {
     num = (num < 1) ? 1 : num;
 
@@ -240,7 +240,7 @@ static void featureAccum_numFrames (t_featureAccum *x, t_floatarg num)
     featureAccum_initMem (x);
 }
 
-static void featureAccum_length (t_featureAccum *x, t_floatarg len)
+static void featureAccum_length (t_featureAccum* x, t_floatarg len)
 {
     len = (len < 1) ? 1 : len;
 
@@ -255,14 +255,14 @@ static void featureAccum_length (t_featureAccum *x, t_floatarg len)
     featureAccum_initMem (x);
 }
 
-static void featureAccum_spew (t_featureAccum *x, t_floatarg s)
+static void featureAccum_spew (t_featureAccum* x, t_floatarg s)
 {
     s = (s <= 0) ? 0 : s;
     s = (s >= 1) ? 1 : s;
     x->x_spew = s;
 }
 
-static void featureAccum_mode (t_featureAccum *x, t_symbol *m)
+static void featureAccum_mode (t_featureAccum* x, t_symbol* m)
 {
     if ( !strcmp (m->s_name, "concat"))
         x->x_mode = concat;
@@ -279,10 +279,10 @@ static void featureAccum_mode (t_featureAccum *x, t_symbol *m)
 }
 
 
-static void *featureAccum_new (t_symbol *s, int argc, t_atom *argv)
+static void* featureAccum_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_featureAccum *x = (t_featureAccum *)pd_new (featureAccum_class);
-    t_symbol *mode;
+    t_featureAccum* x = (t_featureAccum *)pd_new (featureAccum_class);
+    t_symbol* mode;
     t_float numFrames, featureLength, spew;
 
     x->x_featureList = outlet_new (&x->x_obj, gensym ("list"));

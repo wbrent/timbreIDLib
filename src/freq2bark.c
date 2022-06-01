@@ -15,21 +15,21 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *freq2bark_class;
+static t_class* freq2bark_class;
 
 typedef struct _freq2bark
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_freq2barkFormula x_formula;
-    t_outlet *x_barkFreq;
+    t_outlet* x_barkFreq;
 
 } t_freq2bark;
 
 
-// TODO: could add an option for the other formula: 13*arctan(0.00076*freq) + 3.5*arctan((freq/7500)^2)
+// TODO: could add an option for the other formula: 13*arctan (0.00076*freq) + 3.5*arctan ((freq/7500)^2)
 /* ------------------------ freq2bark -------------------------------- */
-static void freq2bark_calculate(t_freq2bark *x, t_float f)
+static void freq2bark_calculate (t_freq2bark* x, t_float f)
 {
     t_float freq;
 
@@ -39,7 +39,7 @@ static void freq2bark_calculate(t_freq2bark *x, t_float f)
     {
         t_float barkFreq;
 
-        barkFreq = tIDLib_freq2bark(freq);
+        barkFreq = tIDLib_freq2bark (freq);
 
         outlet_float (x->x_barkFreq, barkFreq);
     }
@@ -47,9 +47,9 @@ static void freq2bark_calculate(t_freq2bark *x, t_float f)
         pd_error (x, "%s: frequency must be between 0 and %f Hz", x->x_objSymbol->s_name, TID_MAXBARKFREQ);
 }
 
-static void *freq2bark_new (t_symbol *s, int argc, t_atom *argv)
+static void* freq2bark_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_freq2bark *x = (t_freq2bark *)pd_new (freq2bark_class);
+    t_freq2bark* x = (t_freq2bark *)pd_new (freq2bark_class);
     x->x_barkFreq = outlet_new (&x->x_obj, &s_float);
 
     x->x_objSymbol = s;

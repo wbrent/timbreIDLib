@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *specIrregularity_tilde_class;
+static t_class* specIrregularity_tilde_class;
 
 typedef enum
 {
@@ -26,7 +26,7 @@ typedef enum
 typedef struct _specIrregularity_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -36,16 +36,16 @@ typedef struct _specIrregularity_tilde
     t_bool x_normalize;
     t_bool x_powerSpectrum;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
     t_algoChoice x_algorithm;
-    t_outlet *x_irregularity;
+    t_outlet* x_irregularity;
     t_float x_f;
 
 } t_specIrregularity_tilde;
@@ -53,7 +53,7 @@ typedef struct _specIrregularity_tilde
 
 /* ------------------------ specIrregularity~ -------------------------------- */
 
-static void specIrregularity_tilde_bang (t_specIrregularity_tilde *x)
+static void specIrregularity_tilde_bang (t_specIrregularity_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
     t_float divisor, irregularity, *windowFuncPtr;
@@ -158,7 +158,7 @@ static void specIrregularity_tilde_bang (t_specIrregularity_tilde *x)
 }
 
 
-static void specIrregularity_tilde_print (t_specIrregularity_tilde *x)
+static void specIrregularity_tilde_print (t_specIrregularity_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -182,7 +182,7 @@ static void specIrregularity_tilde_print (t_specIrregularity_tilde *x)
 }
 
 
-static void specIrregularity_tilde_algorithm (t_specIrregularity_tilde *x, t_floatarg a)
+static void specIrregularity_tilde_algorithm (t_specIrregularity_tilde* x, t_floatarg a)
 {
     a = (a < 0) ? 0 : a;
     a = (a > 1) ? 1 : a;
@@ -202,7 +202,7 @@ static void specIrregularity_tilde_algorithm (t_specIrregularity_tilde *x, t_flo
 }
 
 
-static void specIrregularity_tilde_window (t_specIrregularity_tilde *x, t_floatarg w)
+static void specIrregularity_tilde_window (t_specIrregularity_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -257,7 +257,7 @@ static void specIrregularity_tilde_window (t_specIrregularity_tilde *x, t_floata
 }
 
 
-static void specIrregularity_tilde_overlap (t_specIrregularity_tilde *x, t_floatarg o)
+static void specIrregularity_tilde_overlap (t_specIrregularity_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -266,7 +266,7 @@ static void specIrregularity_tilde_overlap (t_specIrregularity_tilde *x, t_float
 }
 
 
-static void specIrregularity_tilde_windowFunction (t_specIrregularity_tilde *x, t_floatarg f)
+static void specIrregularity_tilde_windowFunction (t_specIrregularity_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -295,7 +295,7 @@ static void specIrregularity_tilde_windowFunction (t_specIrregularity_tilde *x, 
 }
 
 
-static void specIrregularity_tilde_normalize (t_specIrregularity_tilde *x, t_floatarg norm)
+static void specIrregularity_tilde_normalize (t_specIrregularity_tilde* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -308,7 +308,7 @@ static void specIrregularity_tilde_normalize (t_specIrregularity_tilde *x, t_flo
 }
 
 
-static void specIrregularity_tilde_powerSpectrum (t_specIrregularity_tilde *x, t_floatarg power)
+static void specIrregularity_tilde_powerSpectrum (t_specIrregularity_tilde* x, t_floatarg power)
 {
     power = (power<0)?0:power;
     power = (power>1)?1:power;
@@ -321,9 +321,9 @@ static void specIrregularity_tilde_powerSpectrum (t_specIrregularity_tilde *x, t
 }
 
 
-static void *specIrregularity_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* specIrregularity_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_specIrregularity_tilde *x = (t_specIrregularity_tilde *)pd_new (specIrregularity_tilde_class);
+    t_specIrregularity_tilde* x = (t_specIrregularity_tilde *)pd_new (specIrregularity_tilde_class);
     t_sampIdx i;
 
     x->x_irregularity = outlet_new (&x->x_obj, &s_float);
@@ -414,9 +414,9 @@ static t_int *specIrregularity_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_specIrregularity_tilde *x = (t_specIrregularity_tilde *)(w[1]);
+    t_specIrregularity_tilde* x = (t_specIrregularity_tilde *)(w[1]);
 
-    t_sample *in = (t_sample *)(w[2]);
+    t_sample* in = (t_sample *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -433,7 +433,7 @@ static t_int *specIrregularity_tilde_perform (t_int *w)
 }
 
 
-static void specIrregularity_tilde_dsp (t_specIrregularity_tilde *x, t_signal **sp)
+static void specIrregularity_tilde_dsp (t_specIrregularity_tilde* x, t_signal **sp)
 {
     dsp_add (
         specIrregularity_tilde_perform,
@@ -466,7 +466,7 @@ static void specIrregularity_tilde_dsp (t_specIrregularity_tilde *x, t_signal **
 };
 
 
-static void specIrregularity_tilde_free (t_specIrregularity_tilde *x)
+static void specIrregularity_tilde_free (t_specIrregularity_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *cepstrum_tilde_class;
+static t_class* cepstrum_tilde_class;
 
 typedef struct _cepstrum_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -31,28 +31,28 @@ typedef struct _cepstrum_tilde
     t_bool x_powerCepstrum;
     t_bool x_spectrumOffset;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwForwardPlan;
     fftwf_plan x_fftwBackwardPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_atom *x_listOut;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_atom* x_listOut;
     t_float x_f;
-    t_outlet *x_ceps;
+    t_outlet* x_ceps;
 
 } t_cepstrum_tilde;
 
 
 /* ------------------------ cepstrum~ -------------------------------- */
 
-static void cepstrum_tilde_bang (t_cepstrum_tilde *x)
+static void cepstrum_tilde_bang (t_cepstrum_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float *windowFuncPtr, nRecip;
+    t_float* windowFuncPtr, nRecip;
     double currentTime;
 
     window = x->x_window;
@@ -106,12 +106,12 @@ static void cepstrum_tilde_bang (t_cepstrum_tilde *x)
     if ( !x->x_powerSpectrum)
         tIDLib_mag (windowHalf + 1, x->x_fftwIn);
 
-    // add 1.0 to power or magnitude spectrum before taking the log and then IFT. Avoid large negative values from log(negativeNum)
+    // add 1.0 to power or magnitude spectrum before taking the log and then IFT. Avoid large negative values from log (negativeNum)
     if (x->x_spectrumOffset)
         for (i = 0; i < windowHalf + 1; i++)
             x->x_fftwIn[i] += 1.0;
 
-    tIDLib_log(windowHalf + 1, x->x_fftwIn);
+    tIDLib_log (windowHalf + 1, x->x_fftwIn);
 
     // copy forward DFT magnitude result into real part of backward DFT complex input buffer, and zero out the imaginary part. fftwOut is only N/2+1 points long, while fftwIn is N points long
     for (i = 0; i < windowHalf + 1; i++)
@@ -137,7 +137,7 @@ static void cepstrum_tilde_bang (t_cepstrum_tilde *x)
 }
 
 
-static void cepstrum_tilde_print (t_cepstrum_tilde *x)
+static void cepstrum_tilde_print (t_cepstrum_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -150,7 +150,7 @@ static void cepstrum_tilde_print (t_cepstrum_tilde *x)
 }
 
 
-static void cepstrum_tilde_window (t_cepstrum_tilde *x, t_floatarg w)
+static void cepstrum_tilde_window (t_cepstrum_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -208,7 +208,7 @@ static void cepstrum_tilde_window (t_cepstrum_tilde *x, t_floatarg w)
 }
 
 
-static void cepstrum_tilde_overlap (t_cepstrum_tilde *x, t_floatarg o)
+static void cepstrum_tilde_overlap (t_cepstrum_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -217,7 +217,7 @@ static void cepstrum_tilde_overlap (t_cepstrum_tilde *x, t_floatarg o)
 }
 
 
-static void cepstrum_tilde_windowFunction (t_cepstrum_tilde *x, t_floatarg f)
+static void cepstrum_tilde_windowFunction (t_cepstrum_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -247,7 +247,7 @@ static void cepstrum_tilde_windowFunction (t_cepstrum_tilde *x, t_floatarg f)
 
 
 // magnitude spectrum == 0, power spectrum == 1
-static void cepstrum_tilde_powerSpectrum (t_cepstrum_tilde *x, t_floatarg spec)
+static void cepstrum_tilde_powerSpectrum (t_cepstrum_tilde* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -260,7 +260,7 @@ static void cepstrum_tilde_powerSpectrum (t_cepstrum_tilde *x, t_floatarg spec)
 }
 
 
-static void cepstrum_tilde_powerCepstrum(t_cepstrum_tilde *x, t_floatarg power)
+static void cepstrum_tilde_powerCepstrum (t_cepstrum_tilde* x, t_floatarg power)
 {
     power = (power<0)?0:power;
     power = (power>1)?1:power;
@@ -273,7 +273,7 @@ static void cepstrum_tilde_powerCepstrum(t_cepstrum_tilde *x, t_floatarg power)
 }
 
 
-static void cepstrum_tilde_spectrumOffset (t_cepstrum_tilde *x, t_floatarg offset)
+static void cepstrum_tilde_spectrumOffset (t_cepstrum_tilde* x, t_floatarg offset)
 {
     offset = (offset<0)?0:offset;
     offset = (offset>1)?1:offset;
@@ -286,9 +286,9 @@ static void cepstrum_tilde_spectrumOffset (t_cepstrum_tilde *x, t_floatarg offse
 }
 
 
-static void *cepstrum_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* cepstrum_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_cepstrum_tilde *x = (t_cepstrum_tilde *)pd_new (cepstrum_tilde_class);
+    t_cepstrum_tilde* x = (t_cepstrum_tilde *)pd_new (cepstrum_tilde_class);
     t_sampIdx i;
 
     x->x_ceps = outlet_new (&x->x_obj, gensym ("list"));
@@ -366,9 +366,9 @@ static t_int *cepstrum_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_cepstrum_tilde *x = (t_cepstrum_tilde *)(w[1]);
+    t_cepstrum_tilde* x = (t_cepstrum_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -385,7 +385,7 @@ static t_int *cepstrum_tilde_perform (t_int *w)
 }
 
 
-static void cepstrum_tilde_dsp (t_cepstrum_tilde *x, t_signal **sp)
+static void cepstrum_tilde_dsp (t_cepstrum_tilde* x, t_signal **sp)
 {
     dsp_add (
         cepstrum_tilde_perform,
@@ -420,7 +420,7 @@ static void cepstrum_tilde_dsp (t_cepstrum_tilde *x, t_signal **sp)
     };
 };
 
-static void cepstrum_tilde_free (t_cepstrum_tilde *x)
+static void cepstrum_tilde_free (t_cepstrum_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

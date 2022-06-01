@@ -15,28 +15,28 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *zeroCrossing_class;
+static t_class* zeroCrossing_class;
 
 typedef struct _zeroCrossing
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_bool x_normalize;
-    t_float *x_analysisBuffer;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_analysisBuffer;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_outlet *x_crossings;
+    t_outlet* x_crossings;
 } t_zeroCrossing;
 
 
 /* ------------------------ zeroCrossing -------------------------------- */
 
-static void zeroCrossing_analyze (t_zeroCrossing *x, t_floatarg start, t_floatarg n)
+static void zeroCrossing_analyze (t_zeroCrossing* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -92,16 +92,16 @@ static void zeroCrossing_analyze (t_zeroCrossing *x, t_floatarg start, t_floatar
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
         crossings=0.0;
-        crossings = tIDLib_zeroCrossingRate(window, x->x_analysisBuffer, x->x_normalize);
+        crossings = tIDLib_zeroCrossingRate (window, x->x_analysisBuffer, x->x_normalize);
         outlet_float (x->x_crossings, crossings);
     }
 }
 
 
 // analyze the whole damn array
-static void zeroCrossing_bang (t_zeroCrossing *x)
+static void zeroCrossing_bang (t_zeroCrossing* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -117,9 +117,9 @@ static void zeroCrossing_bang (t_zeroCrossing *x)
 }
 
 
-static void zeroCrossing_set (t_zeroCrossing *x, t_symbol *s)
+static void zeroCrossing_set (t_zeroCrossing* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -129,7 +129,7 @@ static void zeroCrossing_set (t_zeroCrossing *x, t_symbol *s)
         x->x_arrayName = s;
 }
 
-static void zeroCrossing_normalize (t_zeroCrossing *x, t_floatarg n)
+static void zeroCrossing_normalize (t_zeroCrossing* x, t_floatarg n)
 {
     n = (n < 0) ? 0 : n;
     x->x_normalize = (n > 1) ? 1 : n;
@@ -137,7 +137,7 @@ static void zeroCrossing_normalize (t_zeroCrossing *x, t_floatarg n)
     post ("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
 }
 
-static void zeroCrossing_print (t_zeroCrossing *x)
+static void zeroCrossing_print (t_zeroCrossing* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
@@ -145,7 +145,7 @@ static void zeroCrossing_print (t_zeroCrossing *x)
 }
 
 
-static void zeroCrossing_samplerate (t_zeroCrossing *x, t_floatarg sr)
+static void zeroCrossing_samplerate (t_zeroCrossing* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -154,9 +154,9 @@ static void zeroCrossing_samplerate (t_zeroCrossing *x, t_floatarg sr)
 }
 
 
-static void *zeroCrossing_new (t_symbol *s, int argc, t_atom *argv)
+static void* zeroCrossing_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_zeroCrossing *x = (t_zeroCrossing *)pd_new (zeroCrossing_class);
+    t_zeroCrossing* x = (t_zeroCrossing *)pd_new (zeroCrossing_class);
 //	t_garray *a;
 
     x->x_crossings = outlet_new (&x->x_obj, &s_float);
@@ -178,7 +178,7 @@ static void *zeroCrossing_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -204,7 +204,7 @@ static void *zeroCrossing_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void zeroCrossing_free (t_zeroCrossing *x)
+static void zeroCrossing_free (t_zeroCrossing* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_sample));

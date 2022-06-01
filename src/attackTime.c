@@ -15,33 +15,33 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *attackTime_class;
+static t_class* attackTime_class;
 
 typedef struct _attackTime
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
-    t_float *x_analysisBuffer;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_analysisBuffer;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
     t_uShortInt x_numSampsThresh;
     t_float x_sampMagThresh;
     t_sampIdx x_maxSearchRange;
-    t_float *x_searchBuffer;
-    t_outlet *x_peakSampIdx;
-    t_outlet *x_attackStartIdx;
-    t_outlet *x_attackTime;
+    t_float* x_searchBuffer;
+    t_outlet* x_peakSampIdx;
+    t_outlet* x_attackStartIdx;
+    t_outlet* x_attackTime;
 } t_attackTime;
 
 
 /* ------------------------ attackTime -------------------------------- */
 
-static void attackTime_analyze (t_attackTime *x, t_floatarg start, t_floatarg n)
+static void attackTime_analyze (t_attackTime* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -95,15 +95,15 @@ static void attackTime_analyze (t_attackTime *x, t_floatarg start, t_floatarg n)
         for (i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
-        tIDLib_peakSample(x->x_window, x->x_analysisBuffer, &peakSampIdx, &peakSampVal);
+        tIDLib_peakSample (x->x_window, x->x_analysisBuffer, &peakSampIdx, &peakSampVal);
         peakSampIdx += startSamp; // add startSamp back so we can find the peak sample index relative to the whole array
 
         i = x->x_maxSearchRange;
-        j=peakSampIdx;
+        j = peakSampIdx;
 
-        while(i--)
+        while (i--)
         {
-            if (j==0)
+            if (j == 0)
                 x->x_searchBuffer[i] = x->x_vec[j].w_float;
             else
             {
@@ -115,7 +115,7 @@ static void attackTime_analyze (t_attackTime *x, t_floatarg start, t_floatarg n)
         attackTime = 0.0;
 
         // send searchBuffer to routine to find the point where sample magnitude is below x_sampMagThresh for at least x_numSampsThresh samples
-        attackStartIdx = tIDLib_findAttackStartSamp(x->x_maxSearchRange, x->x_searchBuffer, x->x_sampMagThresh, x->x_numSampsThresh);
+        attackStartIdx = tIDLib_findAttackStartSamp (x->x_maxSearchRange, x->x_searchBuffer, x->x_sampMagThresh, x->x_numSampsThresh);
 
         // if the index returned is ULONG_MAX, the search failed
         if (attackStartIdx==ULONG_MAX)
@@ -137,9 +137,9 @@ static void attackTime_analyze (t_attackTime *x, t_floatarg start, t_floatarg n)
 
 
 // analyze the whole damn array
-static void attackTime_bang (t_attackTime *x)
+static void attackTime_bang (t_attackTime* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -155,9 +155,9 @@ static void attackTime_bang (t_attackTime *x)
 }
 
 
-static void attackTime_set (t_attackTime *x, t_symbol *s)
+static void attackTime_set (t_attackTime* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -168,7 +168,7 @@ static void attackTime_set (t_attackTime *x, t_symbol *s)
 }
 
 
-static void attackTime_print (t_attackTime *x)
+static void attackTime_print (t_attackTime* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
@@ -178,7 +178,7 @@ static void attackTime_print (t_attackTime *x)
 }
 
 
-static void attackTime_maxSearchRange(t_attackTime *x, t_floatarg range)
+static void attackTime_maxSearchRange (t_attackTime* x, t_floatarg range)
 {
     t_sampIdx i, newRange;
 
@@ -198,7 +198,7 @@ static void attackTime_maxSearchRange(t_attackTime *x, t_floatarg range)
 }
 
 
-static void attackTime_sampMagThresh(t_attackTime *x, t_floatarg thresh)
+static void attackTime_sampMagThresh (t_attackTime* x, t_floatarg thresh)
 {
     x->x_sampMagThresh = (thresh<0.0)?0.0:thresh;
 
@@ -206,7 +206,7 @@ static void attackTime_sampMagThresh(t_attackTime *x, t_floatarg thresh)
 }
 
 
-static void attackTime_numSampsThresh(t_attackTime *x, t_floatarg thresh)
+static void attackTime_numSampsThresh (t_attackTime* x, t_floatarg thresh)
 {
     thresh = (thresh<0.0)?0.0:thresh;
     thresh = (thresh>x->x_maxSearchRange)?x->x_maxSearchRange:thresh;
@@ -216,7 +216,7 @@ static void attackTime_numSampsThresh(t_attackTime *x, t_floatarg thresh)
 }
 
 
-static void attackTime_samplerate (t_attackTime *x, t_floatarg sr)
+static void attackTime_samplerate (t_attackTime* x, t_floatarg sr)
 {
     t_float rangeMs;
 
@@ -228,13 +228,13 @@ static void attackTime_samplerate (t_attackTime *x, t_floatarg sr)
     else
         x->x_sr = sr;
 
-    attackTime_maxSearchRange(x, rangeMs);
+    attackTime_maxSearchRange (x, rangeMs);
 }
 
 
-static void *attackTime_new (t_symbol *s, int argc, t_atom *argv)
+static void* attackTime_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_attackTime *x = (t_attackTime *)pd_new (attackTime_class);
+    t_attackTime* x = (t_attackTime *)pd_new (attackTime_class);
 //	t_garray *a;
 
     x->x_attackTime = outlet_new (&x->x_obj, &s_float);
@@ -258,7 +258,7 @@ static void *attackTime_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -288,7 +288,7 @@ static void *attackTime_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void attackTime_free (t_attackTime *x)
+static void attackTime_free (t_attackTime* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_searchBuffer, x->x_maxSearchRange * sizeof (t_float));

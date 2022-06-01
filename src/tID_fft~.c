@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *tID_fft_tilde_class;
+static t_class* tID_fft_tilde_class;
 
 typedef struct _tID_fft_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -30,34 +30,34 @@ typedef struct _tID_fft_tilde
     t_sampIdx x_zeroPad;
     t_sampIdx x_zeroPadHalf;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    t_sample *x_fftwInZeroPad;
-    fftwf_complex *x_fftwOut;
-    fftwf_complex *x_fftwOutZeroPad;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    t_sample* x_fftwInZeroPad;
+    fftwf_complex* x_fftwOut;
+    fftwf_complex* x_fftwOutZeroPad;
     fftwf_plan x_fftwPlan;
     fftwf_plan x_fftwPlanZeroPad;
     t_bool x_normalize;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_atom *x_listOutReal;
-    t_atom *x_listOutImag;
-    t_atom *x_listOutRealZeroPad;
-    t_atom *x_listOutImagZeroPad;
-    t_outlet *x_realOut;
-    t_outlet *x_imagOut;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_atom* x_listOutReal;
+    t_atom* x_listOutImag;
+    t_atom* x_listOutRealZeroPad;
+    t_atom* x_listOutImagZeroPad;
+    t_outlet* x_realOut;
+    t_outlet* x_imagOut;
     t_float x_f;
 } t_tID_fft_tilde;
 
 
 /* ------------------------ tID_fft~ -------------------------------- */
 
-static void tID_fft_tilde_bang (t_tID_fft_tilde *x)
+static void tID_fft_tilde_bang (t_tID_fft_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float *windowFuncPtr, realMax, imagMax;
+    t_float* windowFuncPtr, realMax, imagMax;
     double currentTime;
 
     window = x->x_window;
@@ -123,8 +123,8 @@ static void tID_fft_tilde_bang (t_tID_fft_tilde *x)
             {
                 t_float thisReal, thisImag;
 
-                thisReal = fabsf(x->x_fftwOutZeroPad[i][0]);
-                thisImag = fabsf(x->x_fftwOutZeroPad[i][1]);
+                thisReal = fabsf (x->x_fftwOutZeroPad[i][0]);
+                thisImag = fabsf (x->x_fftwOutZeroPad[i][1]);
 
                 if (thisReal>realMax)
                     realMax = thisReal;
@@ -170,8 +170,8 @@ static void tID_fft_tilde_bang (t_tID_fft_tilde *x)
             {
                 t_float thisReal, thisImag;
 
-                thisReal = fabsf(x->x_fftwOut[i][0]);
-                thisImag = fabsf(x->x_fftwOut[i][1]);
+                thisReal = fabsf (x->x_fftwOut[i][0]);
+                thisImag = fabsf (x->x_fftwOut[i][1]);
 
                 if (thisReal>realMax)
                     realMax = thisReal;
@@ -207,7 +207,7 @@ static void tID_fft_tilde_bang (t_tID_fft_tilde *x)
 }
 
 
-static void tID_fft_tilde_print (t_tID_fft_tilde *x)
+static void tID_fft_tilde_print (t_tID_fft_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_sampIdx)x->x_n);
@@ -223,7 +223,7 @@ static void tID_fft_tilde_print (t_tID_fft_tilde *x)
 }
 
 
-static void tID_fft_tilde_window (t_tID_fft_tilde *x, t_floatarg w)
+static void tID_fft_tilde_window (t_tID_fft_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -280,7 +280,7 @@ static void tID_fft_tilde_window (t_tID_fft_tilde *x, t_floatarg w)
 }
 
 
-static void tID_fft_tilde_overlap (t_tID_fft_tilde *x, t_floatarg o)
+static void tID_fft_tilde_overlap (t_tID_fft_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o<1.0)?1.0:o;
@@ -289,7 +289,7 @@ static void tID_fft_tilde_overlap (t_tID_fft_tilde *x, t_floatarg o)
 }
 
 
-static void tID_fft_tilde_windowFunction (t_tID_fft_tilde *x, t_floatarg f)
+static void tID_fft_tilde_windowFunction (t_tID_fft_tilde* x, t_floatarg f)
 {
     f = (f<0.0)?0.0:f;
     f = (f>4.0)?4.0:f;
@@ -318,7 +318,7 @@ static void tID_fft_tilde_windowFunction (t_tID_fft_tilde *x, t_floatarg f)
 }
 
 
-static void tID_fft_tilde_zeroPad(t_tID_fft_tilde *x, t_floatarg z)
+static void tID_fft_tilde_zeroPad (t_tID_fft_tilde* x, t_floatarg z)
 {
     t_sampIdx i, oldZeroPad, oldZeroPadHalf;
 
@@ -359,7 +359,7 @@ static void tID_fft_tilde_zeroPad(t_tID_fft_tilde *x, t_floatarg z)
 }
 
 
-static void tID_fft_tilde_normalize (t_tID_fft_tilde *x, t_floatarg norm)
+static void tID_fft_tilde_normalize (t_tID_fft_tilde* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -372,9 +372,9 @@ static void tID_fft_tilde_normalize (t_tID_fft_tilde *x, t_floatarg norm)
 }
 
 
-static void *tID_fft_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* tID_fft_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_tID_fft_tilde *x = (t_tID_fft_tilde *)pd_new (tID_fft_tilde_class);
+    t_tID_fft_tilde* x = (t_tID_fft_tilde *)pd_new (tID_fft_tilde_class);
     t_sampIdx i;
 
     x->x_realOut = outlet_new (&x->x_obj, gensym ("list"));
@@ -457,9 +457,9 @@ static t_int *tID_fft_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_tID_fft_tilde *x = (t_tID_fft_tilde *)(w[1]);
+    t_tID_fft_tilde* x = (t_tID_fft_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -476,7 +476,7 @@ static t_int *tID_fft_tilde_perform (t_int *w)
 }
 
 
-static void tID_fft_tilde_dsp (t_tID_fft_tilde *x, t_signal **sp)
+static void tID_fft_tilde_dsp (t_tID_fft_tilde* x, t_signal **sp)
 {
     dsp_add (
         tID_fft_tilde_perform,
@@ -512,7 +512,7 @@ static void tID_fft_tilde_dsp (t_tID_fft_tilde *x, t_signal **sp)
 };
 
 
-static void tID_fft_tilde_free (t_tID_fft_tilde *x)
+static void tID_fft_tilde_free (t_tID_fft_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *barkSpecFlux_tilde_class;
+static t_class* barkSpecFlux_tilde_class;
 
 typedef struct _barkSpecFlux_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -31,30 +31,30 @@ typedef struct _barkSpecFlux_tilde
     t_bool x_powerSpectrum;
     t_bool x_logSpectrum;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwInForwardWindow;
-    t_sample *x_fftwInBackWindow;
-    fftwf_complex *x_fftwOutForwardWindow;
-    fftwf_complex *x_fftwOutBackWindow;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwInForwardWindow;
+    t_sample* x_fftwInBackWindow;
+    fftwf_complex* x_fftwOutForwardWindow;
+    fftwf_complex* x_fftwOutBackWindow;
     fftwf_plan x_fftwPlanForwardWindow;
     fftwf_plan x_fftwPlanBackWindow;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
     t_fluxMode x_mode;
     t_bool x_squaredDiff;
     t_uInt x_separation;
     t_filterIdx x_sizeFilterFreqs;
     t_filterIdx x_numFilters;
     t_float x_barkSpacing;
-    t_float *x_filterFreqs;
-    t_filter *x_filterbank;
+    t_float* x_filterFreqs;
+    t_filter* x_filterbank;
     t_bool x_specBandAvg;
     t_bool x_filterAvg;
-    t_atom *x_listOut;
-    t_outlet *x_fluxList;
-    t_outlet *x_flux;
+    t_atom* x_listOut;
+    t_outlet* x_fluxList;
+    t_outlet* x_flux;
     t_float x_f;
 
 } t_barkSpecFlux_tilde;
@@ -62,7 +62,7 @@ typedef struct _barkSpecFlux_tilde
 
 /* ------------------------ barkSpecFlux~ -------------------------------- */
 
-static void barkSpecFlux_tilde_bang (t_barkSpecFlux_tilde *x)
+static void barkSpecFlux_tilde_bang (t_barkSpecFlux_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
     t_float flux, *windowFuncPtr;
@@ -216,7 +216,7 @@ static void barkSpecFlux_tilde_bang (t_barkSpecFlux_tilde *x)
 }
 
 
-static void barkSpecFlux_tilde_createFilterbank (t_barkSpecFlux_tilde *x, t_floatarg bs)
+static void barkSpecFlux_tilde_createFilterbank (t_barkSpecFlux_tilde* x, t_floatarg bs)
 {
     t_filterIdx oldNumFilters;
 
@@ -241,7 +241,7 @@ static void barkSpecFlux_tilde_createFilterbank (t_barkSpecFlux_tilde *x, t_floa
 }
 
 
-static void barkSpecFlux_tilde_spec_band_avg (t_barkSpecFlux_tilde *x, t_floatarg avg)
+static void barkSpecFlux_tilde_spec_band_avg (t_barkSpecFlux_tilde* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -254,7 +254,7 @@ static void barkSpecFlux_tilde_spec_band_avg (t_barkSpecFlux_tilde *x, t_floatar
 }
 
 
-static void barkSpecFlux_tilde_filter_avg (t_barkSpecFlux_tilde *x, t_floatarg avg)
+static void barkSpecFlux_tilde_filter_avg (t_barkSpecFlux_tilde* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -267,7 +267,7 @@ static void barkSpecFlux_tilde_filter_avg (t_barkSpecFlux_tilde *x, t_floatarg a
 }
 
 
-static void barkSpecFlux_tilde_print (t_barkSpecFlux_tilde *x)
+static void barkSpecFlux_tilde_print (t_barkSpecFlux_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -302,7 +302,7 @@ static void barkSpecFlux_tilde_print (t_barkSpecFlux_tilde *x)
 }
 
 
-static void barkSpecFlux_tilde_window (t_barkSpecFlux_tilde *x, t_floatarg w)
+static void barkSpecFlux_tilde_window (t_barkSpecFlux_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -373,7 +373,7 @@ static void barkSpecFlux_tilde_window (t_barkSpecFlux_tilde *x, t_floatarg w)
 }
 
 
-static void barkSpecFlux_tilde_overlap (t_barkSpecFlux_tilde *x, t_floatarg o)
+static void barkSpecFlux_tilde_overlap (t_barkSpecFlux_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -382,7 +382,7 @@ static void barkSpecFlux_tilde_overlap (t_barkSpecFlux_tilde *x, t_floatarg o)
 }
 
 
-static void barkSpecFlux_tilde_x_windowFunction (t_barkSpecFlux_tilde *x, t_floatarg f)
+static void barkSpecFlux_tilde_x_windowFunction (t_barkSpecFlux_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -411,7 +411,7 @@ static void barkSpecFlux_tilde_x_windowFunction (t_barkSpecFlux_tilde *x, t_floa
 }
 
 
-static void barkSpecFlux_tilde_powerSpectrum (t_barkSpecFlux_tilde *x, t_floatarg spec)
+static void barkSpecFlux_tilde_powerSpectrum (t_barkSpecFlux_tilde* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -424,7 +424,7 @@ static void barkSpecFlux_tilde_powerSpectrum (t_barkSpecFlux_tilde *x, t_floatar
 }
 
 
-static void barkSpecFlux_tilde_logSpectrum (t_barkSpecFlux_tilde *x, t_floatarg spec)
+static void barkSpecFlux_tilde_logSpectrum (t_barkSpecFlux_tilde* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -437,7 +437,7 @@ static void barkSpecFlux_tilde_logSpectrum (t_barkSpecFlux_tilde *x, t_floatarg 
 }
 
 
-static void barkSpecFlux_tilde_mode (t_barkSpecFlux_tilde *x, t_symbol *m)
+static void barkSpecFlux_tilde_mode (t_barkSpecFlux_tilde* x, t_symbol* m)
 {
     if ( !strcmp (m->s_name, "flux"))
         x->x_mode = mFlux;
@@ -450,7 +450,7 @@ static void barkSpecFlux_tilde_mode (t_barkSpecFlux_tilde *x, t_symbol *m)
 }
 
 
-static void barkSpecFlux_tilde_squaredDiff (t_barkSpecFlux_tilde *x, t_floatarg sd)
+static void barkSpecFlux_tilde_squaredDiff (t_barkSpecFlux_tilde* x, t_floatarg sd)
 {
     sd = (sd < 0) ? 0 : sd;
     sd = (sd > 1) ? 1 : sd;
@@ -463,7 +463,7 @@ static void barkSpecFlux_tilde_squaredDiff (t_barkSpecFlux_tilde *x, t_floatarg 
 }
 
 
-static void barkSpecFlux_tilde_normalize (t_barkSpecFlux_tilde *x, t_floatarg norm)
+static void barkSpecFlux_tilde_normalize (t_barkSpecFlux_tilde* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -476,7 +476,7 @@ static void barkSpecFlux_tilde_normalize (t_barkSpecFlux_tilde *x, t_floatarg no
 }
 
 
-static void barkSpecFlux_tilde_separation (t_barkSpecFlux_tilde *x, t_floatarg s)
+static void barkSpecFlux_tilde_separation (t_barkSpecFlux_tilde* x, t_floatarg s)
 {
     if (s > x->x_window)
     {
@@ -495,9 +495,9 @@ static void barkSpecFlux_tilde_separation (t_barkSpecFlux_tilde *x, t_floatarg s
 }
 
 
-static void *barkSpecFlux_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* barkSpecFlux_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_barkSpecFlux_tilde *x = (t_barkSpecFlux_tilde *)pd_new (barkSpecFlux_tilde_class);
+    t_barkSpecFlux_tilde* x = (t_barkSpecFlux_tilde *)pd_new (barkSpecFlux_tilde_class);
     t_float sepFloat;
     t_sampIdx i;
 
@@ -656,9 +656,9 @@ static t_int *barkSpecFlux_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_barkSpecFlux_tilde *x = (t_barkSpecFlux_tilde *)(w[1]);
+    t_barkSpecFlux_tilde* x = (t_barkSpecFlux_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -675,7 +675,7 @@ static t_int *barkSpecFlux_tilde_perform (t_int *w)
 }
 
 
-static void barkSpecFlux_tilde_dsp (t_barkSpecFlux_tilde *x, t_signal **sp)
+static void barkSpecFlux_tilde_dsp (t_barkSpecFlux_tilde* x, t_signal **sp)
 {
     dsp_add (
         barkSpecFlux_tilde_perform,
@@ -709,7 +709,7 @@ static void barkSpecFlux_tilde_dsp (t_barkSpecFlux_tilde *x, t_signal **sp)
     }
 };
 
-static void barkSpecFlux_tilde_free (t_barkSpecFlux_tilde *x)
+static void barkSpecFlux_tilde_free (t_barkSpecFlux_tilde* x)
 {
     t_filterIdx i;
 

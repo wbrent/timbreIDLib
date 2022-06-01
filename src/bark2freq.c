@@ -15,21 +15,21 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *bark2freq_class;
+static t_class* bark2freq_class;
 
 typedef struct _bark2freq
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_bark2freqFormula x_formula;
-    t_outlet *x_freq;
+    t_outlet* x_freq;
 
 } t_bark2freq;
 
 
-// TODO: could add an option for the other formula: 13*arctan(0.00076*freq) + 3.5*arctan((freq/7500)^2)
+// TODO: could add an option for the other formula: 13*arctan (0.00076*freq) + 3.5*arctan ((freq/7500)^2)
 /* ------------------------ bark2freq -------------------------------- */
-static void bark2freq_calculate(t_bark2freq *x, t_float b)
+static void bark2freq_calculate (t_bark2freq* x, t_float b)
 {
     t_float bark;
 
@@ -39,7 +39,7 @@ static void bark2freq_calculate(t_bark2freq *x, t_float b)
     {
         t_float freq;
 
-        freq = tIDLib_bark2freq(bark);
+        freq = tIDLib_bark2freq (bark);
         outlet_float (x->x_freq, freq);
     }
     else
@@ -47,9 +47,9 @@ static void bark2freq_calculate(t_bark2freq *x, t_float b)
 }
 
 
-static void *bark2freq_new (t_symbol *s, int argc, t_atom *argv)
+static void* bark2freq_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_bark2freq *x = (t_bark2freq *)pd_new (bark2freq_class);
+    t_bark2freq* x = (t_bark2freq *)pd_new (bark2freq_class);
     x->x_freq = outlet_new (&x->x_obj, &s_float);
 
     x->x_objSymbol = s;

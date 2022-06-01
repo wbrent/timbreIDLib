@@ -17,17 +17,17 @@ t_float bark_weights_dB[] = {-69.9, -60.4, -51.4, -43.3, -36.6, -30.3, -24.3,  -
 
 t_float bark_weights_freqs[] = {20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500};
 
-static t_class *bark_class;
+static t_class* bark_class;
 
 typedef struct _bark
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_bool x_debug;
     t_float x_sr;
 
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
 
     t_sampIdx x_window;
@@ -43,11 +43,11 @@ typedef struct _bark
     t_float x_barkSpacing;
     t_filterIdx x_numFilters;
     t_filterIdx x_sizeFilterFreqs;
-    t_float *x_filterFreqs;
-    t_filter *x_filterbank;
+    t_float* x_filterFreqs;
+    t_filter* x_filterbank;
     t_bool x_specBandAvg;
     t_bool x_filterAvg;
-    t_float *x_loudWeights;
+    t_float* x_loudWeights;
 
     t_float x_prevTotalGrowth;
     t_float x_loThresh;
@@ -59,35 +59,35 @@ typedef struct _bark
     t_uInt x_debounceSamp;
     t_float x_maskDecay;
     t_uInt x_maskPeriods;
-    t_filterIdx *x_numPeriods; // t_filterIdx type because this buffer is used to check making per filter band
+    t_filterIdx* x_numPeriods; // t_filterIdx type because this buffer is used to check making per filter band
 
     // this should remain a large integer of some sort, because it is used to keep track of the running sum of samples processed. set to UINT_MAX as off flag
     t_uInt x_debounceActive;
     t_bool x_haveHit;
 
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
 
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
 
-    t_float *x_mask;
-    t_float *x_growth;
-    t_atom *x_growthList;
+    t_float* x_mask;
+    t_float* x_growth;
+    t_atom* x_growthList;
 
-    t_outlet *x_outputList;
-    t_outlet *x_growthOut;
-    t_outlet *x_timeOut;
+    t_outlet* x_outputList;
+    t_outlet* x_growthOut;
+    t_outlet* x_timeOut;
 
 } t_bark;
 
 
 /* ---------------- utility functions ---------------------- */
 
-static void bark_create_loudness_weighting(t_bark *x)
+static void bark_create_loudness_weighting (t_bark* x)
 {
     t_filterIdx i;
     t_float barkSum, *barkFreqs;
@@ -98,7 +98,7 @@ static void bark_create_loudness_weighting(t_bark *x)
 
     for (i = 0; i < x->x_numFilters; i++)
     {
-        barkFreqs[i] = tIDLib_bark2freq(barkSum);
+        barkFreqs[i] = tIDLib_bark2freq (barkSum);
         barkSum += x->x_barkSpacing;
     }
 
@@ -107,7 +107,7 @@ static void bark_create_loudness_weighting(t_bark *x)
         t_binIdx nearIdx;
         t_float nearFreq, diffFreq, diffdB, dBint;
 
-        nearIdx = tIDLib_nearestBinIndex(barkFreqs[i], bark_weights_freqs, TID_NUMWEIGHTPOINTS);
+        nearIdx = tIDLib_nearestBinIndex (barkFreqs[i], bark_weights_freqs, TID_NUMWEIGHTPOINTS);
         nearFreq = bark_weights_freqs[nearIdx];
         diffdB = 0;
 
@@ -134,9 +134,9 @@ static void bark_create_loudness_weighting(t_bark *x)
         }
 
         if (x->x_powerSpectrum)
-            x->x_loudWeights[i] = pow(10.0, dBint*0.1);
+            x->x_loudWeights[i] = pow (10.0, dBint*0.1);
         else
-            x->x_loudWeights[i] = pow(10.0, dBint*0.05);
+            x->x_loudWeights[i] = pow (10.0, dBint*0.05);
 
     }
 }
@@ -146,7 +146,7 @@ static void bark_create_loudness_weighting(t_bark *x)
 
 /* ------------------------ bark -------------------------------- */
 
-static void bark_windowFunction (t_bark *x, t_floatarg f)
+static void bark_windowFunction (t_bark* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -174,7 +174,7 @@ static void bark_windowFunction (t_bark *x, t_floatarg f)
     };
 }
 
-static void bark_thresh(t_bark *x, t_floatarg lo, t_floatarg hi)
+static void bark_thresh (t_bark* x, t_floatarg lo, t_floatarg hi)
 {
     if (hi < lo)
     {
@@ -197,12 +197,12 @@ static void bark_thresh(t_bark *x, t_floatarg lo, t_floatarg hi)
     }
 }
 
-static void bark_minvel(t_bark *x, t_floatarg mv)
+static void bark_minvel (t_bark* x, t_floatarg mv)
 {
     x->x_minvel = (mv<0)?0:mv;
 }
 
-static void bark_filter_range(t_bark *x, t_floatarg lo, t_floatarg hi)
+static void bark_filter_range (t_bark* x, t_floatarg lo, t_floatarg hi)
 {
     if (hi < lo)
     {
@@ -224,7 +224,7 @@ static void bark_filter_range(t_bark *x, t_floatarg lo, t_floatarg hi)
     }
 }
 
-static void bark_mask(t_bark *x, t_floatarg per, t_floatarg dec)
+static void bark_mask (t_bark* x, t_floatarg per, t_floatarg dec)
 {
     x->x_maskPeriods = per;
     x->x_maskDecay = dec;
@@ -235,7 +235,7 @@ static void bark_mask(t_bark *x, t_floatarg per, t_floatarg dec)
 //	post ("bark: masking for %i periods and decaying by %i%% thereafter.", x->x_maskPeriods, (int)(x->x_maskDecay*100));
 }
 
-static void bark_debounce(t_bark *x, t_floatarg db)
+static void bark_debounce (t_bark* x, t_floatarg db)
 {
     if (x->x_debounceTime>=0)
     {
@@ -247,7 +247,7 @@ static void bark_debounce(t_bark *x, t_floatarg db)
         pd_error (x, "%s debounce time must be >= 0 ms", x->x_objSymbol->s_name);
 }
 
-static void bark_spew (t_bark *x, t_floatarg spew)
+static void bark_spew (t_bark* x, t_floatarg spew)
 {
     spew = (spew < 0) ? 0 : spew;
     spew = (spew > 1) ? 1 : spew;
@@ -256,9 +256,9 @@ static void bark_spew (t_bark *x, t_floatarg spew)
     post ("%s spew mode: %i", x->x_objSymbol->s_name, x->x_spew);
 }
 
-static void bark_print (t_bark *x)
+static void bark_print (t_bark* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array named %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -267,7 +267,7 @@ static void bark_print (t_bark *x)
     else
     {
         post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-        post ("%s total frames in array: %i", x->x_objSymbol->s_name, (int)floor((x->x_arrayPoints - x->x_window)/x->x_hop));
+        post ("%s total frames in array: %i", x->x_objSymbol->s_name, (int)floor ((x->x_arrayPoints - x->x_window)/x->x_hop));
     }
 
     post ("%s window size: %i", x->x_objSymbol->s_name, (t_sampIdx)x->x_window);
@@ -289,7 +289,7 @@ static void bark_print (t_bark *x)
 }
 
 
-static void bark_debug(t_bark *x, t_floatarg debug)
+static void bark_debug (t_bark* x, t_floatarg debug)
 {
     debug = (debug<0)?0:debug;
     debug = (debug>1)?1:debug;
@@ -301,7 +301,7 @@ static void bark_debug(t_bark *x, t_floatarg debug)
         post ("%s debug mode OFF", x->x_objSymbol->s_name);
 }
 
-static void bark_use_weights(t_bark *x, t_floatarg w)
+static void bark_use_weights (t_bark* x, t_floatarg w)
 {
     w = (w<0)?0:w;
     w = (w>1)?1:w;
@@ -314,7 +314,7 @@ static void bark_use_weights(t_bark *x, t_floatarg w)
 }
 
 
-static void bark_spec_band_avg (t_bark *x, t_floatarg avg)
+static void bark_spec_band_avg (t_bark* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -327,7 +327,7 @@ static void bark_spec_band_avg (t_bark *x, t_floatarg avg)
 }
 
 
-static void bark_filter_avg (t_bark *x, t_floatarg avg)
+static void bark_filter_avg (t_bark* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -340,13 +340,13 @@ static void bark_filter_avg (t_bark *x, t_floatarg avg)
 }
 
 
-static void bark_powerSpectrum (t_bark *x, t_floatarg spec)
+static void bark_powerSpectrum (t_bark* x, t_floatarg spec)
 {
     spec = (spec<0) ? 0 : spec;
     spec = (spec>1) ? 1 : spec;
     x->x_powerSpectrum = spec;
 
-    bark_create_loudness_weighting(x);
+    bark_create_loudness_weighting (x);
 
     if (x->x_powerSpectrum)
         post ("%s: using power spectrum.", x->x_objSymbol->s_name);
@@ -355,7 +355,7 @@ static void bark_powerSpectrum (t_bark *x, t_floatarg spec)
 }
 
 
-static void bark_normalize (t_bark *x, t_floatarg norm)
+static void bark_normalize (t_bark* x, t_floatarg norm)
 {
     norm = (norm<0) ? 0 : norm;
     norm = (norm>1) ? 1 : norm;
@@ -368,7 +368,7 @@ static void bark_normalize (t_bark *x, t_floatarg norm)
 }
 
 
-static void bark_samplerate (t_bark *x, t_floatarg sr)
+static void bark_samplerate (t_bark* x, t_floatarg sr)
 {
     t_filterIdx i, oldNumFilters;
 
@@ -411,9 +411,9 @@ static void bark_samplerate (t_bark *x, t_floatarg sr)
 }
 
 
-static void *bark_new (t_symbol *s, int argc, t_atom *argv)
+static void* bark_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_bark *x = (t_bark *)pd_new (bark_class);
+    t_bark* x = (t_bark *)pd_new (bark_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -615,15 +615,15 @@ static void *bark_new (t_symbol *s, int argc, t_atom *argv)
         x->x_loudWeights[i] = 0.0;
     }
 
-    bark_create_loudness_weighting(x);
+    bark_create_loudness_weighting (x);
 
     return (x);
 }
 
 
-static void bark_analyze (t_bark *x, t_floatarg startTime, t_floatarg endTime)
+static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array named %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -650,8 +650,8 @@ static void bark_analyze (t_bark *x, t_floatarg startTime, t_floatarg endTime)
             startTime = (startTime<0.0)?0.0:startTime;
             endTime = (endTime<0.0)?0.0:endTime;
 
-            startSamp = floor(startTime*x->x_sr);
-            endSamp = floor(endTime*x->x_sr);
+            startSamp = floor (startTime*x->x_sr);
+            endSamp = floor (endTime*x->x_sr);
 
             if (endSamp<x->x_arrayPoints)
                 sampRange = endSamp - startSamp + 1;
@@ -668,7 +668,7 @@ static void bark_analyze (t_bark *x, t_floatarg startTime, t_floatarg endTime)
             endSamp = x->x_arrayPoints - 1;
         }
 
-        nFrames = floor((sampRange-window)/hop);
+        nFrames = floor ((sampRange-window)/hop);
 
         // init mask to zero
         for (i = 0; i < x->x_numFilters; i++)
@@ -677,7 +677,7 @@ static void bark_analyze (t_bark *x, t_floatarg startTime, t_floatarg endTime)
         for (frame=0; frame<nFrames; frame++)
         {
             // fill buffer with <window> samples
-            for (i = 0, j=frame*hop+startSamp; i < window; i++, j++)
+            for (i = 0, j = frame * hop + startSamp; i < window; i++, j++)
                 x->x_fftwIn[i] = x->x_vec[j].w_float;
 
             totalGrowth = 0.0;
@@ -822,7 +822,7 @@ static void bark_analyze (t_bark *x, t_floatarg startTime, t_floatarg endTime)
 }
 
 
-static void bark_free (t_bark *x)
+static void bark_free (t_bark* x)
 {
     t_filterIdx i;
 

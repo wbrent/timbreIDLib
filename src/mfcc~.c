@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *mfcc_tilde_class;
+static t_class* mfcc_tilde_class;
 
 typedef struct _mfcc_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -30,25 +30,25 @@ typedef struct _mfcc_tilde
     t_bool x_normalize;
     t_bool x_powerSpectrum;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
     fftwf_plan x_fftwDctPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
     t_filterIdx x_sizeFilterFreqs;
     t_filterIdx x_numFilters;
     t_float x_melSpacing;
-    t_float *x_filterFreqs;
-    t_filter *x_filterbank;
+    t_float* x_filterFreqs;
+    t_filter* x_filterbank;
     t_bool x_specBandAvg;
     t_bool x_filterAvg;
-    t_float *x_mfcc;
-    t_atom *x_listOut;
-    t_outlet *x_featureList;
+    t_float* x_mfcc;
+    t_atom* x_listOut;
+    t_outlet* x_featureList;
     t_float x_f;
 
 } t_mfcc_tilde;
@@ -56,10 +56,10 @@ typedef struct _mfcc_tilde
 
 /* ------------------------ mfcc~ -------------------------------- */
 
-static void mfcc_tilde_bang (t_mfcc_tilde *x)
+static void mfcc_tilde_bang (t_mfcc_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
-    t_float *windowFuncPtr;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;
@@ -126,7 +126,7 @@ static void mfcc_tilde_bang (t_mfcc_tilde *x)
 }
 
 
-static void mfcc_tilde_create_filterbank (t_mfcc_tilde *x, t_floatarg ms)
+static void mfcc_tilde_create_filterbank (t_mfcc_tilde* x, t_floatarg ms)
 {
     t_filterIdx oldNumFilters;
 
@@ -159,7 +159,7 @@ static void mfcc_tilde_create_filterbank (t_mfcc_tilde *x, t_floatarg ms)
 }
 
 
-static void mfcc_tilde_spec_band_avg (t_mfcc_tilde *x, t_floatarg avg)
+static void mfcc_tilde_spec_band_avg (t_mfcc_tilde* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -172,7 +172,7 @@ static void mfcc_tilde_spec_band_avg (t_mfcc_tilde *x, t_floatarg avg)
 }
 
 
-static void mfcc_tilde_filter_avg (t_mfcc_tilde *x, t_floatarg avg)
+static void mfcc_tilde_filter_avg (t_mfcc_tilde* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -185,7 +185,7 @@ static void mfcc_tilde_filter_avg (t_mfcc_tilde *x, t_floatarg avg)
 }
 
 
-static void mfcc_tilde_print (t_mfcc_tilde *x)
+static void mfcc_tilde_print (t_mfcc_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -201,7 +201,7 @@ static void mfcc_tilde_print (t_mfcc_tilde *x)
 }
 
 
-static void mfcc_tilde_window (t_mfcc_tilde *x, t_floatarg w)
+static void mfcc_tilde_window (t_mfcc_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -266,7 +266,7 @@ static void mfcc_tilde_window (t_mfcc_tilde *x, t_floatarg w)
 }
 
 
-static void mfcc_tilde_overlap (t_mfcc_tilde *x, t_floatarg o)
+static void mfcc_tilde_overlap (t_mfcc_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -275,7 +275,7 @@ static void mfcc_tilde_overlap (t_mfcc_tilde *x, t_floatarg o)
 }
 
 
-static void mfcc_tilde_windowFunction (t_mfcc_tilde *x, t_floatarg f)
+static void mfcc_tilde_windowFunction (t_mfcc_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -304,7 +304,7 @@ static void mfcc_tilde_windowFunction (t_mfcc_tilde *x, t_floatarg f)
 }
 
 
-static void mfcc_tilde_powerSpectrum (t_mfcc_tilde *x, t_floatarg spec)
+static void mfcc_tilde_powerSpectrum (t_mfcc_tilde* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -317,7 +317,7 @@ static void mfcc_tilde_powerSpectrum (t_mfcc_tilde *x, t_floatarg spec)
 }
 
 
-static void mfcc_tilde_normalize (t_mfcc_tilde *x, t_floatarg norm)
+static void mfcc_tilde_normalize (t_mfcc_tilde* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -330,9 +330,9 @@ static void mfcc_tilde_normalize (t_mfcc_tilde *x, t_floatarg norm)
 }
 
 
-static void *mfcc_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* mfcc_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_mfcc_tilde *x = (t_mfcc_tilde *)pd_new (mfcc_tilde_class);
+    t_mfcc_tilde* x = (t_mfcc_tilde *)pd_new (mfcc_tilde_class);
     t_sampIdx i;
 
     x->x_featureList = outlet_new (&x->x_obj, gensym ("list"));
@@ -449,9 +449,9 @@ static t_int *mfcc_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_mfcc_tilde *x = (t_mfcc_tilde *)(w[1]);
+    t_mfcc_tilde* x = (t_mfcc_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -468,7 +468,7 @@ static t_int *mfcc_tilde_perform (t_int *w)
 }
 
 
-static void mfcc_tilde_dsp (t_mfcc_tilde *x, t_signal **sp)
+static void mfcc_tilde_dsp (t_mfcc_tilde* x, t_signal **sp)
 {
     dsp_add (
         mfcc_tilde_perform,
@@ -503,7 +503,7 @@ static void mfcc_tilde_dsp (t_mfcc_tilde *x, t_signal **sp)
 };
 
 
-static void mfcc_tilde_free (t_mfcc_tilde *x)
+static void mfcc_tilde_free (t_mfcc_tilde* x)
 {
     t_filterIdx i;
 

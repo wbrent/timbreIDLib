@@ -15,41 +15,41 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *barkSpecSlope_class;
+static t_class* barkSpecSlope_class;
 
 typedef struct _barkSpecSlope
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
     t_windowFunction x_windowFunction;
     t_bool x_normalize;
     t_bool x_powerSpectrum;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
     t_filterIdx x_sizeFilterFreqs;
     t_filterIdx x_numFilters;
     t_float x_barkSpacing;
-    t_float *x_filterFreqs;
-    t_filter *x_filterbank;
+    t_float* x_filterFreqs;
+    t_filter* x_filterbank;
     t_bool x_specBandAvg;
     t_bool x_filterAvg;
-    t_outlet *x_slope;
+    t_outlet* x_slope;
 } t_barkSpecSlope;
 
 
 /* ------------------------ barkSpecSlope -------------------------------- */
-static void barkSpecSlope_resizeWindow (t_barkSpecSlope *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void barkSpecSlope_resizeWindow (t_barkSpecSlope* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx windowHalf;
 
@@ -95,9 +95,9 @@ static void barkSpecSlope_resizeWindow (t_barkSpecSlope *x, t_sampIdx oldWindow,
 }
 
 
-static void barkSpecSlope_analyze (t_barkSpecSlope *x, t_floatarg start, t_floatarg n)
+static void barkSpecSlope_analyze (t_barkSpecSlope* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -174,14 +174,14 @@ static void barkSpecSlope_analyze (t_barkSpecSlope *x, t_floatarg start, t_float
             tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
         slope = 0.0;
-        slope = tIDLib_fitLineSlope(x->x_numFilters, x->x_fftwIn);
+        slope = tIDLib_fitLineSlope (x->x_numFilters, x->x_fftwIn);
 
         outlet_float (x->x_slope, slope);
     }
 }
 
 
-static void barkSpecSlope_chain_fftData (t_barkSpecSlope *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecSlope_chain_fftData (t_barkSpecSlope* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float slope;
@@ -215,13 +215,13 @@ static void barkSpecSlope_chain_fftData (t_barkSpecSlope *x, t_symbol *s, int ar
         tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     slope = 0.0;
-    slope = tIDLib_fitLineSlope(x->x_numFilters, x->x_fftwIn);
+    slope = tIDLib_fitLineSlope (x->x_numFilters, x->x_fftwIn);
 
     outlet_float (x->x_slope, slope);
 }
 
 
-static void barkSpecSlope_chain_magSpec (t_barkSpecSlope *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecSlope_chain_magSpec (t_barkSpecSlope* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float slope;
@@ -246,13 +246,13 @@ static void barkSpecSlope_chain_magSpec (t_barkSpecSlope *x, t_symbol *s, int ar
         tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     slope = 0.0;
-    slope = tIDLib_fitLineSlope(x->x_numFilters, x->x_fftwIn);
+    slope = tIDLib_fitLineSlope (x->x_numFilters, x->x_fftwIn);
 
     outlet_float (x->x_slope, slope);
 }
 
 
-static void barkSpecSlope_chain_barkSpec (t_barkSpecSlope *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecSlope_chain_barkSpec (t_barkSpecSlope* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_filterIdx i;
     t_float slope;
@@ -269,16 +269,16 @@ static void barkSpecSlope_chain_barkSpec (t_barkSpecSlope *x, t_symbol *s, int a
         x->x_fftwIn[i] = atom_getfloat (argv + i);
 
     slope = 0.0;
-    slope = tIDLib_fitLineSlope(x->x_numFilters, x->x_fftwIn);
+    slope = tIDLib_fitLineSlope (x->x_numFilters, x->x_fftwIn);
 
     outlet_float (x->x_slope, slope);
 }
 
 
 // analyze the whole damn array
-static void barkSpecSlope_bang (t_barkSpecSlope *x)
+static void barkSpecSlope_bang (t_barkSpecSlope* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -295,7 +295,7 @@ static void barkSpecSlope_bang (t_barkSpecSlope *x)
 }
 
 
-static void barkSpecSlope_createFilterbank (t_barkSpecSlope *x, t_floatarg bs)
+static void barkSpecSlope_createFilterbank (t_barkSpecSlope* x, t_floatarg bs)
 {
     t_filterIdx oldNumFilters;
 
@@ -317,9 +317,9 @@ static void barkSpecSlope_createFilterbank (t_barkSpecSlope *x, t_floatarg bs)
 }
 
 
-static void barkSpecSlope_set (t_barkSpecSlope *x, t_symbol *s)
+static void barkSpecSlope_set (t_barkSpecSlope* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -330,7 +330,7 @@ static void barkSpecSlope_set (t_barkSpecSlope *x, t_symbol *s)
 }
 
 
-static void barkSpecSlope_print (t_barkSpecSlope *x)
+static void barkSpecSlope_print (t_barkSpecSlope* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -345,7 +345,7 @@ static void barkSpecSlope_print (t_barkSpecSlope *x)
 }
 
 
-static void barkSpecSlope_samplerate (t_barkSpecSlope *x, t_floatarg sr)
+static void barkSpecSlope_samplerate (t_barkSpecSlope* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -357,18 +357,18 @@ static void barkSpecSlope_samplerate (t_barkSpecSlope *x, t_floatarg sr)
 }
 
 
-static void barkSpecSlope_window (t_barkSpecSlope *x, t_floatarg w)
+static void barkSpecSlope_window (t_barkSpecSlope* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     barkSpecSlope_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void barkSpecSlope_windowFunction (t_barkSpecSlope *x, t_floatarg f)
+static void barkSpecSlope_windowFunction (t_barkSpecSlope* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -397,7 +397,7 @@ static void barkSpecSlope_windowFunction (t_barkSpecSlope *x, t_floatarg f)
 }
 
 
-static void barkSpecSlope_spec_band_avg (t_barkSpecSlope *x, t_floatarg avg)
+static void barkSpecSlope_spec_band_avg (t_barkSpecSlope* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -410,7 +410,7 @@ static void barkSpecSlope_spec_band_avg (t_barkSpecSlope *x, t_floatarg avg)
 }
 
 
-static void barkSpecSlope_filter_avg (t_barkSpecSlope *x, t_floatarg avg)
+static void barkSpecSlope_filter_avg (t_barkSpecSlope* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -423,7 +423,7 @@ static void barkSpecSlope_filter_avg (t_barkSpecSlope *x, t_floatarg avg)
 }
 
 
-static void barkSpecSlope_powerSpectrum (t_barkSpecSlope *x, t_floatarg spec)
+static void barkSpecSlope_powerSpectrum (t_barkSpecSlope* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -436,7 +436,7 @@ static void barkSpecSlope_powerSpectrum (t_barkSpecSlope *x, t_floatarg spec)
 }
 
 
-static void barkSpecSlope_normalize (t_barkSpecSlope *x, t_floatarg norm)
+static void barkSpecSlope_normalize (t_barkSpecSlope* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -449,9 +449,9 @@ static void barkSpecSlope_normalize (t_barkSpecSlope *x, t_floatarg norm)
 }
 
 
-static void *barkSpecSlope_new (t_symbol *s, int argc, t_atom *argv)
+static void* barkSpecSlope_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_barkSpecSlope *x = (t_barkSpecSlope *)pd_new (barkSpecSlope_class);
+    t_barkSpecSlope* x = (t_barkSpecSlope *)pd_new (barkSpecSlope_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -491,7 +491,7 @@ static void *barkSpecSlope_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
@@ -557,7 +557,7 @@ static void *barkSpecSlope_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void barkSpecSlope_free (t_barkSpecSlope *x)
+static void barkSpecSlope_free (t_barkSpecSlope* x)
 {
     t_filterIdx i;
 

@@ -15,28 +15,28 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *waveSlope_class;
+static t_class* waveSlope_class;
 
 typedef struct _waveSlope
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_bool x_normalize;
-    t_float *x_analysisBuffer;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_analysisBuffer;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_outlet *x_slope;
+    t_outlet* x_slope;
 } t_waveSlope;
 
 
 /* ------------------------ waveSlope -------------------------------- */
 
-static void waveSlope_analyze (t_waveSlope *x, t_floatarg start, t_floatarg n)
+static void waveSlope_analyze (t_waveSlope* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -87,11 +87,11 @@ static void waveSlope_analyze (t_waveSlope *x, t_floatarg start, t_floatarg n)
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
         if (x->x_normalize)
-            tIDLib_normalPeak(window, x->x_analysisBuffer);
+            tIDLib_normalPeak (window, x->x_analysisBuffer);
 
         slope=0;
 
-        slope = tIDLib_fitLineSlope(window, x->x_analysisBuffer);
+        slope = tIDLib_fitLineSlope (window, x->x_analysisBuffer);
 
         outlet_float (x->x_slope, slope);
     }
@@ -99,9 +99,9 @@ static void waveSlope_analyze (t_waveSlope *x, t_floatarg start, t_floatarg n)
 
 
 // analyze the whole damn array
-static void waveSlope_bang (t_waveSlope *x)
+static void waveSlope_bang (t_waveSlope* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -117,9 +117,9 @@ static void waveSlope_bang (t_waveSlope *x)
 }
 
 
-static void waveSlope_set (t_waveSlope *x, t_symbol *s)
+static void waveSlope_set (t_waveSlope* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -130,7 +130,7 @@ static void waveSlope_set (t_waveSlope *x, t_symbol *s)
 }
 
 
-static void waveSlope_print (t_waveSlope *x)
+static void waveSlope_print (t_waveSlope* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -139,7 +139,7 @@ static void waveSlope_print (t_waveSlope *x)
 }
 
 
-static void waveSlope_samplerate (t_waveSlope *x, t_floatarg sr)
+static void waveSlope_samplerate (t_waveSlope* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -147,7 +147,7 @@ static void waveSlope_samplerate (t_waveSlope *x, t_floatarg sr)
         x->x_sr = sr;
 }
 
-static void waveSlope_normalize (t_waveSlope *x, t_floatarg norm)
+static void waveSlope_normalize (t_waveSlope* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -160,9 +160,9 @@ static void waveSlope_normalize (t_waveSlope *x, t_floatarg norm)
 }
 
 
-static void *waveSlope_new (t_symbol *s, int argc, t_atom *argv)
+static void* waveSlope_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_waveSlope *x = (t_waveSlope *)pd_new (waveSlope_class);
+    t_waveSlope* x = (t_waveSlope *)pd_new (waveSlope_class);
 //	t_garray *a;
 
     x->x_slope = outlet_new (&x->x_obj, &s_float);
@@ -184,7 +184,7 @@ static void *waveSlope_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -210,7 +210,7 @@ static void *waveSlope_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void waveSlope_free (t_waveSlope *x)
+static void waveSlope_free (t_waveSlope* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_sample));

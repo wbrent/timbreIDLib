@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *barkSpecSpread_tilde_class;
+static t_class* barkSpecSpread_tilde_class;
 
 typedef struct _barkSpecSpread_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -29,23 +29,23 @@ typedef struct _barkSpecSpread_tilde
     t_uShortInt x_overlap;
     t_bool x_powerSpectrum;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
     t_filterIdx x_sizeFilterFreqs;
     t_filterIdx x_numFilters;
-    t_float *x_barkFreqList;
+    t_float* x_barkFreqList;
     t_float x_barkSpacing;
-    t_float *x_filterFreqs;
-    t_filter *x_filterbank;
+    t_float* x_filterFreqs;
+    t_filter* x_filterbank;
     t_bool x_specBandAvg;
     t_bool x_filterAvg;
-    t_outlet *x_spread;
+    t_outlet* x_spread;
     t_float x_f;
 
 } t_barkSpecSpread_tilde;
@@ -53,7 +53,7 @@ typedef struct _barkSpecSpread_tilde
 
 /* ------------------------ barkSpecSpread~ -------------------------------- */
 
-static void barkSpecSpread_tilde_bang (t_barkSpecSpread_tilde *x)
+static void barkSpecSpread_tilde_bang (t_barkSpecSpread_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
     t_float energySum, centroid, spread, *windowFuncPtr;
@@ -117,15 +117,15 @@ static void barkSpecSpread_tilde_bang (t_barkSpecSpread_tilde *x)
     for (i = 0; i < x->x_numFilters; i++)
         energySum += x->x_fftwIn[i];
 
-    centroid = tIDLib_computeCentroid(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum);
+    centroid = tIDLib_computeCentroid (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum);
 
-    spread = tIDLib_computeSpread(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid);
+    spread = tIDLib_computeSpread (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid);
 
     outlet_float (x->x_spread, spread);
 }
 
 
-static void barkSpecSpread_tilde_createFilterbank (t_barkSpecSpread_tilde *x, t_floatarg bs)
+static void barkSpecSpread_tilde_createFilterbank (t_barkSpecSpread_tilde* x, t_floatarg bs)
 {
     t_filterIdx i, oldNumFilters;
 
@@ -152,7 +152,7 @@ static void barkSpecSpread_tilde_createFilterbank (t_barkSpecSpread_tilde *x, t_
 }
 
 
-static void barkSpecSpread_tilde_spec_band_avg (t_barkSpecSpread_tilde *x, t_floatarg avg)
+static void barkSpecSpread_tilde_spec_band_avg (t_barkSpecSpread_tilde* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -165,7 +165,7 @@ static void barkSpecSpread_tilde_spec_band_avg (t_barkSpecSpread_tilde *x, t_flo
 }
 
 
-static void barkSpecSpread_tilde_filter_avg (t_barkSpecSpread_tilde *x, t_floatarg avg)
+static void barkSpecSpread_tilde_filter_avg (t_barkSpecSpread_tilde* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -178,7 +178,7 @@ static void barkSpecSpread_tilde_filter_avg (t_barkSpecSpread_tilde *x, t_floata
 }
 
 
-static void barkSpecSpread_tilde_print (t_barkSpecSpread_tilde *x)
+static void barkSpecSpread_tilde_print (t_barkSpecSpread_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -193,7 +193,7 @@ static void barkSpecSpread_tilde_print (t_barkSpecSpread_tilde *x)
 }
 
 
-static void barkSpecSpread_tilde_window (t_barkSpecSpread_tilde *x, t_floatarg w)
+static void barkSpecSpread_tilde_window (t_barkSpecSpread_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -251,7 +251,7 @@ static void barkSpecSpread_tilde_window (t_barkSpecSpread_tilde *x, t_floatarg w
 }
 
 
-static void barkSpecSpread_tilde_overlap (t_barkSpecSpread_tilde *x, t_floatarg o)
+static void barkSpecSpread_tilde_overlap (t_barkSpecSpread_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -260,7 +260,7 @@ static void barkSpecSpread_tilde_overlap (t_barkSpecSpread_tilde *x, t_floatarg 
 }
 
 
-static void barkSpecSpread_tilde_windowFunction (t_barkSpecSpread_tilde *x, t_floatarg f)
+static void barkSpecSpread_tilde_windowFunction (t_barkSpecSpread_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -289,7 +289,7 @@ static void barkSpecSpread_tilde_windowFunction (t_barkSpecSpread_tilde *x, t_fl
 }
 
 
-static void barkSpecSpread_tilde_powerSpectrum (t_barkSpecSpread_tilde *x, t_floatarg power)
+static void barkSpecSpread_tilde_powerSpectrum (t_barkSpecSpread_tilde* x, t_floatarg power)
 {
     power = (power<0)?0:power;
     power = (power>1)?1:power;
@@ -302,9 +302,9 @@ static void barkSpecSpread_tilde_powerSpectrum (t_barkSpecSpread_tilde *x, t_flo
 }
 
 
-static void *barkSpecSpread_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* barkSpecSpread_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_barkSpecSpread_tilde *x = (t_barkSpecSpread_tilde *)pd_new (barkSpecSpread_tilde_class);
+    t_barkSpecSpread_tilde* x = (t_barkSpecSpread_tilde *)pd_new (barkSpecSpread_tilde_class);
     t_sampIdx i;
 
     x->x_spread = outlet_new (&x->x_obj, &s_float);
@@ -417,9 +417,9 @@ static t_int *barkSpecSpread_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_barkSpecSpread_tilde *x = (t_barkSpecSpread_tilde *)(w[1]);
+    t_barkSpecSpread_tilde* x = (t_barkSpecSpread_tilde *)(w[1]);
 
-    t_sample *in = (t_sample *)(w[2]);
+    t_sample* in = (t_sample *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -436,7 +436,7 @@ static t_int *barkSpecSpread_tilde_perform (t_int *w)
 }
 
 
-static void barkSpecSpread_tilde_dsp (t_barkSpecSpread_tilde *x, t_signal **sp)
+static void barkSpecSpread_tilde_dsp (t_barkSpecSpread_tilde* x, t_signal **sp)
 {
     dsp_add (
         barkSpecSpread_tilde_perform,
@@ -471,7 +471,7 @@ static void barkSpecSpread_tilde_dsp (t_barkSpecSpread_tilde *x, t_signal **sp)
 };
 
 
-static void barkSpecSpread_tilde_free (t_barkSpecSpread_tilde *x)
+static void barkSpecSpread_tilde_free (t_barkSpecSpread_tilde* x)
 {
     t_filterIdx i;
 

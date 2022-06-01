@@ -15,21 +15,21 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *zeroCrossing_tilde_class;
+static t_class* zeroCrossing_tilde_class;
 
 typedef struct _zeroCrossing_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_uShortInt x_overlap;
     t_sampIdx x_window;
     t_bool x_normalize;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_float *x_analysisBuffer;
-    t_outlet *x_crossings;
+    t_sample* x_signalBuffer;
+    t_float* x_analysisBuffer;
+    t_outlet* x_crossings;
     t_float x_f;
 
 } t_zeroCrossing_tilde;
@@ -37,7 +37,7 @@ typedef struct _zeroCrossing_tilde
 
 /* ------------------------ zeroCrossing~ -------------------------------- */
 
-static void zeroCrossing_tilde_bang (t_zeroCrossing_tilde *x)
+static void zeroCrossing_tilde_bang (t_zeroCrossing_tilde* x)
 {
     t_sampIdx i, j, window, bangSample;
     t_float crossings;
@@ -57,13 +57,13 @@ static void zeroCrossing_tilde_bang (t_zeroCrossing_tilde *x)
 
     crossings=0.0;
 
-    crossings = tIDLib_zeroCrossingRate(window, x->x_analysisBuffer, x->x_normalize);
+    crossings = tIDLib_zeroCrossingRate (window, x->x_analysisBuffer, x->x_normalize);
 
     outlet_float (x->x_crossings, crossings);
 }
 
 
-static void zeroCrossing_tilde_window (t_zeroCrossing_tilde *x, t_floatarg w)
+static void zeroCrossing_tilde_window (t_zeroCrossing_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window;
 
@@ -92,7 +92,7 @@ static void zeroCrossing_tilde_window (t_zeroCrossing_tilde *x, t_floatarg w)
 }
 
 
-static void zeroCrossing_tilde_overlap (t_zeroCrossing_tilde *x, t_floatarg o)
+static void zeroCrossing_tilde_overlap (t_zeroCrossing_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -100,7 +100,7 @@ static void zeroCrossing_tilde_overlap (t_zeroCrossing_tilde *x, t_floatarg o)
     post ("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
 }
 
-static void zeroCrossing_tilde_normalize (t_zeroCrossing_tilde *x, t_floatarg n)
+static void zeroCrossing_tilde_normalize (t_zeroCrossing_tilde* x, t_floatarg n)
 {
     n = (n < 0) ? 0 : n;
     x->x_normalize = (n > 1) ? 1 : n;
@@ -108,7 +108,7 @@ static void zeroCrossing_tilde_normalize (t_zeroCrossing_tilde *x, t_floatarg n)
     post ("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
 }
 
-static void zeroCrossing_tilde_print (t_zeroCrossing_tilde *x)
+static void zeroCrossing_tilde_print (t_zeroCrossing_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -118,9 +118,9 @@ static void zeroCrossing_tilde_print (t_zeroCrossing_tilde *x)
 }
 
 
-static void *zeroCrossing_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* zeroCrossing_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_zeroCrossing_tilde *x = (t_zeroCrossing_tilde *)pd_new (zeroCrossing_tilde_class);
+    t_zeroCrossing_tilde* x = (t_zeroCrossing_tilde *)pd_new (zeroCrossing_tilde_class);
     t_sampIdx i;
 
     x->x_crossings = outlet_new (&x->x_obj, &s_float);
@@ -174,9 +174,9 @@ static t_int *zeroCrossing_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_zeroCrossing_tilde *x = (t_zeroCrossing_tilde *)(w[1]);
+    t_zeroCrossing_tilde* x = (t_zeroCrossing_tilde *)(w[1]);
 
-    t_sample *in = (t_float *)(w[2]);
+    t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -193,7 +193,7 @@ static t_int *zeroCrossing_tilde_perform (t_int *w)
 }
 
 
-static void zeroCrossing_tilde_dsp (t_zeroCrossing_tilde *x, t_signal **sp)
+static void zeroCrossing_tilde_dsp (t_zeroCrossing_tilde* x, t_signal **sp)
 {
     dsp_add (
         zeroCrossing_tilde_perform,
@@ -226,7 +226,7 @@ static void zeroCrossing_tilde_dsp (t_zeroCrossing_tilde *x, t_signal **sp)
     };
 };
 
-static void zeroCrossing_tilde_free (t_zeroCrossing_tilde *x)
+static void zeroCrossing_tilde_free (t_zeroCrossing_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));

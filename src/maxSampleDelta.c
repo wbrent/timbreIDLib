@@ -15,28 +15,28 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *maxSampleDelta_class;
+static t_class* maxSampleDelta_class;
 
 typedef struct _maxSampleDelta
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
-    t_float *x_analysisBuffer;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_analysisBuffer;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_outlet *x_maxSampleDeltaIdx;
-    t_outlet *x_maxSampleDelta;
+    t_outlet* x_maxSampleDeltaIdx;
+    t_outlet* x_maxSampleDelta;
 } t_maxSampleDelta;
 
 
 /* ------------------------ maxSampleDelta -------------------------------- */
 
-static void maxSampleDelta_analyze (t_maxSampleDelta *x, t_floatarg start, t_floatarg n)
+static void maxSampleDelta_analyze (t_maxSampleDelta* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -122,9 +122,9 @@ static void maxSampleDelta_analyze (t_maxSampleDelta *x, t_floatarg start, t_flo
 
 
 // analyze the whole damn array
-static void maxSampleDelta_bang (t_maxSampleDelta *x)
+static void maxSampleDelta_bang (t_maxSampleDelta* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -140,9 +140,9 @@ static void maxSampleDelta_bang (t_maxSampleDelta *x)
 }
 
 
-static void maxSampleDelta_set (t_maxSampleDelta *x, t_symbol *s)
+static void maxSampleDelta_set (t_maxSampleDelta* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -153,14 +153,14 @@ static void maxSampleDelta_set (t_maxSampleDelta *x, t_symbol *s)
 }
 
 
-static void maxSampleDelta_print (t_maxSampleDelta *x)
+static void maxSampleDelta_print (t_maxSampleDelta* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
 }
 
 
-static void maxSampleDelta_samplerate (t_maxSampleDelta *x, t_floatarg sr)
+static void maxSampleDelta_samplerate (t_maxSampleDelta* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -169,9 +169,9 @@ static void maxSampleDelta_samplerate (t_maxSampleDelta *x, t_floatarg sr)
 }
 
 
-static void *maxSampleDelta_new (t_symbol *s, int argc, t_atom *argv)
+static void* maxSampleDelta_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_maxSampleDelta *x = (t_maxSampleDelta *)pd_new (maxSampleDelta_class);
+    t_maxSampleDelta* x = (t_maxSampleDelta *)pd_new (maxSampleDelta_class);
 //	t_garray *a;
 
     x->x_maxSampleDelta = outlet_new (&x->x_obj, &s_float);
@@ -194,7 +194,7 @@ static void *maxSampleDelta_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -219,7 +219,7 @@ static void *maxSampleDelta_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void maxSampleDelta_free (t_maxSampleDelta *x)
+static void maxSampleDelta_free (t_maxSampleDelta* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_sample));

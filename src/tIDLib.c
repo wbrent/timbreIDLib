@@ -32,7 +32,7 @@ t_float tIDLib_bin2freq (t_float bin, t_float n, t_float sr)
     return (freq);
 }
 
-// can have a flag for the other way to calculate it: 13*arctan(0.00076*freq) + 3.5*arctan((freq/7500)^2)
+// can have a flag for the other way to calculate it: 13*arctan (0.00076*freq) + 3.5*arctan ((freq/7500)^2)
 t_float tIDLib_freq2bark (t_float freq)
 {
     t_float barkFreq;
@@ -51,6 +51,7 @@ t_float tIDLib_freq2bark (t_float freq)
             break;
         case freq2barkFormula2:
             barkFreq = ((26.81 * freq) / (1960 + freq)) - 0.53;
+
             if (barkFreq < 2)
                 barkFreq += 0.15 * (2 - barkFreq);
             else if (barkFreq > 20.1)
@@ -107,7 +108,7 @@ t_float tIDLib_mel2freq (t_float mel)
     t_float freq;
 
     freq = 700.0 * (exp (mel / 1127.0) - 1.0);
-//	freq = 700.0 * (exp (mel / 1127.01048) - 1.0);
+// freq = 700.0 * (exp (mel / 1127.01048) - 1.0);
     freq = (freq < 0.0) ? 0.0 : freq;
     return (freq);
 }
@@ -125,6 +126,7 @@ void tIDLib_linspace (t_float* ramp, t_float start, t_float finish, t_binIdx n)
     diffInc = (finish - start) / (t_float)(n - 1);
 
     ramp[0] = start;
+
     for (i = 1; i < n; i++)
         ramp[i] = ramp[i - 1] + diffInc;
 }
@@ -154,8 +156,8 @@ t_float tIDLib_fitLineSlope (t_sampIdx n, t_float* input)
     t_float dividend, divisor, slope;
     t_sampIdx i;
 
-    sumX = 0;
-    sumY = 0;
+    sumX = 0.0;
+    sumY = 0.0;
 
     for (i = 0; i < n; i++, input++)
     {
@@ -168,8 +170,8 @@ t_float tIDLib_fitLineSlope (t_sampIdx n, t_float* input)
 
     meanX = sumX / n;
     meanY = sumY / n;
-    dividend = 0;
-    divisor = 0;
+    dividend = 0.0;
+    divisor = 0.0;
 
     for (i = 0; i < n; i++, input++)
     {
@@ -194,6 +196,7 @@ t_float tIDLib_hps (t_float* data, t_uInt n, t_float loIdx, t_float hiIdx, t_uSh
     while (hiIdx * numHarm > n)
     {
         numHarm--;
+
         if (debug)
             post ("tIDLib HPS function WARNING: reducing numHarm to %i", numHarm);
 
@@ -253,7 +256,8 @@ t_float tIDLib_hps (t_float* data, t_uInt n, t_float loIdx, t_float hiIdx, t_uSh
 
 t_float tIDLib_mode (t_float* data, t_uLongInt n, t_uLongInt* countOut)
 {
-    t_uLongInt i, j, maxCount, *instanceCounters;
+    t_uLongInt i, j, maxCount;
+    t_uLongInt* instanceCounters;
     t_float mode;
 
     instanceCounters = (t_uLongInt *)t_getbytes (n * sizeof (t_uLongInt));
@@ -262,7 +266,7 @@ t_float tIDLib_mode (t_float* data, t_uLongInt n, t_uLongInt* countOut)
         instanceCounters[i] = 0;
 
     maxCount = 0;
-    mode = -1;
+    mode = -1.0;
 
     for (i = 0; i < n; i++)
     {
@@ -370,7 +374,7 @@ void tIDLib_sortKnnInfo (t_uShortInt k, t_instanceIdx numInstances, t_instanceId
                 {
                     maxBest = instances[j].knnInfo.dist;
                     topIdx = j;
-                };
+                }
 
         instances[topIdx].knnInfo.dist = FLT_MAX;
 
@@ -451,7 +455,9 @@ t_float tIDLib_taxiDist (t_attributeIdx n, t_float* v1, t_float* v2, t_float* we
 
 t_float tIDLib_corr (t_attributeIdx n, t_float* v1, t_float* v2)
 {
-    t_float corr, sum1, mean1, std1, sum2, mean2, std2, *v1centered, *v2centered;
+    t_float corr, sum1, mean1, std1, sum2, mean2, std2;
+    t_float* v1centered;
+    t_float* v2centered;
     t_attributeIdx i;
 
     v1centered = (t_float *)t_getbytes (n * sizeof (t_float));
@@ -520,6 +526,7 @@ void tIDLib_peaksValleys (t_sampIdx n, t_float* data, t_float* flags, t_float* m
     localMinVal = FLT_MAX;
 
     flags[0] = tIDLib_signum (slopeBuf[0]);
+
     for (i = 1; i < n; i++)
     {
         t_sChar change;
@@ -532,6 +539,7 @@ void tIDLib_peaksValleys (t_sampIdx n, t_float* data, t_float* flags, t_float* m
             case -2:
                 // write to i - 1, because the peak moment occurred just before this observed change in slope direction
                 flags[i - 1] = 1;
+
                 if (data[i - 1] > localMaxVal)
                     localMaxVal = data[i - 1];
                 break;
@@ -542,12 +550,14 @@ void tIDLib_peaksValleys (t_sampIdx n, t_float* data, t_float* flags, t_float* m
             // half-peak case
             case 1:
                 flags[i - 1] = 0.5;
+
                 if (data[i - 1] > localMaxVal)
                     localMaxVal = data[i - 1];
                 break;
             // valley case
             case 2:
                 flags[i - 1] = -1;
+
                 if (data[i - 1] < localMinVal)
                     localMinVal = data[i - 1];
                 break;
@@ -823,7 +833,7 @@ void tIDLib_createFilterbank (t_float* filterFreqs, t_filter** filterbank, t_fil
                     t_freebytes (upRamp, upN * sizeof (t_float));
                     t_freebytes (downRamp, downN * sizeof (t_float));
                     break;
-            };
+            }
 
             (*filterbank)[ffi - 1].indices[0] = startIdx;
             (*filterbank)[ffi - 1].indices[1] = finishIdx;
@@ -855,7 +865,7 @@ void tIDLib_specFilterBands (t_binIdx n, t_filterIdx numFilters, t_float* spectr
         smoothedSpec[i] /= filterbank[i].filterSize;
 
         totalEnergy += smoothedSpec[i];
-    };
+    }
 
     // Check that the spectrum window size N is larger than the number of filters, otherwise we'll be writing to invalid memory indices
     if (n >= numFilters)
@@ -883,13 +893,15 @@ void tIDLib_specFilterBands (t_binIdx n, t_filterIdx numFilters, t_float* spectr
 
 void tIDLib_filterbankMultiply (t_float* spectrum, t_bool normalize, t_bool filterAvg, t_filter* filterbank, t_filterIdx numFilters)
 {
-    t_float sumSum, *filterPower;
+    t_float sumSum;
+    t_float* filterPower;
     t_filterIdx i;
+    t_binIdx si;
 
     // create local memory
     filterPower = (t_float *)t_getbytes (numFilters * sizeof (t_float));
 
-    sumSum = 0;
+    sumSum = 0.0;
 
     for (i = 0; i < numFilters; i++)
     {
@@ -900,13 +912,14 @@ void tIDLib_filterbankMultiply (t_float* spectrum, t_bool normalize, t_bool filt
             sum += spectrum[j] * filterbank[i].filter[k];
 
         k = filterbank[i].filterSize;
+
         if (filterAvg)
             sum /= k;
 
         filterPower[i] = sum;  // get the total power.  another weighting might be better.
 
         sumSum += sum;  // normalize so power in all bands sums to 1
-    };
+    }
 
     if (normalize)
     {
@@ -919,11 +932,8 @@ void tIDLib_filterbankMultiply (t_float* spectrum, t_bool normalize, t_bool filt
     else
         sumSum = 1.0;
 
-    {
-        t_binIdx si;
-        for (si = 0; si < numFilters; si++)
-            spectrum[si] = filterPower[si] * sumSum;
-    }
+    for (si = 0; si < numFilters; si++)
+        spectrum[si] = filterPower[si] * sumSum;
 
     // free local memory
     t_freebytes (filterPower, numFilters * sizeof (t_float));
@@ -944,7 +954,7 @@ void tIDLib_cosineTransform (t_float* output, t_sample* input, t_filterIdx numFi
 
         for (k = 0; k < numFilters; k++)
              output[i] += input[k] * cos (i * (k + 0.5) * piOverNfilters);  // DCT-II
-    };
+    }
 }
 /* ---------------- END filterbank functions ---------------------- */
 
@@ -978,7 +988,7 @@ t_float tIDLib_computeSpread (t_binIdx n, t_float* spectrum, t_float* freqList, 
     t_binIdx i;
 
     dividend = spread = 0.0;
-     divisor = energySum;
+    divisor = energySum;
 
     for (i = 0; i < n; i++)
         dividend += powf ((freqList[i] - centroid), 2) * spectrum[i];
@@ -1044,6 +1054,7 @@ t_float tIDLib_computeKurtosis (t_binIdx n, t_float* spectrum, t_float* freqList
 void tIDLib_blackmanWindow (t_float* wPtr, t_sampIdx n)
 {
     t_sampIdx i;
+
     for (i = 0; i < n; i++, wPtr++)
         *wPtr = 0.42 - (0.5 * cos (2 * M_PI * i / n)) + (0.08 * cos (4 * M_PI * i / n));
 }
@@ -1051,6 +1062,7 @@ void tIDLib_blackmanWindow (t_float* wPtr, t_sampIdx n)
 void tIDLib_cosineWindow (t_float* wPtr, t_sampIdx n)
 {
     t_sampIdx i;
+
     for (i = 0; i < n; i++, wPtr++)
         *wPtr = sin (M_PI * i / n);
 }
@@ -1058,6 +1070,7 @@ void tIDLib_cosineWindow (t_float* wPtr, t_sampIdx n)
 void tIDLib_hammingWindow (t_float* wPtr, t_sampIdx n)
 {
     t_sampIdx i;
+
     for (i = 0; i < n; i++, wPtr++)
         *wPtr = 0.5 - (0.46 * cos (2 * M_PI * i / n));
 }
@@ -1065,6 +1078,7 @@ void tIDLib_hammingWindow (t_float* wPtr, t_sampIdx n)
 void tIDLib_hannWindow (t_float* wPtr, t_sampIdx n)
 {
     t_sampIdx i;
+
     for (i = 0; i < n; i++, wPtr++)
         *wPtr = 0.5 * (1 - cos (2 * M_PI * i / n));
 }
@@ -1310,13 +1324,13 @@ void tIDLib_log (t_binIdx n, t_float* input)
 {
     while (n--)
     {
-        // if to protect against log(0)
+        // if to protect against log (0)
         if (*input == 0.0)
             *input = 0.0;
         else
             *input = log (*input);
 
         input++;
-    };
+    }
 }
 /* ---------------- END dsp utility functions ---------------------- */

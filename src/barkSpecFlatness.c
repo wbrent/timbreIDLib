@@ -15,41 +15,41 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *barkSpecFlatness_class;
+static t_class* barkSpecFlatness_class;
 
 typedef struct _barkSpecFlatness
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
     t_windowFunction x_windowFunction;
     t_bool x_powerSpectrum;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
     t_filterIdx x_sizeFilterFreqs;
     t_filterIdx x_numFilters;
     t_float x_barkSpacing;
-    t_float *x_filterFreqs;
-    t_filter *x_filterbank;
+    t_float* x_filterFreqs;
+    t_filter* x_filterbank;
     t_bool x_specBandAvg;
     t_bool x_filterAvg;
-    double *x_nthRoots;
-    t_outlet *x_flatness;
+    double* x_nthRoots;
+    t_outlet* x_flatness;
 } t_barkSpecFlatness;
 
 
 /* ------------------------ barkSpecFlatness -------------------------------- */
-static void barkSpecFlatness_resizeWindow (t_barkSpecFlatness *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void barkSpecFlatness_resizeWindow (t_barkSpecFlatness* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx windowHalf;
 
@@ -95,12 +95,12 @@ static void barkSpecFlatness_resizeWindow (t_barkSpecFlatness *x, t_sampIdx oldW
 }
 
 
-static void barkSpecFlatness_analyze (t_barkSpecFlatness *x, t_floatarg start, t_floatarg n)
+static void barkSpecFlatness_analyze (t_barkSpecFlatness* x, t_floatarg start, t_floatarg n)
 {
     t_sampIdx i, j, window, startSamp, endSamp;
     double numFiltersRecip, dividend, divisor, flatness;
-    t_float *windowFuncPtr;
-    t_garray *a;
+    t_float* windowFuncPtr;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -181,7 +181,7 @@ static void barkSpecFlatness_analyze (t_barkSpecFlatness *x, t_floatarg start, t
         // geometric mean
         // take the nth roots first so as not to lose data to precision error.
         for (i = 0; i < x->x_numFilters; i++)
-            x->x_nthRoots[i] = pow(x->x_fftwIn[i], numFiltersRecip);
+            x->x_nthRoots[i] = pow (x->x_fftwIn[i], numFiltersRecip);
 
         // take the product of nth roots
         for (i = 0; i < x->x_numFilters; i++)
@@ -202,7 +202,7 @@ static void barkSpecFlatness_analyze (t_barkSpecFlatness *x, t_floatarg start, t
 }
 
 
-static void barkSpecFlatness_chain_fftData (t_barkSpecFlatness *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecFlatness_chain_fftData (t_barkSpecFlatness* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     double numFiltersRecip, dividend, divisor, flatness;
@@ -243,7 +243,7 @@ static void barkSpecFlatness_chain_fftData (t_barkSpecFlatness *x, t_symbol *s, 
     // geometric mean
     // take the nth roots first so as not to lose data to precision error.
     for (i = 0; i < x->x_numFilters; i++)
-        x->x_nthRoots[i] = pow(x->x_fftwIn[i], numFiltersRecip);
+        x->x_nthRoots[i] = pow (x->x_fftwIn[i], numFiltersRecip);
 
     // take the product of nth roots
     for (i = 0; i < x->x_numFilters; i++)
@@ -263,7 +263,7 @@ static void barkSpecFlatness_chain_fftData (t_barkSpecFlatness *x, t_symbol *s, 
 }
 
 
-static void barkSpecFlatness_chain_magSpec (t_barkSpecFlatness *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecFlatness_chain_magSpec (t_barkSpecFlatness* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     double numFiltersRecip, dividend, divisor, flatness;
@@ -295,7 +295,7 @@ static void barkSpecFlatness_chain_magSpec (t_barkSpecFlatness *x, t_symbol *s, 
     // geometric mean
     // take the nth roots first so as not to lose data to precision error.
     for (i = 0; i < x->x_numFilters; i++)
-        x->x_nthRoots[i] = pow(x->x_fftwIn[i], numFiltersRecip);
+        x->x_nthRoots[i] = pow (x->x_fftwIn[i], numFiltersRecip);
 
     // take the product of nth roots
     for (i = 0; i < x->x_numFilters; i++)
@@ -315,7 +315,7 @@ static void barkSpecFlatness_chain_magSpec (t_barkSpecFlatness *x, t_symbol *s, 
 }
 
 
-static void barkSpecFlatness_chain_barkSpec (t_barkSpecFlatness *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecFlatness_chain_barkSpec (t_barkSpecFlatness* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_filterIdx i;
     double numFiltersRecip, dividend, divisor, flatness;
@@ -339,7 +339,7 @@ static void barkSpecFlatness_chain_barkSpec (t_barkSpecFlatness *x, t_symbol *s,
     // geometric mean
     // take the nth roots first so as not to lose data to precision error.
     for (i = 0; i < x->x_numFilters; i++)
-        x->x_nthRoots[i] = pow(x->x_fftwIn[i], numFiltersRecip);
+        x->x_nthRoots[i] = pow (x->x_fftwIn[i], numFiltersRecip);
 
     // take the product of nth roots
     for (i = 0; i < x->x_numFilters; i++)
@@ -360,10 +360,10 @@ static void barkSpecFlatness_chain_barkSpec (t_barkSpecFlatness *x, t_symbol *s,
 
 
 // analyze the whole damn array
-static void barkSpecFlatness_bang (t_barkSpecFlatness *x)
+static void barkSpecFlatness_bang (t_barkSpecFlatness* x)
 {
     t_sampIdx window, startSamp;
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -378,7 +378,7 @@ static void barkSpecFlatness_bang (t_barkSpecFlatness *x)
 }
 
 
-static void barkSpecFlatness_createFilterbank (t_barkSpecFlatness *x, t_floatarg bs)
+static void barkSpecFlatness_createFilterbank (t_barkSpecFlatness* x, t_floatarg bs)
 {
     t_filterIdx oldNumFilters;
 
@@ -403,7 +403,7 @@ static void barkSpecFlatness_createFilterbank (t_barkSpecFlatness *x, t_floatarg
 }
 
 
-static void barkSpecFlatness_spec_band_avg (t_barkSpecFlatness *x, t_floatarg avg)
+static void barkSpecFlatness_spec_band_avg (t_barkSpecFlatness* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -416,7 +416,7 @@ static void barkSpecFlatness_spec_band_avg (t_barkSpecFlatness *x, t_floatarg av
 }
 
 
-static void barkSpecFlatness_filter_avg (t_barkSpecFlatness *x, t_floatarg avg)
+static void barkSpecFlatness_filter_avg (t_barkSpecFlatness* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -429,9 +429,9 @@ static void barkSpecFlatness_filter_avg (t_barkSpecFlatness *x, t_floatarg avg)
 }
 
 
-static void barkSpecFlatness_set (t_barkSpecFlatness *x, t_symbol *s)
+static void barkSpecFlatness_set (t_barkSpecFlatness* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -442,7 +442,7 @@ static void barkSpecFlatness_set (t_barkSpecFlatness *x, t_symbol *s)
 }
 
 
-static void barkSpecFlatness_print (t_barkSpecFlatness *x)
+static void barkSpecFlatness_print (t_barkSpecFlatness* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -456,7 +456,7 @@ static void barkSpecFlatness_print (t_barkSpecFlatness *x)
 }
 
 
-static void barkSpecFlatness_samplerate (t_barkSpecFlatness *x, t_floatarg sr)
+static void barkSpecFlatness_samplerate (t_barkSpecFlatness* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -468,18 +468,18 @@ static void barkSpecFlatness_samplerate (t_barkSpecFlatness *x, t_floatarg sr)
 }
 
 
-static void barkSpecFlatness_window (t_barkSpecFlatness *x, t_floatarg w)
+static void barkSpecFlatness_window (t_barkSpecFlatness* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     barkSpecFlatness_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void barkSpecFlatness_windowFunction (t_barkSpecFlatness *x, t_floatarg f)
+static void barkSpecFlatness_windowFunction (t_barkSpecFlatness* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -508,7 +508,7 @@ static void barkSpecFlatness_windowFunction (t_barkSpecFlatness *x, t_floatarg f
 }
 
 
-static void barkSpecFlatness_powerSpectrum (t_barkSpecFlatness *x, t_floatarg spec)
+static void barkSpecFlatness_powerSpectrum (t_barkSpecFlatness* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -521,9 +521,9 @@ static void barkSpecFlatness_powerSpectrum (t_barkSpecFlatness *x, t_floatarg sp
 }
 
 
-static void *barkSpecFlatness_new (t_symbol *s, int argc, t_atom *argv)
+static void* barkSpecFlatness_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_barkSpecFlatness *x = (t_barkSpecFlatness *)pd_new (barkSpecFlatness_class);
+    t_barkSpecFlatness* x = (t_barkSpecFlatness *)pd_new (barkSpecFlatness_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -563,7 +563,7 @@ static void *barkSpecFlatness_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
@@ -631,7 +631,7 @@ static void *barkSpecFlatness_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void barkSpecFlatness_free (t_barkSpecFlatness *x)
+static void barkSpecFlatness_free (t_barkSpecFlatness* x)
 {
     t_filterIdx i;
 

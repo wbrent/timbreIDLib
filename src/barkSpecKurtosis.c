@@ -15,41 +15,41 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *barkSpecKurtosis_class;
+static t_class* barkSpecKurtosis_class;
 
 typedef struct _barkSpecKurtosis
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
     t_windowFunction x_windowFunction;
     t_bool x_powerSpectrum;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
     t_filterIdx x_sizeFilterFreqs;
     t_filterIdx x_numFilters;
-    t_float *x_barkFreqList;
+    t_float* x_barkFreqList;
     t_float x_barkSpacing;
-    t_float *x_filterFreqs;
-    t_filter *x_filterbank;
+    t_float* x_filterFreqs;
+    t_filter* x_filterbank;
     t_bool x_specBandAvg;
     t_bool x_filterAvg;
-    t_outlet *x_kurtosis;
+    t_outlet* x_kurtosis;
 } t_barkSpecKurtosis;
 
 
 /* ------------------------ barkSpecKurtosis -------------------------------- */
-static void barkSpecKurtosis_resizeWindow (t_barkSpecKurtosis *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void barkSpecKurtosis_resizeWindow (t_barkSpecKurtosis* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx windowHalf;
 
@@ -95,11 +95,11 @@ static void barkSpecKurtosis_resizeWindow (t_barkSpecKurtosis *x, t_sampIdx oldW
 }
 
 
-static void barkSpecKurtosis_analyze (t_barkSpecKurtosis *x, t_floatarg start, t_floatarg n)
+static void barkSpecKurtosis_analyze (t_barkSpecKurtosis* x, t_floatarg start, t_floatarg n)
 {
     t_sampIdx i, j, window, startSamp, endSamp;
     t_float energySum, centroid, spread, kurtosis, *windowFuncPtr;
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -176,16 +176,16 @@ static void barkSpecKurtosis_analyze (t_barkSpecKurtosis *x, t_floatarg start, t
         for (i = 0; i < x->x_numFilters; i++)
             energySum += x->x_fftwIn[i];
 
-        centroid = tIDLib_computeCentroid(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum);
-        spread = tIDLib_computeSpread(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid);
-        kurtosis = tIDLib_computeKurtosis(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid, spread);
+        centroid = tIDLib_computeCentroid (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum);
+        spread = tIDLib_computeSpread (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid);
+        kurtosis = tIDLib_computeKurtosis (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid, spread);
 
         outlet_float (x->x_kurtosis, kurtosis);
     }
 }
 
 
-static void barkSpecKurtosis_chain_fftData (t_barkSpecKurtosis *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecKurtosis_chain_fftData (t_barkSpecKurtosis* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float energySum, centroid, spread, kurtosis;
@@ -222,15 +222,15 @@ static void barkSpecKurtosis_chain_fftData (t_barkSpecKurtosis *x, t_symbol *s, 
     for (i = 0; i < x->x_numFilters; i++)
         energySum += x->x_fftwIn[i];
 
-    centroid = tIDLib_computeCentroid(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum);
-    spread = tIDLib_computeSpread(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid);
-    kurtosis = tIDLib_computeKurtosis(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid, spread);
+    centroid = tIDLib_computeCentroid (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum);
+    spread = tIDLib_computeSpread (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid);
+    kurtosis = tIDLib_computeKurtosis (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid, spread);
 
     outlet_float (x->x_kurtosis, kurtosis);
 }
 
 
-static void barkSpecKurtosis_chain_magSpec (t_barkSpecKurtosis *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecKurtosis_chain_magSpec (t_barkSpecKurtosis* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float energySum, centroid, spread, kurtosis;
@@ -258,15 +258,15 @@ static void barkSpecKurtosis_chain_magSpec (t_barkSpecKurtosis *x, t_symbol *s, 
     for (i = 0; i < x->x_numFilters; i++)
         energySum += x->x_fftwIn[i];
 
-    centroid = tIDLib_computeCentroid(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum);
-    spread = tIDLib_computeSpread(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid);
-    kurtosis = tIDLib_computeKurtosis(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid, spread);
+    centroid = tIDLib_computeCentroid (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum);
+    spread = tIDLib_computeSpread (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid);
+    kurtosis = tIDLib_computeKurtosis (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid, spread);
 
     outlet_float (x->x_kurtosis, kurtosis);
 }
 
 
-static void barkSpecKurtosis_chain_barkSpec (t_barkSpecKurtosis *x, t_symbol *s, int argc, t_atom *argv)
+static void barkSpecKurtosis_chain_barkSpec (t_barkSpecKurtosis* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_filterIdx i;
     t_float energySum, centroid, spread, kurtosis;
@@ -286,19 +286,19 @@ static void barkSpecKurtosis_chain_barkSpec (t_barkSpecKurtosis *x, t_symbol *s,
     for (i = 0; i < x->x_numFilters; i++)
         energySum += x->x_fftwIn[i];
 
-    centroid = tIDLib_computeCentroid(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum);
-    spread = tIDLib_computeSpread(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid);
-    kurtosis = tIDLib_computeKurtosis(x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid, spread);
+    centroid = tIDLib_computeCentroid (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum);
+    spread = tIDLib_computeSpread (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid);
+    kurtosis = tIDLib_computeKurtosis (x->x_numFilters, x->x_fftwIn, x->x_barkFreqList, energySum, centroid, spread);
 
     outlet_float (x->x_kurtosis, kurtosis);
 }
 
 
 // analyze the whole damn array
-static void barkSpecKurtosis_bang (t_barkSpecKurtosis *x)
+static void barkSpecKurtosis_bang (t_barkSpecKurtosis* x)
 {
     t_sampIdx window, startSamp;
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -313,7 +313,7 @@ static void barkSpecKurtosis_bang (t_barkSpecKurtosis *x)
 }
 
 
-static void barkSpecKurtosis_createFilterbank (t_barkSpecKurtosis *x, t_floatarg bs)
+static void barkSpecKurtosis_createFilterbank (t_barkSpecKurtosis* x, t_floatarg bs)
 {
     t_filterIdx i, oldNumFilters;
 
@@ -341,7 +341,7 @@ static void barkSpecKurtosis_createFilterbank (t_barkSpecKurtosis *x, t_floatarg
 }
 
 
-static void barkSpecKurtosis_spec_band_avg (t_barkSpecKurtosis *x, t_floatarg avg)
+static void barkSpecKurtosis_spec_band_avg (t_barkSpecKurtosis* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -354,7 +354,7 @@ static void barkSpecKurtosis_spec_band_avg (t_barkSpecKurtosis *x, t_floatarg av
 }
 
 
-static void barkSpecKurtosis_filter_avg (t_barkSpecKurtosis *x, t_floatarg avg)
+static void barkSpecKurtosis_filter_avg (t_barkSpecKurtosis* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -367,9 +367,9 @@ static void barkSpecKurtosis_filter_avg (t_barkSpecKurtosis *x, t_floatarg avg)
 }
 
 
-static void barkSpecKurtosis_set (t_barkSpecKurtosis *x, t_symbol *s)
+static void barkSpecKurtosis_set (t_barkSpecKurtosis* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -380,7 +380,7 @@ static void barkSpecKurtosis_set (t_barkSpecKurtosis *x, t_symbol *s)
 }
 
 
-static void barkSpecKurtosis_print (t_barkSpecKurtosis *x)
+static void barkSpecKurtosis_print (t_barkSpecKurtosis* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -394,7 +394,7 @@ static void barkSpecKurtosis_print (t_barkSpecKurtosis *x)
 }
 
 
-static void barkSpecKurtosis_samplerate (t_barkSpecKurtosis *x, t_floatarg sr)
+static void barkSpecKurtosis_samplerate (t_barkSpecKurtosis* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -406,18 +406,18 @@ static void barkSpecKurtosis_samplerate (t_barkSpecKurtosis *x, t_floatarg sr)
 }
 
 
-static void barkSpecKurtosis_window (t_barkSpecKurtosis *x, t_floatarg w)
+static void barkSpecKurtosis_window (t_barkSpecKurtosis* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     barkSpecKurtosis_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void barkSpecKurtosis_windowFunction (t_barkSpecKurtosis *x, t_floatarg f)
+static void barkSpecKurtosis_windowFunction (t_barkSpecKurtosis* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -446,7 +446,7 @@ static void barkSpecKurtosis_windowFunction (t_barkSpecKurtosis *x, t_floatarg f
 }
 
 
-static void barkSpecKurtosis_powerSpectrum (t_barkSpecKurtosis *x, t_floatarg spec)
+static void barkSpecKurtosis_powerSpectrum (t_barkSpecKurtosis* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -459,9 +459,9 @@ static void barkSpecKurtosis_powerSpectrum (t_barkSpecKurtosis *x, t_floatarg sp
 }
 
 
-static void *barkSpecKurtosis_new (t_symbol *s, int argc, t_atom *argv)
+static void* barkSpecKurtosis_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_barkSpecKurtosis *x = (t_barkSpecKurtosis *)pd_new (barkSpecKurtosis_class);
+    t_barkSpecKurtosis* x = (t_barkSpecKurtosis *)pd_new (barkSpecKurtosis_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -501,7 +501,7 @@ static void *barkSpecKurtosis_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
@@ -572,7 +572,7 @@ static void *barkSpecKurtosis_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void barkSpecKurtosis_free (t_barkSpecKurtosis *x)
+static void barkSpecKurtosis_free (t_barkSpecKurtosis* x)
 {
     t_filterIdx i;
 

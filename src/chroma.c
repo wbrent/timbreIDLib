@@ -15,19 +15,19 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *chroma_class;
+static t_class* chroma_class;
 
 typedef struct _chroma
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
     t_windowFunction x_windowFunction;
     t_bool x_normalize;
     t_bool x_powerSpectrum;
-    t_binIdx *x_binRanges;
+    t_binIdx* x_binRanges;
     t_float x_loFreq;
     t_float x_hiFreq;
     t_float x_pitchTolerance;
@@ -35,24 +35,24 @@ typedef struct _chroma
     t_uChar x_numChroma;
     t_float x_resolution;
     t_float x_microtune;
-    t_float *x_pitchClasses;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_float* x_pitchClasses;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_atom *x_listOut;
-    t_outlet *x_chroma;
+    t_atom* x_listOut;
+    t_outlet* x_chroma;
 } t_chroma;
 
 
 /* ------------------------ chroma -------------------------------- */
-static void chroma_resizeWindow (t_chroma *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void chroma_resizeWindow (t_chroma* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx oldWindowHalf, windowHalf;
 
@@ -95,9 +95,9 @@ static void chroma_resizeWindow (t_chroma *x, t_sampIdx oldWindow, t_sampIdx win
 }
 
 
-static void chroma_analyze (t_chroma *x, t_floatarg start, t_floatarg n)
+static void chroma_analyze (t_chroma* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -106,7 +106,7 @@ static void chroma_analyze (t_chroma *x, t_floatarg start, t_floatarg n)
     else
     {
         t_sampIdx i, j, window, startSamp, endSamp;
-        t_float *windowFuncPtr, maxEnergySum, chromaSums[x->x_numChroma];
+        t_float* windowFuncPtr, maxEnergySum, chromaSums[x->x_numChroma];
 
         startSamp = (start < 0) ? 0 : start;
 
@@ -175,13 +175,13 @@ static void chroma_analyze (t_chroma *x, t_floatarg start, t_floatarg n)
             t_uInt cardinality;
             chromaSums[i] = 0.0;
 
-            cardinality = tIDLib_getPitchBinRanges(x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_hiFreq, x->x_pitchTolerance, x->x_window, x->x_sr);
+            cardinality = tIDLib_getPitchBinRanges (x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_hiFreq, x->x_pitchTolerance, x->x_window, x->x_sr);
 
             //startpost ("chroma %lu bin ranges ", i);
 
             j = 0;
 
-            while(x->x_binRanges[j] != ULONG_MAX)
+            while (x->x_binRanges[j] != ULONG_MAX)
             {
                 t_binIdx k, numBins;
 
@@ -206,7 +206,7 @@ static void chroma_analyze (t_chroma *x, t_floatarg start, t_floatarg n)
 
                 j += 2;
             }
-            //endpost ();
+            //endpost();
 
             // divide by the cardinality to account for the fact that different pitch classes will have energy in a different number of bins
             chromaSums[i] /= cardinality;
@@ -230,7 +230,7 @@ static void chroma_analyze (t_chroma *x, t_floatarg start, t_floatarg n)
 }
 
 
-static void chroma_chain_fftData (t_chroma *x, t_symbol *s, int argc, t_atom *argv)
+static void chroma_chain_fftData (t_chroma* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, j, windowHalf;
     t_float maxEnergySum, chromaSums[x->x_numChroma];
@@ -265,12 +265,12 @@ static void chroma_chain_fftData (t_chroma *x, t_symbol *s, int argc, t_atom *ar
         t_uInt cardinality;
         chromaSums[i] = 0.0;
 
-        cardinality = tIDLib_getPitchBinRanges(x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_hiFreq, x->x_pitchTolerance, x->x_window, x->x_sr);
+        cardinality = tIDLib_getPitchBinRanges (x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_hiFreq, x->x_pitchTolerance, x->x_window, x->x_sr);
         //startpost ("chroma %lu bin ranges ", i);
 
         j = 0;
 
-        while(x->x_binRanges[j] != ULONG_MAX)
+        while (x->x_binRanges[j] != ULONG_MAX)
         {
             t_binIdx k, numBins;
 
@@ -295,7 +295,7 @@ static void chroma_chain_fftData (t_chroma *x, t_symbol *s, int argc, t_atom *ar
 
             j += 2;
         }
-        //endpost ();
+        //endpost();
 
         // divide by the cardinality to account for the fact that different pitch classes will have energy in a different number of bins
         chromaSums[i] /= cardinality;
@@ -318,7 +318,7 @@ static void chroma_chain_fftData (t_chroma *x, t_symbol *s, int argc, t_atom *ar
 }
 
 
-static void chroma_chain_magSpec (t_chroma *x, t_symbol *s, int argc, t_atom *argv)
+static void chroma_chain_magSpec (t_chroma* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, j, windowHalf;
     t_float maxEnergySum, chromaSums[x->x_numChroma];
@@ -344,12 +344,12 @@ static void chroma_chain_magSpec (t_chroma *x, t_symbol *s, int argc, t_atom *ar
         t_uInt cardinality;
         chromaSums[i] = 0.0;
 
-        cardinality = tIDLib_getPitchBinRanges(x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_hiFreq, x->x_pitchTolerance, x->x_window, x->x_sr);
+        cardinality = tIDLib_getPitchBinRanges (x->x_binRanges, x->x_pitchClasses[i], x->x_loFreq, x->x_hiFreq, x->x_pitchTolerance, x->x_window, x->x_sr);
         //startpost ("chroma %lu bin ranges ", i);
 
         j = 0;
 
-        while(x->x_binRanges[j] != ULONG_MAX)
+        while (x->x_binRanges[j] != ULONG_MAX)
         {
             t_binIdx k, numBins;
 
@@ -374,7 +374,7 @@ static void chroma_chain_magSpec (t_chroma *x, t_symbol *s, int argc, t_atom *ar
 
             j += 2;
         }
-        //endpost ();
+        //endpost();
 
         // divide by the cardinality to account for the fact that different pitch classes will have energy in a different number of bins
         chromaSums[i] /= cardinality;
@@ -398,9 +398,9 @@ static void chroma_chain_magSpec (t_chroma *x, t_symbol *s, int argc, t_atom *ar
 
 
 // analyze the whole damn array
-static void chroma_bang (t_chroma *x)
+static void chroma_bang (t_chroma* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -416,9 +416,9 @@ static void chroma_bang (t_chroma *x)
 }
 
 
-static void chroma_set (t_chroma *x, t_symbol *s)
+static void chroma_set (t_chroma* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -429,7 +429,7 @@ static void chroma_set (t_chroma *x, t_symbol *s)
 }
 
 
-static void chroma_print (t_chroma *x)
+static void chroma_print (t_chroma* x)
 {
     t_uChar i;
 
@@ -449,11 +449,11 @@ static void chroma_print (t_chroma *x)
     for (i = 0; i < x->x_numChroma; i++)
         startpost ("%0.2f ", x->x_pitchClasses[i]);
 
-    endpost ();
+    endpost();
 }
 
 
-static void chroma_samplerate (t_chroma *x, t_floatarg sr)
+static void chroma_samplerate (t_chroma* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -462,18 +462,18 @@ static void chroma_samplerate (t_chroma *x, t_floatarg sr)
 }
 
 
-static void chroma_window (t_chroma *x, t_floatarg w)
+static void chroma_window (t_chroma* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     chroma_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void chroma_windowFunction (t_chroma *x, t_floatarg f)
+static void chroma_windowFunction (t_chroma* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -502,7 +502,7 @@ static void chroma_windowFunction (t_chroma *x, t_floatarg f)
 }
 
 
-static void chroma_powerSpectrum (t_chroma *x, t_floatarg spec)
+static void chroma_powerSpectrum (t_chroma* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -515,7 +515,7 @@ static void chroma_powerSpectrum (t_chroma *x, t_floatarg spec)
 }
 
 
-static void chroma_normalize (t_chroma *x, t_floatarg norm)
+static void chroma_normalize (t_chroma* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -528,7 +528,7 @@ static void chroma_normalize (t_chroma *x, t_floatarg norm)
 }
 
 
-static void chroma_pitchTol(t_chroma *x, t_floatarg tol)
+static void chroma_pitchTol (t_chroma* x, t_floatarg tol)
 {
     tol = (tol<0)?0:tol;
     tol = (tol>0.5)?0.5:tol;
@@ -536,7 +536,7 @@ static void chroma_pitchTol(t_chroma *x, t_floatarg tol)
 }
 
 
-static void chroma_freqRange(t_chroma *x, t_floatarg loFreq, t_floatarg hiFreq)
+static void chroma_freqRange (t_chroma* x, t_floatarg loFreq, t_floatarg hiFreq)
 {
     t_float nyquist;
 
@@ -561,14 +561,14 @@ static void chroma_freqRange(t_chroma *x, t_floatarg loFreq, t_floatarg hiFreq)
 }
 
 
-static void chroma_energyThresh(t_chroma *x, t_floatarg thresh)
+static void chroma_energyThresh (t_chroma* x, t_floatarg thresh)
 {
     thresh = (thresh<0)?0:thresh;
     x->x_energyThresh = thresh;
 }
 
 
-static void chroma_microtune(t_chroma *x, t_floatarg cents)
+static void chroma_microtune (t_chroma* x, t_floatarg cents)
 {
     t_uChar i;
 
@@ -582,7 +582,7 @@ static void chroma_microtune(t_chroma *x, t_floatarg cents)
 }
 
 
-static void chroma_resolution(t_chroma *x, t_symbol *r)
+static void chroma_resolution (t_chroma* x, t_symbol* r)
 {
     t_uChar i, oldNumChroma;
     t_float basePitch;
@@ -635,9 +635,9 @@ static void chroma_resolution(t_chroma *x, t_symbol *r)
 }
 
 
-static void *chroma_new (t_symbol *s, int argc, t_atom *argv)
+static void* chroma_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_chroma *x = (t_chroma *)pd_new (chroma_class);
+    t_chroma* x = (t_chroma *)pd_new (chroma_class);
     t_sampIdx i;
 
     x->x_chroma = outlet_new (&x->x_obj, gensym ("list"));
@@ -697,7 +697,7 @@ static void *chroma_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_loFreq = 50.0;
             x->x_hiFreq = 5000.0;
@@ -715,7 +715,7 @@ static void *chroma_new (t_symbol *s, int argc, t_atom *argv)
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
 
-    chroma_freqRange(x, x->x_loFreq, x->x_hiFreq);
+    chroma_freqRange (x, x->x_loFreq, x->x_hiFreq);
 
     x->x_pitchTolerance = (x->x_pitchTolerance<0)?0:x->x_pitchTolerance;
     x->x_pitchTolerance = (x->x_pitchTolerance>0.5)?0.5:x->x_pitchTolerance;
@@ -756,7 +756,7 @@ static void *chroma_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void chroma_free (t_chroma *x)
+static void chroma_free (t_chroma* x)
 {
     // free the list out and pitch class memory
     t_freebytes (x->x_listOut, x->x_numChroma * sizeof (t_atom));

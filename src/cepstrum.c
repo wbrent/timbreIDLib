@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *cepstrum_class;
+static t_class* cepstrum_class;
 
 typedef struct _cepstrum
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
@@ -28,24 +28,24 @@ typedef struct _cepstrum
     t_bool x_powerSpectrum;
     t_bool x_powerCepstrum;
     t_bool x_spectrumOffset;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwForwardPlan;
     fftwf_plan x_fftwBackwardPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_atom *x_listOut;
-    t_outlet *x_featureList;
+    t_atom* x_listOut;
+    t_outlet* x_featureList;
 } t_cepstrum;
 
 
 /* ------------------------ cepstrum -------------------------------- */
-static void cepstrum_resizeWindow (t_cepstrum *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void cepstrum_resizeWindow (t_cepstrum* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx oldWindowHalf, windowHalf;
 
@@ -93,11 +93,11 @@ static void cepstrum_resizeWindow (t_cepstrum *x, t_sampIdx oldWindow, t_sampIdx
 }
 
 
-static void cepstrum_analyze (t_cepstrum *x, t_floatarg start, t_floatarg n)
+static void cepstrum_analyze (t_cepstrum* x, t_floatarg start, t_floatarg n)
 {
     t_sampIdx i, j, window, startSamp, endSamp;
     t_float nRecip, *windowFuncPtr;
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -165,12 +165,12 @@ static void cepstrum_analyze (t_cepstrum *x, t_floatarg start, t_floatarg n)
         if ( !x->x_powerSpectrum)
             tIDLib_mag (x->x_windowHalf + 1, x->x_fftwIn);
 
-        // add 1.0 to power or magnitude spectrum before taking the log and then IFT. Avoid large negative values from log(negativeNum)
+        // add 1.0 to power or magnitude spectrum before taking the log and then IFT. Avoid large negative values from log (negativeNum)
         if (x->x_spectrumOffset)
             for (i = 0; i < x->x_windowHalf + 1; i++)
                 x->x_fftwIn[i] += 1.0;
 
-        tIDLib_log(x->x_windowHalf + 1, x->x_fftwIn);
+        tIDLib_log (x->x_windowHalf + 1, x->x_fftwIn);
 
         // copy forward DFT magnitude result into real part of backward DFT complex input buffer, and zero out the imaginary part. fftwOut is only N/2+1 points long, while fftwIn is N points long
         for (i = 0; i < x->x_windowHalf + 1; i++)
@@ -200,7 +200,7 @@ static void cepstrum_analyze (t_cepstrum *x, t_floatarg start, t_floatarg n)
 }
 
 
-static void cepstrum_chain_fftData (t_cepstrum *x, t_symbol *s, int argc, t_atom *argv)
+static void cepstrum_chain_fftData (t_cepstrum* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float nRecip;
@@ -228,12 +228,12 @@ static void cepstrum_chain_fftData (t_cepstrum *x, t_symbol *s, int argc, t_atom
     if ( !x->x_powerSpectrum)
         tIDLib_mag (x->x_windowHalf + 1, x->x_fftwIn);
 
-    // add 1.0 to power or magnitude spectrum before taking the log and then IFT. Avoid large negative values from log(negativeNum)
+    // add 1.0 to power or magnitude spectrum before taking the log and then IFT. Avoid large negative values from log (negativeNum)
     if (x->x_spectrumOffset)
         for (i = 0; i < x->x_windowHalf + 1; i++)
             x->x_fftwIn[i] += 1.0;
 
-    tIDLib_log(x->x_windowHalf + 1, x->x_fftwIn);
+    tIDLib_log (x->x_windowHalf + 1, x->x_fftwIn);
 
     // copy forward DFT magnitude result into real part of backward DFT complex input buffer, and zero out the imaginary part. fftwOut is only N/2+1 points long, while fftwIn is N points long
     for (i = 0; i < x->x_windowHalf + 1; i++)
@@ -262,7 +262,7 @@ static void cepstrum_chain_fftData (t_cepstrum *x, t_symbol *s, int argc, t_atom
 }
 
 
-static void cepstrum_chain_magSpec (t_cepstrum *x, t_symbol *s, int argc, t_atom *argv)
+static void cepstrum_chain_magSpec (t_cepstrum* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, windowHalf;
     t_float nRecip;
@@ -281,12 +281,12 @@ static void cepstrum_chain_magSpec (t_cepstrum *x, t_symbol *s, int argc, t_atom
     for (i = 0; i <= x->x_windowHalf; i++)
         x->x_fftwIn[i] = atom_getfloat (argv + i);
 
-    // add 1.0 to power or magnitude spectrum before taking the log and then IFT. Avoid large negative values from log(negativeNum)
+    // add 1.0 to power or magnitude spectrum before taking the log and then IFT. Avoid large negative values from log (negativeNum)
     if (x->x_spectrumOffset)
         for (i = 0; i < x->x_windowHalf + 1; i++)
             x->x_fftwIn[i] += 1.0;
 
-    tIDLib_log(x->x_windowHalf + 1, x->x_fftwIn);
+    tIDLib_log (x->x_windowHalf + 1, x->x_fftwIn);
 
     // copy forward DFT magnitude result into real part of backward DFT complex input buffer, and zero out the imaginary part. fftwOut is only N/2+1 points long, while fftwIn is N points long
     for (i = 0; i < x->x_windowHalf + 1; i++)
@@ -316,9 +316,9 @@ static void cepstrum_chain_magSpec (t_cepstrum *x, t_symbol *s, int argc, t_atom
 
 
 // analyze the whole damn array
-static void cepstrum_bang (t_cepstrum *x)
+static void cepstrum_bang (t_cepstrum* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -334,9 +334,9 @@ static void cepstrum_bang (t_cepstrum *x)
 }
 
 
-static void cepstrum_set (t_cepstrum *x, t_symbol *s)
+static void cepstrum_set (t_cepstrum* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -347,7 +347,7 @@ static void cepstrum_set (t_cepstrum *x, t_symbol *s)
 }
 
 
-static void cepstrum_print (t_cepstrum *x)
+static void cepstrum_print (t_cepstrum* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -359,7 +359,7 @@ static void cepstrum_print (t_cepstrum *x)
 }
 
 
-static void cepstrum_samplerate (t_cepstrum *x, t_floatarg sr)
+static void cepstrum_samplerate (t_cepstrum* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -368,18 +368,18 @@ static void cepstrum_samplerate (t_cepstrum *x, t_floatarg sr)
 }
 
 
-static void cepstrum_window (t_cepstrum *x, t_floatarg w)
+static void cepstrum_window (t_cepstrum* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     cepstrum_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void cepstrum_windowFunction (t_cepstrum *x, t_floatarg f)
+static void cepstrum_windowFunction (t_cepstrum* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -408,7 +408,7 @@ static void cepstrum_windowFunction (t_cepstrum *x, t_floatarg f)
 }
 
 
-static void cepstrum_powerSpectrum (t_cepstrum *x, t_floatarg spec)
+static void cepstrum_powerSpectrum (t_cepstrum* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -421,7 +421,7 @@ static void cepstrum_powerSpectrum (t_cepstrum *x, t_floatarg spec)
 }
 
 
-static void cepstrum_powerCepstrum(t_cepstrum *x, t_floatarg power)
+static void cepstrum_powerCepstrum (t_cepstrum* x, t_floatarg power)
 {
     power = (power<0)?0:power;
     power = (power>1)?1:power;
@@ -434,7 +434,7 @@ static void cepstrum_powerCepstrum(t_cepstrum *x, t_floatarg power)
 }
 
 
-static void cepstrum_spectrumOffset (t_cepstrum *x, t_floatarg offset)
+static void cepstrum_spectrumOffset (t_cepstrum* x, t_floatarg offset)
 {
     offset = (offset<0)?0:offset;
     offset = (offset>1)?1:offset;
@@ -447,9 +447,9 @@ static void cepstrum_spectrumOffset (t_cepstrum *x, t_floatarg offset)
 }
 
 
-static void *cepstrum_new (t_symbol *s, int argc, t_atom *argv)
+static void* cepstrum_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_cepstrum *x = (t_cepstrum *)pd_new (cepstrum_class);
+    t_cepstrum* x = (t_cepstrum *)pd_new (cepstrum_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -472,7 +472,7 @@ static void *cepstrum_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -526,7 +526,7 @@ static void *cepstrum_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void cepstrum_free (t_cepstrum *x)
+static void cepstrum_free (t_cepstrum* x)
 {
     // free the list out memory
     t_freebytes (x->x_listOut, (x->x_windowHalf + 1) * sizeof (t_atom));

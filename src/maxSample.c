@@ -15,28 +15,28 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *maxSample_class;
+static t_class* maxSample_class;
 
 typedef struct _maxSample
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
-    t_float *x_analysisBuffer;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_analysisBuffer;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_outlet *x_max;
-    t_outlet *x_maxIdx;
+    t_outlet* x_max;
+    t_outlet* x_maxIdx;
 } t_maxSample;
 
 
 /* ------------------------ maxSample -------------------------------- */
 
-static void maxSample_analyze (t_maxSample *x, t_floatarg start, t_floatarg n)
+static void maxSample_analyze (t_maxSample* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -110,9 +110,9 @@ static void maxSample_analyze (t_maxSample *x, t_floatarg start, t_floatarg n)
 
 
 // analyze the whole damn array
-static void maxSample_bang (t_maxSample *x)
+static void maxSample_bang (t_maxSample* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -128,9 +128,9 @@ static void maxSample_bang (t_maxSample *x)
 }
 
 
-static void maxSample_set (t_maxSample *x, t_symbol *s)
+static void maxSample_set (t_maxSample* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -141,14 +141,14 @@ static void maxSample_set (t_maxSample *x, t_symbol *s)
 }
 
 
-static void maxSample_print (t_maxSample *x)
+static void maxSample_print (t_maxSample* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
 }
 
 
-static void maxSample_samplerate (t_maxSample *x, t_floatarg sr)
+static void maxSample_samplerate (t_maxSample* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -157,9 +157,9 @@ static void maxSample_samplerate (t_maxSample *x, t_floatarg sr)
 }
 
 
-static void *maxSample_new (t_symbol *s, int argc, t_atom *argv)
+static void* maxSample_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_maxSample *x = (t_maxSample *)pd_new (maxSample_class);
+    t_maxSample* x = (t_maxSample *)pd_new (maxSample_class);
 //	t_garray *a;
 
     x->x_max = outlet_new (&x->x_obj, &s_float);
@@ -182,7 +182,7 @@ static void *maxSample_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -207,7 +207,7 @@ static void *maxSample_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void maxSample_free (t_maxSample *x)
+static void maxSample_free (t_maxSample* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_sample));

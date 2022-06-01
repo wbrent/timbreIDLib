@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *barkSpecBrightness_tilde_class;
+static t_class* barkSpecBrightness_tilde_class;
 
 typedef struct _barkSpecBrightness_tilde
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_float x_n;
     t_sampIdx x_window;
@@ -29,26 +29,26 @@ typedef struct _barkSpecBrightness_tilde
     t_uShortInt x_overlap;
     t_bool x_powerSpectrum;
     double x_lastDspTime;
-    t_sample *x_signalBuffer;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_signalBuffer;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
     t_filterIdx x_sizeFilterFreqs;
     t_filterIdx x_numFilters;
-    t_float *x_barkFreqList;
+    t_float* x_barkFreqList;
     t_float x_barkSpacing;
-    t_float *x_filterFreqs;
-    t_filter *x_filterbank;
+    t_float* x_filterFreqs;
+    t_filter* x_filterbank;
     t_bool x_specBandAvg;
     t_bool x_filterAvg;
     t_float x_barkBoundary;
     t_float x_freqBoundary;
     t_filterIdx x_bandBoundary;
-    t_outlet *x_brightness;
+    t_outlet* x_brightness;
     t_float x_f;
 
 } t_barkSpecBrightness_tilde;
@@ -56,7 +56,7 @@ typedef struct _barkSpecBrightness_tilde
 
 /* ------------------------ barkSpecBrightness~ -------------------------------- */
 
-static void barkSpecBrightness_tilde_bang (t_barkSpecBrightness_tilde *x)
+static void barkSpecBrightness_tilde_bang (t_barkSpecBrightness_tilde* x)
 {
     t_sampIdx i, j, window, windowHalf, bangSample;
     t_float dividend, divisor, brightness, *windowFuncPtr;
@@ -134,7 +134,7 @@ static void barkSpecBrightness_tilde_bang (t_barkSpecBrightness_tilde *x)
 }
 
 
-static void barkSpecBrightness_tilde_createFilterbank (t_barkSpecBrightness_tilde *x, t_floatarg bs)
+static void barkSpecBrightness_tilde_createFilterbank (t_barkSpecBrightness_tilde* x, t_floatarg bs)
 {
     t_filterIdx i, oldNumFilters;
 
@@ -159,12 +159,12 @@ static void barkSpecBrightness_tilde_createFilterbank (t_barkSpecBrightness_tild
      for (i = 0; i < x->x_numFilters; i++)
         x->x_barkFreqList[i] = i*x->x_barkSpacing;
 
-    x->x_bandBoundary = tIDLib_nearestBinIndex(x->x_barkBoundary, x->x_barkFreqList, x->x_numFilters);
+    x->x_bandBoundary = tIDLib_nearestBinIndex (x->x_barkBoundary, x->x_barkFreqList, x->x_numFilters);
 
 }
 
 
-static void barkSpecBrightness_tilde_spec_band_avg (t_barkSpecBrightness_tilde *x, t_floatarg avg)
+static void barkSpecBrightness_tilde_spec_band_avg (t_barkSpecBrightness_tilde* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -177,7 +177,7 @@ static void barkSpecBrightness_tilde_spec_band_avg (t_barkSpecBrightness_tilde *
 }
 
 
-static void barkSpecBrightness_tilde_filter_avg (t_barkSpecBrightness_tilde *x, t_floatarg avg)
+static void barkSpecBrightness_tilde_filter_avg (t_barkSpecBrightness_tilde* x, t_floatarg avg)
 {
     avg = (avg < 0) ? 0 : avg;
     avg = (avg > 1) ? 1 : avg;
@@ -190,7 +190,7 @@ static void barkSpecBrightness_tilde_filter_avg (t_barkSpecBrightness_tilde *x, 
 }
 
 
-static void barkSpecBrightness_tilde_print (t_barkSpecBrightness_tilde *x)
+static void barkSpecBrightness_tilde_print (t_barkSpecBrightness_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -208,7 +208,7 @@ static void barkSpecBrightness_tilde_print (t_barkSpecBrightness_tilde *x)
 }
 
 
-static void barkSpecBrightness_tilde_window (t_barkSpecBrightness_tilde *x, t_floatarg w)
+static void barkSpecBrightness_tilde_window (t_barkSpecBrightness_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
@@ -267,7 +267,7 @@ static void barkSpecBrightness_tilde_window (t_barkSpecBrightness_tilde *x, t_fl
 }
 
 
-static void barkSpecBrightness_tilde_overlap (t_barkSpecBrightness_tilde *x, t_floatarg o)
+static void barkSpecBrightness_tilde_overlap (t_barkSpecBrightness_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -276,7 +276,7 @@ static void barkSpecBrightness_tilde_overlap (t_barkSpecBrightness_tilde *x, t_f
 }
 
 
-static void barkSpecBrightness_tilde_windowFunction (t_barkSpecBrightness_tilde *x, t_floatarg f)
+static void barkSpecBrightness_tilde_windowFunction (t_barkSpecBrightness_tilde* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -305,7 +305,7 @@ static void barkSpecBrightness_tilde_windowFunction (t_barkSpecBrightness_tilde 
 }
 
 
-static void barkSpecBrightness_tilde_powerSpectrum (t_barkSpecBrightness_tilde *x, t_floatarg power)
+static void barkSpecBrightness_tilde_powerSpectrum (t_barkSpecBrightness_tilde* x, t_floatarg power)
 {
     power = (power<0)?0:power;
     power = (power>1)?1:power;
@@ -318,23 +318,23 @@ static void barkSpecBrightness_tilde_powerSpectrum (t_barkSpecBrightness_tilde *
 }
 
 
-static void barkSpecBrightness_tilde_boundary(t_barkSpecBrightness_tilde *x, t_floatarg b)
+static void barkSpecBrightness_tilde_boundary (t_barkSpecBrightness_tilde* x, t_floatarg b)
 {
     if (b > TID_MAXBARKS || b<0)
         post ("%s boundary must be between 0 and %0.2f Barks.", x->x_objSymbol->s_name, TID_MAXBARKS);
     else
     {
         x->x_barkBoundary = b;
-        x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
-        x->x_bandBoundary = tIDLib_nearestBinIndex(x->x_barkBoundary, x->x_barkFreqList, x->x_numFilters);
+        x->x_freqBoundary = tIDLib_bark2freq (x->x_barkBoundary);
+        x->x_bandBoundary = tIDLib_nearestBinIndex (x->x_barkBoundary, x->x_barkFreqList, x->x_numFilters);
         post ("%s boundary: %0.2f", x->x_objSymbol->s_name, x->x_barkBoundary);
     }
 }
 
 
-static void *barkSpecBrightness_tilde_new (t_symbol *s, int argc, t_atom *argv)
+static void* barkSpecBrightness_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_barkSpecBrightness_tilde *x = (t_barkSpecBrightness_tilde *)pd_new (barkSpecBrightness_tilde_class);
+    t_barkSpecBrightness_tilde* x = (t_barkSpecBrightness_tilde *)pd_new (barkSpecBrightness_tilde_class);
     t_sampIdx i;
 
     x->x_brightness = outlet_new (&x->x_obj, &s_float);
@@ -363,11 +363,11 @@ static void *barkSpecBrightness_tilde_new (t_symbol *s, int argc, t_atom *argv)
             if (x->x_barkBoundary > TID_MAXBARKS || x->x_barkBoundary<0)
             {
                 x->x_barkBoundary = TID_BARKSPECBRIGHTNESS_DEFAULTBOUND;
-                x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
+                x->x_freqBoundary = tIDLib_bark2freq (x->x_barkBoundary);
                 post ("%s boundary frequency must be between 0 and %0.2f Barks. Using default boundary of %0.2f Barks instead.", x->x_objSymbol->s_name, TID_MAXBARKS, TID_BARKSPECBRIGHTNESS_DEFAULTBOUND);
             }
             else
-                x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
+                x->x_freqBoundary = tIDLib_bark2freq (x->x_barkBoundary);
             break;
 
         case 2:
@@ -385,7 +385,7 @@ static void *barkSpecBrightness_tilde_new (t_symbol *s, int argc, t_atom *argv)
                 post ("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
             x->x_barkBoundary = TID_BARKSPECBRIGHTNESS_DEFAULTBOUND;
-            x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
+            x->x_freqBoundary = tIDLib_bark2freq (x->x_barkBoundary);
             break;
 
         case 1:
@@ -397,14 +397,14 @@ static void *barkSpecBrightness_tilde_new (t_symbol *s, int argc, t_atom *argv)
             }
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             x->x_barkBoundary = TID_BARKSPECBRIGHTNESS_DEFAULTBOUND;
-            x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
+            x->x_freqBoundary = tIDLib_bark2freq (x->x_barkBoundary);
             break;
 
         case 0:
             x->x_window = TID_WINDOWSIZEDEFAULT;
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             x->x_barkBoundary = TID_BARKSPECBRIGHTNESS_DEFAULTBOUND;
-            x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
+            x->x_freqBoundary = tIDLib_bark2freq (x->x_barkBoundary);
             break;
 
         default:
@@ -412,7 +412,7 @@ static void *barkSpecBrightness_tilde_new (t_symbol *s, int argc, t_atom *argv)
             x->x_window = TID_WINDOWSIZEDEFAULT;
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             x->x_barkBoundary = TID_BARKSPECBRIGHTNESS_DEFAULTBOUND;
-            x->x_freqBoundary = tIDLib_bark2freq(x->x_barkBoundary);
+            x->x_freqBoundary = tIDLib_bark2freq (x->x_barkBoundary);
             break;
     }
 
@@ -472,7 +472,7 @@ static void *barkSpecBrightness_tilde_new (t_symbol *s, int argc, t_atom *argv)
      for (i = 0; i < x->x_numFilters; i++)
         x->x_barkFreqList[i] = i*x->x_barkSpacing;
 
-    x->x_bandBoundary = tIDLib_nearestBinIndex(x->x_barkBoundary, x->x_barkFreqList, x->x_numFilters);
+    x->x_bandBoundary = tIDLib_nearestBinIndex (x->x_barkBoundary, x->x_barkFreqList, x->x_numFilters);
 
     return (x);
 }
@@ -483,9 +483,9 @@ static t_int *barkSpecBrightness_tilde_perform (t_int *w)
     t_uShortInt n;
     t_sampIdx i;
 
-    t_barkSpecBrightness_tilde *x = (t_barkSpecBrightness_tilde *)(w[1]);
+    t_barkSpecBrightness_tilde* x = (t_barkSpecBrightness_tilde *)(w[1]);
 
-    t_sample *in = (t_sample *)(w[2]);
+    t_sample* in = (t_sample *)(w[2]);
     n = w[3];
 
      // shift signal buffer contents back.
@@ -502,7 +502,7 @@ static t_int *barkSpecBrightness_tilde_perform (t_int *w)
 }
 
 
-static void barkSpecBrightness_tilde_dsp (t_barkSpecBrightness_tilde *x, t_signal **sp)
+static void barkSpecBrightness_tilde_dsp (t_barkSpecBrightness_tilde* x, t_signal **sp)
 {
     dsp_add (
         barkSpecBrightness_tilde_perform,
@@ -537,7 +537,7 @@ static void barkSpecBrightness_tilde_dsp (t_barkSpecBrightness_tilde *x, t_signa
 };
 
 
-static void barkSpecBrightness_tilde_free (t_barkSpecBrightness_tilde *x)
+static void barkSpecBrightness_tilde_free (t_barkSpecBrightness_tilde* x)
 {
     t_filterIdx i;
 

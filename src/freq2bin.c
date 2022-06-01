@@ -15,20 +15,20 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *freq2bin_class;
+static t_class* freq2bin_class;
 
 typedef struct _freq2bin
 {
     t_object x_obj;
     t_float x_n;
     t_float x_sr;
-    t_outlet *x_bin;
+    t_outlet* x_bin;
 
 } t_freq2bin;
 
 
 /* ------------------------ freq2bin -------------------------------- */
-static void freq2bin_calculate(t_freq2bin *x, t_float f)
+static void freq2bin_calculate (t_freq2bin* x, t_float f)
 {
     t_float freq;
 
@@ -38,7 +38,7 @@ static void freq2bin_calculate(t_freq2bin *x, t_float f)
     {
         t_float bin;
 
-        bin = tIDLib_freq2bin(freq, x->x_n, x->x_sr);
+        bin = tIDLib_freq2bin (freq, x->x_n, x->x_sr);
 
         outlet_float (x->x_bin, bin);
     }
@@ -48,7 +48,7 @@ static void freq2bin_calculate(t_freq2bin *x, t_float f)
     }
 }
 
-static void freq2bin_setWinSampRate(t_freq2bin *x, t_float n, t_float sr)
+static void freq2bin_setWinSampRate (t_freq2bin* x, t_float n, t_float sr)
 {
     if (sr)
     {
@@ -67,19 +67,19 @@ static void freq2bin_setWinSampRate(t_freq2bin *x, t_float n, t_float sr)
     }
 }
 
-static void freq2bin_print (t_freq2bin *x)
+static void freq2bin_print (t_freq2bin* x)
 {
     post ("freq2bin window size: %i", (t_sampIdx)x->x_n);
     post ("freq2bin samplerate: %i", (t_sampIdx)x->x_sr);
 }
 
-static void *freq2bin_new (t_float n, t_float sr)
+static void* freq2bin_new (t_float n, t_float sr)
 {
-    t_freq2bin *x = (t_freq2bin *)pd_new (freq2bin_class);
+    t_freq2bin* x = (t_freq2bin *)pd_new (freq2bin_class);
     inlet_new (&x->x_obj, &x->x_obj.ob_pd, gensym ("list"), gensym ("setWinSampRate"));
     x->x_bin = outlet_new (&x->x_obj, &s_float);
 
-    freq2bin_setWinSampRate(x, n, sr);
+    freq2bin_setWinSampRate (x, n, sr);
 
     return (x);
 }

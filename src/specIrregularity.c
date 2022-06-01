@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *specIrregularity_class;
+static t_class* specIrregularity_class;
 
 typedef enum
 {
@@ -26,30 +26,30 @@ typedef enum
 typedef struct _specIrregularity
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
     t_sampIdx x_windowHalf;
     t_windowFunction x_windowFunction;
     t_bool x_normalize;
     t_bool x_powerSpectrum;
-    t_sample *x_fftwIn;
-    fftwf_complex *x_fftwOut;
+    t_sample* x_fftwIn;
+    fftwf_complex* x_fftwOut;
     fftwf_plan x_fftwPlan;
-    t_float *x_blackman;
-    t_float *x_cosine;
-    t_float *x_hamming;
-    t_float *x_hann;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_blackman;
+    t_float* x_cosine;
+    t_float* x_hamming;
+    t_float* x_hann;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
     t_algoChoice x_algorithm;
-    t_outlet *x_irregularity;
+    t_outlet* x_irregularity;
 } t_specIrregularity;
 
 
 /* ------------------------ specIrregularity -------------------------------- */
-static void specIrregularity_resizeWindow (t_specIrregularity *x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx *endSamp)
+static void specIrregularity_resizeWindow (t_specIrregularity* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
     t_sampIdx windowHalf;
 
@@ -91,9 +91,9 @@ static void specIrregularity_resizeWindow (t_specIrregularity *x, t_sampIdx oldW
 }
 
 
-static void specIrregularity_analyze (t_specIrregularity *x, t_floatarg start, t_floatarg n)
+static void specIrregularity_analyze (t_specIrregularity* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -215,7 +215,7 @@ static void specIrregularity_analyze (t_specIrregularity *x, t_floatarg start, t
 }
 
 
-static void specIrregularity_chain_fftData (t_specIrregularity *x, t_symbol *s, int argc, t_atom *argv)
+static void specIrregularity_chain_fftData (t_specIrregularity* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, j, windowHalf;
     t_float divisor, irregularity;
@@ -293,7 +293,7 @@ static void specIrregularity_chain_fftData (t_specIrregularity *x, t_symbol *s, 
 }
 
 
-static void specIrregularity_chain_magSpec (t_specIrregularity *x, t_symbol *s, int argc, t_atom *argv)
+static void specIrregularity_chain_magSpec (t_specIrregularity* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_sampIdx i, j, windowHalf;
     t_float divisor, irregularity;
@@ -363,9 +363,9 @@ static void specIrregularity_chain_magSpec (t_specIrregularity *x, t_symbol *s, 
 
 
 // analyze the whole damn array
-static void specIrregularity_bang (t_specIrregularity *x)
+static void specIrregularity_bang (t_specIrregularity* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -381,9 +381,9 @@ static void specIrregularity_bang (t_specIrregularity *x)
 }
 
 
-static void specIrregularity_set (t_specIrregularity *x, t_symbol *s)
+static void specIrregularity_set (t_specIrregularity* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -394,7 +394,7 @@ static void specIrregularity_set (t_specIrregularity *x, t_symbol *s)
 }
 
 
-static void specIrregularity_print (t_specIrregularity *x)
+static void specIrregularity_print (t_specIrregularity* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
@@ -417,7 +417,7 @@ static void specIrregularity_print (t_specIrregularity *x)
 }
 
 
-static void specIrregularity_samplerate (t_specIrregularity *x, t_floatarg sr)
+static void specIrregularity_samplerate (t_specIrregularity* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -426,18 +426,18 @@ static void specIrregularity_samplerate (t_specIrregularity *x, t_floatarg sr)
 }
 
 
-static void specIrregularity_window (t_specIrregularity *x, t_floatarg w)
+static void specIrregularity_window (t_specIrregularity* x, t_floatarg w)
 {
     t_sampIdx endSamp;
 
-    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow () requires that
+    // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;
 
     specIrregularity_resizeWindow (x, x->x_window, w, 0, &endSamp);
 }
 
 
-static void specIrregularity_windowFunction (t_specIrregularity *x, t_floatarg f)
+static void specIrregularity_windowFunction (t_specIrregularity* x, t_floatarg f)
 {
     f = (f < 0) ? 0 : f;
     f = (f > 4) ? 4 : f;
@@ -466,7 +466,7 @@ static void specIrregularity_windowFunction (t_specIrregularity *x, t_floatarg f
 }
 
 
-static void specIrregularity_powerSpectrum (t_specIrregularity *x, t_floatarg spec)
+static void specIrregularity_powerSpectrum (t_specIrregularity* x, t_floatarg spec)
 {
     spec = (spec < 0) ? 0 : spec;
     spec = (spec > 1) ? 1 : spec;
@@ -479,7 +479,7 @@ static void specIrregularity_powerSpectrum (t_specIrregularity *x, t_floatarg sp
 }
 
 
-static void specIrregularity_normalize (t_specIrregularity *x, t_floatarg norm)
+static void specIrregularity_normalize (t_specIrregularity* x, t_floatarg norm)
 {
     norm = (norm < 0) ? 0 : norm;
     norm = (norm > 1) ? 1 : norm;
@@ -492,7 +492,7 @@ static void specIrregularity_normalize (t_specIrregularity *x, t_floatarg norm)
 }
 
 
-static void specIrregularity_algorithm (t_specIrregularity *x, t_floatarg a)
+static void specIrregularity_algorithm (t_specIrregularity* x, t_floatarg a)
 {
     a = (a < 0) ? 0 : a;
     a = (a > 1) ? 1 : a;
@@ -512,9 +512,9 @@ static void specIrregularity_algorithm (t_specIrregularity *x, t_floatarg a)
 }
 
 
-static void *specIrregularity_new (t_symbol *s, int argc, t_atom *argv)
+static void* specIrregularity_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_specIrregularity *x = (t_specIrregularity *)pd_new (specIrregularity_class);
+    t_specIrregularity* x = (t_specIrregularity *)pd_new (specIrregularity_class);
     t_sampIdx i;
 //	t_garray *a;
 
@@ -552,7 +552,7 @@ static void *specIrregularity_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_algorithm = TID_SPECIRREGULARITY_DEFAULTALGO;
             break;
@@ -603,7 +603,7 @@ static void *specIrregularity_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void specIrregularity_free (t_specIrregularity *x)
+static void specIrregularity_free (t_specIrregularity* x)
 {
     // free FFTW stuff
     t_freebytes (x->x_fftwIn, x->x_window * sizeof (t_sample));

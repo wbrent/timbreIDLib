@@ -15,28 +15,28 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *peakSample_class;
+static t_class* peakSample_class;
 
 typedef struct _peakSample
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
+    t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
-    t_float *x_analysisBuffer;
-    t_word *x_vec;
-    t_symbol *x_arrayName;
+    t_float* x_analysisBuffer;
+    t_word* x_vec;
+    t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_outlet *x_peak;
-    t_outlet *x_peakIdx;
+    t_outlet* x_peak;
+    t_outlet* x_peakIdx;
 } t_peakSample;
 
 
 /* ------------------------ peakSample -------------------------------- */
 
-static void peakSample_analyze (t_peakSample *x, t_floatarg start, t_floatarg n)
+static void peakSample_analyze (t_peakSample* x, t_floatarg start, t_floatarg n)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -91,7 +91,7 @@ static void peakSample_analyze (t_peakSample *x, t_floatarg start, t_floatarg n)
         for (i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
-        tIDLib_peakSample(window, x->x_analysisBuffer, &peakIdx, &peakVal);
+        tIDLib_peakSample (window, x->x_analysisBuffer, &peakIdx, &peakVal);
 
         outlet_float (x->x_peakIdx, peakIdx);
         outlet_float (x->x_peak, peakVal);
@@ -100,9 +100,9 @@ static void peakSample_analyze (t_peakSample *x, t_floatarg start, t_floatarg n)
 
 
 // analyze the whole damn array
-static void peakSample_bang (t_peakSample *x)
+static void peakSample_bang (t_peakSample* x)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
@@ -118,9 +118,9 @@ static void peakSample_bang (t_peakSample *x)
 }
 
 
-static void peakSample_set (t_peakSample *x, t_symbol *s)
+static void peakSample_set (t_peakSample* x, t_symbol* s)
 {
-    t_garray *a;
+    t_garray* a;
 
     if ( !(a = (t_garray *)pd_findbyclass (s, garray_class)))
         pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, s->s_name);
@@ -131,14 +131,14 @@ static void peakSample_set (t_peakSample *x, t_symbol *s)
 }
 
 
-static void peakSample_print (t_peakSample *x)
+static void peakSample_print (t_peakSample* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
 }
 
 
-static void peakSample_samplerate (t_peakSample *x, t_floatarg sr)
+static void peakSample_samplerate (t_peakSample* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -147,9 +147,9 @@ static void peakSample_samplerate (t_peakSample *x, t_floatarg sr)
 }
 
 
-static void *peakSample_new (t_symbol *s, int argc, t_atom *argv)
+static void* peakSample_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_peakSample *x = (t_peakSample *)pd_new (peakSample_class);
+    t_peakSample* x = (t_peakSample *)pd_new (peakSample_class);
 //	t_garray *a;
 
     x->x_peak = outlet_new (&x->x_obj, &s_float);
@@ -172,7 +172,7 @@ static void *peakSample_new (t_symbol *s, int argc, t_atom *argv)
 
         case 0:
             post ("%s: no array specified.", x->x_objSymbol->s_name);
-            // a bogus array name to trigger the safety check in _analyze ()
+            // a bogus array name to trigger the safety check in _analyze()
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             break;
 
@@ -197,7 +197,7 @@ static void *peakSample_new (t_symbol *s, int argc, t_atom *argv)
 }
 
 
-static void peakSample_free (t_peakSample *x)
+static void peakSample_free (t_peakSample* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_sample));

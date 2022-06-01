@@ -15,22 +15,23 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class *tID_mean_class;
+static t_class* tID_mean_class;
 
 typedef struct _tID_mean
 {
     t_object x_obj;
-    t_symbol *x_objSymbol;
-    t_outlet *x_mean;
+    t_symbol* x_objSymbol;
+    t_outlet* x_mean;
 
 } t_tID_mean;
 
 
 /* ------------------------ tID_mean -------------------------------- */
 
-static void tID_mean_calculate(t_tID_mean *x, t_symbol *s, int argc, t_atom *argv)
+static void tID_mean_calculate (t_tID_mean* x, t_symbol* s, int argc, t_atom* argv)
 {
-    t_float n, sum, mean, *input;
+    t_float n, sum, mean;
+    t_float* input;
     t_sampIdx i;
 
     n = argc;
@@ -50,7 +51,7 @@ static void tID_mean_calculate(t_tID_mean *x, t_symbol *s, int argc, t_atom *arg
         for (i = 0; i < n; i++)
             sum += input[i];
 
-        mean = sum/n;
+        mean = sum / n;
 
         outlet_float (x->x_mean, mean);
 
@@ -59,9 +60,9 @@ static void tID_mean_calculate(t_tID_mean *x, t_symbol *s, int argc, t_atom *arg
     }
 }
 
-static void *tID_mean_new (void)
+static void* tID_mean_new (void)
 {
-    t_tID_mean *x = (t_tID_mean *)pd_new (tID_mean_class);
+    t_tID_mean* x = (t_tID_mean *)pd_new (tID_mean_class);
     x->x_mean = outlet_new (&x->x_obj, &s_float);
 
     x->x_objSymbol = gensym ("tID_mean");
