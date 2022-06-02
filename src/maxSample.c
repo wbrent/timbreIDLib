@@ -96,7 +96,7 @@ static void maxSample_analyze (t_maxSample* x, t_floatarg start, t_floatarg n)
 
         for (i = 0; i < x->x_window; i++)
         {
-            if (x->x_analysisBuffer[i]>max)
+            if (x->x_analysisBuffer[i] > max)
             {
                 max = x->x_analysisBuffer[i];
                 maxIdx = i;

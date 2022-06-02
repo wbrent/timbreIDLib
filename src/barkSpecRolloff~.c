@@ -121,7 +121,7 @@ static void barkSpecRolloff_tilde_bang (t_barkSpecRolloff_tilde* x)
 
     energyTarget *= x->x_concentration;
 
-    energySum=0.0;
+    energySum = 0.0;
     i = 0;
 
     while (energySum <= energyTarget)
@@ -133,7 +133,7 @@ static void barkSpecRolloff_tilde_bang (t_barkSpecRolloff_tilde* x)
             break;
     }
 
-    if (i>0)
+    if (i > 0)
         rolloff = x->x_barkFreqList[i - 1]; // back up one because the last one went over...
     else
         rolloff = -1;
@@ -213,7 +213,7 @@ static void barkSpecRolloff_tilde_print (t_barkSpecRolloff_tilde* x)
 
 static void barkSpecRolloff_tilde_concentration (t_barkSpecRolloff_tilde* x, t_floatarg c)
 {
-    if (c<0 || c>1.0)
+    if (c < 0 || c > 1.0)
         post ("%s concentration must be between 0.0 and 1.0.", x->x_objSymbol->s_name);
     else
     {

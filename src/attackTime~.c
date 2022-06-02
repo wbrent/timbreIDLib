@@ -109,7 +109,7 @@ static void attackTime_tilde_print (t_attackTime_tilde* x)
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
     post ("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
-    post ("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange / x->x_sr)*1000.0, x->x_maxSearchRange);
+    post ("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange / x->x_sr) * 1000.0, x->x_maxSearchRange);
     post ("%s sample magnitude threshold for finding onset: %f", x->x_objSymbol->s_name, x->x_sampMagThresh);
     post ("%s minimum sample threshold for finding onset: %i", x->x_objSymbol->s_name, x->x_numSampsThresh);
 }
@@ -120,7 +120,7 @@ static void attackTime_tilde_maxSearchRange (t_attackTime_tilde* x, t_floatarg r
     t_sampIdx i, newRange;
 
     range = (range<5.0)?5.0:range;
-    newRange = roundf ((range/1000.0) * x->x_sr);
+    newRange = roundf ((range / 1000.0) * x->x_sr);
 
     x->x_searchBuffer = (t_float *)t_resizebytes (x->x_searchBuffer, x->x_maxSearchRange * sizeof (t_float), newRange * sizeof (t_float));
     x->x_signalBuffer = (t_float *)t_resizebytes (x->x_signalBuffer, (x->x_maxSearchRange+x->x_n) * sizeof (t_float), (newRange+x->x_n) * sizeof (t_float));
@@ -133,7 +133,7 @@ static void attackTime_tilde_maxSearchRange (t_attackTime_tilde* x, t_floatarg r
     for (i = 0; i < x->x_maxSearchRange+x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
-    post ("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange / x->x_sr)*1000.0, x->x_maxSearchRange);
+    post ("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange / x->x_sr) * 1000.0, x->x_maxSearchRange);
 
 }
 
@@ -289,11 +289,11 @@ static void attackTime_tilde_dsp (t_attackTime_tilde* x, t_signal** sp)
         t_sampIdx i, newRange;
         t_float range;
 
-        range = (x->x_maxSearchRange / x->x_sr)*1000.0;
+        range = (x->x_maxSearchRange / x->x_sr) * 1000.0;
 
         x->x_sr = sp[0]->s_sr / x->x_overlap;
 
-        newRange = roundf ((range/1000.0) * x->x_sr);
+        newRange = roundf ((range / 1000.0) * x->x_sr);
 
         x->x_searchBuffer = (t_float *)t_resizebytes (x->x_searchBuffer, x->x_maxSearchRange * sizeof (t_float), newRange * sizeof (t_float));
         x->x_signalBuffer = (t_float *)t_resizebytes (x->x_signalBuffer, (x->x_maxSearchRange+x->x_n) * sizeof (t_float), (newRange+x->x_n) * sizeof (t_float));
@@ -306,7 +306,7 @@ static void attackTime_tilde_dsp (t_attackTime_tilde* x, t_signal** sp)
         for (i = 0; i < x->x_maxSearchRange+x->x_n; i++)
             x->x_signalBuffer[i] = 0.0;
 
-        post ("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange / x->x_sr)*1000.0, x->x_maxSearchRange);
+        post ("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange / x->x_sr) * 1000.0, x->x_maxSearchRange);
 
         x->x_lastDspTime = clock_getlogicaltime();
     };

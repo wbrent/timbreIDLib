@@ -91,7 +91,7 @@ static void tempo_tilde_resizeOnsetsBuffer (t_tempo_tilde* x, t_floatarg newSize
 {
     t_uInt minSize, i;
 
-    minSize = x->x_loTempoIdx*(x->x_numHarm + 1);
+    minSize = x->x_loTempoIdx * (x->x_numHarm + 1);
 
     if (newSize<minSize)
     {
@@ -103,7 +103,7 @@ static void tempo_tilde_resizeOnsetsBuffer (t_tempo_tilde* x, t_floatarg newSize
     x->x_listOut = (t_atom *)t_resizebytes (x->x_listOut, x->x_onsetsBufSize * sizeof (t_atom), newSize * sizeof (t_atom));
 
     x->x_onsetsBufSize = newSize;
-    x->x_onsetsBufDur = ((x->x_onsetsBufSize * x->x_hop) / x->x_sr)*1000.0;
+    x->x_onsetsBufDur = ((x->x_onsetsBufSize * x->x_hop) / x->x_sr) * 1000.0;
 
     for (i = 0; i < x->x_onsetsBufSize; i++)
         x->x_onsetsBuffer[i] = x->x_belowThreshDefault;
@@ -253,7 +253,7 @@ static void tempo_tilde_analyze (t_tempo_tilde* x)
     for (i = 0; i < x->x_onsetsBufSize - 1; i++)
         x->x_onsetsBuffer[i] = x->x_onsetsBuffer[i + 1];
 
-    if (growth>=((x->x_growthThresh/100.0) * x->x_maxOnsetPeakVal))
+    if (growth >= ((x->x_growthThresh / 100.0) * x->x_maxOnsetPeakVal))
         x->x_onsetsBuffer[x->x_onsetsBufSize - 1] = growth;
     else
         x->x_onsetsBuffer[x->x_onsetsBufSize - 1] = x->x_belowThreshDefault; //set below thresh growth to a default value that is NOT ZERO, which would ruin the running product in the HPS algo
@@ -265,21 +265,21 @@ static void tempo_tilde_analyze (t_tempo_tilde* x)
     {
         startIdx++;
 
-        if (startIdx>=x->x_onsetsBufSize - 1)
+        if (startIdx >= x->x_onsetsBufSize - 1)
             break;
     }
 
     // now, move to the peak of that first peak
-    if (startIdx>0)
+    if (startIdx > 0)
         peakSlope = x->x_onsetsBuffer[startIdx] - x->x_onsetsBuffer[startIdx - 1];
     else
         peakSlope = 0.0;
 
-    while (peakSlope>0.0)
+    while (peakSlope > 0.0)
     {
         startIdx++;
 
-        if (startIdx>=x->x_onsetsBufSize - 1)
+        if (startIdx >= x->x_onsetsBufSize - 1)
             break;
 
         peakSlope = x->x_onsetsBuffer[startIdx] - x->x_onsetsBuffer[startIdx - 1];
@@ -287,7 +287,7 @@ static void tempo_tilde_analyze (t_tempo_tilde* x)
 
     // at this point, we're one idx past the peak, so back up a step
     // BUT: shouldn't back up here in the special case of the peak was already perfectly aligned. if that's the case, peakSlope would be exactly zero from startIdx>0 check above
-    if (peakSlope!=0.0)
+    if (peakSlope != 0.0)
         startIdx--;
 
     // TODO: should we make this onsetsBufSize - 10 or something, just so that we don't get a buffer size of 0, which could cause problems with the onsetsBufferShifted and yValues arrays below?
@@ -306,12 +306,12 @@ static void tempo_tilde_analyze (t_tempo_tilde* x)
 
     for (i=startIdx, j = 0; i < x->x_onsetsBufSize; i++, j++)
     {
-        SETFLOAT (x->x_listOut+j, x->x_onsetsBuffer[i]);
+        SETFLOAT (x->x_listOut + j, x->x_onsetsBuffer[i]);
         onsetsBufferShifted[j] = x->x_onsetsBuffer[i];
     }
 
     for (; j < x->x_onsetsBufSize; j++)
-        SETFLOAT (x->x_listOut+j, x->x_belowThreshDefault);
+        SETFLOAT (x->x_listOut + j, x->x_belowThreshDefault);
 
 // END MEASURE GROWTH
 
@@ -342,7 +342,7 @@ static void tempo_tilde_analyze (t_tempo_tilde* x)
             if (x->x_debug)
                 post ("%s: bad HPS result", x->x_objSymbol->s_name);
         }
-        else if (maxYValue<0.0)
+        else if (maxYValue < 0.0)
         {
             outlet_float (x->x_tempoRaw, x->x_lastGoodTempo);
 
@@ -353,7 +353,7 @@ static void tempo_tilde_analyze (t_tempo_tilde* x)
         {
             tempo = periodIdx * x->x_hop; // frames to samples
             tempo /= x->x_sr; // samples to seconds
-            tempo = 60.0f/tempo; // seconds to BPM
+            tempo = 60.0 / tempo; // seconds to BPM
 
             // OUTLET 3: raw tempo per HPS call
             outlet_float (x->x_tempoRaw, tempo);
@@ -364,7 +364,7 @@ static void tempo_tilde_analyze (t_tempo_tilde* x)
             modeCount = 0;
             tempoMode = tIDLib_mode (x->x_tempoBuffer, x->x_tempoBufferSize, &modeCount);
 
-            tempoConf = (modeCount/(t_float)x->x_tempoBufferSize)*100.0f;
+            tempoConf = (modeCount / (t_float)x->x_tempoBufferSize) * 100.0f;
 
             // OUTLET 2: tempo confidence
             outlet_float (x->x_conf, tempoConf);
@@ -407,7 +407,7 @@ static void tempo_tilde_print (t_tempo_tilde* x)
     post ("%s onset buffer size: %0.2f ms, %i frames", x->x_objSymbol->s_name, x->x_onsetsBufDur, x->x_onsetsBufSize);
     post ("%s tempo range: %0.2f through %0.2f BPM, frame index %i through %i.", x->x_objSymbol->s_name, x->x_loTempo, x->x_hiTempo, x->x_loTempoIdx, x->x_hiTempoIdx);
     post ("%s harmonics: %i.", x->x_objSymbol->s_name, x->x_numHarm);
-    post ("%s growth thresh: %0.2f%% of max peak value = %f.", x->x_objSymbol->s_name, x->x_growthThresh, (x->x_growthThresh/100.0) * x->x_maxOnsetPeakVal);
+    post ("%s growth thresh: %0.2f%% of max peak value = %f.", x->x_objSymbol->s_name, x->x_growthThresh, (x->x_growthThresh / 100.0) * x->x_maxOnsetPeakVal);
     post ("%s frequency range: %0.2f through %0.2f Hz, bin %i through %i.", x->x_loFreq, x->x_hiFreq, x->x_objSymbol->s_name, x->x_loBin, x->x_hiBin);
     post ("%s below threshold default value: %f.", x->x_objSymbol->s_name, x->x_belowThreshDefault);
     post ("%s max onset update: %i", x->x_objSymbol->s_name, x->x_maxOnsetUpdate);
@@ -505,19 +505,19 @@ static void tempo_tilde_hop (t_tempo_tilde* x, t_floatarg h)
 
     // recalc tempo indices based on new hop
     loTempo = x->x_loTempo;
-    loTempo = 60.0f/loTempo; // BPM to seconds
+    loTempo = 60.0 / loTempo; // BPM to seconds
     loTempo *= x->x_sr; // seconds to samples
     loTempo /= x->x_hop;//samples to frames
     x->x_loTempoIdx = roundf (loTempo);
 
        hiTempo = x->x_hiTempo;
-    hiTempo = 60.0f/hiTempo; // BPM to seconds
+    hiTempo = 60.0 / hiTempo; // BPM to seconds
     hiTempo *= x->x_sr; // seconds to samples
     hiTempo /= x->x_hop;//samples to frames
     x->x_hiTempoIdx = roundf (hiTempo);
 
     // since x_loTempoIdx changed, need to resize the onset buffer
-    tempo_tilde_resizeOnsetsBuffer (x, x->x_loTempoIdx*(x->x_numHarm + 1));
+    tempo_tilde_resizeOnsetsBuffer (x, x->x_loTempoIdx * (x->x_numHarm + 1));
 
     post ("%s analysis hop: %i", x->x_objSymbol->s_name, x->x_hop);
 }
@@ -611,7 +611,7 @@ static void tempo_tilde_numHarm (t_tempo_tilde* x, t_floatarg h)
     x->x_numHarm = (h < 2) ? 2 : h;
 
     // since numHarm changed, we need to resize the onsets buffer
-    tempo_tilde_resizeOnsetsBuffer (x, x->x_loTempoIdx*(x->x_numHarm + 1));
+    tempo_tilde_resizeOnsetsBuffer (x, x->x_loTempoIdx * (x->x_numHarm + 1));
 
     post ("%s HPS number of harmonics: %i", x->x_objSymbol->s_name, x->x_numHarm);
 }
@@ -818,12 +818,12 @@ static void* tempo_tilde_new (t_symbol* s, int argc, t_atom* argv)
     x->x_maxOnsetPeakVal = -1.0;
     x->x_lastFirstOnsetPeakVal = -1.0;
 
-    loTempo = 60.0f / x->x_loTempo; // BPM to seconds
+    loTempo = 60.0 / x->x_loTempo; // BPM to seconds
     loTempo *= x->x_sr; // seconds to samples
     loTempo /= x->x_hop;//samples to frames
     x->x_loTempoIdx = roundf (loTempo);
 
-    hiTempo = 60.0f / x->x_hiTempo; // BPM to seconds
+    hiTempo = 60.0 / x->x_hiTempo; // BPM to seconds
     hiTempo *= x->x_sr; // seconds to samples
     hiTempo /= x->x_hop;//samples to frames
     x->x_hiTempoIdx = roundf (hiTempo);
@@ -837,8 +837,8 @@ static void* tempo_tilde_new (t_symbol* s, int argc, t_atom* argv)
     x->x_tempoBufferSize = 20;
     x->x_debug = false;
 
-    x->x_onsetsBufSize = x->x_loTempoIdx*(x->x_numHarm + 1);
-    x->x_onsetsBufDur = ((x->x_onsetsBufSize * x->x_hop) / x->x_sr)*1000.0;
+    x->x_onsetsBufSize = x->x_loTempoIdx * (x->x_numHarm + 1);
+    x->x_onsetsBufDur = ((x->x_onsetsBufSize * x->x_hop) / x->x_sr) * 1000.0;
 
     x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_window * 2) * sizeof (t_sample));
     x->x_fftwInForwardWindow = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
@@ -846,7 +846,7 @@ static void* tempo_tilde_new (t_symbol* s, int argc, t_atom* argv)
     x->x_onsetsBuffer = (t_float *)t_getbytes (x->x_onsetsBufSize * sizeof (t_float));
     x->x_listOut = (t_atom *)t_getbytes (x->x_onsetsBufSize * sizeof (t_atom));
 
-     for (i = 0; i < (x->x_window * 2); i++)
+     for (i = 0; i < x->x_window * 2; i++)
         x->x_signalBuffer[i] = 0.0;
 
      for (i = 0; i < x->x_onsetsBufSize; i++)
@@ -872,16 +872,16 @@ static void* tempo_tilde_new (t_symbol* s, int argc, t_atom* argv)
     x->x_fftwPlanBackWindow = fftwf_plan_dft_r2c_1d (x->x_window, x->x_fftwInBackWindow, x->x_fftwOutBackWindow, FFTWPLANNERFLAG);
 
     // we're supposed to initialize the input array after we create the plan
-     for (i = 0; i < x->x_window; i++)
-     {
+    for (i = 0; i < x->x_window; i++)
+    {
         x->x_fftwInForwardWindow[i] = 0.0;
         x->x_fftwInBackWindow[i] = 0.0;
     }
 
-      x->x_tempoBuffer = (t_float *)t_getbytes (x->x_tempoBufferSize * sizeof (t_float));
+    x->x_tempoBuffer = (t_float *)t_getbytes (x->x_tempoBufferSize * sizeof (t_float));
 
-     for (i = 0; i < x->x_tempoBufferSize; i++)
-        x->x_tempoBuffer[i] = -1;
+    for (i = 0; i < x->x_tempoBufferSize; i++)
+      x->x_tempoBuffer[i] = -1;
 
     return (x);
 }
@@ -898,16 +898,16 @@ static t_int* tempo_tilde_perform (t_int* w)
     n = w[3];
 
      // shift signal buffer contents back.
-    for (i = 0; i < (x->x_window * 2-n); i++)
+    for (i = 0; i < (x->x_window * 2 - n); i++)
         x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)
-        x->x_signalBuffer[(x->x_window * 2-n) + i] = in[i];
+        x->x_signalBuffer[(x->x_window * 2 - n) + i] = in[i];
 
     x->x_dspTicks++;
 
-     if (x->x_dspTicks*n >= x->x_hop)
+     if (x->x_dspTicks * n >= x->x_hop)
      {
          x->x_dspTicks = 0;
          tempo_tilde_analyze (x);
@@ -941,22 +941,22 @@ static void tempo_tilde_dsp (t_tempo_tilde* x, t_signal** sp)
         x->x_dspTicks = 0;
 
         // since we're resetting dspTicks, we might as well clear the audio buffer and start fresh at the new samplerate
-        for (i = 0; i < (x->x_window * 2); i++)
+        for (i = 0; i < x->x_window * 2; i++)
             x->x_signalBuffer[i] = 0.0;
 
         // if samplerate changes, we need to update loTempoIdx, hiTempoIdx, and therefore resize the onsets buffer
-        loTempo = 60.0f / x->x_loTempo; // BPM to seconds
+        loTempo = 60.0 / x->x_loTempo; // BPM to seconds
         loTempo *= x->x_sr; // seconds to samples
         loTempo /= x->x_hop;//samples to frames
         x->x_loTempoIdx = roundf (loTempo);
 
-        hiTempo = 60.0f / x->x_hiTempo; // BPM to seconds
+        hiTempo = 60.0 / x->x_hiTempo; // BPM to seconds
         hiTempo *= x->x_sr; // seconds to samples
         hiTempo /= x->x_hop;//samples to frames
         x->x_hiTempoIdx = roundf (hiTempo);
 
         // since x_loTempoIdx changed, need to resize the onset buffer
-        tempo_tilde_resizeOnsetsBuffer (x, x->x_loTempoIdx*(x->x_numHarm + 1));
+        tempo_tilde_resizeOnsetsBuffer (x, x->x_loTempoIdx * (x->x_numHarm + 1));
 
         post ("%s samplerate: %0.2f", x->x_objSymbol->s_name, x->x_sr);
     };

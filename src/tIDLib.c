@@ -816,7 +816,7 @@ void tIDLib_createFilterbank (t_float* filterFreqs, t_filter** filterbank, t_fil
                     for (fj = 0; fj < upN; fj++)
                         (*filterbank)[ffi - 1].filter[fj] = upRamp[fj];
 
-                    // start at k=1 because k=0 will be the peak (i.e., 1.0)
+                    // start at k=1 because k = 0 will be the peak (i.e., 1.0)
                     for (k = 1; k < downN; fj++, k++)
                         (*filterbank)[ffi - 1].filter[fj] = downRamp[k];
 

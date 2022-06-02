@@ -181,7 +181,7 @@ static void barkSpecRolloff_analyze (t_barkSpecRolloff* x, t_floatarg start, t_f
 
         energyTarget *= x->x_concentration;
 
-        energySum=0.0;
+        energySum = 0.0;
         i = 0;
 
         while (energySum <= energyTarget)
@@ -189,11 +189,11 @@ static void barkSpecRolloff_analyze (t_barkSpecRolloff* x, t_floatarg start, t_f
             energySum += x->x_fftwIn[i];
             i++;
 
-            if (i>=x->x_numFilters)
+            if (i >= x->x_numFilters)
                 break;
         }
 
-        if (i>0)
+        if (i > 0)
             rolloff = x->x_barkFreqList[i - 1]; // back up one because the last one went over...
         else
             rolloff = -1.0;
@@ -242,7 +242,7 @@ static void barkSpecRolloff_chain_fftData (t_barkSpecRolloff* x, t_symbol* s, in
 
     energyTarget *= x->x_concentration;
 
-    energySum=0.0;
+    energySum = 0.0;
     i = 0;
 
     while (energySum <= energyTarget)
@@ -250,11 +250,11 @@ static void barkSpecRolloff_chain_fftData (t_barkSpecRolloff* x, t_symbol* s, in
         energySum += x->x_fftwIn[i];
         i++;
 
-        if (i>=x->x_numFilters)
+        if (i >= x->x_numFilters)
             break;
     }
 
-    if (i>0)
+    if (i > 0)
         rolloff = x->x_barkFreqList[i - 1]; // back up one because the last one went over...
     else
         rolloff = -1.0;
@@ -293,7 +293,7 @@ static void barkSpecRolloff_chain_magSpec (t_barkSpecRolloff* x, t_symbol* s, in
 
     energyTarget *= x->x_concentration;
 
-    energySum=0.0;
+    energySum = 0.0;
     i = 0;
 
     while (energySum <= energyTarget)
@@ -301,11 +301,11 @@ static void barkSpecRolloff_chain_magSpec (t_barkSpecRolloff* x, t_symbol* s, in
         energySum += x->x_fftwIn[i];
         i++;
 
-        if (i>=x->x_numFilters)
+        if (i >= x->x_numFilters)
             break;
     }
 
-    if (i>0)
+    if (i > 0)
         rolloff = x->x_barkFreqList[i - 1]; // back up one because the last one went over...
     else
         rolloff = -1.0;
@@ -336,7 +336,7 @@ static void barkSpecRolloff_chain_barkSpec (t_barkSpecRolloff* x, t_symbol* s, i
 
     energyTarget *= x->x_concentration;
 
-    energySum=0.0;
+    energySum = 0.0;
     i = 0;
 
     while (energySum <= energyTarget)
@@ -344,11 +344,11 @@ static void barkSpecRolloff_chain_barkSpec (t_barkSpecRolloff* x, t_symbol* s, i
         energySum += x->x_fftwIn[i];
         i++;
 
-        if (i>=x->x_numFilters)
+        if (i >= x->x_numFilters)
             break;
     }
 
-    if (i>0)
+    if (i > 0)
         rolloff = x->x_barkFreqList[i - 1]; // back up one because the last one went over...
     else
         rolloff = -1.0;
@@ -434,7 +434,7 @@ static void barkSpecRolloff_print (t_barkSpecRolloff* x)
 
 static void barkSpecRolloff_concentration (t_barkSpecRolloff* x, t_floatarg c)
 {
-    if (c<0 || c>1.0)
+    if (c < 0 || c > 1.0)
         post ("%s concentration must be between 0.0 and 1.0.", x->x_objSymbol->s_name);
     else
     {
@@ -563,9 +563,9 @@ static void* barkSpecRolloff_new (t_symbol* s, int argc, t_atom* argv)
                 post ("%s WARNING: Bark spacing must be between %f and %f Barks. Using default spacing of %f instead.", x->x_objSymbol->s_name, TID_MINBARKSPACING, TID_MAXBARKSPACING, TID_BARKSPACINGDEFAULT);
             }
             x->x_concentration = atom_getfloat (argv + 2);
-            if (x->x_concentration>1)
+            if (x->x_concentration > 1)
                 x->x_concentration = 1;
-            else if (x->x_concentration<0)
+            else if (x->x_concentration < 0)
                 x->x_concentration = 0;
             break;
 

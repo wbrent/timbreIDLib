@@ -113,11 +113,11 @@ static void bark_create_loudness_weighting (t_bark* x)
         diffdB = 0;
 
         // this doesn't have to be if/else'd into a greater/less situation.  later on i should write a more general interpolation solution, and maybe move it up to 4 points instead.
-        if (barkFreqs[i]>nearFreq)
+        if (barkFreqs[i] > nearFreq)
         {
-            if (nearIdx <= TID_NUMWEIGHTPOINTS-2)
+            if (nearIdx <= TID_NUMWEIGHTPOINTS - 2)
             {
-                diffFreq = (barkFreqs[i] - nearFreq)/(bark_weights_freqs[nearIdx + 1] - nearFreq);
+                diffFreq = (barkFreqs[i] - nearFreq) / (bark_weights_freqs[nearIdx + 1] - nearFreq);
                 diffdB = diffFreq * (bark_weights_dB[nearIdx + 1] - bark_weights_dB[nearIdx]);
             }
 
@@ -125,9 +125,9 @@ static void bark_create_loudness_weighting (t_bark* x)
         }
         else
         {
-            if (nearIdx>0)
+            if (nearIdx > 0)
             {
-                diffFreq = (barkFreqs[i] - bark_weights_freqs[nearIdx - 1])/(nearFreq - bark_weights_freqs[nearIdx - 1]);
+                diffFreq = (barkFreqs[i] - bark_weights_freqs[nearIdx - 1]) / (nearFreq - bark_weights_freqs[nearIdx - 1]);
                 diffdB = diffFreq * (bark_weights_dB[nearIdx] - bark_weights_dB[nearIdx - 1]);
             }
 
@@ -135,9 +135,9 @@ static void bark_create_loudness_weighting (t_bark* x)
         }
 
         if (x->x_powerSpectrum)
-            x->x_loudWeights[i] = pow (10.0, dBint*0.1);
+            x->x_loudWeights[i] = pow (10.0, dBint * 0.1);
         else
-            x->x_loudWeights[i] = pow (10.0, dBint*0.05);
+            x->x_loudWeights[i] = pow (10.0, dBint * 0.05);
 
     }
 }
@@ -233,7 +233,7 @@ static void bark_mask (t_bark* x, t_floatarg per, t_floatarg dec)
     x->x_maskDecay = (x->x_maskDecay < 0.05) ? 0.05 : x->x_maskDecay;
     x->x_maskDecay = (x->x_maskDecay > 0.95) ? 0.95 : x->x_maskDecay;
 
-//	post ("bark: masking for %i periods and decaying by %i%% thereafter.", x->x_maskPeriods, (int)(x->x_maskDecay*100));
+//	post ("bark: masking for %i periods and decaying by %i%% thereafter.", x->x_maskPeriods, (int)(x->x_maskDecay * 100));
 }
 
 static void bark_debounce (t_bark* x, t_floatarg db)
@@ -383,7 +383,7 @@ static void bark_samplerate (t_bark* x, t_floatarg sr)
     else
         x->x_sr = sr;
 
-    x->x_debounceSamp = x->x_debounceTime*0.001 * x->x_sr;
+    x->x_debounceSamp = x->x_debounceTime * 0.001 * x->x_sr;
 
     x->x_sizeFilterFreqs = tIDLib_getBarkBoundFreqs (&x->x_filterFreqs, x->x_sizeFilterFreqs, x->x_barkSpacing, x->x_sr);
 
@@ -444,10 +444,10 @@ static void* bark_new (t_symbol* s, int argc, t_atom* argv)
 
             x->x_hop = atom_getfloat (argv + 2);
 
-            if (x->x_hop<1)
+            if (x->x_hop < 1)
             {
                 post ("%s WARNING: requested hop is less than 1 sample. Quarter of window size (%i samples) used instead.", x->x_objSymbol->s_name, x->x_hop);
-                x->x_hop = x->x_window*0.25;
+                x->x_hop = x->x_window * 0.25;
             }
 
             x->x_barkSpacing = atom_getfloat (argv + 3);
@@ -475,9 +475,9 @@ static void* bark_new (t_symbol* s, int argc, t_atom* argv)
 
             x->x_hop = atom_getfloat (argv + 2);
 
-            if (x->x_hop<1)
+            if (x->x_hop < 1)
             {
-                x->x_hop = x->x_window*0.25;
+                x->x_hop = x->x_window * 0.25;
                 post ("%s WARNING: requested hop is less than 1 sample. Quarter of window size (%i samples) used instead.", x->x_objSymbol->s_name, x->x_hop);
             }
 
@@ -499,7 +499,7 @@ static void* bark_new (t_symbol* s, int argc, t_atom* argv)
                 post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
-            x->x_hop = x->x_window*0.25;
+            x->x_hop = x->x_window * 0.25;
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
 
@@ -512,7 +512,7 @@ static void* bark_new (t_symbol* s, int argc, t_atom* argv)
                 pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             x->x_window = TID_WINDOWSIZEDEFAULT;
-            x->x_hop = TID_WINDOWSIZEDEFAULT*0.25;
+            x->x_hop = TID_WINDOWSIZEDEFAULT * 0.25;
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
 
@@ -520,7 +520,7 @@ static void* bark_new (t_symbol* s, int argc, t_atom* argv)
             pd_error (x, "%s: no array specified.", x->x_objSymbol->s_name);
             x->x_arrayName = gensym ("NOARRAYSPECIFIED");
             x->x_window = TID_WINDOWSIZEDEFAULT;
-            x->x_hop = TID_WINDOWSIZEDEFAULT*0.25;
+            x->x_hop = TID_WINDOWSIZEDEFAULT * 0.25;
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
 
@@ -532,9 +532,9 @@ static void* bark_new (t_symbol* s, int argc, t_atom* argv)
             else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
                 pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
-            post ("%s WARNING: Too many arguments supplied. Using default window size of %i, hop of %i, and Bark spacing of %0.2f.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, (int)(TID_WINDOWSIZEDEFAULT*0.25), TID_BARKSPACINGDEFAULT);
+            post ("%s WARNING: Too many arguments supplied. Using default window size of %i, hop of %i, and Bark spacing of %0.2f.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, (int)(TID_WINDOWSIZEDEFAULT * 0.25), TID_BARKSPACINGDEFAULT);
             x->x_window = TID_WINDOWSIZEDEFAULT;
-            x->x_hop = TID_WINDOWSIZEDEFAULT*0.25;
+            x->x_hop = TID_WINDOWSIZEDEFAULT * 0.25;
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
     }
@@ -551,7 +551,7 @@ static void* bark_new (t_symbol* s, int argc, t_atom* argv)
     x->x_minvel = 1.0;
     x->x_haveHit = false;
     x->x_debounceTime = 100;
-    x->x_debounceSamp = x->x_debounceTime*0.001 * x->x_sr;
+    x->x_debounceSamp = x->x_debounceTime * 0.001 * x->x_sr;
     x->x_debounceActive = 0;
     x->x_maskDecay = 0.7;
     x->x_maskPeriods = 4;
@@ -676,7 +676,7 @@ static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
         for (i = 0; i < x->x_numFilters; i++)
             x->x_mask[i] = 0.0;
 
-        for (frame=0; frame<nFrames; frame++)
+        for (frame = 0; frame < nFrames; frame++)
         {
             // fill buffer with <window> samples
             for (i = 0, j = frame * hop + startSamp; i < window; i++, j++)
@@ -745,24 +745,24 @@ static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
                 if (x->x_fftwIn[i] > x->x_mask[i])
                     x->x_growth[i] = x->x_fftwIn[i] / (x->x_mask[i] + 1.0e-15) - 1.0;
 
-                if (i>=x->x_loBin && i <= x->x_hiBin && x->x_growth[i]>0)
+                if (i >= x->x_loBin && i <= x->x_hiBin && x->x_growth[i] > 0)
                     totalGrowth += x->x_growth[i];
 
                 SETFLOAT (x->x_growthList + i, x->x_growth[i]);
             }
 
-            if (frame*hop+startSamp >= x->x_debounceActive)
+            if (frame * hop + startSamp >= x->x_debounceActive)
                 x->x_debounceActive = UINT_MAX;
 
-            if (totalVel >= x->x_minvel && totalGrowth > x->x_hiThresh && !x->x_haveHit && x->x_debounceActive==UINT_MAX)
+            if (totalVel >= x->x_minvel && totalGrowth > x->x_hiThresh && !x->x_haveHit && x->x_debounceActive == UINT_MAX)
             {
                 if (x->x_debug)
                     post ("%s peak: %f", x->x_objSymbol->s_name, totalGrowth);
 
                 x->x_haveHit = true;
-                x->x_debounceActive = frame*hop+startSamp + x->x_debounceSamp;
+                x->x_debounceActive = frame * hop + startSamp + x->x_debounceSamp;
             }
-            else if (x->x_haveHit && x->x_loThresh>0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not -1), then wait until growth drops below that value before reporting attack
+            else if (x->x_haveHit && x->x_loThresh > 0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not -1), then wait until growth drops below that value before reporting attack
             {
                 if (x->x_debug)
                     post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);
@@ -777,9 +777,9 @@ static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
                 }
 
                 // add half a window of samples as a fudge factor. note that since this NRT and we can look into the future, all attack reports will be roughly a half window EARLY.  in RT, everything is a half window LATE because the point of reference is the END of the window.  here, it's the BEGINNING of the window.
-                outlet_float (x->x_timeOut, (frame*hop+startSamp + windowHalf) / x->x_sr);
+                outlet_float (x->x_timeOut, (frame * hop + startSamp + windowHalf) / x->x_sr);
             }
-            else if (x->x_haveHit && x->x_loThresh<0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh == -1, report attack as soon as growth shows any decay at all
+            else if (x->x_haveHit && x->x_loThresh < 0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh == -1, report attack as soon as growth shows any decay at all
             {
                 if (x->x_debug)
                     post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);
@@ -794,7 +794,7 @@ static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
                 }
 
                 // add half a window of samples as a fudge factor. note that since this NRT and we can look into the future, all attack reports will be roughly a half window EARLY.  in RT, everything is a half window LATE because the point of reference is the END of the window.  here, it's the BEGINNING of the window.
-                outlet_float (x->x_timeOut, (frame*hop+startSamp + windowHalf) / x->x_sr);
+                outlet_float (x->x_timeOut, (frame * hop + startSamp + windowHalf) / x->x_sr);
             }
 
             if (x->x_spew)

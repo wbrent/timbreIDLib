@@ -176,20 +176,20 @@ static void specHarmonicity_analyze (t_specHarmonicity* x, t_floatarg start, t_f
 
         tIDLib_peaksValleys (x->x_windowHalf + 1, x->x_fftwIn, flagsBuf, &minPeakVal, &maxPeakVal);
 
-        thresh = maxPeakVal * (x->x_threshPct/100.0);
+        thresh = maxPeakVal * (x->x_threshPct / 100.0);
         peakFreqs = (t_float *)t_getbytes (0);
         peakAmps = (t_float *)t_getbytes (0);
 
         for (i = 0; i <= x->x_windowHalf; i++)
         {
             // 0.5 in the flagsBuf means a half peak, which we'll ignore
-            if (flagsBuf[i]>0.5)
+            if (flagsBuf[i] > 0.5)
             {
                 t_float thisAmp;
 
                 thisAmp = x->x_fftwIn[i];
 
-                if (thisAmp>=thresh)
+                if (thisAmp >= thresh)
                 {
                     peakFreqs = (t_float *)t_resizebytes (peakFreqs, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
                     peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
@@ -198,7 +198,7 @@ static void specHarmonicity_analyze (t_specHarmonicity* x, t_floatarg start, t_f
                     peakFreqs[numPeaks] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
                     numPeaks++;
 
-                    if (numPeaks>=x->x_maxPeaks)
+                    if (numPeaks >= x->x_maxPeaks)
                         break;
                 }
             }
@@ -212,7 +212,7 @@ static void specHarmonicity_analyze (t_specHarmonicity* x, t_floatarg start, t_f
             fund = x->x_fundFreq;
         else
         {
-            if (peakFreqs[0]==0.0)
+            if (peakFreqs[0] == 0.0)
                 fund = peakFreqs[1];
             else
                 fund = peakFreqs[0];
@@ -233,18 +233,18 @@ static void specHarmonicity_analyze (t_specHarmonicity* x, t_floatarg start, t_f
 
             thisAmp = peakAmps[i];
 
-            if (thisAmp>0.0)
+            if (thisAmp > 0.0)
             {
                 t_float thisFreq, deviation;
                 t_uShortInt roundedHarm;
 
                 thisFreq = peakFreqs[i];
-                roundedHarm = roundf (thisFreq/fund);
-                deviation = fabs (thisFreq - (roundedHarm*fund));
+                roundedHarm = roundf (thisFreq / fund);
+                deviation = fabs (thisFreq - (roundedHarm * fund));
                 inHarmDividend += deviation * thisAmp;
                 divisor += thisAmp;
 
-                harmDividend += (halfHarmSpacing-deviation)/halfHarmSpacing;
+                harmDividend += (halfHarmSpacing - deviation) / halfHarmSpacing;
             }
         }
 
@@ -256,12 +256,12 @@ static void specHarmonicity_analyze (t_specHarmonicity* x, t_floatarg start, t_f
         if (divisor <= 0.0 || fund <= 0.0)
             inHarm = -1.0;
         else
-            inHarm = (2*inHarmDividend)/(divisor*fund);
+            inHarm = (2 * inHarmDividend) / (divisor * fund);
 
         if (numPeaks <= 0)
             harm = -1.0;
         else
-            harm = harmDividend/numPeaks;
+            harm = harmDividend / numPeaks;
 
         outlet_float (x->x_inHarm, inHarm);
         outlet_float (x->x_harm, harm);
@@ -309,20 +309,20 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity* x, t_symbol* s, in
 
     tIDLib_peaksValleys (x->x_windowHalf + 1, x->x_fftwIn, flagsBuf, &minPeakVal, &maxPeakVal);
 
-    thresh = maxPeakVal * (x->x_threshPct/100.0);
+    thresh = maxPeakVal * (x->x_threshPct / 100.0);
     peakFreqs = (t_float *)t_getbytes (0);
     peakAmps = (t_float *)t_getbytes (0);
 
     for (i = 0; i <= x->x_windowHalf; i++)
     {
         // 0.5 in the flagsBuf means a half peak, which we'll ignore
-        if (flagsBuf[i]>0.5)
+        if (flagsBuf[i] > 0.5)
         {
             t_float thisAmp;
 
             thisAmp = x->x_fftwIn[i];
 
-            if (thisAmp>=thresh)
+            if (thisAmp >= thresh)
             {
                 peakFreqs = (t_float *)t_resizebytes (peakFreqs, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
                 peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
@@ -331,7 +331,7 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity* x, t_symbol* s, in
                 peakFreqs[numPeaks] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
                 numPeaks++;
 
-                if (numPeaks>=x->x_maxPeaks)
+                if (numPeaks >= x->x_maxPeaks)
                     break;
             }
         }
@@ -345,7 +345,7 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity* x, t_symbol* s, in
         fund = x->x_fundFreq;
     else
     {
-        if (peakFreqs[0]==0.0)
+        if (peakFreqs[0] == 0.0)
             fund = peakFreqs[1];
         else
             fund = peakFreqs[0];
@@ -366,18 +366,18 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity* x, t_symbol* s, in
 
         thisAmp = peakAmps[i];
 
-        if (thisAmp>0.0)
+        if (thisAmp > 0.0)
         {
             t_float thisFreq, deviation;
             t_uShortInt roundedHarm;
 
             thisFreq = peakFreqs[i];
-            roundedHarm = roundf (thisFreq/fund);
-            deviation = fabs (thisFreq - (roundedHarm*fund));
+            roundedHarm = roundf (thisFreq / fund);
+            deviation = fabs (thisFreq - (roundedHarm * fund));
             inHarmDividend += deviation * thisAmp;
             divisor += thisAmp;
 
-            harmDividend += (halfHarmSpacing-deviation)/halfHarmSpacing;
+            harmDividend += (halfHarmSpacing - deviation) / halfHarmSpacing;
         }
     }
 
@@ -389,12 +389,12 @@ static void specHarmonicity_chain_fftData (t_specHarmonicity* x, t_symbol* s, in
     if (divisor <= 0.0 || fund <= 0.0)
         inHarm = -1.0;
     else
-        inHarm = (2*inHarmDividend)/(divisor*fund);
+        inHarm = (2 * inHarmDividend) / (divisor * fund);
 
     if (numPeaks <= 0)
         harm = -1.0;
     else
-        harm = harmDividend/numPeaks;
+        harm = harmDividend / numPeaks;
 
     outlet_float (x->x_inHarm, inHarm);
     outlet_float (x->x_harm, harm);
@@ -432,20 +432,20 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity* x, t_symbol* s, in
 
     tIDLib_peaksValleys (x->x_windowHalf + 1, x->x_fftwIn, flagsBuf, &minPeakVal, &maxPeakVal);
 
-    thresh = maxPeakVal * (x->x_threshPct/100.0);
+    thresh = maxPeakVal * (x->x_threshPct / 100.0);
     peakFreqs = (t_float *)t_getbytes (0);
     peakAmps = (t_float *)t_getbytes (0);
 
     for (i = 0; i <= x->x_windowHalf; i++)
     {
         // 0.5 in the flagsBuf means a half peak, which we'll ignore
-        if (flagsBuf[i]>0.5)
+        if (flagsBuf[i] > 0.5)
         {
             t_float thisAmp;
 
             thisAmp = x->x_fftwIn[i];
 
-            if (thisAmp>=thresh)
+            if (thisAmp >= thresh)
             {
                 peakFreqs = (t_float *)t_resizebytes (peakFreqs, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
                 peakAmps = (t_float *)t_resizebytes (peakAmps, numPeaks * sizeof (t_float), (numPeaks + 1) * sizeof (t_float));
@@ -454,7 +454,7 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity* x, t_symbol* s, in
                 peakFreqs[numPeaks] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
                 numPeaks++;
 
-                if (numPeaks>=x->x_maxPeaks)
+                if (numPeaks >= x->x_maxPeaks)
                     break;
             }
         }
@@ -468,7 +468,7 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity* x, t_symbol* s, in
         fund = x->x_fundFreq;
     else
     {
-        if (peakFreqs[0]==0.0)
+        if (peakFreqs[0] == 0.0)
             fund = peakFreqs[1];
         else
             fund = peakFreqs[0];
@@ -489,18 +489,18 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity* x, t_symbol* s, in
 
         thisAmp = peakAmps[i];
 
-        if (thisAmp>0.0)
+        if (thisAmp > 0.0)
         {
             t_float thisFreq, deviation;
             t_uShortInt roundedHarm;
 
             thisFreq = peakFreqs[i];
-            roundedHarm = roundf (thisFreq/fund);
-            deviation = fabs (thisFreq - (roundedHarm*fund));
+            roundedHarm = roundf (thisFreq / fund);
+            deviation = fabs (thisFreq - (roundedHarm * fund));
             inHarmDividend += deviation * thisAmp;
             divisor += thisAmp;
 
-            harmDividend += (halfHarmSpacing-deviation)/halfHarmSpacing;
+            harmDividend += (halfHarmSpacing - deviation) / halfHarmSpacing;
         }
     }
 
@@ -512,12 +512,12 @@ static void specHarmonicity_chain_magSpec (t_specHarmonicity* x, t_symbol* s, in
     if (divisor <= 0.0 || fund <= 0.0)
         inHarm = -1.0;
     else
-        inHarm = (2*inHarmDividend)/(divisor*fund);
+        inHarm = (2 * inHarmDividend) / (divisor * fund);
 
     if (numPeaks <= 0)
         harm = -1.0;
     else
-        harm = harmDividend/numPeaks;
+        harm = harmDividend / numPeaks;
 
     outlet_float (x->x_inHarm, inHarm);
     outlet_float (x->x_harm, harm);

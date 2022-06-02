@@ -119,9 +119,9 @@ static void bark_tilde_create_loudness_weighting (t_bark_tilde* x)
         // this doesn't have to be if/else'd into a greater/less situation.  later on i should write a more general interpolation solution, and maybe move it up to 4 points instead.
         if (barkFreqs[i]>nearFreq)
         {
-            if (nearIdx <= TID_NUMWEIGHTPOINTS-2)
+            if (nearIdx <= TID_NUMWEIGHTPOINTS - 2)
             {
-                diffFreq = (barkFreqs[i] - nearFreq)/(bark_tilde_weights_freqs[nearIdx + 1] - nearFreq);
+                diffFreq = (barkFreqs[i] - nearFreq) / (bark_tilde_weights_freqs[nearIdx + 1] - nearFreq);
                 diffdB = diffFreq * (bark_tilde_weights_dB[nearIdx + 1] - bark_tilde_weights_dB[nearIdx]);
             }
 
@@ -129,9 +129,9 @@ static void bark_tilde_create_loudness_weighting (t_bark_tilde* x)
         }
         else
         {
-            if (nearIdx>0)
+            if (nearIdx > 0)
             {
-                diffFreq = (barkFreqs[i] - bark_tilde_weights_freqs[nearIdx - 1])/(nearFreq - bark_tilde_weights_freqs[nearIdx - 1]);
+                diffFreq = (barkFreqs[i] - bark_tilde_weights_freqs[nearIdx - 1]) / (nearFreq - bark_tilde_weights_freqs[nearIdx - 1]);
                 diffdB = diffFreq * (bark_tilde_weights_dB[nearIdx] - bark_tilde_weights_dB[nearIdx - 1]);
             }
 
@@ -139,9 +139,9 @@ static void bark_tilde_create_loudness_weighting (t_bark_tilde* x)
         }
 
         if (x->x_powerSpectrum)
-            x->x_loudWeights[i] = powf (10.0, dBint*0.1);
+            x->x_loudWeights[i] = powf (10.0, dBint * 0.1);
         else
-            x->x_loudWeights[i] = powf (10.0, dBint*0.05);
+            x->x_loudWeights[i] = powf (10.0, dBint * 0.05);
 
     }
 }
@@ -429,9 +429,9 @@ static void* bark_tilde_new (t_symbol* s, int argc, t_atom* argv)
 
             x->x_hop = atom_getfloat (argv + 1);
 
-            if (x->x_hop<1)
+            if (x->x_hop < 1)
             {
-                x->x_hop = x->x_window*0.25;
+                x->x_hop = x->x_window * 0.25;
                 post ("%s WARNING: requested hop is less than 1 sample. Quarter of window size (%i samples) used instead.", x->x_objSymbol->s_name, x->x_hop);
             };
 
@@ -454,9 +454,9 @@ static void* bark_tilde_new (t_symbol* s, int argc, t_atom* argv)
 
             x->x_hop = atom_getfloat (argv + 1);
 
-            if (x->x_hop<1)
+            if (x->x_hop < 1)
             {
-                x->x_hop = x->x_window*0.25;
+                x->x_hop = x->x_window * 0.25;
                 post ("%s WARNING: requested hop is less than 1 sample. Quarter of window size (%i samples) used instead.", x->x_objSymbol->s_name, x->x_hop);
             };
 
@@ -472,20 +472,20 @@ static void* bark_tilde_new (t_symbol* s, int argc, t_atom* argv)
                 post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
-            x->x_hop = x->x_window*0.25;
+            x->x_hop = x->x_window * 0.25;
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
 
         case 0:
             x->x_window = TID_WINDOWSIZEDEFAULT;
-            x->x_hop = TID_WINDOWSIZEDEFAULT*0.25;
+            x->x_hop = TID_WINDOWSIZEDEFAULT * 0.25;
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
 
         default:
-            post ("%s WARNING: Too many arguments supplied. Using default window size of %i, hop of %i, and Bark spacing of %f.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, TID_WINDOWSIZEDEFAULT*0.25, TID_BARKSPACINGDEFAULT);
+            post ("%s WARNING: Too many arguments supplied. Using default window size of %i, hop of %i, and Bark spacing of %f.", x->x_objSymbol->s_name, TID_WINDOWSIZEDEFAULT, TID_WINDOWSIZEDEFAULT * 0.25, TID_BARKSPACINGDEFAULT);
             x->x_window = TID_WINDOWSIZEDEFAULT;
-            x->x_hop = TID_WINDOWSIZEDEFAULT*0.25;
+            x->x_hop = TID_WINDOWSIZEDEFAULT * 0.25;
             x->x_barkSpacing = TID_BARKSPACINGDEFAULT;
             break;
     }
@@ -675,7 +675,7 @@ static t_int* bark_tilde_perform (t_int* w)
             if (x->x_fftwIn[i] > x->x_mask[i])
                 x->x_growth[i] = x->x_fftwIn[i] / (x->x_mask[i] + 1.0e-15) - 1.0;
 
-            if (i>=x->x_loBin && i <= x->x_hiBin && x->x_growth[i]>0)
+            if (i >= x->x_loBin && i <= x->x_hiBin && x->x_growth[i] > 0)
                 totalGrowth += x->x_growth[i];
 
             SETFLOAT (x->x_growthList + i, x->x_growth[i]);
@@ -700,7 +700,7 @@ static t_int* bark_tilde_perform (t_int* w)
             clock_delay (x->x_clock, x->x_debounceTime); // wait debounceTime ms before allowing another attack
             x->x_lastDspTime = clock_getlogicaltime();
         }
-        else if (x->x_haveHit && x->x_loThresh>0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not -1), then wait until growth drops below that value before reporting attack
+        else if (x->x_haveHit && x->x_loThresh > 0 && totalGrowth < x->x_loThresh) // if loThresh is an actual value (not -1), then wait until growth drops below that value before reporting attack
         {
             if (x->x_debug)
                 post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);
@@ -716,7 +716,7 @@ static t_int* bark_tilde_perform (t_int* w)
 
             outlet_bang (x->x_bangOut);
         }
-        else if (x->x_haveHit && x->x_loThresh<0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh == -1, report attack as soon as growth shows any decay at all
+        else if (x->x_haveHit && x->x_loThresh < 0 && totalGrowth < x->x_prevTotalGrowth) // if loThresh == -1, report attack as soon as growth shows any decay at all
         {
             if (x->x_debug)
                 post ("%s drop: %f", x->x_objSymbol->s_name, totalGrowth);

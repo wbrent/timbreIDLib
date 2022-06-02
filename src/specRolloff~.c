@@ -109,7 +109,7 @@ static void specRolloff_tilde_bang (t_specRolloff_tilde* x)
 
     energyTarget *= x->x_concentration;
 
-    energySum=0.0;
+    energySum = 0.0;
     i = 0;
 
     while (energySum <= energyTarget)
@@ -121,7 +121,7 @@ static void specRolloff_tilde_bang (t_specRolloff_tilde* x)
             break;
     }
 
-    if (i>0)
+    if (i > 0)
         rolloff = x->x_binFreqs[i - 1]; // back up one because the last one went over...
     else
         rolloff = -1.0;
@@ -144,7 +144,7 @@ static void specRolloff_tilde_print (t_specRolloff_tilde* x)
 
 static void specRolloff_tilde_concentration (t_specRolloff_tilde* x, t_floatarg c)
 {
-    if (c<0 || c>1.0)
+    if (c < 0 || c > 1.0)
         post ("%s concentration must be between 0.0 and 1.0.", x->x_objSymbol->s_name);
     else
         x->x_concentration = c;
@@ -285,12 +285,12 @@ static void* specRolloff_tilde_new (t_symbol* s, int argc, t_atom* argv)
             }
 
             x->x_concentration = atom_getfloat (argv + 1);
-            if (x->x_concentration<0)
+            if (x->x_concentration < 0)
             {
                 post ("%s concentration must be between 0.0 and 1.0. Using default concentration of %0.2f instead.", x->x_objSymbol->s_name, TID_SPECROLLOFF_DEFAULTCONCENTRATION);
                 x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;
             }
-            else if (x->x_concentration>1.0)
+            else if (x->x_concentration > 1.0)
             {
                 post ("%s concentration must be between 0.0 and 1.0. Using default concentration of %0.2f instead.", x->x_objSymbol->s_name, TID_SPECROLLOFF_DEFAULTCONCENTRATION);
                 x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;

@@ -1144,11 +1144,11 @@ static void timbreID_computeCluster (t_timbreID* x, t_floatarg numClusters)
                 {
                     if ((i + j) < numInstances)
                     {
-                        if (clusterData[i+j].data[0] != FLT_MAX)
+                        if (clusterData[i + j].data[0] != FLT_MAX)
                         {
                             pairDists[k] = timbreID_getDist (x, clusterData[i], clusterData[i + j]);
                             numClusterMembers1 = x->x_clusters[i].numMembers - 1; // -1 because the list is terminated with UINT_MAX
-                            numClusterMembers2 = x->x_clusters[i+j].numMembers - 1;
+                            numClusterMembers2 = x->x_clusters[i + j].numMembers - 1;
 
                             // definition of Ward's linkage from MATLAB linkage doc
                             // pairDists[k] is already euclidean distance
@@ -1357,7 +1357,7 @@ static void timbreID_computeVariance (t_timbreID* x)
                     meanCentered[i].data[j] = x->x_instances[i].data[j] - attributeVar[j];
             }
 
-        // variance is calculated as: sum (B(:,1).^2)/(M - 1) for the first attribute
+        // variance is calculated as: sum (B(:,1).^2) / (M - 1) for the first attribute
         // run process by matrix columns rather than rows, hence the j, i order
         for (j = 0; j < x->x_maxFeatureLength; j++)
         {

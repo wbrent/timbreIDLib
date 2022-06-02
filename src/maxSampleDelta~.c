@@ -56,7 +56,7 @@ static void maxSampleDelta_tilde_bang (t_maxSampleDelta_tilde* x)
     for (i = 0, j = bangSample; i < window; i++, j++)
         x->x_analysisBuffer[i] = x->x_signalBuffer[j];
 
-    if (bangSample>0)
+    if (bangSample > 0)
     {
         max = fabs (x->x_analysisBuffer[0] - x->x_signalBuffer[bangSample - 1]);
         maxIdx = 0;

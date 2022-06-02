@@ -56,7 +56,7 @@ static void minSampleDelta_tilde_bang (t_minSampleDelta_tilde* x)
     for (i = 0, j = bangSample; i < window; i++, j++)
         x->x_analysisBuffer[i] = x->x_signalBuffer[j];
 
-    if (bangSample>0)
+    if (bangSample > 0)
     {
         min = fabs (x->x_analysisBuffer[0] - x->x_signalBuffer[bangSample - 1]);
         minIdx = 0;

@@ -321,7 +321,7 @@ static void barkSpecBrightness_tilde_powerSpectrum (t_barkSpecBrightness_tilde* 
 
 static void barkSpecBrightness_tilde_boundary (t_barkSpecBrightness_tilde* x, t_floatarg b)
 {
-    if (b > TID_MAXBARKS || b<0)
+    if (b > TID_MAXBARKS || b < 0)
         post ("%s boundary must be between 0 and %0.2f Barks.", x->x_objSymbol->s_name, TID_MAXBARKS);
     else
     {
@@ -361,7 +361,7 @@ static void* barkSpecBrightness_tilde_new (t_symbol* s, int argc, t_atom* argv)
             }
 
             x->x_barkBoundary = atom_getfloat (argv + 2);
-            if (x->x_barkBoundary > TID_MAXBARKS || x->x_barkBoundary<0)
+            if (x->x_barkBoundary > TID_MAXBARKS || x->x_barkBoundary < 0)
             {
                 x->x_barkBoundary = TID_BARKSPECBRIGHTNESS_DEFAULTBOUND;
                 x->x_freqBoundary = tIDLib_bark2freq (x->x_barkBoundary);

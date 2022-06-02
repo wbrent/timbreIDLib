@@ -61,7 +61,7 @@ static void maxSample_tilde_bang (t_maxSample_tilde* x)
 
     for (i = 0; i < window; i++)
     {
-        if (x->x_analysisBuffer[i]>max)
+        if (x->x_analysisBuffer[i] > max)
         {
             max = x->x_analysisBuffer[i];
             maxIdx = i;

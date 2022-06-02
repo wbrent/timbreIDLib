@@ -176,7 +176,7 @@ static void specIrregularity_analyze (t_specIrregularity* x, t_floatarg start, t
                 // Jensen
                 for (i = 0; i <= x->x_windowHalf; i++)
                 {
-                    if (i==x->x_windowHalf)
+                    if (i == x->x_windowHalf)
                         irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
                     else
                         irregularity += powf (x->x_fftwIn[i] - x->x_fftwIn[i + 1], 2);
@@ -255,7 +255,7 @@ static void specIrregularity_chain_fftData (t_specIrregularity* x, t_symbol* s, 
             // Jensen
             for (i = 0; i <= x->x_windowHalf; i++)
             {
-                if (i==x->x_windowHalf)
+                if (i == x->x_windowHalf)
                     irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
                 else
                     irregularity += powf (x->x_fftwIn[i] - x->x_fftwIn[i + 1], 2);
@@ -324,7 +324,7 @@ static void specIrregularity_chain_magSpec (t_specIrregularity* x, t_symbol* s, 
             // Jensen
             for (i = 0; i <= x->x_windowHalf; i++)
             {
-                if (i==x->x_windowHalf)
+                if (i == x->x_windowHalf)
                     irregularity += x->x_fftwIn[i] * x->x_fftwIn[i];
                 else
                     irregularity += powf (x->x_fftwIn[i] - x->x_fftwIn[i + 1], 2);

@@ -91,7 +91,7 @@ static void maxSampleDelta_analyze (t_maxSampleDelta* x, t_floatarg start, t_flo
         for (i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
-        if (startSamp>0)
+        if (startSamp > 0)
         {
             max = fabs (x->x_analysisBuffer[0] - x->x_vec[startSamp - 1].w_float);
             maxIdx = 0;

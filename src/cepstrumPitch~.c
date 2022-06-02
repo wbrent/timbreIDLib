@@ -145,11 +145,11 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde* x)
     maxVal = 0;
     maxValIdx = 0;
 
-    sum=mean=std=0.0;
-    binCount=0;
+    sum = mean = std = 0.0;
+    binCount = 0;
 
     // traverse from hiFreq to loFreq because the high frequency cepstrum bin is lower than the low frequency cepstrum bin
-    for (i=hiFreqBin; i <= loFreqBin; i++, binCount++)
+    for (i = hiFreqBin; i <= loFreqBin; i++, binCount++)
     {
         // check that loFreqBin doesn't go above Nyquist bin
         if (i>=windowHalf)
@@ -158,19 +158,19 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde* x)
         // accumulate a sum to get the mean below
         sum += x->x_fftwIn[i];
 
-        if (x->x_fftwIn[i]>maxVal)
+        if (x->x_fftwIn[i] > maxVal)
         {
             maxVal = x->x_fftwIn[i];
             maxValIdx = i;
         }
     }
 
-    mean = sum/binCount;
+    mean = sum / binCount;
     sum = 0.0;
     binCount = 0;
 
     // center & square the data
-    for (i=hiFreqBin; i <= loFreqBin; i++, binCount++)
+    for (i = hiFreqBin; i <= loFreqBin; i++, binCount++)
     {
         x->x_fftwIn[i] -= mean;
         x->x_fftwIn[i] *= x->x_fftwIn[i];
@@ -178,12 +178,12 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde* x)
     }
 
     // get standard deviation
-    std = sum/(binCount - 1);
+    std = sum / (binCount - 1);
     std = sqrt (std);
 
     // see if maxVal is above the mean by more than x_thresh standard deviations
-    if ( fabs (maxVal-mean) > (x->x_thresh*std) )
-        pitch = ftom (x->x_sr/((t_float)maxValIdx));
+    if ( fabs (maxVal - mean) > (x->x_thresh * std) )
+        pitch = ftom (x->x_sr / ((t_float)maxValIdx));
     else
         pitch = -1500.0;
 

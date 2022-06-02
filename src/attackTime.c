@@ -172,7 +172,7 @@ static void attackTime_print (t_attackTime* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
-    post ("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange / x->x_sr)*1000.0, x->x_maxSearchRange);
+    post ("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange / x->x_sr) * 1000.0, x->x_maxSearchRange);
     post ("%s sample magnitude threshold for finding onset: %f", x->x_objSymbol->s_name, x->x_sampMagThresh);
     post ("%s minimum sample threshold for finding onset: %i", x->x_objSymbol->s_name, x->x_numSampsThresh);
 }
@@ -193,7 +193,7 @@ static void attackTime_maxSearchRange (t_attackTime* x, t_floatarg range)
     for (i = 0; i < x->x_maxSearchRange; i++)
         x->x_searchBuffer[i] = 0.0;
 
-    post ("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange / x->x_sr)*1000.0, x->x_maxSearchRange);
+    post ("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange / x->x_sr) * 1000.0, x->x_maxSearchRange);
 
 }
 
@@ -221,7 +221,7 @@ static void attackTime_samplerate (t_attackTime* x, t_floatarg sr)
     t_float rangeMs;
 
     // get the old range in milliseconds since we'll need to change the search buffer size with a call to _maxSearchRange() below
-    rangeMs = (x->x_maxSearchRange / x->x_sr)*1000.0;
+    rangeMs = (x->x_maxSearchRange / x->x_sr) * 1000.0;
 
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;

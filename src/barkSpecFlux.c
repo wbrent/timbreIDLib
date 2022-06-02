@@ -161,7 +161,7 @@ static void barkSpecFlux_analyze (t_barkSpecFlux* x, t_floatarg start, t_floatar
             x->x_fftwInForwardWindow[i] = x->x_vec[j].w_float;
 
         // do these sample start/end location calculations AFTER the potential call to resizeWindow(), as x->x_window may have changed
-        if (startSamp>=x->x_separation)
+        if (startSamp >= x->x_separation)
             startSampBack = startSamp - x->x_separation;
         else
             startSampBack = 0;
@@ -258,24 +258,24 @@ static void barkSpecFlux_analyze (t_barkSpecFlux* x, t_floatarg start, t_floatar
         {
             t_float diff, val;
 
-        if (x->x_logSpectrum)
-        {
-            t_float logForward, logBack;
+            if (x->x_logSpectrum)
+            {
+                t_float logForward, logBack;
 
-            if (x->x_fftwInForwardWindow[i] == 0.0)
-                logForward = 0.0;
+                if (x->x_fftwInForwardWindow[i] == 0.0)
+                    logForward = 0.0;
+                else
+                    logForward = log (x->x_fftwInForwardWindow[i]);
+
+                if (x->x_fftwInBackWindow[i] == 0.0)
+                    logBack = 0.0;
+                else
+                    logBack = log (x->x_fftwInBackWindow[i]);
+
+                diff = logForward - logBack;
+            }
             else
-                logForward = log (x->x_fftwInForwardWindow[i]);
-
-            if (x->x_fftwInBackWindow[i] == 0.0)
-                logBack = 0.0;
-            else
-                logBack = log (x->x_fftwInBackWindow[i]);
-
-            diff = logForward - logBack;
-        }
-        else
-            diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
+                diff = x->x_fftwInForwardWindow[i] - x->x_fftwInBackWindow[i];
 
             switch (x->x_mode)
             {
@@ -311,7 +311,7 @@ static void barkSpecFlux_chain_fftData (t_barkSpecFlux* x, t_symbol* s, int argc
 
     // for barkSpecFlux fftData in particular:
     // incoming fftData list should be 4*(N/2+1) elements long, so windowHalf is:
-    windowHalf = argc-4;
+    windowHalf = argc - 4;
     windowHalf *= 0.25;
 
     // make sure that windowHalf == x->x_windowHalf in order to avoid an out of bounds memory read in the tIDLib_ functions below. we won't resize all memory based on an incoming chain_ command with a different window size. instead, just throw an error and exit
@@ -327,8 +327,8 @@ static void barkSpecFlux_chain_fftData (t_barkSpecFlux* x, t_symbol* s, int argc
     {
         x->x_fftwOutForwardWindow[i][0] = atom_getfloat (argv + i);
         x->x_fftwOutForwardWindow[i][1] = atom_getfloat (argv + (x->x_windowHalf + 1) + i);
-        x->x_fftwOutBackWindow[i][0] = atom_getfloat (argv+(x->x_window+2) + i);
-        x->x_fftwOutBackWindow[i][1] = atom_getfloat (argv+(x->x_window+x->x_windowHalf+3) + i);
+        x->x_fftwOutBackWindow[i][0] = atom_getfloat (argv + (x->x_window + 2) + i);
+        x->x_fftwOutBackWindow[i][1] = atom_getfloat (argv + (x->x_window + x->x_windowHalf + 3) + i);
     }
 
     // put the result of power calc back in x_fftwIn
@@ -496,7 +496,7 @@ static void barkSpecFlux_chain_barkSpec (t_barkSpecFlux* x, t_symbol* s, int arg
     t_float flux;
 
     // make sure that argc == 2*(x->x_numFilters) in order to avoid an out of bounds memory read below. we won't resize all memory based on an incoming chain_ command with a different size. instead, just throw an error and exit
-    if (argc!=(x->x_numFilters) * 2)
+    if (argc != x->x_numFilters * 2)
     {
         pd_error (x, "%s: length of chain_ message (%i) does not match current number of Bark filters (%i)", x->x_objSymbol->s_name, argc, x->x_numFilters);
         return;
@@ -506,7 +506,7 @@ static void barkSpecFlux_chain_barkSpec (t_barkSpecFlux* x, t_symbol* s, int arg
     for (i = 0; i < x->x_numFilters; i++)
     {
         x->x_fftwInForwardWindow[i] = atom_getfloat (argv + i);
-        x->x_fftwInBackWindow[i] = atom_getfloat (argv+x->x_numFilters + i);
+        x->x_fftwInBackWindow[i] = atom_getfloat (argv + x->x_numFilters + i);
     }
 
     flux = 0.0;

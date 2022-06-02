@@ -170,7 +170,7 @@ static void specRolloff_analyze (t_specRolloff* x, t_floatarg start, t_floatarg 
 
         energyTarget *= x->x_concentration;
 
-        energySum=0.0;
+        energySum = 0.0;
         i = 0;
 
         while (energySum <= energyTarget)
@@ -182,7 +182,7 @@ static void specRolloff_analyze (t_specRolloff* x, t_floatarg start, t_floatarg 
                 break;
         }
 
-        if (i>0)
+        if (i > 0)
             rolloff = x->x_binFreqs[i - 1]; // back up one because the last one went over...
         else
             rolloff = -1.0;
@@ -226,7 +226,7 @@ static void specRolloff_chain_fftData (t_specRolloff* x, t_symbol* s, int argc, 
 
     energyTarget *= x->x_concentration;
 
-    energySum=0.0;
+    energySum = 0.0;
     i = 0;
 
     while (energySum <= energyTarget)
@@ -238,7 +238,7 @@ static void specRolloff_chain_fftData (t_specRolloff* x, t_symbol* s, int argc, 
             break;
     }
 
-    if (i>0)
+    if (i > 0)
         rolloff = x->x_binFreqs[i - 1]; // back up one because the last one went over...
     else
         rolloff = -1.0;
@@ -272,7 +272,7 @@ static void specRolloff_chain_magSpec (t_specRolloff* x, t_symbol* s, int argc, 
 
     energyTarget *= x->x_concentration;
 
-    energySum=0.0;
+    energySum = 0.0;
     i = 0;
 
     while (energySum <= energyTarget)
@@ -284,7 +284,7 @@ static void specRolloff_chain_magSpec (t_specRolloff* x, t_symbol* s, int argc, 
             break;
     }
 
-    if (i>0)
+    if (i > 0)
         rolloff = x->x_binFreqs[i - 1]; // back up one because the last one went over...
     else
         rolloff = -1.0;
@@ -314,7 +314,7 @@ static void specRolloff_bang (t_specRolloff* x)
 
 static void specRolloff_concentration (t_specRolloff* x, t_floatarg c)
 {
-    if (c<0 || c>1.0)
+    if (c < 0 || c > 1.0)
         post ("%s concentration must be between 0.0 and 1.0.", x->x_objSymbol->s_name);
     else
         x->x_concentration = c;
@@ -439,12 +439,12 @@ static void* specRolloff_new (t_symbol* s, int argc, t_atom* argv)
                 pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
             */
             x->x_concentration = atom_getfloat (argv + 1);
-            if (x->x_concentration<0)
+            if (x->x_concentration < 0)
             {
                 post ("%s concentration must be between 0.0 and 1.0. Using default concentration of %0.2f instead.", x->x_objSymbol->s_name, TID_SPECROLLOFF_DEFAULTCONCENTRATION);
                 x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;
             }
-            else if (x->x_concentration>1.0)
+            else if (x->x_concentration > 1.0)
             {
                 post ("%s concentration must be between 0.0 and 1.0. Using default concentration of %0.2f instead.", x->x_objSymbol->s_name, TID_SPECROLLOFF_DEFAULTCONCENTRATION);
                 x->x_concentration = TID_SPECROLLOFF_DEFAULTCONCENTRATION;

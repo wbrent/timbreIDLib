@@ -1,4 +1,4 @@
-/*
+ /*
 
 chroma
 
@@ -195,12 +195,12 @@ static void chroma_analyze (t_chroma* x, t_floatarg start, t_floatarg n)
                 numBins = x->x_binRanges[j + 1] - x->x_binRanges[j] + 1;
 
                 // sum all the energy in the binRange for thisPitch
-                for (k=0; k<numBins; k++)
+                for (k = 0; k < numBins; k++)
                 {
                     t_float thisEnergy;
-                    thisEnergy = x->x_fftwIn[x->x_binRanges[j]+k];
+                    thisEnergy = x->x_fftwIn[x->x_binRanges[j] + k];
 
-                    if (thisEnergy>=x->x_energyThresh)
+                    if (thisEnergy >= x->x_energyThresh)
                         chromaSums[i] += thisEnergy;
                 }
 
@@ -211,7 +211,7 @@ static void chroma_analyze (t_chroma* x, t_floatarg start, t_floatarg n)
             // divide by the cardinality to account for the fact that different pitch classes will have energy in a different number of bins
             chromaSums[i] /= cardinality;
 
-            if (chromaSums[i]>maxEnergySum)
+            if (chromaSums[i] > maxEnergySum)
                 maxEnergySum = chromaSums[i];
         }
 
@@ -284,12 +284,12 @@ static void chroma_chain_fftData (t_chroma* x, t_symbol* s, int argc, t_atom* ar
             numBins = x->x_binRanges[j + 1] - x->x_binRanges[j] + 1;
 
             // sum all the energy in the binRange for thisPitch
-            for (k=0; k<numBins; k++)
+            for (k = 0; k < numBins; k++)
             {
                 t_float thisEnergy;
-                thisEnergy = x->x_fftwIn[x->x_binRanges[j]+k];
+                thisEnergy = x->x_fftwIn[x->x_binRanges[j] + k];
 
-                if (thisEnergy>=x->x_energyThresh)
+                if (thisEnergy >= x->x_energyThresh)
                     chromaSums[i] += thisEnergy;
             }
 
@@ -300,7 +300,7 @@ static void chroma_chain_fftData (t_chroma* x, t_symbol* s, int argc, t_atom* ar
         // divide by the cardinality to account for the fact that different pitch classes will have energy in a different number of bins
         chromaSums[i] /= cardinality;
 
-        if (chromaSums[i]>maxEnergySum)
+        if (chromaSums[i] > maxEnergySum)
             maxEnergySum = chromaSums[i];
     }
 
@@ -363,12 +363,12 @@ static void chroma_chain_magSpec (t_chroma* x, t_symbol* s, int argc, t_atom* ar
             numBins = x->x_binRanges[j + 1] - x->x_binRanges[j] + 1;
 
             // sum all the energy in the binRange for thisPitch
-            for (k=0; k<numBins; k++)
+            for (k = 0; k < numBins; k++)
             {
                 t_float thisEnergy;
-                thisEnergy = x->x_fftwIn[x->x_binRanges[j]+k];
+                thisEnergy = x->x_fftwIn[x->x_binRanges[j] + k];
 
-                if (thisEnergy>=x->x_energyThresh)
+                if (thisEnergy >= x->x_energyThresh)
                     chromaSums[i] += thisEnergy;
             }
 
@@ -379,7 +379,7 @@ static void chroma_chain_magSpec (t_chroma* x, t_symbol* s, int argc, t_atom* ar
         // divide by the cardinality to account for the fact that different pitch classes will have energy in a different number of bins
         chromaSums[i] /= cardinality;
 
-        if (chromaSums[i]>maxEnergySum)
+        if (chromaSums[i] > maxEnergySum)
             maxEnergySum = chromaSums[i];
     }
 
@@ -618,7 +618,7 @@ static void chroma_resolution (t_chroma* x, t_symbol* r)
     // beginning of pitch class array starts at lowest C on piano
     basePitch = 24 + x->x_microtune;
 
-    for (i = 0; i < x->x_numChroma-(3 / x->x_resolution); i++)
+    for (i = 0; i < x->x_numChroma - (3 / x->x_resolution); i++)
     {
         x->x_pitchClasses[i] = basePitch;
         basePitch += x->x_resolution;
