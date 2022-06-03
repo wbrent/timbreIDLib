@@ -261,7 +261,7 @@ static void tempo_tilde_analyze (t_tempo_tilde* x)
     startIdx=0;
 
     // fast forward to the beginning of the first peak
-    while (x->x_onsetsBuffer[startIdx]==x->x_belowThreshDefault)
+    while (x->x_onsetsBuffer[startIdx] == x->x_belowThreshDefault)
     {
         startIdx++;
 

@@ -670,7 +670,7 @@ static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
             endSamp = x->x_arrayPoints - 1;
         }
 
-        nFrames = floor ((sampRange-window)/hop);
+        nFrames = floor ((sampRange - window) / hop);
 
         // init mask to zero
         for (i = 0; i < x->x_numFilters; i++)

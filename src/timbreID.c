@@ -569,7 +569,7 @@ static void timbreID_id (t_timbreID* x, t_symbol* s, int argc, t_atom* argv)
         if (secondBestDist <= 0)
             confidence = -FLT_MAX;
         else
-            confidence = 1.0-(bestDist/secondBestDist);
+            confidence = 1.0 - (bestDist / secondBestDist);
     */
 
         confidence = 1.0 - (bestDist / secondBestDist);

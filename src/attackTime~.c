@@ -56,7 +56,7 @@ static void attackTime_tilde_bang (t_attackTime_tilde* x)
         bangSample = x->x_n - 1;
 
     // took a while to get this calculation right, but it seems correct now. remember that bangSample is always between 0 and 63 (or x_n - 1), and finding startSample within x_signalBuffer involves a few other steps.
-    startSample = (x->x_maxSearchRange+x->x_n) - bangSample - window - 1;
+    startSample = (x->x_maxSearchRange + x->x_n) - bangSample - window - 1;
 
     // construct analysis window
     for (i = 0, j = startSample; i < window; i++, j++)
@@ -123,14 +123,14 @@ static void attackTime_tilde_maxSearchRange (t_attackTime_tilde* x, t_floatarg r
     newRange = roundf ((range / 1000.0) * x->x_sr);
 
     x->x_searchBuffer = (t_float *)t_resizebytes (x->x_searchBuffer, x->x_maxSearchRange * sizeof (t_float), newRange * sizeof (t_float));
-    x->x_signalBuffer = (t_float *)t_resizebytes (x->x_signalBuffer, (x->x_maxSearchRange+x->x_n) * sizeof (t_float), (newRange+x->x_n) * sizeof (t_float));
+    x->x_signalBuffer = (t_float *)t_resizebytes (x->x_signalBuffer, (x->x_maxSearchRange + x->x_n) * sizeof (t_float), (newRange + x->x_n) * sizeof (t_float));
 
     x->x_maxSearchRange = newRange;
 
     for (i = 0; i < x->x_maxSearchRange; i++)
         x->x_searchBuffer[i] = 0.0;
 
-    for (i = 0; i < x->x_maxSearchRange+x->x_n; i++)
+    for (i = 0; i < x->x_maxSearchRange + x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
     post ("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange / x->x_sr) * 1000.0, x->x_maxSearchRange);
@@ -230,12 +230,12 @@ static void* attackTime_tilde_new (t_symbol* s, int argc, t_atom* argv)
     x->x_sampMagThresh = 0.005;
     x->x_maxSearchRange = x->x_sr * 2.0; // two seconds
 
-    x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_maxSearchRange+x->x_n) * sizeof (t_sample));
+    x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_maxSearchRange + x->x_n) * sizeof (t_sample));
     x->x_analysisBuffer = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
     x->x_searchBuffer = (t_float *)t_getbytes (x->x_maxSearchRange * sizeof (t_float));
 
     // initialize signal buffer
-    for (i = 0; i < x->x_maxSearchRange+x->x_n; i++)
+    for (i = 0; i < x->x_maxSearchRange + x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
     // initialize analysis buffer
@@ -296,14 +296,14 @@ static void attackTime_tilde_dsp (t_attackTime_tilde* x, t_signal** sp)
         newRange = roundf ((range / 1000.0) * x->x_sr);
 
         x->x_searchBuffer = (t_float *)t_resizebytes (x->x_searchBuffer, x->x_maxSearchRange * sizeof (t_float), newRange * sizeof (t_float));
-        x->x_signalBuffer = (t_float *)t_resizebytes (x->x_signalBuffer, (x->x_maxSearchRange+x->x_n) * sizeof (t_float), (newRange+x->x_n) * sizeof (t_float));
+        x->x_signalBuffer = (t_float *)t_resizebytes (x->x_signalBuffer, (x->x_maxSearchRange + x->x_n) * sizeof (t_float), (newRange + x->x_n) * sizeof (t_float));
 
         x->x_maxSearchRange = newRange;
 
         for (i = 0; i < x->x_maxSearchRange; i++)
             x->x_searchBuffer[i] = 0.0;
 
-        for (i = 0; i < x->x_maxSearchRange+x->x_n; i++)
+        for (i = 0; i < x->x_maxSearchRange + x->x_n; i++)
             x->x_signalBuffer[i] = 0.0;
 
         post ("%s maximum search range: %0.2f ms, %i samples", x->x_objSymbol->s_name, (x->x_maxSearchRange / x->x_sr) * 1000.0, x->x_maxSearchRange);
@@ -316,12 +316,12 @@ static void attackTime_tilde_dsp (t_attackTime_tilde* x, t_signal** sp)
     {
         t_sampIdx i;
 
-        x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_maxSearchRange+x->x_n) * sizeof (t_sample), (x->x_maxSearchRange+sp[0]->s_n) * sizeof (t_sample));
+        x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_maxSearchRange + x->x_n) * sizeof (t_sample), (x->x_maxSearchRange + sp[0]->s_n) * sizeof (t_sample));
 
         x->x_n = sp[0]->s_n;
 
         // init signal buffer
-        for (i = 0; i < (x->x_maxSearchRange+x->x_n); i++)
+        for (i = 0; i < (x->x_maxSearchRange + x->x_n); i++)
             x->x_signalBuffer[i] = 0.0;
 
         x->x_lastDspTime = clock_getlogicaltime();
@@ -332,7 +332,7 @@ static void attackTime_tilde_dsp (t_attackTime_tilde* x, t_signal** sp)
 static void attackTime_tilde_free (t_attackTime_tilde* x)
 {
     t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_float));
-    t_freebytes (x->x_signalBuffer, (x->x_maxSearchRange+x->x_n) * sizeof (t_sample));
+    t_freebytes (x->x_signalBuffer, (x->x_maxSearchRange + x->x_n) * sizeof (t_sample));
     t_freebytes (x->x_searchBuffer, x->x_maxSearchRange * sizeof (t_float));
 }
 
@@ -415,4 +415,3 @@ void attackTime_tilde_setup (void)
         0
     );
 }
-

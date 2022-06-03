@@ -868,9 +868,9 @@ static void tabletool_randomWalk (t_tabletool* x, t_float start, t_float step, t
                 x->x_vec[i].w_float = x->x_vec[i - 1].w_float - step;
 
             if (x->x_vec[i].w_float > uplim)
-                x->x_vec[i].w_float = uplim - (x->x_vec[i].w_float-uplim);
+                x->x_vec[i].w_float = uplim - (x->x_vec[i].w_float - uplim);
             else if (x->x_vec[i].w_float < lowlim)
-                x->x_vec[i].w_float = lowlim + (lowlim-x->x_vec[i].w_float);
+                x->x_vec[i].w_float = lowlim + (lowlim - x->x_vec[i].w_float);
         }
 
         garray_redraw (a);
@@ -1953,7 +1953,7 @@ static void tabletool_add_range (t_tabletool* x, t_symbol* s, int argc, t_atom* 
         t_symbol* source;
         t_atom* listOut;
 
-        ts = atom_getfloat (argv+0);
+        ts = atom_getfloat (argv + 0);
         source = atom_getsymbol (argv + 1);
         ss = atom_getfloat (argv + 2);
         se = atom_getfloat (argv + 3);
