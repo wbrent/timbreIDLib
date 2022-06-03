@@ -496,10 +496,10 @@ static void* specRolloff_new (t_symbol* s, int argc, t_atom* argv)
     for (i = 0; i < x->x_window; i++)
         x->x_fftwIn[i] = 0.0;
 
-      x->x_blackman = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
-      x->x_cosine = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
-      x->x_hamming = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
-      x->x_hann = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_blackman = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_cosine = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_hamming = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_hann = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow (x->x_blackman, x->x_window);
@@ -509,7 +509,7 @@ static void* specRolloff_new (t_symbol* s, int argc, t_atom* argv)
 
     x->x_binFreqs = (t_float *)t_getbytes ((x->x_windowHalf + 1) * sizeof (t_float));
 
-     for (i = 0; i <= x->x_windowHalf; i++)
+    for (i = 0; i <= x->x_windowHalf; i++)
         x->x_binFreqs[i] = tIDLib_bin2freq (i, x->x_window, x->x_sr);
 
     return (x);

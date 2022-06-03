@@ -567,7 +567,7 @@ static void* chroma_tilde_new (t_symbol* s, int argc, t_atom* argv)
     x->x_fftwPlan = fftwf_plan_dft_r2c_1d (x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
 
     // we're supposed to initialize the input array after we create the plan
-     for (i = 0; i < x->x_window; i++)
+    for (i = 0; i < x->x_window; i++)
         x->x_fftwIn[i] = 0.0;
 
     return (x);

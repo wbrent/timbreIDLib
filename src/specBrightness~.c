@@ -332,13 +332,13 @@ static void* specBrightness_tilde_new (t_symbol* s, int argc, t_atom* argv)
     x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_window + x->x_n) * sizeof (t_sample));
     x->x_fftwIn = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
 
-     for (i = 0; i < x->x_window + x->x_n; i++)
+    for (i = 0; i < x->x_window + x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
-      x->x_blackman = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
-      x->x_cosine = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
-      x->x_hamming = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
-      x->x_hann = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_blackman = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_cosine = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_hamming = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_hann = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow (x->x_blackman, x->x_window);
@@ -353,7 +353,7 @@ static void* specBrightness_tilde_new (t_symbol* s, int argc, t_atom* argv)
     x->x_fftwPlan = fftwf_plan_dft_r2c_1d (x->x_window, x->x_fftwIn, x->x_fftwOut, FFTWPLANNERFLAG);
 
     // we're supposed to initialize the input array after we create the plan
-     for (i = 0; i < x->x_window; i++)
+    for (i = 0; i < x->x_window; i++)
         x->x_fftwIn[i] = 0.0;
 
     x->x_binFreqs = (t_float *)t_getbytes ((x->x_windowHalf + 1) * sizeof (t_float));

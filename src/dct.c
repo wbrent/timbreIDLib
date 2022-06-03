@@ -320,10 +320,10 @@ static void* dct_new (t_symbol* s, int argc, t_atom* argv)
         x->x_dctOut[i] = 0.0;
     }
 
-      x->x_blackman = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
-      x->x_cosine = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
-      x->x_hamming = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
-      x->x_hann = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_blackman = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_cosine = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_hamming = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
+    x->x_hann = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
 
      // initialize signal windowing functions
     tIDLib_blackmanWindow (x->x_blackman, x->x_window);
