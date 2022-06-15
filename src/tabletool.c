@@ -2518,6 +2518,51 @@ static void tabletool_corr (t_tabletool* x, t_symbol* array1)
 }
 
 
+static void tabletool_autoCorr (t_tabletool* x)
+{
+    t_garray* a;
+
+    if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
+        pd_error (x, "%s: no array named %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
+    else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
+        pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
+    else
+    {
+        t_sampIdx i, rhoBufferSize;
+        t_float* vecBuffer;
+        t_float* rhoBuffer;
+        t_atom* outputList;
+
+        rhoBufferSize = (x->x_arrayPoints * 2) - 1;
+
+        vecBuffer = (t_float *)t_getbytes (x->x_arrayPoints * sizeof (t_float));
+        rhoBuffer = (t_float *)t_getbytes (rhoBufferSize * sizeof (t_float));
+        outputList = (t_atom *)t_getbytes (rhoBufferSize * sizeof (t_atom));
+
+        // fill vecBuffer with the table contents
+        for (i = 0; i < x->x_arrayPoints; i++)
+            vecBuffer[i] = x->x_vec[i].w_float;
+
+        // init rhoBuffer with zeros
+        for (i = 0; i < rhoBufferSize; i++)
+            rhoBuffer[i] = 0.0;
+
+        tIDLib_autoCorr (x->x_arrayPoints, vecBuffer, rhoBufferSize, rhoBuffer, true);
+
+        // transfer rho values to the output list
+        for (i = 0; i < rhoBufferSize; i++)
+            SETFLOAT (outputList + i, rhoBuffer[i]);
+
+        outlet_list (x->x_list, 0, rhoBufferSize, outputList);
+
+        // free local memory
+        t_freebytes (vecBuffer, x->x_arrayPoints * sizeof (t_float));
+        t_freebytes (rhoBuffer, rhoBufferSize * sizeof (t_float));
+        t_freebytes (outputList, rhoBufferSize * sizeof (t_atom));
+    }
+}
+
+
 static void tabletool_abs (t_tabletool* x)
 {
     t_garray* a;
@@ -4304,6 +4349,13 @@ void tabletool_setup (void)
         (t_method)tabletool_corr,
         gensym ("corr"),
         A_DEFSYMBOL,
+        0
+    );
+
+    class_addmethod (
+        tabletool_class,
+        (t_method)tabletool_autoCorr,
+        gensym ("autocorr"),
         0
     );
 

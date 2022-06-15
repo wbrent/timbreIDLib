@@ -504,6 +504,56 @@ t_float tIDLib_corr (t_attributeIdx n, t_float* v1, t_float* v2)
 }
 
 
+void tIDLib_autoCorr (t_attributeIdx n, t_float* vec, t_attributeIdx rhoN, t_float* rho, t_bool norm)
+{
+    t_sLongInt i, j, k, l;
+    t_float maxVal;
+    t_float* slideBuffer;
+
+    maxVal = 0.0;
+    slideBuffer = (t_float *)t_getbytes (n * sizeof (t_float));
+
+    for (i = -((t_sLongInt)n) + 1, l = 0; i <= n - 1; i++, l++)
+    {
+        // fill slideBuffer with lagged contents
+        if (i < 0)
+        {
+            for (j = 0, k = labs(i); j < n + i; j++, k++)
+                slideBuffer[j] = vec[k];
+
+            // pad the end with zeros
+            for (; j < n; j++)
+                slideBuffer[j] = 0.0;
+        }
+        else
+        {
+            // pad the beginning with zeros
+            for (j = 0; j < i; j++)
+                slideBuffer[j] = 0.0;
+
+            for (j = i, k = 0; j < n; j++, k++)
+                slideBuffer[j] = vec[k];
+        }
+
+        // calculate the dot product for this lag
+        rho[l] = tIDLib_dotProd (n, vec, slideBuffer);
+
+        // check if we need to update the max rho value for normalization below
+        if (rho[l] > maxVal)
+            maxVal = rho[l];
+    }
+
+    // as long as maxVal isn't zero, normalize contents of rhoBuffer if the norm flag is true
+    if (norm && maxVal)
+    {
+        for (i = 0; i < rhoN; i++)
+            rho[i] = rho[i] / maxVal;
+    }
+
+    // free the local memory
+    t_freebytes (slideBuffer, n * sizeof (t_float));
+}
+
 void tIDLib_peaksValleys (t_sampIdx n, t_float* data, t_float* flags, t_float* minVal, t_float* maxVal)
 {
     t_float slopeBuf[n];

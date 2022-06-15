@@ -198,6 +198,7 @@ t_float tIDLib_dotProd (t_attributeIdx n, t_float* v1, t_float* v2);
 t_float tIDLib_euclidDist (t_attributeIdx n, t_float* v1, t_float* v2, t_float* weights, t_bool sqroot);
 t_float tIDLib_taxiDist (t_attributeIdx n, t_float* v1, t_float* v2, t_float* weights);
 t_float tIDLib_corr (t_attributeIdx n, t_float* v1, t_float* v2);
+void tIDLib_autoCorr (t_attributeIdx n, t_float* vec, t_attributeIdx rhoN, t_float* rho, t_bool norm);
 void tIDLib_peaksValleys (t_sampIdx n, t_float* data, t_float* flags, t_float* minVal, t_float* maxVal);
 /* ---------------- END utility functions ---------------------- */
 

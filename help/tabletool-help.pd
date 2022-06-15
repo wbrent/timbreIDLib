@@ -18,7 +18,7 @@
 -0.700009 -0.72858 -0.885724;
 #X coords 0 1 31 -1 200 140 1 0 0;
 #X restore 265 57 graph;
-#N canvas 546 124 851 704 multi-table-math 0;
+#N canvas 546 124 1104 690 multi-table-math 0;
 #X text 22 65 Dot product;
 #X text 22 85 Euclidean distance;
 #X text 22 105 Taxicab distance;
@@ -34,32 +34,32 @@ outlet as a list.;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-multi-math 32 float 0;
 #X coords 0 1 31 -1 200 140 1 0 0;
-#X restore 605 399 graph;
+#X restore 615 429 graph;
 #X obj 366 612 list prepend 0;
 #X obj 366 633 s \$0-multi-math;
 #X obj 231 577 tabletool \$0-table-1;
 #X msg 535 88 taxi \$1-table-2;
 #X msg 595 158 corr \$1-table-2;
-#X obj 535 48 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 535 48 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 535 68 f \$0;
-#X obj 595 118 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
+#X obj 595 118 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
 #X obj 595 138 f \$0;
-#X obj 265 48 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 265 48 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 265 68 f \$0;
-#X obj 325 118 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
+#X obj 325 118 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
 #X obj 325 138 f \$0;
 #X msg 265 88 dot \$1-table-2;
 #X msg 325 158 euclid \$1-table-2;
 #X obj 265 199 tabletool \$0-table-1;
 #X obj 535 199 tabletool \$0-table-1;
-#X floatatom 535 221 5 0 0 0 - - -;
-#X floatatom 265 221 5 0 0 0 - - -;
-#X obj 21 356 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X floatatom 535 221 5 0 0 0 - - - 0;
+#X floatatom 265 221 5 0 0 0 - - - 0;
+#X obj 21 356 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 21 376 f \$0;
 #X msg 231 406 multiply \$1-table-2;
 #X msg 260 476 divide \$1-table-2;
@@ -68,20 +68,32 @@ outlet as a list.;
 #X obj 21 577 tabletool \$0-table-1;
 #X msg 21 396 add \$1-table-2;
 #X msg 40 466 subtract \$1-table-2;
-#X obj 40 426 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 40 426 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 40 446 f \$0;
-#X obj 231 366 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
+#X obj 231 366 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
 #X obj 231 386 f \$0;
-#X obj 260 436 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
+#X obj 260 436 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
 #X obj 260 456 f \$0;
 #X text 90 426 Subtract value pairs by index., f 15;
 #X text 61 500 NOTE: data from the table specified in the message is
 subtracted from the active table's data., f 22;
 #X text 290 500 NOTE: the active table's data is divided by data from
 the table specified in the message., f 24;
+#X obj 897 130 list prepend 0;
+#X obj 762 95 tabletool \$0-table-1;
+#X msg 762 54 autocorr;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-autocorr-rho 63 float 0;
+#X coords 0 1 62 -1 200 140 1 0 0;
+#X restore 851 429 graph;
+#X obj 897 151 s \$0-autocorr-rho;
+#X text 760 211 The "autocorr" method calculates cross correlation
+of table contents with itself \, shifted at all possible lags. Results
+are normalized so that correlation value for lag 0 is exactly 1.0.
+Results are sent out as a list from the right outlet., f 42;
 #X connect 10 0 11 0;
 #X connect 12 1 10 0;
 #X connect 13 0 26 0;
@@ -112,6 +124,9 @@ the table specified in the message., f 24;
 #X connect 41 0 31 0;
 #X connect 42 0 43 0;
 #X connect 43 0 32 0;
+#X connect 47 0 51 0;
+#X connect 48 1 47 0;
+#X connect 49 0 48 0;
 #X restore 332 363 pd multi-table-math;
 #N canvas 140 390 1164 528 manipulations-1 0;
 #X msg 18 37 offset 1;
@@ -162,11 +177,11 @@ table and sent out the left outlet.;
 #X obj 18 262 tabletool \$0-table-3;
 #X obj 18 458 tabletool \$0-copy;
 #X msg 18 340 copy \$1-table-2;
-#X obj 18 300 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 18 300 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 18 320 f \$0;
-#X obj 49 370 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 49 370 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 49 390 f \$0;
 #X msg 49 410 copy_range 25 \$1-table-1 0 3;
 #X obj 632 202 tabletool \$0-copy;
@@ -207,7 +222,7 @@ and the sum equals 1;
 -0.60002 -0.585734 -0.592877 -5.90086e-06 -0.385729 -0.342871 -0.428587
 -0.485731 0.48572 -0.457159 0.285715 -0.300013 -0.504779 0.385717 -0.114294
 -0.257155 -0.20001 0.228571 0.357145 -0.214297 0.185713 0.342859 -0.228583
--0.400015 -0.0571501 0.0714243 -0.285727 -0.571447 0.48572 ;
+-0.400015 -0.0571501 0.0714243 -0.285727 -0.571447 0.48572;
 #X coords 0 1 63 -1 200 140 1 0 0;
 #X restore 591 51 graph;
 #X msg 127 171 reverse;
@@ -271,7 +286,7 @@ if you want a certain resolution.;
 #X restore 609 540 graph;
 #X msg 57 372 series -1 1 1;
 #X msg 97 433 series -0.75 1 \$1;
-#X floatatom 97 410 5 0 0 0 - - -;
+#X floatatom 97 410 5 0 0 0 - - - 0;
 #X text 138 409 Shift drag to try different exponents.;
 #X msg 57 582 random_walk -0.4 0.1 -1 1;
 #X text 55 546 Generate a random walk. Arguments: starting value \,
@@ -294,9 +309,9 @@ a straight line.;
 #X connect 13 0 17 0;
 #X connect 20 0 18 0;
 #X restore 332 323 pd filling;
-#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
-#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
 #N canvas 308 126 803 390 manipulations-3 0;
 #X msg 119 127 ceil;
@@ -340,7 +355,7 @@ value (\$2), f 39;
 #N canvas 308 126 1046 503 conversion 0;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-conversion 64 float 0;
-#X coords 0 107.906 63 22.4181 200 140 1 0 0;
+#X coords 0 107.22 63 21.0007 200 140 1 0 0;
 #X restore 738 57 graph;
 #X msg 43 39 mtof;
 #X text 120 38 Convert all values from MIDI to frequency in Hz;
@@ -398,8 +413,8 @@ to fill this table \, and then hit the fit_bounds message;
 #X obj 92 301 loadbang;
 #X obj 25 235 tabletool \$0-fitBoundsTest;
 #X msg 92 353 \; \$1-fitBoundsTest bounds 0 1 63 -1 \;;
-#X obj 72 331 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 72 331 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X msg 25 146 rand_fill -2 2;
 #X connect 0 0 5 0;
 #X connect 3 0 6 0;
@@ -433,10 +448,10 @@ to fill this table \, and then hit the fit_bounds message;
 #X obj 794 227 tabletool valleys;
 #X obj 829 177 t b a b;
 #X msg 829 146 valleys \$1;
-#X floatatom 829 115 5 0 100 0 - - -;
+#X floatatom 829 115 5 0 100 0 - - - 0;
 #X obj 49 296 t b a b;
 #X msg 49 265 peaks \$1;
-#X floatatom 49 244 5 0 100 0 - - -;
+#X floatatom 49 244 5 0 100 0 - - - 0;
 #N canvas 1228 305 450 300 send-label 0;
 #X obj 77 27 inlet;
 #X obj 197 27 inlet;
@@ -604,11 +619,11 @@ starting sample.;
 #X obj 90 421 tabplay~ \$0-ola-result;
 #X obj 90 452 dac~;
 #X obj 25 115 f \$0;
-#X obj 25 95 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 25 95 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 65 185 f \$0;
-#X obj 65 165 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 65 165 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #N canvas 276 34 561 469 example-process 0;
 #X obj 25 405 tabletool \$0-ola-result;
 #X obj 25 355 pack f f \$0;
@@ -645,8 +660,8 @@ to fill up the \$0-ola-result array.;
 #X connect 12 0 9 0;
 #X connect 14 0 0 0;
 #X restore 130 370 pd example-process;
-#X obj 90 310 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 90 310 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #N canvas 719 470 450 300 load-sample 0;
 #X obj 85 121 soundfiler;
 #X obj 85 56 loadbang;
@@ -666,8 +681,8 @@ to fill up the \$0-ola-result array.;
 #X restore 459 247 pd load-sample;
 #X obj 203 302 f \$0;
 #X msg 203 323 \; \$1-ola-result const 0 \;;
-#X obj 203 282 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
+#X obj 203 282 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
 #X obj 90 330 t b b b;
 #X text 314 98 Arguments \; \$1: starting sample in source array \;
 \$2: number of samples (range) \; \$3: window function name \; \$4:
@@ -698,7 +713,7 @@ cosine \; hamming \; hann \;;
 #X msg 66 23 permute 2;
 #X msg 86 53 permute 3;
 #X obj 447 158 table \$0-perms 5;
-#X floatatom 66 165 5 0 0 0 - - -;
+#X floatatom 66 165 5 0 0 0 - - - 0;
 #X obj 176 165 print;
 #X msg 289 173 series 0 4 1;
 #X text 227 29 The permute method lists all permutations (with repetition)
@@ -729,11 +744,11 @@ the results out the right outlet as a list.;
 #X obj 54 156 tabletool \$0-table-1;
 #X msg 54 55 lace \$1-table-2;
 #X msg 94 125 concatenate \$1-table-2;
-#X obj 54 15 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 54 15 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 54 35 f \$0;
-#X obj 94 85 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 94 85 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 94 105 f \$0;
 #X connect 1 0 4 0;
 #X connect 5 1 1 0;
@@ -823,11 +838,11 @@ again to update memory after setting to the new table.;
 #X text 520 325 Randomly select a value from the table. The index of
 the chosen value is reported at the right outlet.;
 #X msg 33 65 set \$1-table-1;
-#X obj 33 25 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 33 25 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 33 45 f \$0;
-#X obj 113 96 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 113 96 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 113 116 f \$0;
 #X msg 113 136 set \$1-table-2;
 #X obj 253 411 s \$0-tool-1;
@@ -940,16 +955,16 @@ at the right outlet., f 75;
 #X coords 0 256 512 0 513 140 1 0 0;
 #X restore 269 198 graph;
 #X obj 38 336 tabletool \$0-table-analysis;
-#X floatatom 327 99 10 0 0 1 fundamental - -;
+#X floatatom 327 99 10 0 0 1 fundamental - - 0;
 #X obj 38 399 bin2freq 1024 44100;
-#X floatatom 38 420 5 0 0 1 frequency - -;
-#X floatatom 58 366 5 0 0 1 bin - -;
+#X floatatom 38 420 5 0 0 1 frequency - - 0;
+#X floatatom 58 366 5 0 0 1 bin - - 0;
 #X msg 38 203 hps 5 50 5;
 #X obj 208 381 pack f \$0;
 #X msg 208 402 \; \$2-table-analysis xlabel 0 \$1 \;;
 #X text 35 99 Arguments are: lower and upper indices to search between
 (inclusive) \, and number of harmonics to search for., f 32;
-#X floatatom 297 49 5 5 50 1 fundamental-bin - -;
+#X floatatom 297 49 5 5 50 1 fundamental-bin - - 0;
 #X obj 297 69 bin2freq 1024 44100;
 #N canvas 157 255 762 552 generate-mostly-harmonic-tone-and-analyze-it
 0;
@@ -1092,7 +1107,7 @@ method performs this process \, reporting a list composed of <class
 ID> <start index> <end index> for each region found. The region lists
 are reported at the right outlet \, and the number of regions found
 is reported at the left outlet., f 43;
-#X floatatom 818 419 5 0 0 0 - - -;
+#X floatatom 818 419 5 0 0 0 - - - 0;
 #X connect 1 0 3 0;
 #X connect 1 0 5 0;
 #X connect 1 1 19 0;
