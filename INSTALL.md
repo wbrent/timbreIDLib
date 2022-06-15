@@ -13,7 +13,7 @@ For method 1, assuming timbreIDLib is installed to the default Externals Install
 
 For method 2, make a new startup path in the Startup dialog, and provide the path to the timbreIDLib binary. Note that you must not list the extension of the timbreIDLib file (i.e., pd_linux, pd_darwin, or dll). For example:
 
-> /home/yourname/pd_libs/timbreIDLib
+> /Users/yourname/Documents/Pd/externals/timbreIDLib
 
 When using Pd's Startup dialog on Windows, note that you can specify the path with forward slashes, and spaces in the path are ok. There is still no need to append the library file extension (dll). For instance:
 
