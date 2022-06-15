@@ -19,18 +19,13 @@
 #X coords 0 1 31 -1 200 140 1 0 0;
 #X restore 265 57 graph;
 #N canvas 546 124 1104 690 multi-table-math 0;
-#X text 22 65 Dot product;
-#X text 22 85 Euclidean distance;
-#X text 22 105 Taxicab distance;
-#X text 22 125 Pearson correlation;
+#X text 42 65 Dot product;
+#X text 42 85 Euclidean distance;
+#X text 42 105 Taxicab distance;
+#X text 42 125 Pearson correlation;
 #X text 67 354 Add value pairs by index., f 16;
 #X text 378 405 Multiply value pairs by index.;
 #X text 396 475 Divide value pairs by index.;
-#X text 23 17 These four functions operate between the active table
-and the table passed with the message.;
-#X text 58 278 These functions perform arithmetic on the active table
-and a table passed with the message. Results are sent out the right
-outlet as a list.;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-multi-math 32 float 0;
 #X coords 0 1 31 -1 200 140 1 0 0;
@@ -90,43 +85,49 @@ the table specified in the message., f 24;
 #X coords 0 1 62 -1 200 140 1 0 0;
 #X restore 851 429 graph;
 #X obj 897 151 s \$0-autocorr-rho;
+#X text 23 17 These four methods operate between the active table and
+the table passed with the message.;
+#X text 58 278 These methods perform arithmetic on the active table
+and a table passed with the message. Results are sent out the right
+outlet as a list.;
 #X text 760 211 The "autocorr" method calculates cross correlation
-of table contents with itself \, shifted at all possible lags. Results
-are normalized so that correlation value for lag 0 is exactly 1.0.
+of table contents with itself \, shifted at all possible lags. For
+a table with N points \, this method will return 2N - 1 values. Results
+are normalized so that the correlation value for lag 0 is exactly 1.0.
 Results are sent out as a list from the right outlet., f 42;
-#X connect 10 0 11 0;
-#X connect 12 1 10 0;
-#X connect 13 0 26 0;
-#X connect 14 0 26 0;
+#X connect 8 0 9 0;
+#X connect 10 1 8 0;
+#X connect 11 0 24 0;
+#X connect 12 0 24 0;
+#X connect 13 0 14 0;
+#X connect 14 0 11 0;
 #X connect 15 0 16 0;
-#X connect 16 0 13 0;
+#X connect 16 0 12 0;
 #X connect 17 0 18 0;
-#X connect 18 0 14 0;
+#X connect 18 0 21 0;
 #X connect 19 0 20 0;
-#X connect 20 0 23 0;
-#X connect 21 0 22 0;
-#X connect 22 0 24 0;
-#X connect 23 0 25 0;
+#X connect 20 0 22 0;
+#X connect 21 0 23 0;
+#X connect 22 0 23 0;
+#X connect 23 0 26 0;
 #X connect 24 0 25 0;
-#X connect 25 0 28 0;
-#X connect 26 0 27 0;
-#X connect 29 0 30 0;
-#X connect 30 0 36 0;
-#X connect 31 0 12 0;
-#X connect 32 0 12 0;
-#X connect 33 0 34 0;
-#X connect 35 1 33 0;
-#X connect 36 0 35 0;
+#X connect 27 0 28 0;
+#X connect 28 0 34 0;
+#X connect 29 0 10 0;
+#X connect 30 0 10 0;
+#X connect 31 0 32 0;
+#X connect 33 1 31 0;
+#X connect 34 0 33 0;
+#X connect 35 0 33 0;
+#X connect 36 0 37 0;
 #X connect 37 0 35 0;
 #X connect 38 0 39 0;
-#X connect 39 0 37 0;
+#X connect 39 0 29 0;
 #X connect 40 0 41 0;
-#X connect 41 0 31 0;
-#X connect 42 0 43 0;
-#X connect 43 0 32 0;
-#X connect 47 0 51 0;
-#X connect 48 1 47 0;
-#X connect 49 0 48 0;
+#X connect 41 0 30 0;
+#X connect 45 0 49 0;
+#X connect 46 1 45 0;
+#X connect 47 0 46 0;
 #X restore 332 363 pd multi-table-math;
 #N canvas 140 390 1164 528 manipulations-1 0;
 #X msg 18 37 offset 1;
