@@ -17,12 +17,6 @@ You should have received a copy of the GNU General Public License along with thi
 
 static t_class* specIrregularity_tilde_class;
 
-typedef enum
-{
-    jensen = 0,
-    krimphoff
-} t_algoChoice;
-
 typedef struct _specIrregularity_tilde
 {
     t_object x_obj;
@@ -44,7 +38,7 @@ typedef struct _specIrregularity_tilde
     t_float* x_cosine;
     t_float* x_hamming;
     t_float* x_hann;
-    t_algoChoice x_algorithm;
+    t_irregAlgoChoice x_algorithm;
     t_outlet* x_irregularity;
     t_float x_f;
 

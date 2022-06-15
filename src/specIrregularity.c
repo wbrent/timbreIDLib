@@ -17,12 +17,6 @@ You should have received a copy of the GNU General Public License along with thi
 
 static t_class* specIrregularity_class;
 
-typedef enum
-{
-    jensen = 0,
-    krimphoff
-} t_algoChoice;
-
 typedef struct _specIrregularity
 {
     t_object x_obj;
@@ -43,7 +37,7 @@ typedef struct _specIrregularity
     t_word* x_vec;
     t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_algoChoice x_algorithm;
+    t_irregAlgoChoice x_algorithm;
     t_outlet* x_irregularity;
 } t_specIrregularity;
 

@@ -17,12 +17,6 @@ You should have received a copy of the GNU General Public License along with thi
 
 static t_class* barkSpecIrregularity_class;
 
-typedef enum
-{
-    jensen = 0,
-    krimphoff
-} t_algoChoice;
-
 typedef struct _barkSpecIrregularity
 {
     t_object x_obj;
@@ -50,7 +44,7 @@ typedef struct _barkSpecIrregularity
     t_filter* x_filterbank;
     t_bool x_specBandAvg;
     t_bool x_filterAvg;
-    t_algoChoice x_algorithm;
+    t_irregAlgoChoice x_algorithm;
     t_outlet* x_irregularity;
 } t_barkSpecIrregularity;
 

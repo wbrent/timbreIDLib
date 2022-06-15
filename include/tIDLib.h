@@ -127,6 +127,12 @@ typedef enum
     mDecay
 } t_fluxMode;
 
+typedef enum
+{
+    jensen = 0,
+    krimphoff
+} t_irregAlgoChoice;
+
 typedef struct filter
 {
     t_float* filter;
