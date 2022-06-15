@@ -1278,6 +1278,55 @@ t_float tIDLib_zeroCrossingRate (t_sampIdx n, t_sample* input, t_bool normalize)
     return (crossings);
 }
 
+t_float tIDLib_harmonicRatio (t_sampIdx n, t_sample* input, t_bool normalize)
+{
+    t_float* rhoBuffer;
+    t_float ratio;
+    t_sampIdx i, m0, rhoBufferSize;
+
+    ratio = -FLT_MAX;
+    rhoBufferSize = (n * 2) - 1;
+
+    rhoBuffer = (t_float *)t_getbytes (rhoBufferSize * sizeof (t_float));
+
+    // init rhoBuffer with zeros
+    for (i = 0; i < rhoBufferSize; i++)
+        rhoBuffer[i] = 0.0;
+
+    tIDLib_autoCorr (n, input, rhoBufferSize, rhoBuffer, normalize);
+
+    // since every signal will have a normalized autocorrelation of 1.0
+    // at the center of the results stored in rhoBuffer, we'll start there
+    // and look for the first zero crossing as recommended by (Kim, Moreau,
+    // Sikora 2005), Equation 2.32.
+
+    // the correlation peak should be in the center of rhoBuffer at index
+    // n - 1, so we'll start the loop beyond that at index n.
+    for (i = n; i < rhoBufferSize; i++)
+    {
+        if (tIDLib_signum(rhoBuffer[i - 1]) != tIDLib_signum(rhoBuffer[i]))
+            break;
+    }
+
+    // the value of i after breaking out of the above for loop should be
+    // that of the first zero crossing following the lag 0 peak, which
+    // (Kim, Moreau, Sikora 2005) define as M_0
+    m0 = i;
+
+    // the harmonic ratio is the largest correlation value in rhoBuffer
+    // found after M_0
+    for (i = m0; i < rhoBufferSize; i++)
+    {
+        if (rhoBuffer[i] > ratio)
+            ratio = rhoBuffer[i];
+    }
+
+    // free local memory
+    t_freebytes (rhoBuffer, rhoBufferSize * sizeof (t_float));
+
+    return (ratio);
+}
+
 // for chroma objects
 t_uInt tIDLib_getPitchBinRanges (t_binIdx* binRanges, t_float thisPitch, t_float loFreq, t_float hiFreq, t_float pitchTolerance, t_sampIdx n, t_float sr)
 {

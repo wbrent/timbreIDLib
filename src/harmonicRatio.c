@@ -1,6 +1,6 @@
 /*
 
-zeroCrossing
+harmonicRatio
 
 Copyright 2009 William Brent
 
@@ -15,9 +15,9 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class* zeroCrossing_class;
+static t_class* harmonicRatio_class;
 
-typedef struct _zeroCrossing
+typedef struct _harmonicRatio
 {
     t_object x_obj;
     t_symbol* x_objSymbol;
@@ -28,13 +28,13 @@ typedef struct _zeroCrossing
     t_word* x_vec;
     t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_outlet* x_crossings;
-} t_zeroCrossing;
+    t_outlet* x_harmonicRatio;
+} t_harmonicRatio;
 
 
-/* ------------------------ zeroCrossing -------------------------------- */
+/* ------------------------ harmonicRatio -------------------------------- */
 
-static void zeroCrossing_analyze (t_zeroCrossing* x, t_floatarg start, t_floatarg n)
+static void harmonicRatio_analyze (t_harmonicRatio* x, t_floatarg start, t_floatarg n)
 {
     t_garray* a;
 
@@ -45,7 +45,7 @@ static void zeroCrossing_analyze (t_zeroCrossing* x, t_floatarg start, t_floatar
     else
     {
         t_sampIdx i, j, oldWindow, window, startSamp, endSamp;
-        t_float crossings;
+        t_float ratio;
 
         startSamp = (start < 0) ? 0 : start;
 
@@ -92,14 +92,14 @@ static void zeroCrossing_analyze (t_zeroCrossing* x, t_floatarg start, t_floatar
         for (i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
-        crossings = tIDLib_zeroCrossingRate (window, x->x_analysisBuffer, x->x_normalize);
-        outlet_float (x->x_crossings, crossings);
+        ratio = tIDLib_harmonicRatio (window, x->x_analysisBuffer, x->x_normalize);
+        outlet_float (x->x_harmonicRatio, ratio);
     }
 }
 
 
 // analyze the whole damn array
-static void zeroCrossing_bang (t_zeroCrossing* x)
+static void harmonicRatio_bang (t_harmonicRatio* x)
 {
     t_garray* a;
 
@@ -112,12 +112,12 @@ static void zeroCrossing_bang (t_zeroCrossing* x)
         t_sampIdx window, startSamp;
         startSamp = 0;
         window = x->x_arrayPoints;
-        zeroCrossing_analyze (x, startSamp, window);
+        harmonicRatio_analyze (x, startSamp, window);
     }
 }
 
 
-static void zeroCrossing_set (t_zeroCrossing* x, t_symbol* s)
+static void harmonicRatio_set (t_harmonicRatio* x, t_symbol* s)
 {
     t_garray* a;
 
@@ -129,7 +129,7 @@ static void zeroCrossing_set (t_zeroCrossing* x, t_symbol* s)
         x->x_arrayName = s;
 }
 
-static void zeroCrossing_normalize (t_zeroCrossing* x, t_floatarg n)
+static void harmonicRatio_normalize (t_harmonicRatio* x, t_floatarg n)
 {
     n = (n < 0) ? 0 : n;
     x->x_normalize = (n > 1) ? 1 : n;
@@ -137,7 +137,7 @@ static void zeroCrossing_normalize (t_zeroCrossing* x, t_floatarg n)
     post ("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
 }
 
-static void zeroCrossing_print (t_zeroCrossing* x)
+static void harmonicRatio_print (t_harmonicRatio* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
@@ -145,7 +145,7 @@ static void zeroCrossing_print (t_zeroCrossing* x)
 }
 
 
-static void zeroCrossing_samplerate (t_zeroCrossing* x, t_floatarg sr)
+static void harmonicRatio_samplerate (t_harmonicRatio* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -154,12 +154,12 @@ static void zeroCrossing_samplerate (t_zeroCrossing* x, t_floatarg sr)
 }
 
 
-static void* zeroCrossing_new (t_symbol* s, int argc, t_atom* argv)
+static void* harmonicRatio_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_zeroCrossing* x = (t_zeroCrossing *)pd_new (zeroCrossing_class);
+    t_harmonicRatio* x = (t_harmonicRatio *)pd_new (harmonicRatio_class);
 //	t_garray *a;
 
-    x->x_crossings = outlet_new (&x->x_obj, &s_float);
+    x->x_harmonicRatio = outlet_new (&x->x_obj, &s_float);
 
     // store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
     x->x_objSymbol = s;
@@ -168,12 +168,6 @@ static void* zeroCrossing_new (t_symbol* s, int argc, t_atom* argv)
     {
         case 1:
             x->x_arrayName = atom_getsymbol (argv);
-            /*
-            if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
-                pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-            else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
-                pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-            */
             break;
 
         case 0:
@@ -184,19 +178,13 @@ static void* zeroCrossing_new (t_symbol* s, int argc, t_atom* argv)
 
         default:
             x->x_arrayName = atom_getsymbol (argv);
-            /*
-            if ( !(a = (t_garray *)pd_findbyclass (x->x_arrayName, garray_class)))
-                pd_error (x, "%s: no array called %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
-            else if ( !garray_getfloatwords (a, (int *)&x->x_arrayPoints, &x->x_vec))
-                pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
-            */
             post ("%s WARNING: extra arguments ignored.", x->x_objSymbol->s_name);
             break;
     }
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
     x->x_window = TID_WINDOWSIZEDEFAULT;
-    x->x_normalize = false;
+    x->x_normalize = true;
 
     x->x_analysisBuffer = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
 
@@ -204,38 +192,38 @@ static void* zeroCrossing_new (t_symbol* s, int argc, t_atom* argv)
 }
 
 
-static void zeroCrossing_free (t_zeroCrossing* x)
+static void harmonicRatio_free (t_harmonicRatio* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_sample));
 }
 
 
-void zeroCrossing_setup (void)
+void harmonicRatio_setup (void)
 {
-    zeroCrossing_class =
+    harmonicRatio_class =
     class_new (
-        gensym ("zeroCrossing"),
-        (t_newmethod)zeroCrossing_new,
-        (t_method)zeroCrossing_free,
-        sizeof (t_zeroCrossing),
+        gensym ("harmonicRatio"),
+        (t_newmethod)harmonicRatio_new,
+        (t_method)harmonicRatio_free,
+        sizeof (t_harmonicRatio),
         CLASS_DEFAULT,
         A_GIMME,
         0
     );
 
     class_addcreator (
-        (t_newmethod)zeroCrossing_new,
-        gensym ("timbreIDLib/zeroCrossing"),
+        (t_newmethod)harmonicRatio_new,
+        gensym ("timbreIDLib/harmonicRatio"),
         A_GIMME,
         0
     );
 
-    class_addbang (zeroCrossing_class, zeroCrossing_bang);
+    class_addbang (harmonicRatio_class, harmonicRatio_bang);
 
     class_addmethod (
-        zeroCrossing_class,
-        (t_method)zeroCrossing_analyze,
+        harmonicRatio_class,
+        (t_method)harmonicRatio_analyze,
         gensym ("analyze"),
         A_DEFFLOAT,
         A_DEFFLOAT,
@@ -243,31 +231,31 @@ void zeroCrossing_setup (void)
     );
 
     class_addmethod (
-        zeroCrossing_class,
-        (t_method)zeroCrossing_set,
+        harmonicRatio_class,
+        (t_method)harmonicRatio_set,
         gensym ("set"),
         A_SYMBOL,
         0
     );
 
     class_addmethod (
-        zeroCrossing_class,
-        (t_method)zeroCrossing_normalize,
+        harmonicRatio_class,
+        (t_method)harmonicRatio_normalize,
         gensym ("normalize"),
         A_DEFFLOAT,
         0
     );
 
     class_addmethod (
-        zeroCrossing_class,
-        (t_method)zeroCrossing_print,
+        harmonicRatio_class,
+        (t_method)harmonicRatio_print,
         gensym ("print"),
         0
     );
 
     class_addmethod (
-        zeroCrossing_class,
-        (t_method)zeroCrossing_samplerate,
+        harmonicRatio_class,
+        (t_method)harmonicRatio_samplerate,
         gensym ("samplerate"),
         A_DEFFLOAT,
         0

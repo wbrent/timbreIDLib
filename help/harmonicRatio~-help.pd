@@ -1,0 +1,186 @@
+#N canvas 185 144 904 648 10;
+#X declare -lib timbreIDLib;
+#X obj 109 152 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X floatatom 110 401 10 0 0 0 - - - 0;
+#X text 260 241 Change window size.;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 #e0e0e0 #404040
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 #e0e0e0 #404040
+0;
+#N canvas 676 230 596 318 other-settings 0;
+#X obj 54 225 outlet;
+#X msg 54 68 overlap 2;
+#X text 135 56 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X msg 134 188 print;
+#X obj 94 108 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 94 128 normalize \$1;
+#X text 196 123 Turn normalization on or off. With normalization on
+\, values will fall between 0 and 1 (default: ON);
+#X connect 1 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 5 0;
+#X connect 5 0 0 0;
+#X restore 181 289 pd other-settings;
+#X obj 612 440 timbreID;
+#X text 445 375 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 220 356 Creation argument is window size in samples, f 23
+;
+#X msg 179 242 window 2000;
+#X text 445 305 Audio buffering is taken care of by the external \,
+so there is no need for [block~]. You can set the window size with
+a creation argument \, or change it with the "window" message. Window
+size is not required to be a power of two.;
+#X obj 620 601 declare -lib timbreIDLib;
+#X text 619 578 June 2022;
+#X text 619 558 Updated for timbreIDLib version 0.9.0;
+#X text 106 134 Bang to output harmonic ratio;
+#X obj 129 202 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 126 185 Bang repeatedly to keep refreshing...;
+#N canvas 647 219 546 317 plotting 0;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-harmonic-ratio 32 float 0;
+#X coords 0 1 31 0 200 140 1 0 0;
+#X restore 260 120 graph;
+#X obj 51 152 t f b;
+#X obj 157 144 f;
+#X obj 196 131 + 1;
+#X obj 51 82 inlet;
+#X obj 51 195 tabwrite \$0-harmonic-ratio;
+#X obj 196 154 % 32;
+#X msg 185 85 0;
+#X obj 185 64 r \$0-restart-plot;
+#X connect 1 0 5 0;
+#X connect 1 1 2 0;
+#X connect 2 0 3 0;
+#X connect 2 0 5 1;
+#X connect 3 0 6 0;
+#X connect 4 0 1 0;
+#X connect 6 0 2 1;
+#X connect 7 0 2 1;
+#X connect 8 0 7 0;
+#X coords 0 -1 1 1 220 170 2 250 100;
+#X restore 70 446 pd plotting;
+#X obj 70 361 harmonicRatio~ 4096;
+#X obj 149 202 metro 50;
+#N canvas 718 98 972 476 input-signal 0;
+#X obj 22 360 *~ 0.2;
+#X obj 22 381 dac~;
+#X obj 257 421 outlet~;
+#X obj 245 51 hradio 15 1 0 4 empty empty empty 0 -8 0 10 #fcfcfc #000000
+#000000 0;
+#X obj 245 131 select 0 1 2 3;
+#X obj 456 283 adc~;
+#X obj 456 334 *~;
+#X obj 70 322 *~;
+#X msg 478 200 0 1;
+#X obj 478 221 unpack f f;
+#X msg 438 200 1 0;
+#X obj 340 40 cnv 15 40 25 empty \$0-input-label speech 0 12 0 14 #ffffff
+#404040 0;
+#N canvas 1209 597 450 300 set-input-label 0;
+#X obj 41 36 inlet;
+#X obj 101 36 inlet;
+#X obj 161 36 inlet;
+#X obj 221 36 inlet;
+#X obj 41 227 f \$0;
+#X msg 41 248 \; \$1-input-label label piano \;;
+#X obj 101 187 f \$0;
+#X obj 161 147 f \$0;
+#X obj 221 107 f \$0;
+#X msg 161 168 \; \$1-input-label label speech \;;
+#X msg 221 128 \; \$1-input-label label live \;;
+#X msg 101 208 \; \$1-input-label label noise \;;
+#X connect 0 0 4 0;
+#X connect 1 0 6 0;
+#X connect 2 0 7 0;
+#X connect 3 0 8 0;
+#X connect 4 0 5 0;
+#X connect 6 0 11 0;
+#X connect 7 0 9 0;
+#X connect 8 0 10 0;
+#X restore 310 223 pd set-input-label;
+#X obj 752 85 table \$0-piano 27000;
+#X obj 606 251 loadbang;
+#X obj 606 272 f \$0;
+#X msg 606 373 read -skip 625030 ./audio/satie.wav \$1-piano;
+#X obj 606 404 soundfiler;
+#X obj 574 270 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 70 191 tabplay~ \$0-piano;
+#X obj 606 293 t f f f;
+#X obj 752 115 table \$0-noise 8000;
+#X msg 626 353 read -skip 250000 ./audio/testing.wav \$1-noise;
+#X obj 90 221 tabplay~ \$0-noise;
+#X obj 110 251 tabplay~ \$0-speech;
+#X obj 752 145 table \$0-speech;
+#X msg 646 333 read -resize ../doc/sound/voice.wav \$1-speech;
+#X obj 245 81 t f b;
+#X obj 286 107 s \$0-restart-plot;
+#X connect 0 0 1 0;
+#X connect 0 0 1 1;
+#X connect 3 0 27 0;
+#X connect 4 0 10 0;
+#X connect 4 0 12 0;
+#X connect 4 0 19 0;
+#X connect 4 1 10 0;
+#X connect 4 1 12 1;
+#X connect 4 1 23 0;
+#X connect 4 2 10 0;
+#X connect 4 2 12 2;
+#X connect 4 2 24 0;
+#X connect 4 3 8 0;
+#X connect 4 3 12 3;
+#X connect 5 0 6 0;
+#X connect 6 0 2 0;
+#X connect 7 0 2 0;
+#X connect 7 0 0 0;
+#X connect 8 0 9 0;
+#X connect 9 0 7 1;
+#X connect 9 1 6 1;
+#X connect 10 0 9 0;
+#X connect 14 0 15 0;
+#X connect 15 0 20 0;
+#X connect 16 0 17 0;
+#X connect 18 0 15 0;
+#X connect 19 0 7 0;
+#X connect 20 0 16 0;
+#X connect 20 1 22 0;
+#X connect 20 2 26 0;
+#X connect 22 0 17 0;
+#X connect 23 0 7 0;
+#X connect 24 0 7 0;
+#X connect 26 0 17 0;
+#X connect 27 0 4 0;
+#X connect 27 1 28 0;
+#X coords 0 -1 1 1 150 40 1 240 30;
+#X restore 70 56 pd input-signal;
+#X text 445 195 Turn on the metro at left to activate constant analysis
+\, then click the radio buttons to play sounds with varying harmonicity.
+Harmonic ratio values for the piano tone are quite high \, and those
+for the noisy percussive sound are very low. The speech signal gives
+mixed results \, where moments of pitched vowels cause peaks in harmonic
+ratio. You can also click the last radio button to activate your live
+microphone and analyze whatever you want.;
+#X text 445 74 Harmonic ratio is an indicator of the periodicity of
+a signal. Pitched/periodic signals will produce higher values than
+noisy/non-periodic ones. This feature can be useful for finding the
+boundary between the onset and steady state of pitched instrumental
+sounds \, or transitions from consonants to vowels in speech. The algorithm
+involves calculating the autocorrelation of the signal and searching
+for the highest value after the central peak associated with lag zero.
+Output is normalized to the 0 - 1 range by default.;
+#X connect 0 0 18 0;
+#X connect 5 0 18 0;
+#X connect 9 0 18 0;
+#X connect 15 0 19 0;
+#X connect 18 0 1 0;
+#X connect 18 0 17 0;
+#X connect 19 0 18 0;
+#X connect 20 0 18 0;

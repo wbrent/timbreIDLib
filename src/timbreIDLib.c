@@ -83,6 +83,8 @@ void timbreIDLib_setup (void)
     freq2bark_setup();
     freq2bin_setup();
     freq2mel_setup();
+    harmonicRatio_setup();
+    harmonicRatio_tilde_setup();
     magSpec_setup();
     magSpec_tilde_setup();
     maxSample_setup();

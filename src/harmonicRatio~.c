@@ -1,6 +1,6 @@
 /*
 
-zeroCrossing~
+harmonicRatio~
 
 Copyright 2009 William Brent
 
@@ -15,9 +15,9 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class* zeroCrossing_tilde_class;
+static t_class* harmonicRatio_tilde_class;
 
-typedef struct _zeroCrossing_tilde
+typedef struct _harmonicRatio_tilde
 {
     t_object x_obj;
     t_symbol* x_objSymbol;
@@ -29,18 +29,18 @@ typedef struct _zeroCrossing_tilde
     double x_lastDspTime;
     t_sample* x_signalBuffer;
     t_float* x_analysisBuffer;
-    t_outlet* x_crossings;
+    t_outlet* x_harmonicRatio;
     t_float x_f;
 
-} t_zeroCrossing_tilde;
+} t_harmonicRatio_tilde;
 
 
-/* ------------------------ zeroCrossing~ -------------------------------- */
+/* ------------------------ harmonicRatio~ -------------------------------- */
 
-static void zeroCrossing_tilde_bang (t_zeroCrossing_tilde* x)
+static void harmonicRatio_tilde_bang (t_harmonicRatio_tilde* x)
 {
     t_sampIdx i, j, window, bangSample;
-    t_float crossings;
+    t_float ratio;
     double currentTime;
 
     window = x->x_window;
@@ -55,13 +55,13 @@ static void zeroCrossing_tilde_bang (t_zeroCrossing_tilde* x)
     for (i = 0, j = bangSample; i < window; i++, j++)
         x->x_analysisBuffer[i] = x->x_signalBuffer[j];
 
-    crossings = tIDLib_zeroCrossingRate (window, x->x_analysisBuffer, x->x_normalize);
+    ratio = tIDLib_harmonicRatio (window, x->x_analysisBuffer, x->x_normalize);
 
-    outlet_float (x->x_crossings, crossings);
+    outlet_float (x->x_harmonicRatio, ratio);
 }
 
 
-static void zeroCrossing_tilde_window (t_zeroCrossing_tilde* x, t_floatarg w)
+static void harmonicRatio_tilde_window (t_harmonicRatio_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window;
 
@@ -90,7 +90,7 @@ static void zeroCrossing_tilde_window (t_zeroCrossing_tilde* x, t_floatarg w)
 }
 
 
-static void zeroCrossing_tilde_overlap (t_zeroCrossing_tilde* x, t_floatarg o)
+static void harmonicRatio_tilde_overlap (t_harmonicRatio_tilde* x, t_floatarg o)
 {
     // this change will be picked up the next time _dsp is called, where the samplerate will be updated to sp[0]->s_sr / x->x_overlap;
     x->x_overlap = (o < 1) ? 1 : o;
@@ -98,7 +98,7 @@ static void zeroCrossing_tilde_overlap (t_zeroCrossing_tilde* x, t_floatarg o)
     post ("%s overlap: %i", x->x_objSymbol->s_name, x->x_overlap);
 }
 
-static void zeroCrossing_tilde_normalize (t_zeroCrossing_tilde* x, t_floatarg n)
+static void harmonicRatio_tilde_normalize (t_harmonicRatio_tilde* x, t_floatarg n)
 {
     n = (n < 0) ? 0 : n;
     x->x_normalize = (n > 1) ? 1 : n;
@@ -106,7 +106,7 @@ static void zeroCrossing_tilde_normalize (t_zeroCrossing_tilde* x, t_floatarg n)
     post ("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
 }
 
-static void zeroCrossing_tilde_print (t_zeroCrossing_tilde* x)
+static void harmonicRatio_tilde_print (t_harmonicRatio_tilde* x)
 {
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr / x->x_overlap));
     post ("%s block size: %i", x->x_objSymbol->s_name, (t_uShortInt)x->x_n);
@@ -116,12 +116,12 @@ static void zeroCrossing_tilde_print (t_zeroCrossing_tilde* x)
 }
 
 
-static void* zeroCrossing_tilde_new (t_symbol* s, int argc, t_atom* argv)
+static void* harmonicRatio_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
-    t_zeroCrossing_tilde* x = (t_zeroCrossing_tilde *)pd_new (zeroCrossing_tilde_class);
+    t_harmonicRatio_tilde* x = (t_harmonicRatio_tilde *)pd_new (harmonicRatio_tilde_class);
     t_sampIdx i;
 
-    x->x_crossings = outlet_new (&x->x_obj, &s_float);
+    x->x_harmonicRatio = outlet_new (&x->x_obj, &s_float);
 
     // store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
     x->x_objSymbol = s;
@@ -152,7 +152,7 @@ static void* zeroCrossing_tilde_new (t_symbol* s, int argc, t_atom* argv)
     x->x_n = TID_BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
     x->x_lastDspTime = clock_getlogicaltime();
-    x->x_normalize = false;
+    x->x_normalize = true;
 
     x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_window + x->x_n) * sizeof (t_sample));
     x->x_analysisBuffer = (t_float *)t_getbytes (x->x_window * sizeof (t_float));
@@ -167,12 +167,12 @@ static void* zeroCrossing_tilde_new (t_symbol* s, int argc, t_atom* argv)
 }
 
 
-static t_int* zeroCrossing_tilde_perform (t_int* w)
+static t_int* harmonicRatio_tilde_perform (t_int* w)
 {
     t_uShortInt n;
     t_sampIdx i;
 
-    t_zeroCrossing_tilde* x = (t_zeroCrossing_tilde *)(w[1]);
+    t_harmonicRatio_tilde* x = (t_harmonicRatio_tilde *)(w[1]);
 
     t_sample* in = (t_float *)(w[2]);
     n = w[3];
@@ -191,10 +191,10 @@ static t_int* zeroCrossing_tilde_perform (t_int* w)
 }
 
 
-static void zeroCrossing_tilde_dsp (t_zeroCrossing_tilde* x, t_signal** sp)
+static void harmonicRatio_tilde_dsp (t_harmonicRatio_tilde* x, t_signal** sp)
 {
     dsp_add (
-        zeroCrossing_tilde_perform,
+        harmonicRatio_tilde_perform,
         3,
         x,
         sp[0]->s_vec,
@@ -224,7 +224,7 @@ static void zeroCrossing_tilde_dsp (t_zeroCrossing_tilde* x, t_signal** sp)
     };
 };
 
-static void zeroCrossing_tilde_free (t_zeroCrossing_tilde* x)
+static void harmonicRatio_tilde_free (t_harmonicRatio_tilde* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample));
@@ -234,64 +234,64 @@ static void zeroCrossing_tilde_free (t_zeroCrossing_tilde* x)
 
 }
 
-void zeroCrossing_tilde_setup (void)
+void harmonicRatio_tilde_setup (void)
 {
-    zeroCrossing_tilde_class =
+    harmonicRatio_tilde_class =
     class_new (
-        gensym ("zeroCrossing~"),
-        (t_newmethod)zeroCrossing_tilde_new,
-        (t_method)zeroCrossing_tilde_free,
-        sizeof (t_zeroCrossing_tilde),
+        gensym ("harmonicRatio~"),
+        (t_newmethod)harmonicRatio_tilde_new,
+        (t_method)harmonicRatio_tilde_free,
+        sizeof (t_harmonicRatio_tilde),
         CLASS_DEFAULT,
         A_GIMME,
         0
     );
 
     class_addcreator (
-        (t_newmethod)zeroCrossing_tilde_new,
-        gensym ("timbreIDLib/zeroCrossing~"),
+        (t_newmethod)harmonicRatio_tilde_new,
+        gensym ("timbreIDLib/harmonicRatio~"),
         A_GIMME,
         0
     );
 
-    CLASS_MAINSIGNALIN (zeroCrossing_tilde_class, t_zeroCrossing_tilde, x_f);
+    CLASS_MAINSIGNALIN (harmonicRatio_tilde_class, t_harmonicRatio_tilde, x_f);
 
-    class_addbang (zeroCrossing_tilde_class, zeroCrossing_tilde_bang);
+    class_addbang (harmonicRatio_tilde_class, harmonicRatio_tilde_bang);
 
     class_addmethod (
-        zeroCrossing_tilde_class,
-        (t_method)zeroCrossing_tilde_print,
+        harmonicRatio_tilde_class,
+        (t_method)harmonicRatio_tilde_print,
         gensym ("print"),
         0
     );
 
     class_addmethod (
-        zeroCrossing_tilde_class,
-        (t_method)zeroCrossing_tilde_window,
+        harmonicRatio_tilde_class,
+        (t_method)harmonicRatio_tilde_window,
         gensym ("window"),
         A_DEFFLOAT,
         0
     );
 
     class_addmethod (
-        zeroCrossing_tilde_class,
-        (t_method)zeroCrossing_tilde_overlap,
+        harmonicRatio_tilde_class,
+        (t_method)harmonicRatio_tilde_overlap,
         gensym ("overlap"),
         A_DEFFLOAT,
         0
     );
 
     class_addmethod (
-        zeroCrossing_tilde_class,
-        (t_method)zeroCrossing_tilde_normalize,
+        harmonicRatio_tilde_class,
+        (t_method)harmonicRatio_tilde_normalize,
         gensym ("normalize"),
         A_DEFFLOAT,
         0
     );
 
     class_addmethod (
-        zeroCrossing_tilde_class,
-        (t_method)zeroCrossing_tilde_dsp,
+        harmonicRatio_tilde_class,
+        (t_method)harmonicRatio_tilde_dsp,
         gensym ("dsp"),
         0
     );
