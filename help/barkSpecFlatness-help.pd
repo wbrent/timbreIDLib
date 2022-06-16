@@ -94,7 +94,7 @@ energy in the unfiltered bins (default: OFF);
 #X obj 693 95 barkSpecFlatness~;
 #X msg 145 257 analyze \$1 1024;
 #X text 288 457 Creation arguments are the name of the sample array
-to read from and filterbank spacing in Barks.;
+to analyze and filterbank spacing in Barks.;
 #X obj 58 463 barkSpecFlatness \$0-sample 0.5;
 #X msg 97 123 analyze 44100 2000;
 #X text 513 59 See the real-time version for more information on Bark

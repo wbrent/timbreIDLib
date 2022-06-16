@@ -95,7 +95,7 @@ OFF);
 #X connect 5 0 6 0;
 #X restore 130 247 pd waveform;
 #X text 237 496 Creation arguments are the name of the sample array
-to read from \, and separation in samples between analysis windows.
+to analyze \, and separation in samples between analysis windows.
 ;
 #N canvas 0 50 450 278 (subpatch) 0;
 #X array \$0-bin-diffs 513 float 0;

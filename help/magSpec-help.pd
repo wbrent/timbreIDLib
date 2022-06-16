@@ -101,7 +101,7 @@ f 28;
 #X connect 5 1 2 0;
 #X restore 50 632 pd do-plotting;
 #X text 213 590 Creation argument is the name of the sample array to
-read from., f 33;
+analyze., f 33;
 #X obj 50 596 magSpec \$0-sample;
 #X obj 598 438 magSpec~;
 #X text 596 389 See the real-time version for more information on magnitude

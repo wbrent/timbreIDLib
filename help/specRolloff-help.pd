@@ -78,7 +78,7 @@
 samples long (samples 44100 - 46099).;
 #X msg 97 122 analyze 44100 2000;
 #X text 269 445 Creation arguments are the name of the sample array
-to read from \, and a spectral energy concentration target., f 55
+to analyze \, and a spectral energy concentration target., f 55
 ;
 #X obj 58 452 specRolloff \$0-sample 0.85;
 #X obj 703 84 specRolloff~;

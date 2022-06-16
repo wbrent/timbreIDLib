@@ -1,7 +1,7 @@
 #N canvas 225 85 922 651 10;
 #X declare -lib timbreIDLib;
-#X obj 50 310 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 50 310 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-waveform 1024 float 0;
 #X coords 0 1 1023 -1 200 140 1 0 0;
@@ -39,21 +39,21 @@
 #X connect 4 0 3 0;
 #X restore 655 138 pd waveform;
 #X obj 50 243 hsl 800 25 0 38051 0 0 \$0-scrub-bar \$0-scrub-bar-set
-Scrub-bar -2 -8 0 12 -191407 -1 -1 0 1;
-#X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+Scrub-bar -2 -8 0 12 #b8b8b8 #000000 #000000 0 1;
+#X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
-#X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
 #N canvas 956 220 820 636 other-settings 0;
-#X obj 44 56 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
--1 4;
+#X obj 44 56 hradio 15 1 0 5 empty empty empty 0 -8 0 10 #fcfcfc #000000
+#000000 0;
 #X msg 44 76 window_function \$1;
 #X msg 100 138 set another-sample-array;
 #X msg 139 194 samplerate 48000;
 #X text 288 137 Read from a different array;
 #X msg 165 247 power_spectrum \$1;
-#X obj 165 229 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 165 229 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X obj 44 585 outlet;
 #X text 273 193 Specify your sample's sampling rate. (default: 44100)
 ;
@@ -62,11 +62,11 @@ Scrub-bar -2 -8 0 12 -191407 -1 -1 0 1;
 (1) \, Cosine (2) \, Hamming (3) \, or Hann (4). (default: Blackman)
 ;
 #X text 375 475 Print current settings in the post window;
-#X obj 195 279 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 195 279 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X msg 195 297 power_cepstrum \$1;
-#X obj 235 329 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 235 329 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X msg 235 347 spectrum_offset \$1;
 #X msg 265 387 threshold 3;
 #X text 372 382 Set threshold for detecting cepstral peak. In standard
@@ -98,23 +98,23 @@ cepstrum is computed (default: ON);
 #X text 245 436 Move through the soundfile with the slider above,
 f 28;
 #X text 675 592 July 2017;
-#X floatatom 50 568 5 0 0 0 - - -;
+#X floatatom 50 568 5 0 0 0 - - - 0;
 #X obj 50 546 cepstrumPitch \$0-sample 43 64;
 #X obj 598 438 cepstrumPitch~;
 #X text 596 389 See the real-time version for more information on cepstrum
 pitch tracking in general., f 33;
-#X text 295 530 Creation arguments are the name of the sample array
-to read from \, and the lower and upper bounds of the expected pitch
-range to track in MIDI units., f 42;
 #X text 48 613 Output value is pitch in MIDI units;
 #X msg 94 379 analyze 24100 2000;
-#X text 92 345 Analyze a window starting at sample 44100 that is 2000
-samples long (samples 24100 - 26099).;
 #X obj 677 612 declare -lib timbreIDLib;
+#X text 92 345 Analyze a window starting at sample 24100 that is 2000
+samples long (samples 24100 - 26099).;
+#X text 295 530 Creation arguments are the name of the sample array
+to analyze and the lower and upper bounds of the expected pitch range
+to track in MIDI units., f 42;
 #X connect 0 0 16 0;
 #X connect 4 0 16 0;
 #X connect 9 0 16 0;
 #X connect 11 0 4 0;
 #X connect 12 0 5 0;
 #X connect 16 0 15 0;
-#X connect 21 0 16 0;
+#X connect 20 0 16 0;

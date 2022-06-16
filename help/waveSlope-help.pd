@@ -104,7 +104,7 @@ the peak amplitude is 1 (default: OFF);
 #X coords 0 -1 1 1 250 70 1 100 100;
 #X restore 51 593 pd graph-slope;
 #X text 212 541 Creation argument is the name of the sample array to
-read from, f 33;
+analyze, f 33;
 #X obj 628 450 waveSlope~;
 #X text 626 401 See the real-time version for more information on waveform
 slope in general., f 33;

@@ -93,7 +93,7 @@ samples long (samples 44100 - 46099);
 , f 30;
 #X obj 51 597 specSlope \$0-sample;
 #X text 212 588 Creation argument is the name of the sample array to
-read from, f 33;
+analyze, f 33;
 #N canvas 354 379 895 386 graph-slope-measure-magSpec 0;
 #X obj 114 125 nbx 7 32 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 32
 -262144 -1 -1 0 256;

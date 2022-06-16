@@ -1,0 +1,81 @@
+#N canvas 252 172 988 678 10;
+#X declare -lib timbreIDLib;
+#X obj 108 132 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 137 171 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 #e0e0e0 #404040
+0;
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 #e0e0e0 #404040
+0;
+#N canvas 876 349 587 271 other-settings 0;
+#X obj 55 212 outlet;
+#X msg 135 140 print;
+#X text 185 142 Print current settings in the post window;
+#X msg 95 100 overlap 2;
+#X text 176 88 Inside a subpatch with re-blocking involving overlap
+(e.g. \, [block~ 4096 2]) \, you'll need to change the overlap for
+things to behave properly;
+#X msg 55 60 threshold 50;
+#X text 162 55 Set threshold for detecting correlation peak in percent
+(default: 60);
+#X connect 1 0 0 0;
+#X connect 3 0 0 0;
+#X connect 5 0 0 0;
+#X restore 237 300 pd other-settings;
+#X msg 193 243 window 2000;
+#X text 275 243 Change analysis window size;
+#X text 172 153 Bang repeatedly to keep refreshing..., f 21;
+#N canvas 0 50 450 278 (subpatch) 0;
+#X array acPitch 100 float 0;
+#X coords 0 64 99 40 200 140 1 0 0;
+#X restore 523 305 graph;
+#X obj 241 466 f;
+#X obj 271 458 + 1;
+#X obj 271 480 % 100;
+#X obj 137 212 t b b;
+#X obj 57 72 adc~;
+#X text 105 115 Bang to output pitch;
+#X obj 137 190 metro 20;
+#X floatatom 84 460 10 0 0 0 - - - 0;
+#X obj 688 536 timbreID;
+#X text 521 471 This feature can be sent to the timbreID external in
+order to identify timbres in real time. For more on using audio features
+for classification \, see the timbreID helpfile:;
+#X text 521 201 Audio buffering and windowing are taken care of by
+the external \, so there is no need for tabreceive~ or block~. You
+can set the window size with a creation argument \, or change it with
+the "window" message. Window size is not required to be a power of
+two.;
+#X obj 678 641 declare -lib timbreIDLib;
+#X obj 57 387 autoCorrPitch~ 2048;
+#X text 677 599 Updated for timbreIDLib version 0.9;
+#X text 677 619 June 2022;
+#X obj 57 501 tabwrite acPitch;
+#X text 189 387 Creation argument is window size in samples., f 45
+;
+#X text 521 34 autoCorrPitch~ works by calculating the autocorrelation
+of an incoming periodic signal and finding the distance between correlation
+peaks in the results. The distance between peaks is related to the
+period of the signal in samples \, which is then converted to Hz and
+finally MIDI units.;
+#X text 521 104 Autocorrelation is a time-domain calculation. In order
+to get accurate results \, a full period of the incoming signal must
+be captured \, so window size must be chosen carefullly. For instance
+\, at a sampling rate of 44.1kHz \, using a window size of 512 samples
+will only produce meaningful results for signals above ~90Hz. Increasing
+window size to 1024 can extract frequencies as low as ~45Hz.;
+#X connect 0 0 21 0;
+#X connect 1 0 15 0;
+#X connect 4 0 21 0;
+#X connect 5 0 21 0;
+#X connect 9 0 10 0;
+#X connect 9 0 24 1;
+#X connect 10 0 11 0;
+#X connect 11 0 9 1;
+#X connect 12 0 21 0;
+#X connect 12 1 9 0;
+#X connect 13 0 21 0;
+#X connect 15 0 12 0;
+#X connect 21 0 16 0;
+#X connect 21 0 24 0;

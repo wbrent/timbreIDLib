@@ -1,0 +1,88 @@
+#N canvas 199 191 922 651 10;
+#X declare -lib timbreIDLib;
+#X obj 50 310 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-waveform 1024 float 0;
+#X coords 0 1 1023 -1 200 140 1 0 0;
+#X restore 47 47 graph;
+#X text 72 307 Bang to analyze the entire array.;
+#N canvas 721 350 482 216 soundfile 0;
+#X obj 50 103 soundfiler;
+#X obj 50 24 loadbang;
+#X obj 50 46 f \$0;
+#X msg 50 78 read -resize ./audio/voice2.wav \$1-sample;
+#X obj 185 120 table \$0-sample;
+#X obj 50 125 - 1024;
+#X obj 50 147 pack f \$0;
+#X msg 50 169 \; \$2-scrub-bar-set range 0 \$1 \;;
+#X connect 0 0 5 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 0 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X restore 655 86 pd soundfile;
+#X msg 107 455 analyze \$1 1024;
+#N canvas 722 238 304 333 waveform 0;
+#X obj 46 61 inlet;
+#X obj 46 82 t f f;
+#X obj 91 131 + 1023;
+#X msg 46 200 copy_range 0 \$3-sample \$1 \$2;
+#X obj 46 164 pack f f \$0;
+#X obj 46 241 tabletool \$0-waveform;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 1 1 2 0;
+#X connect 2 0 4 1;
+#X connect 3 0 5 0;
+#X connect 4 0 3 0;
+#X restore 655 138 pd waveform;
+#X obj 50 243 hsl 800 25 0 38051 0 0 \$0-scrub-bar \$0-scrub-bar-set
+Scrub-bar -2 -8 0 12 #b8b8b8 #000000 #000000 0 1;
+#X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 #e0e0e0 #404040
+0;
+#X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 #e0e0e0 #404040
+0;
+#N canvas 911 367 625 290 other-settings 0;
+#X msg 54 51 set another-sample-array;
+#X msg 94 91 samplerate 48000;
+#X text 242 50 Read from a different array;
+#X obj 54 221 outlet;
+#X text 228 90 Specify your sample's sampling rate. (default: 44100)
+;
+#X msg 174 171 print;
+#X text 224 173 Print current settings in the post window;
+#X msg 134 131 threshold 50;
+#X text 241 126 Set threshold for detecting correlation peak in percent
+(default: 60);
+#X connect 0 0 3 0;
+#X connect 1 0 3 0;
+#X connect 5 0 3 0;
+#X connect 7 0 3 0;
+#X restore 152 498 pd other-settings;
+#X obj 107 433 r \$0-scrub-bar;
+#X obj 655 116 r \$0-scrub-bar;
+#X text 245 436 Move through the soundfile with the slider above,
+f 28;
+#X floatatom 50 568 5 0 0 0 - - - 0;
+#X text 48 613 Output value is pitch in MIDI units;
+#X obj 677 612 declare -lib timbreIDLib;
+#X obj 50 546 autoCorrPitch \$0-sample;
+#X text 675 572 Updated for timbreIDLib version 0.9;
+#X text 675 592 June 2022;
+#X obj 598 438 autoCorrPitch~;
+#X text 596 389 See the real-time version for more information on autocorrelation
+pitch tracking in general., f 38;
+#X msg 94 379 analyze 24100 2000;
+#X text 92 345 Analyze a window starting at sample 24100 that is 2000
+samples long (samples 24100 - 26099).;
+#X text 222 541 Creation argument is the name of the sample array to
+analyze., f 37;
+#X connect 0 0 16 0;
+#X connect 4 0 16 0;
+#X connect 9 0 16 0;
+#X connect 10 0 4 0;
+#X connect 11 0 5 0;
+#X connect 16 0 13 0;
+#X connect 21 0 16 0;

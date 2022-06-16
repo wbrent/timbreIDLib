@@ -103,7 +103,7 @@ samples long (samples 44100 - 46099).;
 #X text 513 58 See the real-time version for more information on Bark
 spectrum brightness in general.;
 #X text 334 510 Creation arguments are the name of the sample array
-to read from \, filterbank spacing in Barks \, and boundary point in
+to analyze \, filterbank spacing in Barks \, and boundary point in
 Barks;
 #X text 725 598 Updated for timbreIDLib version 0.7.6;
 #X text 725 618 August 2018;

@@ -104,7 +104,7 @@ either sum or average the energy in each filter (default: sum);
 f 27;
 #X obj 50 586 mfcc \$0-sample 100;
 #X text 219 580 Creation arguments are the name of the sample array
-to read from and spacing of the filterbank in mels., f 53;
+to analyze and spacing of the filterbank in mels., f 53;
 #X obj 618 468 mfcc~;
 #X text 616 399 See the real-time version for more information on mel-frequency
 Ceptrum Coefficients (MFCCs) in general., f 33;

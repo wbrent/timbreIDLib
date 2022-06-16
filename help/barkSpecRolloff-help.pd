@@ -100,7 +100,7 @@ spectrum rolloff in general.;
 #X obj 629 105 barkSpecRolloff~;
 #X obj 58 522 barkSpecRolloff \$0-sample 0.5 0.85;
 #X text 328 514 Creation arguments are the name of the sample array
-to read from \, filterbank spacing in Barks \, and concentration threshold
+to analyze \, filterbank spacing in Barks \, and concentration threshold
 , f 64;
 #X msg 206 346 concentration 0.7;
 #X text 357 339 Change the concentration threshold (0 - 1.0), f 26

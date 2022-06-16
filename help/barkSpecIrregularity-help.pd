@@ -97,7 +97,7 @@ can either sum or average the energy in each filter .(default: sum)
 samples long (samples 44100 - 46099).;
 #X obj 58 522 barkSpecIrregularity \$0-sample 0.5 0;
 #X text 344 513 Creation arguments are the name of the sample array
-to read from \, filterbank spacing in Barks \, and algorithm: Jensen
+to analyze \, filterbank spacing in Barks \, and algorithm: Jensen
 (0) \, or Krimphoff (1), f 74;
 #X obj 629 105 barkSpecIrregularity~;
 #X text 513 58 See the real-time version for more information on Bark

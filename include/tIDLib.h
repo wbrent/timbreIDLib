@@ -205,6 +205,7 @@ t_float tIDLib_euclidDist (t_attributeIdx n, t_float* v1, t_float* v2, t_float* 
 t_float tIDLib_taxiDist (t_attributeIdx n, t_float* v1, t_float* v2, t_float* weights);
 t_float tIDLib_corr (t_attributeIdx n, t_float* v1, t_float* v2);
 void tIDLib_autoCorr (t_attributeIdx n, t_float* vec, t_attributeIdx rhoN, t_float* rho, t_bool norm);
+t_sampIdx tIDLib_autoCorrPeriod (t_attributeIdx rhoN, t_float* rho, t_attributeIdx winN, t_float threshPct);
 void tIDLib_peaksValleys (t_sampIdx n, t_float* data, t_float* flags, t_float* minVal, t_float* maxVal);
 /* ---------------- END utility functions ---------------------- */
 
@@ -255,6 +256,8 @@ void tIDLib_log (t_binIdx n, t_float* input);
 /* ---------------- external setup function declarations ---------------------- */
 void attackTime_setup (void);
 void attackTime_tilde_setup (void);
+void autoCorrPitch_setup (void);
+void autoCorrPitch_tilde_setup (void);
 void bark_setup (void);
 void bark2freq_setup (void);
 void barkSpec_setup (void);

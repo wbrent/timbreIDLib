@@ -84,7 +84,7 @@ f 28;
 #X connect 5 1 2 0;
 #X restore 50 622 pd do-plotting;
 #X text 213 580 Creation argument is the name of the sample array to
-read from., f 33;
+analyze., f 33;
 #X text 92 345 Analyze a window starting at sample 44100 that is 2000
 samples long (samples 44100 - 46099).;
 #N canvas 0 50 450 300 (subpatch) 0;

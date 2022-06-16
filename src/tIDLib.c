@@ -1327,6 +1327,55 @@ t_float tIDLib_harmonicRatio (t_sampIdx n, t_sample* input, t_bool normalize)
     return (ratio);
 }
 
+t_sampIdx tIDLib_autoCorrPeriod (t_attributeIdx rhoN, t_float* rho, t_attributeIdx winN, t_float threshPct)
+{
+    t_attributeIdx i;
+    t_sampIdx periodSamps;
+    t_float minVal, maxPeakVal, minPeakVal, maxPeakRange, thresh, freq;
+    t_float* flagsBuf;
+
+    flagsBuf = (t_float *)t_getbytes (rhoN * sizeof (t_float));
+
+    minVal = FLT_MAX;
+    maxPeakVal = -FLT_MAX;
+    minPeakVal = FLT_MAX;
+
+    // zero out all values before indices (winN - 1) through (rhoBufferSize - 1)
+    // also zero out any negative rho values
+    for (i = 0; i < rhoN; i++)
+    {
+        if (i < winN - 1 || rho[i] < 0.0)
+          rho[i] = 0.0;
+    }
+
+    // look for peaks that are 60% as high as the unity zero-lag peak at the start
+    tIDLib_peaksValleys (rhoN, rho, flagsBuf, &minPeakVal, &maxPeakVal);
+
+    // determine the threshold based on actual values. since the minimum value is guaranteed to be zero after the above processing, this only involves the max peak value and threshold in percent
+    thresh = maxPeakVal * (threshPct / 100.0);
+
+    // get the index of the first major peak after the unity zero-lag peak
+    for (i = winN - 1; i < rhoN; i++)
+    {
+        // 0.5 in the flagsBuf means a half peak, which we'll ignore
+        if (flagsBuf[i] > 0.5)
+        {
+            // ignore the zero-lag peak
+            if (rho[i] != maxPeakVal && rho[i] >= thresh)
+            {
+                // get the distance between the zero-lag peak index (at winN - 1) and the following significant peak we found here. we add 1 at the end to get the number of indices (samples) in that range
+                periodSamps = (i - (winN - 1)) + 1;
+                break;
+            }
+        }
+    }
+
+    // free local memory
+    t_freebytes (flagsBuf, rhoN * sizeof (t_float));
+
+    return (periodSamps);
+}
+
 // for chroma objects
 t_uInt tIDLib_getPitchBinRanges (t_binIdx* binRanges, t_float thisPitch, t_float loFreq, t_float hiFreq, t_float pitchTolerance, t_sampIdx n, t_float sr)
 {

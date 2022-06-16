@@ -75,7 +75,7 @@ centroid in general.;
 #X connect 6 0 5 0;
 #X restore 155 269 pd waveform;
 #X text 259 477 Creation argument is the name of the sample array to
-read from., f 33;
+analyze., f 33;
 #X text 107 143 Analyze a window starting at sample 44100 that is 2000
 samples long (samples 44100 - 46099);
 #X obj 59 483 specCentroid \$0-sample;

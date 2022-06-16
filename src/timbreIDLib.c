@@ -36,6 +36,8 @@ void timbreIDLib_setup (void)
 
     attackTime_setup();
     attackTime_tilde_setup();
+    autoCorrPitch_setup();
+    autoCorrPitch_tilde_setup();
     bark_setup();
     bark2freq_setup();
     barkSpec_setup();

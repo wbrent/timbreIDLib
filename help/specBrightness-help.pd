@@ -82,7 +82,7 @@ brightness in general.;
 samples long (samples 44100 - 46099).;
 #X msg 97 122 analyze 44100 2000;
 #X text 278 441 Creation arguments are the name of the sample array
-to read from \, and a boundary frequency to determine the ratio of
+to analyze \, and a boundary frequency to determine the ratio of
 high spectral content., f 47;
 #X text 661 523 Updated for timbreIDLib version 0.7.6;
 #X text 661 543 August 2018;

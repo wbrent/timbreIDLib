@@ -1,6 +1,6 @@
 /*
 
-harmonicRatio
+autoCorrPitch
 
 Copyright 2009 William Brent
 
@@ -15,26 +15,26 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include "tIDLib.h"
 
-static t_class* harmonicRatio_class;
+static t_class* autoCorrPitch_class;
 
-typedef struct _harmonicRatio
+typedef struct _autoCorrPitch
 {
     t_object x_obj;
     t_symbol* x_objSymbol;
     t_float x_sr;
     t_sampIdx x_window;
-    t_bool x_normalize;
     t_float* x_analysisBuffer;
     t_word* x_vec;
     t_symbol* x_arrayName;
     t_sampIdx x_arrayPoints;
-    t_outlet* x_harmonicRatio;
-} t_harmonicRatio;
+    t_float x_thresh;
+    t_outlet* x_pitchOut;
+} t_autoCorrPitch;
 
 
-/* ------------------------ harmonicRatio -------------------------------- */
+/* ------------------------ autoCorrPitch -------------------------------- */
 
-static void harmonicRatio_analyze (t_harmonicRatio* x, t_floatarg start, t_floatarg n)
+static void autoCorrPitch_analyze (t_autoCorrPitch* x, t_floatarg start, t_floatarg n)
 {
     t_garray* a;
 
@@ -44,8 +44,9 @@ static void harmonicRatio_analyze (t_harmonicRatio* x, t_floatarg start, t_float
         pd_error (x, "%s: bad template for %s", x->x_arrayName->s_name, x->x_objSymbol->s_name);
     else
     {
-        t_sampIdx i, j, oldWindow, window, startSamp, endSamp;
-        t_float ratio;
+        t_sampIdx i, j, rhoBufferSize, oldWindow, window, startSamp, endSamp;
+        t_float pitch;
+        t_float* rhoBuffer;
 
         startSamp = (start < 0) ? 0 : start;
 
@@ -92,14 +93,35 @@ static void harmonicRatio_analyze (t_harmonicRatio* x, t_floatarg start, t_float
         for (i = 0, j = startSamp; j <= endSamp; i++, j++)
             x->x_analysisBuffer[i] = x->x_vec[j].w_float;
 
-        ratio = tIDLib_harmonicRatio (window, x->x_analysisBuffer, x->x_normalize);
-        outlet_float (x->x_harmonicRatio, ratio);
+        rhoBufferSize = (x->x_window * 2) - 1;
+
+        rhoBuffer = (t_float *)t_getbytes (rhoBufferSize * sizeof (t_float));
+
+        // init rhoBuffer with zeros
+        for (i = 0; i < rhoBufferSize; i++)
+            rhoBuffer[i] = 0.0;
+
+        tIDLib_autoCorr (x->x_window, x->x_analysisBuffer, rhoBufferSize, rhoBuffer, false);
+
+        // pass the rhoBuffer to tIDLib_autoCorrPitch to get the estimated period in samples
+        pitch = tIDLib_autoCorrPeriod (rhoBufferSize, rhoBuffer, x->x_window, x->x_thresh);
+
+        // divide the sampling rate by the period in samples to get the frequency estimate in Hz
+        pitch = x->x_sr / pitch;
+
+        // convert Hz to MIDI units
+        pitch = ftom (pitch);
+
+        // free local memory
+        t_freebytes (rhoBuffer, rhoBufferSize * sizeof (t_float));
+
+        outlet_float (x->x_pitchOut, pitch);
     }
 }
 
 
 // analyze the whole damn array
-static void harmonicRatio_bang (t_harmonicRatio* x)
+static void autoCorrPitch_bang (t_autoCorrPitch* x)
 {
     t_garray* a;
 
@@ -112,12 +134,12 @@ static void harmonicRatio_bang (t_harmonicRatio* x)
         t_sampIdx window, startSamp;
         startSamp = 0;
         window = x->x_arrayPoints;
-        harmonicRatio_analyze (x, startSamp, window);
+        autoCorrPitch_analyze (x, startSamp, window);
     }
 }
 
 
-static void harmonicRatio_set (t_harmonicRatio* x, t_symbol* s)
+static void autoCorrPitch_set (t_autoCorrPitch* x, t_symbol* s)
 {
     t_garray* a;
 
@@ -129,24 +151,17 @@ static void harmonicRatio_set (t_harmonicRatio* x, t_symbol* s)
         x->x_arrayName = s;
 }
 
-static void harmonicRatio_normalize (t_harmonicRatio* x, t_floatarg n)
-{
-    n = (n < 0) ? 0 : n;
-    x->x_normalize = (n > 1) ? 1 : n;
 
-    post ("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
-}
-
-static void harmonicRatio_print (t_harmonicRatio* x)
+static void autoCorrPitch_print (t_autoCorrPitch* x)
 {
     post ("%s array: %s", x->x_objSymbol->s_name, x->x_arrayName->s_name);
     post ("%s samplerate: %i", x->x_objSymbol->s_name, (t_sampIdx)(x->x_sr));
     post ("%s window: %i", x->x_objSymbol->s_name, x->x_window);
-    post ("%s normalize: %i", x->x_objSymbol->s_name, x->x_normalize);
+    post ("%s threshold: %0.2f", x->x_objSymbol->s_name, x->x_thresh);
 }
 
 
-static void harmonicRatio_samplerate (t_harmonicRatio* x, t_floatarg sr)
+static void autoCorrPitch_samplerate (t_autoCorrPitch* x, t_floatarg sr)
 {
     if (sr < TID_MINSAMPLERATE)
         x->x_sr = TID_MINSAMPLERATE;
@@ -155,12 +170,21 @@ static void harmonicRatio_samplerate (t_harmonicRatio* x, t_floatarg sr)
 }
 
 
-static void* harmonicRatio_new (t_symbol* s, int argc, t_atom* argv)
+static void autoCorrPitch_threshold (t_autoCorrPitch* x, t_floatarg thresh)
 {
-    t_harmonicRatio* x = (t_harmonicRatio *)pd_new (harmonicRatio_class);
+    thresh = (thresh < 0.0) ? 0.0 : thresh;
+    thresh = (thresh > 100.0) ? 100.0 : thresh;
+
+    x->x_thresh = thresh;
+}
+
+
+static void* autoCorrPitch_new (t_symbol* s, int argc, t_atom* argv)
+{
+    t_autoCorrPitch* x = (t_autoCorrPitch *)pd_new (autoCorrPitch_class);
 //	t_garray *a;
 
-    x->x_harmonicRatio = outlet_new (&x->x_obj, &s_float);
+    x->x_pitchOut = outlet_new (&x->x_obj, &s_float);
 
     // store the pointer to the symbol containing the object name. Can access it for error and post functions via s->s_name
     x->x_objSymbol = s;
@@ -185,7 +209,7 @@ static void* harmonicRatio_new (t_symbol* s, int argc, t_atom* argv)
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
     x->x_window = TID_WINDOWSIZEDEFAULT;
-    x->x_normalize = true;
+    x->x_thresh = 60.0;
 
     x->x_analysisBuffer = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
 
@@ -193,38 +217,38 @@ static void* harmonicRatio_new (t_symbol* s, int argc, t_atom* argv)
 }
 
 
-static void harmonicRatio_free (t_harmonicRatio* x)
+static void autoCorrPitch_free (t_autoCorrPitch* x)
 {
     // free the input buffer memory
     t_freebytes (x->x_analysisBuffer, x->x_window * sizeof (t_sample));
 }
 
 
-void harmonicRatio_setup (void)
+void autoCorrPitch_setup (void)
 {
-    harmonicRatio_class =
+    autoCorrPitch_class =
     class_new (
-        gensym ("harmonicRatio"),
-        (t_newmethod)harmonicRatio_new,
-        (t_method)harmonicRatio_free,
-        sizeof (t_harmonicRatio),
+        gensym ("autoCorrPitch"),
+        (t_newmethod)autoCorrPitch_new,
+        (t_method)autoCorrPitch_free,
+        sizeof (t_autoCorrPitch),
         CLASS_DEFAULT,
         A_GIMME,
         0
     );
 
     class_addcreator (
-        (t_newmethod)harmonicRatio_new,
-        gensym ("timbreIDLib/harmonicRatio"),
+        (t_newmethod)autoCorrPitch_new,
+        gensym ("timbreIDLib/autoCorrPitch"),
         A_GIMME,
         0
     );
 
-    class_addbang (harmonicRatio_class, harmonicRatio_bang);
+    class_addbang (autoCorrPitch_class, autoCorrPitch_bang);
 
     class_addmethod (
-        harmonicRatio_class,
-        (t_method)harmonicRatio_analyze,
+        autoCorrPitch_class,
+        (t_method)autoCorrPitch_analyze,
         gensym ("analyze"),
         A_DEFFLOAT,
         A_DEFFLOAT,
@@ -232,32 +256,32 @@ void harmonicRatio_setup (void)
     );
 
     class_addmethod (
-        harmonicRatio_class,
-        (t_method)harmonicRatio_set,
+        autoCorrPitch_class,
+        (t_method)autoCorrPitch_set,
         gensym ("set"),
         A_SYMBOL,
         0
     );
 
     class_addmethod (
-        harmonicRatio_class,
-        (t_method)harmonicRatio_normalize,
-        gensym ("normalize"),
-        A_DEFFLOAT,
-        0
-    );
-
-    class_addmethod (
-        harmonicRatio_class,
-        (t_method)harmonicRatio_print,
+        autoCorrPitch_class,
+        (t_method)autoCorrPitch_print,
         gensym ("print"),
         0
     );
 
     class_addmethod (
-        harmonicRatio_class,
-        (t_method)harmonicRatio_samplerate,
+        autoCorrPitch_class,
+        (t_method)autoCorrPitch_samplerate,
         gensym ("samplerate"),
+        A_DEFFLOAT,
+        0
+    );
+
+    class_addmethod (
+        autoCorrPitch_class,
+        (t_method)autoCorrPitch_threshold,
+        gensym ("threshold"),
         A_DEFFLOAT,
         0
     );

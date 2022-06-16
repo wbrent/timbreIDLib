@@ -41,7 +41,7 @@
 -2 -8 0 12 -191407 -1 -1 0 1;
 #X obj 618 468 barkSpec~;
 #X text 223 540 Creation arguments are the name of the sample array
-to read from and spacing of the filterbank in Barks.;
+to analyze and spacing of the filterbank in Barks.;
 #X obj 3 3 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
 0;
 #X obj 3 3 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577

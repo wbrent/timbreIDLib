@@ -53,7 +53,7 @@ samples long (samples 44100 - 46099), f 47;
 #X msg 134 411 analyze \$1 1024;
 #X obj 490 487 r \$0-scrub-bar;
 #X text 269 590 Creation arguments are the name of the sample array
-to read from \, and filterbank spacing in Barks;
+to analyze \, and filterbank spacing in Barks;
 #X text 626 371 See the real-time version for more information on Bark
 spectrum slope in general., f 33;
 #X obj 628 420 barkSpecSlope~;

@@ -94,7 +94,7 @@ energy in the unfiltered bins (default: OFF);
 #X restore 154 259 pd waveform;
 #X msg 97 123 analyze 44100 2000;
 #X text 298 447 Creation arguments are the name of the sample array
-to read from \, and filterbank spacing in Barks;
+to analyze \, and filterbank spacing in Barks;
 #X text 117 153 Analyze a window starting at sample 44100 that is 2000
 samples long (samples 44100 - 46099).;
 #X obj 741 86 barkSpecSpread~;

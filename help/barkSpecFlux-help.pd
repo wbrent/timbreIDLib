@@ -122,7 +122,7 @@ OFF);
 spectrum flux in general.;
 #X msg 58 73 analyze 44100 2000;
 #X text 310 513 Creation arguments are the name of the sample array
-to read from \, filterbank spacing in Barks \, and separation in samples
+to analyze \, filterbank spacing in Barks \, and separation in samples
 between analysis windows., f 27;
 #X text 76 102 Analyze a FORWARD window starting at sample 44100 that
 is 2000 samples long (samples 44100 - 46099). The BACK analysis window

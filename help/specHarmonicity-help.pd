@@ -114,7 +114,7 @@ samples long (samples 44100 - 46099;
 #X obj 637 327 r \$0-scrub-bar;
 #X text 219 242 Move through the soundfile with the slider above;
 #X text 245 530 Creation argument is the name of the sample array to
-read from., f 33;
+analyze., f 33;
 #X floatatom 40 576 5 0 0 0 - - -;
 #X obj 298 394 sigmund~ -t pitch;
 #X obj 345 466 mtof;

@@ -83,7 +83,7 @@ samples long (samples 44100 - 46099).;
 #X msg 97 122 analyze 44100 2000;
 #X obj 58 482 specIrregularity \$0-sample 0;
 #X text 278 471 Creation arguments are the name of the sample array
-to read from \, and choice of algorithm: either Jensen (0) or Krimphoff
+to analyze \, and choice of algorithm: either Jensen (0) or Krimphoff
 (1).;
 #X text 513 58 See the real-time version for more information on spectral
 irregularity in general.;
