@@ -1,22 +1,22 @@
 #N canvas 208 96 1106 818 10;
 #X declare -lib timbreIDLib;
-#X obj 104 642 tgl 15 0 empty empty train 17 7 0 12 -262144 -1 -1 0
-1;
+#X obj 104 642 tgl 15 0 empty empty train 17 7 0 12 #fcfcfc #000000
+#000000 0 1;
 #X obj 183 642 spigot;
-#X obj 232 642 tgl 15 0 empty empty id 17 7 0 12 -262144 -1 -1 0 1
-;
+#X obj 232 642 tgl 15 0 empty empty id 17 7 0 12 #fcfcfc #000000 #000000
+0 1;
 #X obj 604 696 nbx 3 28 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 28
--262144 -1 -1 0 256;
+#fcfcfc #000000 #000000 0 256;
 #X obj 55 142 readsf~;
 #X obj 92 186 dac~;
-#X floatatom 712 652 10 0 0 0 - - -;
+#X floatatom 712 652 10 0 0 0 - - - 0;
 #X msg 472 311 uncluster;
 #X msg 504 355 clear;
 #X obj 604 729 print timbre;
 #N canvas 392 143 973 518 long-winded-introduction 0;
-#X obj 3 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 3 4 cnv 10 400 10 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
-#X obj 3 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 3 4 cnv 10 10 400 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
 #X text 505 380 For more detailed examples \, download the separate
 examples package from https://www.github.com/wbrent/timbreID;
@@ -63,25 +63,25 @@ be used in real-time for a performance \, or for non-real-time research
 and composition. See the timbre-ordering example in the examples package
 for more information.;
 #X restore 594 62 pd long-winded-introduction;
-#X obj 594 105 cnv 15 380 50 empty empty empty 20 12 0 14 -228856 -66577
+#X obj 594 105 cnv 15 380 50 empty empty empty 20 12 0 14 #dcdcdc #404040
 0;
 #X obj 692 500 timbreID, f 17;
 #X msg 457 291 cluster 12;
-#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
-#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
 #X msg 95 107 stop;
 #X text 66 316 Detect onsets with bark~;
 #N canvas 507 196 745 433 onsets 0;
 #X obj 56 53 inlet~;
 #X obj 146 327 outlet;
-#X obj 3 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 3 4 cnv 10 400 10 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
-#X obj 3 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 3 4 cnv 10 10 400 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
-#X obj 178 173 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
+#X obj 178 173 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
 #X obj 171 96 r bark-settings;
 #X obj 146 135 bark~ 1024 256 0.5;
 #X obj 336 292 loadbang;
@@ -110,7 +110,7 @@ but has several extra conveniences.;
 #X obj 55 469 bfcc~ 1024 0.5;
 #N canvas 744 501 601 208 outlet-3 0;
 #X obj 77 26 inlet;
-#X floatatom 77 141 10 0 0 0 - - -;
+#X floatatom 77 141 10 0 0 0 - - - 0;
 #X text 148 56 The third outlet reports a questionable confidence measure
 between 0 and 1.0. This is more meaningful when clusters are specified
 \, and when the KNN search size is greater than the number of training
@@ -124,15 +124,15 @@ vector composed of spectral centroid and spectral flux \, and want
 the latter feature to have half as much impact as the former during
 distance calculation. This is the way to play with the balance.;
 #X msg 35 595 weights 1 0.5;
-#X obj 581 193 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 581 193 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X msg 581 213 normalize \$1;
-#X obj 35 48 hradio 15 1 0 3 empty empty empty 0 -8 0 10 -262144 -1
--1 0;
+#X obj 35 48 hradio 15 1 0 3 empty empty empty 0 -8 0 10 #fcfcfc #000000
+#000000 0;
 #X msg 35 439 knn 7;
-#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
-#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
 #N canvas 418 126 971 763 file-formats 0;
 #X obj 482 454 s \$0-tID;
@@ -201,7 +201,7 @@ by spaces and terminating with a carriage return.;
 #X connect 21 0 2 0;
 #X restore 35 132 pd file-formats;
 #N canvas 369 206 940 574 requesting-info 0;
-#X floatatom 32 141 5 0 0 0 - - -;
+#X floatatom 32 141 5 0 0 0 - - - 0;
 #X msg 482 350 max_values;
 #X msg 568 350 min_values;
 #X msg 485 97 print;
@@ -218,7 +218,7 @@ database;
 #X msg 511 228 min_feature_length;
 #X text 29 121 Request a specific instance's full feature list;
 #X msg 32 410 similarity_matrix 0 19 1;
-#X floatatom 32 231 5 0 0 0 - - -;
+#X floatatom 32 231 5 0 0 0 - - - 0;
 #X obj 32 270 s \$0-tID;
 #X text 70 230 Request a list of a specific attribute for all instances
 ;
@@ -274,8 +274,8 @@ optional normalization flag: 0 = unnormalized \, 1 = normalized 0 to
 #X msg 32 210 neighborhood 7;
 #X msg 487 127 jump_prob 0.75;
 #X msg 487 297 max_matches 5;
-#X obj 487 472 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 487 472 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X msg 487 492 concat_search_wrap \$1;
 #X obj 32 230 s \$0-tID;
 #X obj 32 332 s \$0-tID;
@@ -286,10 +286,10 @@ optional normalization flag: 0 = unnormalized \, 1 = normalized 0 to
 #X obj 487 147 s \$0-tID;
 #X msg 32 402 reorient \$1;
 #X msg 32 492 stutter_protect \$1;
-#X obj 12 492 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X obj 12 402 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 12 492 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 12 402 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X text 30 26 These methods are only relevant when performing ID requests
 via [timbreID]'s third inlet \, which is designed for use in concatenative
 synthesis. See the concatenative example in the accompanying examples
@@ -335,7 +335,7 @@ it will be reported as the best match.;
 #N canvas 307 96 1030 603 more-on-clustering 0;
 #X msg 361 431 manual_cluster 12 0 0 4;
 #X msg 44 202 clusters_list;
-#X floatatom 71 323 5 0 0 0 - - -;
+#X floatatom 71 323 5 0 0 0 - - - 0;
 #X msg 71 342 cluster_list \$1;
 #X text 568 350 Another alternative to auto-clustering is "manual_cluster"
 \, which might be useful if you have to cluster things in the middle
@@ -359,7 +359,7 @@ simpler - each line contains the index of instances that should be
 clustered together. Terminate each line with a carriage return.;
 #X msg 44 521 cluster_membership \$1;
 #X obj 44 543 s \$0-tID;
-#X floatatom 44 501 5 0 0 0 - - -;
+#X floatatom 44 501 5 0 0 0 - - - 0;
 #X msg 191 76 write_clusters_text ./data/cluster.txt;
 #X msg 201 96 read_clusters_text ./data/cluster.txt;
 #X msg 171 46 read_clusters ./data/cluster.clu;
@@ -399,8 +399,8 @@ if you don't keep track of this properly.;
 #X text 162 244 << Methods designed for concatenative synthesis. They
 may also be useful for other matching applications., f 54;
 #X msg 581 63 output_knn_matches \$1;
-#X obj 581 43 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 581 43 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X text 755 35 Output the distances and instance (or cluster) IDs of
 the K nearest neighbors in addition to the winning match. In the case
 of clustered data \, this will only output the neighbors that are not
@@ -427,23 +427,23 @@ members of the winning cluster., f 49;
 #X coords 0 1.4553e+06 60 0 200 140 1 0 0;
 #X restore 759 128 graph;
 #X obj 519 509 dac~;
-#X obj 501 302 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
+#X obj 501 302 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
 #X obj 548 302 + 1;
 #X obj 548 324 % 60;
-#X obj 519 238 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 519 238 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X msg 579 232 448;
 #X msg 611 232 224;
 #X msg 644 232 112;
 #X obj 519 258 metro 112;
 #X text 417 300 Manual step;
 #X msg 30 302 order \$1;
-#X floatatom 30 285 5 0 59 0 - - -;
+#X floatatom 30 285 5 0 59 0 - - - 0;
 #X msg 677 232 56;
 #X msg 537 280 0;
 #X text 576 213 Inter-onset time;
-#X floatatom 534 347 5 0 0 0 - - -;
+#X floatatom 534 347 5 0 0 0 - - - 0;
 #X text 557 478 Sorry \, no envelope to make the transitions pretty...
 , f 28;
 #X text 59 45 1) Load the training sample to a table:;
@@ -457,19 +457,19 @@ members of the winning cluster., f 49;
 #X obj 519 384 tabread \$0-timbreOrder;
 #X obj 519 406 tabread \$0-timbreID-attacks;
 #X obj 519 448 tabplay~ \$0-timbreID-sample;
-#X obj 30 48 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 30 48 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 30 68 f \$0;
-#X obj 30 171 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 30 171 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 30 191 f \$0;
 #X msg 30 211 \; \$1-timbreID-attacks read ./data/tID-help-labels.txt
 \;;
 #X obj 759 86 table \$0-timbreID-sample;
 #X msg 30 88 read -resize ./audio/training.wav \$1-timbreID-sample
 ;
-#X obj 30 382 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 30 382 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X msg 30 402 relative_ordering \$1;
 #X obj 30 424 s \$0-tID;
 #X text 28 454 There are two options for timbre order requests: relative
@@ -531,7 +531,7 @@ to try during real time performance., f 42;
 #X obj 33 159 s \$0-tID;
 #X obj 33 273 s \$0-tID;
 #X msg 33 251 attribute_info \$1;
-#X floatatom 33 231 5 0 0 0 - - -;
+#X floatatom 33 231 5 0 0 0 - - - 0;
 #X text 31 27 You can provide a list of symbolic names for attributes
 in your feature vector. In this help example \, the input feature is
 Bark-frequency cepstral coefficients \, so we can name the attribute
@@ -574,53 +574,6 @@ than hundreds of instances \, this calculation will take several seconds.
 This is something to be performed before any real time classification
 is going on., f 73;
 #X text 719 625 Go back to regular attribute order;
-#N canvas 654 267 861 499 class-reference-vectors 0;
-#X obj 42 441 s \$0-tID;
-#X msg 82 240 class_reference clear;
-#X msg 129 400 class_reference get;
-#X msg 102 300 class_reference id <vector>;
-#X msg 42 170 class_reference define 20 20;
-#X msg 52 200 class_reference define -20 -20;
-#X text 311 316 NOTE: If the class_reference vectors you're comparing
-against were defined using 0-1 normalized data \, you must input a
-pre-normalized vector. Use [featureNorm] for this purpose \, or if
-retrieving from [timbreID] via "instance_list" \, make sure to set
-the optional normalization flag to 1., f 67;
-#X text 39 22 [timbreID]'s "class_reference" method allows you to define
-general reference feature vectors based on instances in the current
-database. It responds to 4 different commands: "define" \, "clear"
-\, "id" \, and "get"., f 108;
-#X text 39 62 "define": Add a class definition based on a list of percentage
-values (K) for each attribute in the feature database. This operates
-using the same technique as "min_k_values"/"max_k_values" \, but using
-a percent value rather than a specific number of instances. For each
-attribute \, the lowest or highest K% of values in the database will
-be found and averaged to produce a low or high reference value. To
-indicate a min_k search for a given attribute \, supply a negative
-K% value. Supply a positive K% value for a max_k search. You must supply
-a K% value for each attribute in the current database. The examples
-below would work with a database comprised of 2-element feature vectors.
-"define" commands are cumulative \, adding class reference definitions
-indexed starting at 0 To start over \, use the "clear" command., f
-126;
-#X text 270 171 NOTE: if [timbreID]'s normalization option is enabled
-when defining a class_reference \, normalized data in the 0-1 range
-will be used as the basis for the definition.;
-#X text 166 425 Use the "get" command to retrieve your class reference
-definitions. They appear at [timbreID]'s fourth outlet with a "class_reference"
-selector at the head for easy routing. Each definition begins with
-the class index followed by the attribute values., f 89;
-#X text 311 246 The "id" command produces the best match index and
-distance via [timbreID]'s first and second outlets \, just like the
-basic classification inlet. But the indices will refer to your class
-reference definitions \, not database instances or clusters., f 67
-;
-#X connect 1 0 0 0;
-#X connect 2 0 0 0;
-#X connect 3 0 0 0;
-#X connect 4 0 0 0;
-#X connect 5 0 0 0;
-#X restore 35 311 pd class-reference-vectors;
 #X text 115 421 This is only relevant if clustering has been performed.
 Change the number of nearest neighbors searched in the KNN algorithm
 (default is 1). If knn is set to a value slightly higher than the number
@@ -661,8 +614,8 @@ synthesis, f 25;
 #N canvas 710 204 852 671 outlet-4 0;
 #X obj 66 39 inlet;
 #X obj 66 623 print num_instances;
-#X text 96 87 Several methods produce output at the fourth outlet \,
-with a selector at the head of the output list so that you can parse
+#X text 103 89 Several methods produce output at the fourth outlet
+\, with a selector at the head of the output list so that you can parse
 the results using [route]. All of the methods listed in this route
 below are explained in other areas of this help patch. The results
 are simply printed to the post window here.;
@@ -700,30 +653,28 @@ order-by-timbre], f 38;
 #X obj 576 383 print max_feature_length;
 #X obj 456 443 print min_k_values;
 #X obj 496 423 print max_k_values;
-#X obj 616 363 print class_reference;
+#X obj 616 363 print similarity_matrix;
+#X obj 656 343 print attribute_info;
 #X obj 66 201 route num_instances instance_list attribute_list cluster_membership
 clusters_list cluster_list order min_values max_values min_k_values
-max_k_values min_feature_length max_feature_length class_reference
-similarity_matrix attribute_info, f 97;
-#X obj 656 343 print similarity_matrix;
-#X obj 696 323 print attribute_info;
-#X connect 0 0 17 0;
-#X connect 17 0 1 0;
-#X connect 17 1 3 0;
-#X connect 17 2 11 0;
-#X connect 17 3 4 0;
-#X connect 17 4 5 0;
-#X connect 17 5 6 0;
-#X connect 17 6 9 0;
-#X connect 17 7 7 0;
-#X connect 17 8 8 0;
-#X connect 17 9 14 0;
-#X connect 17 10 15 0;
-#X connect 17 11 12 0;
-#X connect 17 12 13 0;
-#X connect 17 13 16 0;
-#X connect 17 14 18 0;
-#X connect 17 15 19 0;
+max_k_values min_feature_length max_feature_length similarity_matrix
+attribute_info, f 97;
+#X connect 0 0 18 0;
+#X connect 18 0 1 0;
+#X connect 18 1 3 0;
+#X connect 18 2 11 0;
+#X connect 18 3 4 0;
+#X connect 18 4 5 0;
+#X connect 18 5 6 0;
+#X connect 18 6 9 0;
+#X connect 18 7 7 0;
+#X connect 18 8 8 0;
+#X connect 18 9 14 0;
+#X connect 18 10 15 0;
+#X connect 18 11 12 0;
+#X connect 18 12 13 0;
+#X connect 18 13 16 0;
+#X connect 18 14 17 0;
 #X restore 836 583 pd outlet-4;
 #X obj 55 491 list split 25;
 #X text 109 415 You can train on any combination of audio features.

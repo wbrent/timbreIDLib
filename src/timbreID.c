@@ -2312,7 +2312,8 @@ static void timbreID_maxk (t_timbreID* x, t_floatarg k, t_floatarg normFlag)
     t_freebytes (outputList, (kInt + 1) * sizeof (t_atom));
 }
 
-
+// abandonning this for version 0.9 but may return to it
+/*
 static void timbreID_classReference (t_timbreID* x, t_symbol* s, int argc, t_atom* argv)
 {
     t_symbol* commandName;
@@ -2516,7 +2517,7 @@ static void timbreID_classReference (t_timbreID* x, t_symbol* s, int argc, t_ato
         pd_error (x, "%s: no such command (%s) for class_reference.", x->x_objSymbol->s_name, commandName->s_name);
     }
 }
-
+*/
 
 static void timbreID_minFeatureLength (t_timbreID* x)
 {
@@ -3856,6 +3857,7 @@ void timbreID_setup (void)
         0
     );
 
+/*
     class_addmethod (
         timbreID_class,
         (t_method)timbreID_classReference,
@@ -3863,6 +3865,7 @@ void timbreID_setup (void)
         A_GIMME,
         0
     );
+*/
 
     class_addmethod (
         timbreID_class,
