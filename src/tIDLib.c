@@ -1331,14 +1331,14 @@ t_sampIdx tIDLib_autoCorrPeriod (t_attributeIdx rhoN, t_float* rho, t_attributeI
 {
     t_attributeIdx i;
     t_sampIdx periodSamps;
-    t_float minVal, maxPeakVal, minPeakVal, maxPeakRange, thresh, freq;
+    t_float maxPeakVal, minPeakVal, thresh;
     t_float* flagsBuf;
 
     flagsBuf = (t_float *)t_getbytes (rhoN * sizeof (t_float));
 
-    minVal = FLT_MAX;
     maxPeakVal = -FLT_MAX;
     minPeakVal = FLT_MAX;
+    periodSamps = 0;
 
     // zero out all values before indices (winN - 1) through (rhoBufferSize - 1)
     // also zero out any negative rho values

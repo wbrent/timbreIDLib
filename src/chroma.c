@@ -54,10 +54,9 @@ typedef struct _chroma
 /* ------------------------ chroma -------------------------------- */
 static void chroma_resizeWindow (t_chroma* x, t_sampIdx oldWindow, t_sampIdx window, t_sampIdx startSamp, t_sampIdx* endSamp)
 {
-    t_sampIdx oldWindowHalf, windowHalf;
+    t_sampIdx windowHalf;
 
     windowHalf = window * 0.5;
-    oldWindowHalf = oldWindow * 0.5;
 
     if (window < TID_MINWINDOWSIZE)
     {
