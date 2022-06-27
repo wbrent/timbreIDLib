@@ -96,8 +96,7 @@ per second.;
 #X msg 505 449 open /Users/brent/Dropbox/TEACHING/AU/ATEC-651/audio/music-speech.wav
 \, start;
 #X msg 521 419 open ../doc/sound/voice.wav \, start;
-#X msg 147 224 open /Users/brent/Dropbox/TEACHING/AU/ATEC-651/audio/music-speech.wav
-\, start;
+#X msg 147 224 open ../doc/sound/voice.wav \, start;
 #X connect 0 0 1 0;
 #X connect 0 0 1 1;
 #X connect 2 0 3 0;

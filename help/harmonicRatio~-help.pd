@@ -82,7 +82,7 @@ size is not required to be a power of two.;
 #X msg 478 200 0 1;
 #X obj 478 221 unpack f f;
 #X msg 438 200 1 0;
-#X obj 340 40 cnv 15 40 25 empty \$0-input-label speech 0 12 0 14 #ffffff
+#X obj 340 40 cnv 15 40 25 empty \$0-input-label piano 0 12 0 14 #ffffff
 #404040 0;
 #N canvas 1209 597 450 300 set-input-label 0;
 #X obj 41 36 inlet;

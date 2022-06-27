@@ -42,11 +42,6 @@ things to behave properly;
 #X text 521 471 This feature can be sent to the timbreID external in
 order to identify timbres in real time. For more on using audio features
 for classification \, see the timbreID helpfile:;
-#X text 521 201 Audio buffering and windowing are taken care of by
-the external \, so there is no need for tabreceive~ or block~. You
-can set the window size with a creation argument \, or change it with
-the "window" message. Window size is not required to be a power of
-two.;
 #X obj 678 641 declare -lib timbreIDLib;
 #X obj 57 387 autoCorrPitch~ 2048;
 #X text 677 599 Updated for timbreIDLib version 0.9;
@@ -65,17 +60,21 @@ be captured \, so window size must be chosen carefullly. For instance
 \, at a sampling rate of 44.1kHz \, using a window size of 512 samples
 will only produce meaningful results for signals above ~90Hz. Increasing
 window size to 1024 can extract frequencies as low as ~45Hz.;
-#X connect 0 0 21 0;
+#X text 521 201 Audio buffering is taken care of by the external \,
+so there is no need for tabreceive~ or block~. You can set the window
+size with a creation argument \, or change it with the "window" message.
+Window size is not required to be a power of two.;
+#X connect 0 0 20 0;
 #X connect 1 0 15 0;
-#X connect 4 0 21 0;
-#X connect 5 0 21 0;
+#X connect 4 0 20 0;
+#X connect 5 0 20 0;
 #X connect 9 0 10 0;
-#X connect 9 0 24 1;
+#X connect 9 0 23 1;
 #X connect 10 0 11 0;
 #X connect 11 0 9 1;
-#X connect 12 0 21 0;
+#X connect 12 0 20 0;
 #X connect 12 1 9 0;
-#X connect 13 0 21 0;
+#X connect 13 0 20 0;
 #X connect 15 0 12 0;
-#X connect 21 0 16 0;
-#X connect 21 0 24 0;
+#X connect 20 0 16 0;
+#X connect 20 0 23 0;

@@ -1,11 +1,11 @@
 #N canvas 248 204 1010 651 10;
 #X declare -lib timbreIDLib;
-#X floatatom 110 504 10 0 0 0 - - -;
+#X floatatom 110 504 10 0 0 0 - - - 0;
 #X text 253 286 Change window size.;
 #X obj 110 111 +~;
-#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
-#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
 #N canvas 676 230 576 318 other-settings 0;
 #X obj 54 225 outlet;
@@ -24,7 +24,7 @@ for classification \, see the timbreID helpfile:, f 28;
 #X msg 255 304 window 2000;
 #X obj 110 43 noise~;
 #X obj 110 77 *~;
-#X floatatom 250 504 10 0 0 0 - - -;
+#X floatatom 250 504 10 0 0 0 - - - 0;
 #X obj 380 505 list prepend 0;
 #X obj 380 526 s \$0-samples;
 #N canvas 0 22 450 278 (subpatch) 0;
@@ -33,9 +33,9 @@ for classification \, see the timbreID helpfile:, f 28;
 #X restore 520 298 graph;
 #X obj 160 54 *~ 0.75;
 #X obj 167 82 hsl 128 15 45 100 0 0 empty empty noise-level 8 8 0 10
--262144 -1 -1 0 1;
-#X obj 150 242 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
-1;
+#fcfcfc #000000 #000000 0 1;
+#X obj 150 242 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X text 174 241 Bang repeatedly to keep refreshing...;
 #X obj 150 261 metro 100;
 #X obj 30 298 r~ \$0-signal;
@@ -53,6 +53,7 @@ size is not required to be a power of two.;
 #X obj 757 585 declare -lib timbreIDLib;
 #X text 755 561 June 2022;
 #X text 755 541 Updated for timbreIDLib version 0.9.0;
+#X obj 110 481 waveNoise~ 128;
 #X text 515 24 Similar to zero crossing \, another time-domain measure
 of noisiness is the number of times a signal changes direction \, regardless
 of whether the samples are on the positive or negative side. [waveNoise~]
@@ -62,12 +63,11 @@ Here \, [waveNoise~] output is compared with that of [zeroCrossing~]
 when measuring a 440Hz sinusoid mixed with white noise. Try raising
 the noise level to see what happens. For relatively low level noise
 \, the zero crossing measure stays fixed at about 3 crossings per window
-\, but the noisiness measure is much higher because random noise causes
+\, but the wave noise measure is much higher because random noise causes
 kinks all along the waveform.;
-#X obj 110 481 waveNoise~ 128;
 #X connect 2 0 23 0;
-#X connect 5 0 33 0;
-#X connect 8 0 33 0;
+#X connect 5 0 32 0;
+#X connect 8 0 32 0;
 #X connect 9 0 10 0;
 #X connect 10 0 2 0;
 #X connect 12 0 13 0;
@@ -76,12 +76,12 @@ kinks all along the waveform.;
 #X connect 17 0 19 0;
 #X connect 19 0 25 0;
 #X connect 19 0 26 0;
-#X connect 19 0 33 0;
-#X connect 20 0 33 0;
+#X connect 19 0 32 0;
+#X connect 20 0 32 0;
 #X connect 21 0 25 0;
 #X connect 22 0 26 0;
 #X connect 24 0 10 1;
 #X connect 25 0 11 0;
 #X connect 26 0 12 0;
 #X connect 27 0 15 0;
-#X connect 33 0 0 0;
+#X connect 32 0 0 0;
