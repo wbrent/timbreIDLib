@@ -69,11 +69,19 @@ static void autoCorrPitch_tilde_bang (t_autoCorrPitch_tilde* x)
     // pass the rhoBuffer to tIDLib_autoCorrPitch to get the estimated period in samples
     pitch = tIDLib_autoCorrPeriod (rhoBufferSize, rhoBuffer, x->x_window, x->x_thresh);
 
-    // divide the sampling rate by the period in samples to get the frequency estimate in Hz
-    pitch = x->x_sr / pitch;
+    // if tIDLib_autoCorrPitch() returns a period of 0 samples, we output the failure value of -1500
+    if ( !pitch)
+    {
+        pitch = -1500.0;
+    }
+    else
+    {
+        // divide the sampling rate by the period in samples to get the frequency estimate in Hz
+        pitch = x->x_sr / pitch;
 
-    // convert Hz to MIDI units
-    pitch = ftom (pitch);
+        // convert Hz to MIDI units
+        pitch = ftom (pitch);
+    }
 
     // free local memory
     t_freebytes (rhoBuffer, rhoBufferSize * sizeof (t_float));
