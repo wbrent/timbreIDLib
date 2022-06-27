@@ -1,17 +1,17 @@
 #N canvas 202 178 1047 716 10;
 #X declare -lib timbreIDLib;
-#X floatatom 50 574 10 0 0 0 - - -;
-#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 -233017 -66577
+#X floatatom 50 574 10 0 0 0 - - - 0;
+#X obj 4 4 cnv 10 400 10 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
-#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 -233017 -66577
+#X obj 4 4 cnv 10 10 400 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
 #N canvas 515 140 899 706 other-settings 0;
-#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144 -1
--1 0;
+#X obj 54 86 hradio 15 1 0 5 empty empty empty 0 -8 0 10 #fcfcfc #000000
+#000000 0;
 #X msg 54 106 window_function \$1;
 #X msg 144 246 power_spectrum \$1;
-#X obj 144 228 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 144 228 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X obj 54 633 outlet;
 #X text 275 246 Use power spectrum. (default: magnitude);
 #X msg 114 186 overlap 2;
@@ -25,8 +25,8 @@ things to behave properly;
 #X msg 84 146 window 2000;
 #X msg 345 527 print;
 #X text 395 529 Print current settings in the post window;
-#X obj 315 447 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 315 447 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X msg 315 467 input_fund \$1;
 #X msg 195 287 peak_thresh 10;
 #X msg 225 327 max_peaks 12;
@@ -71,9 +71,9 @@ two.;
 #X text 200 521 Creation argument is window size in samples;
 #X text 786 659 July 2017;
 #X obj 50 191 *~;
-#X obj 80 191 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X floatatom 200 574 10 0 0 0 - - -;
+#X obj 80 191 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X floatatom 200 574 10 0 0 0 - - - 0;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-magSpec-graph 256 float 0;
 #X coords 0 0.15 255 0 200 140 1 0 0;
@@ -83,15 +83,15 @@ two.;
 #X obj 81 46 table \$0-saw;
 #X obj 227 33 loadbang;
 #X obj 227 55 f \$0;
-#X floatatom 336 192 5 0 0 0 - - -;
+#X floatatom 336 192 5 0 0 0 - - - 0;
 #X obj 336 211 t b f;
 #X obj 336 233 f 1;
 #X obj 336 255 /;
 #X obj 336 277 print;
 #X msg 227 78 \; \$1-saw sinesum 512 1 0.5 0.333333 0.25 0.2 0.166666
 0.142857 0.125 \; \$1-saw normalize \;;
-#X obj 189 51 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 189 51 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X connect 1 0 2 0;
 #X connect 2 0 8 0;
 #X connect 3 0 4 0;
@@ -103,13 +103,13 @@ two.;
 #X restore 334 208 pd wavetables;
 #X text 197 280 Bang to output harmonicity and inharmonicity, f 18
 ;
-#X obj 170 309 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 170 309 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X obj 170 329 metro 100;
 #X obj 170 351 t b b;
 #X obj 170 191 *~;
-#X obj 200 191 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 200 191 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X obj 50 233 +~;
 #X obj 50 521 specHarmonicity~ 4096;
 #X obj 50 42 loadbang;
@@ -150,7 +150,7 @@ a series-patched subpatch connected to [specHarmonicity~].;
 #X obj 195 43 t b b;
 #X obj 267 280 f;
 #X obj 297 177 sigmund~ pitch -npts 4096 -hop 512 -maxfreq 3000;
-#X floatatom 277 304 10 0 0 1 Hz - -;
+#X floatatom 277 304 10 0 0 1 Hz - - 0;
 #X connect 0 0 10 1;
 #X connect 1 1 0 0;
 #X connect 3 0 2 0;
@@ -169,18 +169,6 @@ a series-patched subpatch connected to [specHarmonicity~].;
 #X text 47 670 Outlet 2: spectrum inharmonicity;
 #X text 47 610 Inlet 2: fundamental frequency in Hz (not MIDI!). Only
 used in algorithm when "input_fund" setting is ON.;
-#X text 595 64 [specHarmonicity~] quantifies how harmonically and inharmonically
-spectral peaks are aligned. It does this by finding significant spectral
-peaks (based on a percent threshold parameter) \, and then seeing how
-well they align with peaks expected for a given fundamental. When the
-"input_fund" feature is active \, the fundamental frequency (in Hz)
-can be supplied via the right inlet using whatever pitch detection
-method you prefer (e.g. \, [sigmund~ pitch] \, [cepstrumPitch~] \,
-etc.). Alternatively \, [specHarmonicity~] will assume that the lowest
-non-DC peak in the spectrum is the fundamental. This could be useful
-for cases when the spectrum is relatively inharmonic (and therefore
-may not work well with pitch-tracking algorithms) \, but you still
-want some measure of harmonicity.;
 #N canvas 636 50 736 321 inharmonic 0;
 #X obj 61 43 inlet;
 #X obj 61 251 outlet~;
@@ -253,6 +241,18 @@ be inharmonic. The "input_fund" feature is disabled by default \, but
 you can enable it to use pitch tracking output from [sigmund~].;
 #X obj 67 266 *~ 0.05;
 #X obj 787 682 declare -lib timbreIDLib;
+#X text 595 74 [specHarmonicity~] quantifies the harmonic alignment
+of spectral peaks. It does this by finding significant spectral peaks
+(based on a percent threshold parameter) \, and then seeing how well
+they align with peaks expected for a given fundamental. When the "input_fund"
+feature is active \, the fundamental frequency (in Hz) can be supplied
+via the right inlet using whatever pitch detection method you prefer
+(e.g. \, [sigmund~ pitch] \, [cepstrumPitch~] \, etc.). Alternatively
+\, [specHarmonicity~] will assume that the lowest non-DC peak in the
+spectrum is the fundamental. This could be useful for cases when the
+spectrum is relatively inharmonic (and therefore may not work well
+with pitch-tracking algorithms) \, but you still want some measure
+of harmonicity.;
 #X connect 3 0 23 0;
 #X connect 10 0 22 0;
 #X connect 11 0 10 1;
@@ -264,15 +264,15 @@ you can enable it to use pitch tracking output from [sigmund~].;
 #X connect 20 0 22 1;
 #X connect 21 0 20 1;
 #X connect 22 0 27 0;
-#X connect 22 0 35 0;
+#X connect 22 0 34 0;
 #X connect 23 0 0 0;
 #X connect 23 1 12 0;
 #X connect 24 0 25 0;
 #X connect 25 0 26 0;
 #X connect 26 0 14 0;
-#X connect 26 0 33 0;
+#X connect 26 0 32 0;
 #X connect 27 0 23 0;
 #X connect 27 1 23 1;
-#X connect 33 0 20 0;
-#X connect 35 0 28 0;
-#X connect 35 0 28 1;
+#X connect 32 0 20 0;
+#X connect 34 0 28 0;
+#X connect 34 0 28 1;
