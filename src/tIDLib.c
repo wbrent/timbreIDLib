@@ -670,7 +670,7 @@ t_filterIdx tIDLib_getBarkBoundFreqs (t_float** filterFreqs, t_filterIdx oldSize
         sumBark += spacing;
     }
 
-    (*filterFreqs) = (t_float *)t_resizebytes ((*filterFreqs), oldSizeFilterFreqs, sizeFilterFreqs * sizeof (t_float));
+    (*filterFreqs) = (t_float *)t_resizebytes ((*filterFreqs), oldSizeFilterFreqs * sizeof (t_float), sizeFilterFreqs * sizeof (t_float));
 
     // First filter boundary should be at 0Hz
     (*filterFreqs)[0] = 0.0;
@@ -710,7 +710,7 @@ t_filterIdx tIDLib_getMelBoundFreqs (t_float** filterFreqs, t_filterIdx oldSizeF
         sumMel += spacing;
     }
 
-    (*filterFreqs) = (t_float *)t_resizebytes ((*filterFreqs), oldSizeFilterFreqs, sizeFilterFreqs * sizeof (t_float));
+    (*filterFreqs) = (t_float *)t_resizebytes ((*filterFreqs), oldSizeFilterFreqs * sizeof (t_float), sizeFilterFreqs * sizeof (t_float));
 
     // First filter boundary should be at 0Hz
     (*filterFreqs)[0] = 0.0;
@@ -731,7 +731,7 @@ t_filterIdx tIDLib_getMelBoundFreqs (t_float** filterFreqs, t_filterIdx oldSizeF
 
 void tIDLib_createFilterbank (t_float* filterFreqs, t_filter** filterbank, t_filterIdx oldNumFilters, t_filterIdx newNumFilters, t_float window, t_float sr)
 {
-    t_binIdx windowHalf, windowHalfPlus1;
+    t_binIdx windowHalf, windowHalfPlus1, binIdx;
     t_float* binFreqs;
     t_filterIdx i;
 
@@ -760,96 +760,93 @@ void tIDLib_createFilterbank (t_float* filterFreqs, t_filter** filterbank, t_fil
     for (i = 0; i < newNumFilters; i++)
         (*filterbank)[i].filterSize = 0;
 
-    {
-        t_binIdx bfi;
-        // first, find the actual freq for each bin based on current window size
-        for (bfi = 0; bfi < windowHalfPlus1; bfi++)
-            binFreqs[bfi] = tIDLib_bin2freq (bfi, window, sr);
-    }
+    // first, find the actual freq for each bin based on current window size
+    for (binIdx = 0; binIdx < windowHalfPlus1; binIdx++)
+        binFreqs[binIdx] = tIDLib_bin2freq (binIdx, window, sr);
 
     if (newNumFilters >= windowHalfPlus1)
     {
+        t_binIdx filterIdx;
+
         post ("tIDLib WARNING: current filterbank is invalid. For window size N, filterbank size must be less than N/2+1. Change filter spacing or window size accordingly.");
 
-        t_binIdx fbi;
-
         // fill the first filter indices with bins 0 - N/2
-        for (fbi = 0; fbi < windowHalfPlus1; fbi++)
+        for (filterIdx = 0; filterIdx < windowHalfPlus1; filterIdx++)
         {
             t_binIdx j;
 
-            (*filterbank)[fbi].filterSize = 1;
-            (*filterbank)[fbi].indices[0] = fbi;
-            (*filterbank)[fbi].indices[1] = fbi;
-            (*filterbank)[fbi].filterFreqs[0] = binFreqs[fbi];
-            (*filterbank)[fbi].filterFreqs[1] = binFreqs[fbi];
+            (*filterbank)[filterIdx].filterSize = 1;
+            (*filterbank)[filterIdx].indices[0] = filterIdx;
+            (*filterbank)[filterIdx].indices[1] = filterIdx;
+            (*filterbank)[filterIdx].filterFreqs[0] = binFreqs[filterIdx];
+            (*filterbank)[filterIdx].filterFreqs[1] = binFreqs[filterIdx];
 
-            (*filterbank)[fbi].filter = (t_float *)t_getbytes ((*filterbank)[fbi].filterSize * sizeof (t_float));
+            (*filterbank)[filterIdx].filter = (t_float *)t_getbytes ((*filterbank)[filterIdx].filterSize * sizeof (t_float));
 
             // initialize this filter
-            for (j = 0; j < (*filterbank)[fbi].filterSize; j++)
-                (*filterbank)[fbi].filter[j] = 0.0;
+            for (j = 0; j < (*filterbank)[filterIdx].filterSize; j++)
+                (*filterbank)[filterIdx].filter[j] = 0.0;
         }
 
         // fill out additional filter indices with the Nyquist bin, just so we avoid crashes
-        for (; fbi < newNumFilters; fbi++)
+        for (; filterIdx < newNumFilters; filterIdx++)
         {
             t_binIdx j;
 
-            (*filterbank)[fbi].filterSize = 1;
-            (*filterbank)[fbi].indices[0] = windowHalf;
-            (*filterbank)[fbi].indices[1] = windowHalf;
-            (*filterbank)[fbi].filterFreqs[0] = binFreqs[windowHalf];
-            (*filterbank)[fbi].filterFreqs[1] = binFreqs[windowHalf];
+            (*filterbank)[filterIdx].filterSize = 1;
+            (*filterbank)[filterIdx].indices[0] = windowHalf;
+            (*filterbank)[filterIdx].indices[1] = windowHalf;
+            (*filterbank)[filterIdx].filterFreqs[0] = binFreqs[windowHalf];
+            (*filterbank)[filterIdx].filterFreqs[1] = binFreqs[windowHalf];
 
-            (*filterbank)[fbi].filter = (t_float *)t_getbytes ((*filterbank)[fbi].filterSize * sizeof (t_float));
+            (*filterbank)[filterIdx].filter = (t_float *)t_getbytes ((*filterbank)[filterIdx].filterSize * sizeof (t_float));
 
             // initialize this filter
-            for (j = 0; j < (*filterbank)[fbi].filterSize; j++)
-                (*filterbank)[fbi].filter[j] = 0.0;
+            for (j = 0; j < (*filterbank)[filterIdx].filterSize; j++)
+                (*filterbank)[filterIdx].filter[j] = 0.0;
         }
     }
     else
     {
-        t_filterIdx ffi;
+        t_filterIdx filterFreqIdx;
 
         // finally, build the filterbank
-        for (ffi = 1; ffi <= newNumFilters; ffi++)
+        for (filterFreqIdx = 1; filterFreqIdx <= newNumFilters; filterFreqIdx++)
         {
-            t_binIdx j, fj, k, startIdx, peakIdx, finishIdx, filterWidth, upN, downN;
+            t_binIdx j, k, filterValueIdx, startIdx, peakIdx, finishIdx, filterWidth, upN, downN;
             t_float* upRamp;
             t_float* downRamp;
 
             startIdx = peakIdx = finishIdx = 0;
 
-            startIdx = tIDLib_nearestBinIndex (filterFreqs[ffi - 1], binFreqs, windowHalfPlus1);
-            peakIdx = tIDLib_nearestBinIndex (filterFreqs[ffi], binFreqs, windowHalfPlus1);
-            finishIdx = tIDLib_nearestBinIndex (filterFreqs[ffi + 1], binFreqs, windowHalfPlus1);
+            startIdx = tIDLib_nearestBinIndex (filterFreqs[filterFreqIdx - 1], binFreqs, windowHalfPlus1);
+            peakIdx = tIDLib_nearestBinIndex (filterFreqs[filterFreqIdx], binFreqs, windowHalfPlus1);
+            finishIdx = tIDLib_nearestBinIndex (filterFreqs[filterFreqIdx + 1], binFreqs, windowHalfPlus1);
 
             // TODO: should check that startIdx<finishIdx, and swap if not. and peakIdx should be between those bounds
 
             // grab memory for this filter
-            filterWidth = finishIdx-startIdx + 1;
+            filterWidth = finishIdx - startIdx + 1;
             filterWidth = (filterWidth < 1) ? 1 : filterWidth;
 
-            (*filterbank)[ffi - 1].filterSize = filterWidth; // store the sizes for freeing memory later
-            (*filterbank)[ffi - 1].filter = (t_float *)t_getbytes (filterWidth * sizeof (t_float));
+            (*filterbank)[filterFreqIdx - 1].filterSize = filterWidth; // store the sizes for freeing memory later
+            (*filterbank)[filterFreqIdx - 1].filter = (t_float *)t_getbytes (filterWidth * sizeof (t_float));
 
             // initialize this filter
             for (j = 0; j < filterWidth; j++)
-                (*filterbank)[ffi - 1].filter[j] = 0.0;
+                (*filterbank)[filterFreqIdx - 1].filter[j] = 0.0;
 
             // some special cases for very narrow filter widths
             switch (filterWidth)
             {
                 case 1:
-                    (*filterbank)[ffi - 1].filter[0] = 1.0;
+                    (*filterbank)[filterFreqIdx - 1].filter[0] = 1.0;
                     break;
 
                 // no great way to do a triangle with a filter width of 2, so might as well average
                 case 2:
-                    (*filterbank)[ffi - 1].filter[0] = 0.5;
-                    (*filterbank)[ffi - 1].filter[1] = 0.5;
+                    (*filterbank)[filterFreqIdx - 1].filter[0] = 0.5;
+                    (*filterbank)[filterFreqIdx - 1].filter[1] = 0.5;
                     break;
 
                 // with 3 and greater, we can use our ramps
@@ -863,21 +860,21 @@ void tIDLib_createFilterbank (t_float* filterFreqs, t_filter** filterbank, t_fil
                     tIDLib_linspace (downRamp, 1.0, 0.0, downN);
 
                     // copy into (*filterbank)[i - 1].filter
-                    for (fj = 0; fj < upN; fj++)
-                        (*filterbank)[ffi - 1].filter[fj] = upRamp[fj];
+                    for (filterValueIdx = 0; filterValueIdx < upN; filterValueIdx++)
+                        (*filterbank)[filterFreqIdx - 1].filter[filterValueIdx] = upRamp[filterValueIdx];
 
                     // start at k=1 because k = 0 will be the peak (i.e., 1.0)
-                    for (k = 1; k < downN; fj++, k++)
-                        (*filterbank)[ffi - 1].filter[fj] = downRamp[k];
+                    for (k = 1; k < downN; filterValueIdx++, k++)
+                        (*filterbank)[filterFreqIdx - 1].filter[filterValueIdx] = downRamp[k];
 
                     // clip the triangle within 0 and 1, just in case
-                    for (fj = 0; fj < filterWidth; fj++)
+                    for (filterValueIdx = 0; filterValueIdx < filterWidth; filterValueIdx++)
                     {
-                        if ((*filterbank)[ffi - 1].filter[fj] < 0.0)
-                            (*filterbank)[ffi - 1].filter[fj] = 0.0;
+                        if ((*filterbank)[filterFreqIdx - 1].filter[filterValueIdx] < 0.0)
+                            (*filterbank)[filterFreqIdx - 1].filter[filterValueIdx] = 0.0;
 
-                        if ((*filterbank)[ffi - 1].filter[fj] > 1.0)
-                            (*filterbank)[ffi - 1].filter[fj] = 1.0;
+                        if ((*filterbank)[filterFreqIdx - 1].filter[filterValueIdx] > 1.0)
+                            (*filterbank)[filterFreqIdx - 1].filter[filterValueIdx] = 1.0;
                     }
 
                     t_freebytes (upRamp, upN * sizeof (t_float));
@@ -885,10 +882,10 @@ void tIDLib_createFilterbank (t_float* filterFreqs, t_filter** filterbank, t_fil
                     break;
             }
 
-            (*filterbank)[ffi - 1].indices[0] = startIdx;
-            (*filterbank)[ffi - 1].indices[1] = finishIdx;
-            (*filterbank)[ffi - 1].filterFreqs[0] = binFreqs[startIdx];
-            (*filterbank)[ffi - 1].filterFreqs[1] = binFreqs[finishIdx];
+            (*filterbank)[filterFreqIdx - 1].indices[0] = startIdx;
+            (*filterbank)[filterFreqIdx - 1].indices[1] = finishIdx;
+            (*filterbank)[filterFreqIdx - 1].filterFreqs[0] = binFreqs[startIdx];
+            (*filterbank)[filterFreqIdx - 1].filterFreqs[1] = binFreqs[finishIdx];
         }
     }
 
