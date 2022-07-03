@@ -205,14 +205,14 @@ static void mfcc_tilde_window (t_mfcc_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
-    window = w;
-
     // FFT must be at least 4 points long
-    if (window < TID_MINWINDOWSIZE)
+    if (w < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         post ("%s WARNING: window size must be 4 or greater. Using default size of 1024 instead.", x->x_objSymbol->s_name);
     }
+    else
+        window = w;
 
     windowHalf = window * 0.5;
 

@@ -24,6 +24,7 @@ typedef struct _energyEntropy
     t_float x_sr;
     t_sampIdx x_subWindowSize;
     t_sampIdx x_subWindowsPerMidTermWindow;
+    t_sampIdx x_analysisBufferLength;
     t_float* x_analysisBuffer;
     t_word* x_vec;
     t_symbol* x_arrayName;
@@ -52,20 +53,19 @@ static void energyEntropy_analyze (t_energyEntropy* x, t_floatarg start, t_float
         if (n)
             endSamp = (startSamp + (n * x->x_subWindowsPerMidTermWindow)) - 1;
         else
-            endSamp = (startSamp + (x->x_subWindowSize * x->x_subWindowsPerMidTermWindow)) - 1;
+            endSamp = (startSamp + x->x_analysisBufferLength) - 1;
 
         if (endSamp >= x->x_arrayPoints)
             endSamp = x->x_arrayPoints - 1;
-
-        // TODO: maybe make a function to get startSamp/endSamp in tIDLib since all NRT objects use this code
-        bufLen = endSamp - startSamp + 1;
-        subWindow = bufLen / x->x_subWindowsPerMidTermWindow;
 
         if (endSamp <= startSamp)
         {
             post ("%s: bad range of samples.", x->x_objSymbol->s_name);
             return;
         }
+
+        bufLen = endSamp - startSamp + 1;
+        subWindow = bufLen / (t_float)x->x_subWindowsPerMidTermWindow;
 
         if (x->x_subWindowSize != subWindow)
         {
@@ -78,15 +78,23 @@ static void energyEntropy_analyze (t_energyEntropy* x, t_floatarg start, t_float
                 post ("%s WARNING: sub-window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
             }
 
+            x->x_analysisBuffer = (t_float *)t_resizebytes (x->x_analysisBuffer, x->x_analysisBufferLength * sizeof (t_float), subWindow * x->x_subWindowsPerMidTermWindow * sizeof (t_float));
+
             // hang on to this value for next time
             x->x_subWindowSize = subWindow;
 
-            x->x_analysisBuffer = (t_float *)t_resizebytes (x->x_analysisBuffer, oldSubWindow * x->x_subWindowsPerMidTermWindow * sizeof (t_float), x->x_subWindowSize * x->x_subWindowsPerMidTermWindow * sizeof (t_float));
+            // update x_analysisBufferLength
+            x->x_analysisBufferLength = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
         }
 
         // construct analysis window
-        for (i = 0, j = startSamp; j <= endSamp; i++, j++)
-            x->x_analysisBuffer[i] = x->x_vec[j].w_float;
+        for (i = 0, j = startSamp; i < x->x_analysisBufferLength; i++, j++)
+        {
+            if (j < x->x_arrayPoints)
+                x->x_analysisBuffer[i] = x->x_vec[j].w_float;
+            else
+                x->x_analysisBuffer[i] = 0.0;
+        }
 
         energyEntropyResult = tIDLib_sigEnergyEntropy (x->x_subWindowSize, x->x_subWindowsPerMidTermWindow, x->x_analysisBuffer);
 
@@ -129,25 +137,25 @@ static void energyEntropy_set (t_energyEntropy* x, t_symbol* s)
 
 static void energyEntropy_subWindow (t_energyEntropy* x, t_floatarg w)
 {
-    t_sampIdx i, window, bufLenPre, bufLenPost;
+    t_sampIdx i, window, bufLen;
 
-    window = w;
-
-    if (window < TID_MINWINDOWSIZE)
+    if (w < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         post ("%s WARNING: sub-window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
+    else
+        window = w;
 
-    bufLenPre = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
-    bufLenPost = window * x->x_subWindowsPerMidTermWindow;
+    bufLen = window * x->x_subWindowsPerMidTermWindow;
 
-    x->x_analysisBuffer = (t_sample *)t_resizebytes (x->x_analysisBuffer, bufLenPre * sizeof (t_sample), bufLenPost * sizeof (t_sample));
+    x->x_analysisBuffer = (t_sample *)t_resizebytes (x->x_analysisBuffer, x->x_analysisBufferLength * sizeof (t_sample), bufLen * sizeof (t_sample));
 
     x->x_subWindowSize = window;
+    x->x_analysisBufferLength = bufLen;
 
     // init analysis buffer
-    for (i = 0; i < bufLenPost; i++)
+    for (i = 0; i < x->x_analysisBufferLength; i++)
         x->x_analysisBuffer[i] = 0.0;
 
     post ("%s sub-window size: %i", x->x_objSymbol->s_name, x->x_subWindowSize);
@@ -156,26 +164,26 @@ static void energyEntropy_subWindow (t_energyEntropy* x, t_floatarg w)
 
 static void energyEntropy_midTermWindow (t_energyEntropy* x, t_floatarg w)
 {
-    t_sampIdx i, subsPerMid, bufLenPre, bufLenPost;
+    t_sampIdx i, subsPerMid, bufLen;
 
-    subsPerMid = w;
-
-    if (subsPerMid < TID_ENERGYENTROPY_MINSUBWINDOWSPERMIDWINDOW)
+    if (w < TID_ENERGYENTROPY_MINSUBWINDOWSPERMIDWINDOW)
     {
         post ("%s WARNING: cannot use %i sub-windows per mid-term window. Using default of %i sub-windows per mid-term window.", x->x_objSymbol->s_name, subsPerMid, TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT);
 
         subsPerMid = TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT;
     }
+    else
+        subsPerMid = w;
 
-    bufLenPre = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
-    bufLenPost = x->x_subWindowSize * subsPerMid;
+    bufLen = x->x_subWindowSize * subsPerMid;
 
-    x->x_analysisBuffer = (t_sample *)t_resizebytes (x->x_analysisBuffer, bufLenPre * sizeof (t_sample), bufLenPost * sizeof (t_sample));
+    x->x_analysisBuffer = (t_sample *)t_resizebytes (x->x_analysisBuffer, x->x_analysisBufferLength * sizeof (t_sample), bufLen * sizeof (t_sample));
 
     x->x_subWindowsPerMidTermWindow = subsPerMid;
+    x->x_analysisBufferLength = bufLen;
 
     // init analysis buffer
-    for (i = 0; i < bufLenPost; i++)
+    for (i = 0; i < x->x_analysisBufferLength; i++)
         x->x_analysisBuffer[i] = 0.0;
 
     post ("%s sub-windows per mid-term window: %i", x->x_objSymbol->s_name, x->x_subWindowsPerMidTermWindow);
@@ -202,7 +210,7 @@ static void energyEntropy_samplerate (t_energyEntropy* x, t_floatarg sr)
 static void* energyEntropy_new (t_symbol* s, int argc, t_atom* argv)
 {
     t_energyEntropy* x = (t_energyEntropy *)pd_new (energyEntropy_class);
-    t_sampIdx i, bufLen;
+    t_sampIdx i;
 
     x->x_entropyOutlet = outlet_new (&x->x_obj, &s_float);
 
@@ -267,11 +275,11 @@ static void* energyEntropy_new (t_symbol* s, int argc, t_atom* argv)
     x->x_sr = TID_SAMPLERATEDEFAULT;
 
     // analysisBuffer should be subWindowSize * subWindowsPerMidTermWindow
-    bufLen = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
+    x->x_analysisBufferLength = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
 
-    x->x_analysisBuffer = (t_sample *)t_getbytes (bufLen * sizeof (t_sample));
+    x->x_analysisBuffer = (t_sample *)t_getbytes (x->x_analysisBufferLength * sizeof (t_sample));
 
-    for (i = 0; i < bufLen; i++)
+    for (i = 0; i < x->x_analysisBufferLength; i++)
         x->x_analysisBuffer[i] = 0.0;
 
     return (x);
@@ -280,12 +288,8 @@ static void* energyEntropy_new (t_symbol* s, int argc, t_atom* argv)
 
 static void energyEntropy_free (t_energyEntropy* x)
 {
-  t_sampIdx bufLen;
-
-  bufLen = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
-
   // free the analysis buffer memory
-  t_freebytes (x->x_analysisBuffer, bufLen * sizeof (t_float));
+  t_freebytes (x->x_analysisBuffer, x->x_analysisBufferLength * sizeof (t_float));
 }
 
 

@@ -160,13 +160,13 @@ static void attackTime_tilde_window (t_attackTime_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window;
 
-    window = w;
-
-    if (window < TID_MINWINDOWSIZE)
+    if (w < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
+    else
+        window = w;
 
     x->x_analysisBuffer = (t_float *)t_resizebytes (x->x_analysisBuffer, x->x_window * sizeof (t_float), window * sizeof (t_float));
 

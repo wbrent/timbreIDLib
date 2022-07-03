@@ -69,13 +69,13 @@ static void sampleBuffer_tilde_window (t_sampleBuffer_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window;
 
-    window = w;
-
-    if (window < TID_MINWINDOWSIZE)
+    if (w < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
+    else
+        window = w;
 
     x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_window + x->x_n) * sizeof (t_sample), (window + x->x_n) * sizeof (t_sample));
     x->x_listOut = (t_atom *)t_resizebytes (x->x_listOut, x->x_window * sizeof (t_atom), window * sizeof (t_atom));

@@ -58,13 +58,13 @@ static void autoCorrPitch_analyze (t_autoCorrPitch* x, t_floatarg start, t_float
         if (endSamp >= x->x_arrayPoints)
             endSamp = x->x_arrayPoints - 1;
 
-        window = endSamp - startSamp + 1;
-
         if (endSamp <= startSamp)
         {
             post ("%s: bad range of samples.", x->x_objSymbol->s_name);
             return;
         }
+
+        window = endSamp - startSamp + 1;
 
         if (x->x_window != window)
         {
@@ -86,7 +86,6 @@ static void autoCorrPitch_analyze (t_autoCorrPitch* x, t_floatarg start, t_float
                 endSamp = x->x_arrayPoints - 1;
 
             x->x_analysisBuffer = (t_float *)t_resizebytes (x->x_analysisBuffer, oldWindow * sizeof (t_float), x->x_window * sizeof (t_float));
-
         }
 
         // construct analysis window

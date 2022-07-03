@@ -26,6 +26,7 @@ typedef struct _energyEntropy_tilde
     t_uShortInt x_overlap;
     t_sampIdx x_subWindowSize;
     t_sampIdx x_subWindowsPerMidTermWindow;
+    t_sampIdx x_analysisBufferLength;
     double x_lastDspTime;
     t_sample* x_signalBuffer;
     t_float* x_analysisBuffer;
@@ -39,11 +40,9 @@ typedef struct _energyEntropy_tilde
 
 static void energyEntropy_tilde_bang (t_energyEntropy_tilde* x)
 {
-    t_sampIdx i, j, bufLen, bangSample;
+    t_sampIdx i, j, bangSample;
     t_float energyEntropyResult;
     double currentTime;
-
-    bufLen = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
 
     currentTime = clock_gettimesince (x->x_lastDspTime);
     bangSample = roundf ((currentTime / 1000.0) * x->x_sr);
@@ -52,7 +51,7 @@ static void energyEntropy_tilde_bang (t_energyEntropy_tilde* x)
         bangSample = x->x_n - 1;
 
     // construct analysis window using bangSample as the starting point
-    for (i = 0, j = bangSample; i < bufLen; i++, j++)
+    for (i = 0, j = bangSample; i < x->x_analysisBufferLength; i++, j++)
         x->x_analysisBuffer[i] = x->x_signalBuffer[j];
 
     energyEntropyResult = tIDLib_sigEnergyEntropy (x->x_subWindowSize, x->x_subWindowsPerMidTermWindow, x->x_analysisBuffer);
@@ -63,30 +62,30 @@ static void energyEntropy_tilde_bang (t_energyEntropy_tilde* x)
 
 static void energyEntropy_tilde_subWindow (t_energyEntropy_tilde* x, t_floatarg w)
 {
-    t_sampIdx i, window, bufLenPre, bufLenPost;
+    t_sampIdx i, window, bufLen;
 
-    window = w;
-
-    if (window < TID_MINWINDOWSIZE)
+    if (w < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         post ("%s WARNING: sub-window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
+    else
+        window = w;
 
-    bufLenPre = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
-    bufLenPost = window * x->x_subWindowsPerMidTermWindow;
+    bufLen = window * x->x_subWindowsPerMidTermWindow;
 
-    x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (bufLenPre + x->x_n) * sizeof (t_sample), (bufLenPost + x->x_n) * sizeof (t_sample));
-    x->x_analysisBuffer = (t_sample *)t_resizebytes (x->x_analysisBuffer, bufLenPre * sizeof (t_sample), bufLenPost * sizeof (t_sample));
+    x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_analysisBufferLength + x->x_n) * sizeof (t_sample), (bufLen + x->x_n) * sizeof (t_sample));
+    x->x_analysisBuffer = (t_sample *)t_resizebytes (x->x_analysisBuffer, x->x_analysisBufferLength * sizeof (t_sample), bufLen * sizeof (t_sample));
 
     x->x_subWindowSize = window;
+    x->x_analysisBufferLength = bufLen;
 
     // init signal buffer
-    for (i = 0; i < bufLenPost + x->x_n; i++)
+    for (i = 0; i < x->x_analysisBufferLength + x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
     // init analysis buffer
-    for (i = 0; i < bufLenPost; i++)
+    for (i = 0; i < x->x_analysisBufferLength; i++)
         x->x_analysisBuffer[i] = 0.0;
 
     post ("%s sub-window size: %i", x->x_objSymbol->s_name, x->x_subWindowSize);
@@ -95,31 +94,31 @@ static void energyEntropy_tilde_subWindow (t_energyEntropy_tilde* x, t_floatarg 
 
 static void energyEntropy_tilde_midTermWindow (t_energyEntropy_tilde* x, t_floatarg w)
 {
-    t_sampIdx i, subsPerMid, bufLenPre, bufLenPost;
+    t_sampIdx i, subsPerMid, bufLen;
 
-    subsPerMid = w;
-
-    if (subsPerMid < TID_ENERGYENTROPY_MINSUBWINDOWSPERMIDWINDOW)
+    if (w < TID_ENERGYENTROPY_MINSUBWINDOWSPERMIDWINDOW)
     {
         post ("%s WARNING: cannot use %i sub-windows per mid-term window. Using default of %i sub-windows per mid-term window.", x->x_objSymbol->s_name, subsPerMid, TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT);
 
         subsPerMid = TID_ENERGYENTROPY_SUBWINDOWSPERMIDWINDOWDEFAULT;
     }
+    else
+        subsPerMid = w;
 
-    bufLenPre = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
-    bufLenPost = x->x_subWindowSize * subsPerMid;
+    bufLen = x->x_subWindowSize * subsPerMid;
 
-    x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (bufLenPre + x->x_n) * sizeof (t_sample), (bufLenPost + x->x_n) * sizeof (t_sample));
-    x->x_analysisBuffer = (t_sample *)t_resizebytes (x->x_analysisBuffer, bufLenPre * sizeof (t_sample), bufLenPost * sizeof (t_sample));
+    x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_analysisBufferLength + x->x_n) * sizeof (t_sample), (bufLen + x->x_n) * sizeof (t_sample));
+    x->x_analysisBuffer = (t_sample *)t_resizebytes (x->x_analysisBuffer, x->x_analysisBufferLength * sizeof (t_sample), bufLen * sizeof (t_sample));
 
     x->x_subWindowsPerMidTermWindow = subsPerMid;
+    x->x_analysisBufferLength = bufLen;
 
     // init signal buffer
-    for (i = 0; i < bufLenPost + x->x_n; i++)
+    for (i = 0; i < x->x_analysisBufferLength + x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
     // init analysis buffer
-    for (i = 0; i < bufLenPost; i++)
+    for (i = 0; i < x->x_analysisBufferLength; i++)
         x->x_analysisBuffer[i] = 0.0;
 
     post ("%s sub-windows per mid-term window: %i", x->x_objSymbol->s_name, x->x_subWindowsPerMidTermWindow);
@@ -148,7 +147,7 @@ static void energyEntropy_tilde_print (t_energyEntropy_tilde* x)
 static void* energyEntropy_tilde_new (t_symbol* s, int argc, t_atom* argv)
 {
     t_energyEntropy_tilde* x = (t_energyEntropy_tilde *)pd_new (energyEntropy_tilde_class);
-    t_sampIdx i, bufLen;
+    t_sampIdx i;
 
     x->x_entropyOutlet = outlet_new (&x->x_obj, &s_float);
 
@@ -204,15 +203,15 @@ static void* energyEntropy_tilde_new (t_symbol* s, int argc, t_atom* argv)
 
     // signalBuffer should be (subWindowSize * subWindowsPerMidTermWindow) + x_n
     // analysisBuffer should be subWindowSize * subWindowsPerMidTermWindow
-    bufLen = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
+    x->x_analysisBufferLength = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
 
-    x->x_signalBuffer = (t_sample *)t_getbytes ((bufLen + x->x_n) * sizeof (t_sample));
-    x->x_analysisBuffer = (t_float *)t_getbytes (bufLen * sizeof (t_float));
+    x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_analysisBufferLength + x->x_n) * sizeof (t_sample));
+    x->x_analysisBuffer = (t_float *)t_getbytes (x->x_analysisBufferLength * sizeof (t_float));
 
-    for (i = 0; i < bufLen + x->x_n; i++)
+    for (i = 0; i < x->x_analysisBufferLength + x->x_n; i++)
         x->x_signalBuffer[i] = 0.0;
 
-    for (i = 0; i < bufLen; i++)
+    for (i = 0; i < x->x_analysisBufferLength; i++)
         x->x_analysisBuffer[i] = 0.0;
 
     return (x);
@@ -222,22 +221,20 @@ static void* energyEntropy_tilde_new (t_symbol* s, int argc, t_atom* argv)
 static t_int* energyEntropy_tilde_perform (t_int* w)
 {
     t_uShortInt n;
-    t_sampIdx i, bufLen;
+    t_sampIdx i;
 
     t_energyEntropy_tilde* x = (t_energyEntropy_tilde *)(w[1]);
 
     t_sample* in = (t_float *)(w[2]);
     n = w[3];
 
-    bufLen = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
-
      // shift signal buffer contents back.
-    for (i = 0; i < bufLen; i++)
+    for (i = 0; i < x->x_analysisBufferLength; i++)
         x->x_signalBuffer[i] = x->x_signalBuffer[i + n];
 
     // write new block to end of signal buffer.
     for (i = 0; i < n; i++)
-        x->x_signalBuffer[bufLen + i] = in[i];
+        x->x_signalBuffer[x->x_analysisBufferLength + i] = in[i];
 
     x->x_lastDspTime = clock_getlogicaltime();
 
@@ -265,32 +262,26 @@ static void energyEntropy_tilde_dsp (t_energyEntropy_tilde* x, t_signal** sp)
 // compare n to stored n and update/resize buffer if different
     if (sp[0]->s_n != x->x_n)
     {
-        t_sampIdx i, bufLen;
+        t_sampIdx i;
 
-        bufLen = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
-
-        x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (bufLen + x->x_n) * sizeof (t_sample), (bufLen + sp[0]->s_n) * sizeof (t_sample));
+        x->x_signalBuffer = (t_sample *)t_resizebytes (x->x_signalBuffer, (x->x_analysisBufferLength + x->x_n) * sizeof (t_sample), (x->x_analysisBufferLength + sp[0]->s_n) * sizeof (t_sample));
 
         x->x_n = sp[0]->s_n;
         x->x_lastDspTime = clock_getlogicaltime();
 
         // init signal buffer
-        for (i = 0; i < bufLen + x->x_n; i++)
+        for (i = 0; i < x->x_analysisBufferLength + x->x_n; i++)
             x->x_signalBuffer[i] = 0.0;
     };
 };
 
 static void energyEntropy_tilde_free (t_energyEntropy_tilde* x)
 {
-    t_sampIdx bufLen;
-
-    bufLen = x->x_subWindowSize * x->x_subWindowsPerMidTermWindow;
-
     // free the input buffer memory
-    t_freebytes (x->x_signalBuffer, (bufLen + x->x_n) * sizeof (t_sample));
+    t_freebytes (x->x_signalBuffer, (x->x_analysisBufferLength + x->x_n) * sizeof (t_sample));
 
     // free the analysis buffer memory
-    t_freebytes (x->x_analysisBuffer, bufLen * sizeof (t_float));
+    t_freebytes (x->x_analysisBuffer, x->x_analysisBufferLength * sizeof (t_float));
 
 }
 

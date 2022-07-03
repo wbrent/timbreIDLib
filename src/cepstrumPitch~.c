@@ -55,13 +55,15 @@ static void cepstrumPitch_tilde_bang (t_cepstrumPitch_tilde* x)
 {
     t_sampIdx i, j, binCount, window, windowHalf, bangSample;
     t_binIdx loFreqBin, hiFreqBin, maxValIdx;
-    t_float* windowFuncPtr, nRecip, maxVal, pitch, loFreqBinFloat, hiFreqBinFloat, mean, std, sum;
+    t_float nRecip, maxVal, pitch, loFreqBinFloat, hiFreqBinFloat, mean, std, sum;
+    t_float* windowFuncPtr;
     double currentTime;
 
     window = x->x_window;
     windowHalf = x->x_windowHalf;
 
-    nRecip = 1.0 / window;
+    // be sure to cast window as t_float for the division
+    nRecip = 1.0 / (t_float)window;
 
     currentTime = clock_gettimesince (x->x_lastDspTime);
     bangSample = roundf ((currentTime / 1000.0) * x->x_sr);
@@ -210,13 +212,13 @@ static void cepstrumPitch_tilde_window (t_cepstrumPitch_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
-    window = w;
-
-    if (window < TID_MINWINDOWSIZE)
+    if (w < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
+    else
+        window = w;
 
     windowHalf = window * 0.5;
 

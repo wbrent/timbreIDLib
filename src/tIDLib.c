@@ -769,7 +769,7 @@ void tIDLib_createFilterbank (t_float* filterFreqs, t_filter** filterbank, t_fil
 
     if (newNumFilters >= windowHalfPlus1)
     {
-        post ("timbreID WARNING: current filterbank is invalid. For window size N, filterbank size must be less than N/2+1. Change filter spacing or window size accordingly.");
+        post ("tIDLib WARNING: current filterbank is invalid. For window size N, filterbank size must be less than N/2+1. Change filter spacing or window size accordingly.");
 
         t_binIdx fbi;
 

@@ -642,12 +642,12 @@ static void bark_analyze (t_bark* x, t_floatarg startTime, t_floatarg endTime)
         windowHalf = x->x_windowHalf;
         hop = x->x_hop;
 
-        if (startTime>endTime)
+        if (startTime > endTime)
         {
             pd_error (x, "%s: invalid time range", x->x_objSymbol->s_name);
             return;
         }
-        else if (startTime<endTime)
+        else if (startTime < endTime)
         {
             startTime = (startTime < 0.0) ? 0.0 : startTime;
             endTime = (endTime < 0.0) ? 0.0 : endTime;

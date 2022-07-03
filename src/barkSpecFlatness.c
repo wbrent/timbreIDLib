@@ -118,13 +118,13 @@ static void barkSpecFlatness_analyze (t_barkSpecFlatness* x, t_floatarg start, t
         if (endSamp >= x->x_arrayPoints)
             endSamp = x->x_arrayPoints - 1;
 
-        window = endSamp - startSamp + 1;
-
         if (endSamp <= startSamp)
         {
             post ("%s: bad range of samples.", x->x_objSymbol->s_name);
             return;
         }
+
+        window = endSamp - startSamp + 1;
 
         if (x->x_window != window)
             barkSpecFlatness_resizeWindow (x, x->x_window, window, startSamp, &endSamp);
@@ -471,6 +471,9 @@ static void barkSpecFlatness_samplerate (t_barkSpecFlatness* x, t_floatarg sr)
 static void barkSpecFlatness_window (t_barkSpecFlatness* x, t_floatarg w)
 {
     t_sampIdx endSamp;
+
+    // catch negative window size arguments here while data type is still t_floatarg. once passed to _resizeWindow, it will be cast to type t_sampIdx and negative values will turn to garbage.
+    w = (w < 0.0) ? TID_MINWINDOWSIZE : w;
 
     // have to pass in an address to a dummy t_sampIdx value since _resizeWindow() requires that
     endSamp = 0;

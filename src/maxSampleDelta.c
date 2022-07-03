@@ -57,13 +57,13 @@ static void maxSampleDelta_analyze (t_maxSampleDelta* x, t_floatarg start, t_flo
         if (endSamp >= x->x_arrayPoints)
             endSamp = x->x_arrayPoints - 1;
 
-        window = endSamp - startSamp + 1;
-
         if (endSamp <= startSamp)
         {
             post ("%s: bad range of samples.", x->x_objSymbol->s_name);
             return;
         }
+
+        window = endSamp - startSamp + 1;
 
         if (x->x_window != window)
         {

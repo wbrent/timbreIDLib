@@ -209,13 +209,13 @@ static void barkSpecSlope_tilde_window (t_barkSpecSlope_tilde* x, t_floatarg w)
 {
     t_sampIdx i, window, windowHalf;
 
-    window = w;
-
-    if (window < TID_MINWINDOWSIZE)
+    if (w < TID_MINWINDOWSIZE)
     {
         window = TID_WINDOWSIZEDEFAULT;
         post ("%s WARNING: window size must be %i or greater. Using default size of %i instead.", x->x_objSymbol->s_name, TID_MINWINDOWSIZE, TID_WINDOWSIZEDEFAULT);
     }
+    else
+        window = w;
 
     windowHalf = window * 0.5;
 
