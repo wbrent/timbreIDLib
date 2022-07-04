@@ -171,7 +171,7 @@ static void barkSpecFlatness_analyze (t_barkSpecFlatness* x, t_floatarg start, t
         if (x->x_specBandAvg)
             tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
         else
-            tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+            tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
         numFiltersRecip = 1.0 / (double)x->x_numFilters;
 
@@ -233,7 +233,7 @@ static void barkSpecFlatness_chain_fftData (t_barkSpecFlatness* x, t_symbol* s, 
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (windowHalf + 1, x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     numFiltersRecip = 1.0 / (double)x->x_numFilters;
 
@@ -285,7 +285,7 @@ static void barkSpecFlatness_chain_magSpec (t_barkSpecFlatness* x, t_symbol* s, 
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     numFiltersRecip = 1.0 / (double)x->x_numFilters;
 

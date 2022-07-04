@@ -174,7 +174,7 @@ static void barkSpecBrightness_analyze (t_barkSpecBrightness* x, t_floatarg star
         if (x->x_specBandAvg)
             tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
         else
-            tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+            tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
         dividend = divisor = brightness = 0.0;
 
@@ -225,7 +225,7 @@ static void barkSpecBrightness_chain_fftData (t_barkSpecBrightness* x, t_symbol*
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (windowHalf + 1, x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     dividend = divisor = brightness = 0.0;
 
@@ -266,7 +266,7 @@ static void barkSpecBrightness_chain_magSpec (t_barkSpecBrightness* x, t_symbol*
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     dividend = divisor = brightness = 0.0;
 

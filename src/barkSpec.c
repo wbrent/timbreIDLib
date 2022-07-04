@@ -72,6 +72,7 @@ static void barkSpec_resizeWindow (t_barkSpec* x, t_sampIdx oldWindow, t_sampIdx
     x->x_window = window;
     x->x_windowHalf = windowHalf;
 
+    // BUG: this t_resizebytes() call is causing the crash. maybe invalid oldWindow or x_window values are involved here?
     x->x_fftwIn = (t_sample *)t_resizebytes (x->x_fftwIn, oldWindow * sizeof (t_sample), x->x_window * sizeof (t_sample));
 
     fftwf_free (x->x_fftwOut);
@@ -171,8 +172,10 @@ static void barkSpec_analyze (t_barkSpec* x, t_floatarg start, t_floatarg n)
         if (x->x_specBandAvg)
             tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
         else
-            tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+            tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+            // DEBUG: valgrind notes that this call to tIDLib_filterbankMultiply causes an invalid write to x_fftwIn. see line 983 of tIDLib.c
 
+        // DEBUG: valgrind reports an invalid read of size 4 on this line
         for (i = 0; i < x->x_numFilters; i++)
             SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
 
@@ -211,7 +214,7 @@ static void barkSpec_chain_fftData (t_barkSpec* x, t_symbol* s, int argc, t_atom
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (windowHalf + 1, x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     for (i = 0; i < x->x_numFilters; i++)
         SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);
@@ -241,7 +244,7 @@ static void barkSpec_chain_magSpec (t_barkSpec* x, t_symbol* s, int argc, t_atom
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     for (i = 0; i < x->x_numFilters; i++)
         SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);

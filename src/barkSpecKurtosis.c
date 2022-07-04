@@ -171,7 +171,7 @@ static void barkSpecKurtosis_analyze (t_barkSpecKurtosis* x, t_floatarg start, t
         if (x->x_specBandAvg)
             tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
         else
-            tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+            tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
         energySum = 0.0;
         for (i = 0; i < x->x_numFilters; i++)
@@ -217,7 +217,7 @@ static void barkSpecKurtosis_chain_fftData (t_barkSpecKurtosis* x, t_symbol* s, 
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (windowHalf + 1, x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     energySum = 0.0;
     for (i = 0; i < x->x_numFilters; i++)
@@ -253,7 +253,7 @@ static void barkSpecKurtosis_chain_magSpec (t_barkSpecKurtosis* x, t_symbol* s, 
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, false);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwIn, false, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     energySum = 0.0;
     for (i = 0; i < x->x_numFilters; i++)

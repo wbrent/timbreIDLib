@@ -214,7 +214,7 @@ t_filterIdx tIDLib_getBarkBoundFreqs (t_float** filterFreqs, t_filterIdx oldSize
 t_filterIdx tIDLib_getMelBoundFreqs (t_float** filterFreqs, t_filterIdx oldSizeFilterFreqs, t_float spacing, t_float sr);
 void tIDLib_createFilterbank (t_float* filterFreqs, t_filter** filterbank, t_filterIdx oldNumFilters, t_filterIdx newNumFilters, t_float window, t_float sr);
 void tIDLib_specFilterBands (t_binIdx n, t_filterIdx numFilters, t_float* spectrum, t_filter* filterbank, t_bool normalize);
-void tIDLib_filterbankMultiply (t_float* spectrum, t_bool normalize, t_bool filterAvg, t_filter* filterbank, t_filterIdx numFilters);
+void tIDLib_filterbankMultiply (t_binIdx n, t_float* spectrum, t_bool normalize, t_bool filterAvg, t_filter* filterbank, t_filterIdx numFilters);
 void tIDLib_cosineTransform (t_float* output, t_sample* input, t_filterIdx numFilters);
 /* ---------------- END filterbank functions ---------------------- */
 

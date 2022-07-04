@@ -180,7 +180,7 @@ static void bfcc_analyze (t_bfcc* x, t_floatarg start, t_floatarg n)
         if (x->x_specBandAvg)
             tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
         else
-            tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+            tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
         fftwf_execute (x->x_fftwDctPlan);
 
@@ -223,7 +223,7 @@ static void bfcc_chain_fftData (t_bfcc* x, t_symbol* s, int argc, t_atom* argv)
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (windowHalf + 1, x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     fftwf_execute (x->x_fftwDctPlan);
 
@@ -256,7 +256,7 @@ static void bfcc_chain_magSpec (t_bfcc* x, t_symbol* s, int argc, t_atom* argv)
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     fftwf_execute (x->x_fftwDctPlan);
 

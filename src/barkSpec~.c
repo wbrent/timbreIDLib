@@ -112,7 +112,7 @@ static void barkSpec_tilde_bang (t_barkSpec_tilde* x)
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (windowHalf + 1, x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     for (i = 0; i < x->x_numFilters; i++)
         SETFLOAT (x->x_listOut + i, x->x_fftwIn[i]);

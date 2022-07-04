@@ -211,7 +211,7 @@ static void barkSpecFlux_analyze (t_barkSpecFlux* x, t_floatarg start, t_floatar
         if (x->x_specBandAvg)
             tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwInForwardWindow, x->x_filterbank, x->x_normalize);
         else
-            tIDLib_filterbankMultiply (x->x_fftwInForwardWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+            tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwInForwardWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
         switch (x->x_windowFunction)
         {
@@ -250,7 +250,7 @@ static void barkSpecFlux_analyze (t_barkSpecFlux* x, t_floatarg start, t_floatar
         if (x->x_specBandAvg)
             tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwInBackWindow, x->x_filterbank, x->x_normalize);
         else
-            tIDLib_filterbankMultiply (x->x_fftwInBackWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+            tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwInBackWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
         flux = 0.0;
 
@@ -348,8 +348,8 @@ static void barkSpecFlux_chain_fftData (t_barkSpecFlux* x, t_symbol* s, int argc
     }
     else
     {
-        tIDLib_filterbankMultiply (x->x_fftwInForwardWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
-        tIDLib_filterbankMultiply (x->x_fftwInBackWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (windowHalf + 1, x->x_fftwInForwardWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (windowHalf + 1, x->x_fftwInBackWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
     }
 
     flux = 0.0;
@@ -435,8 +435,8 @@ static void barkSpecFlux_chain_magSpec (t_barkSpecFlux* x, t_symbol* s, int argc
     }
     else
     {
-        tIDLib_filterbankMultiply (x->x_fftwInForwardWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
-        tIDLib_filterbankMultiply (x->x_fftwInBackWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (windowHalf + 1, x->x_fftwInForwardWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (windowHalf + 1, x->x_fftwInBackWindow, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
     }
 
     flux = 0.0;

@@ -938,7 +938,7 @@ void tIDLib_specFilterBands (t_binIdx n, t_filterIdx numFilters, t_float* spectr
 }
 
 
-void tIDLib_filterbankMultiply (t_float* spectrum, t_bool normalize, t_bool filterAvg, t_filter* filterbank, t_filterIdx numFilters)
+void tIDLib_filterbankMultiply (t_binIdx n, t_float* spectrum, t_bool normalize, t_bool filterAvg, t_filter* filterbank, t_filterIdx numFilters)
 {
     t_float sumSum;
     t_float* filterPower;
@@ -979,8 +979,17 @@ void tIDLib_filterbankMultiply (t_float* spectrum, t_bool normalize, t_bool filt
     else
         sumSum = 1.0;
 
-    for (si = 0; si < numFilters; si++)
-        spectrum[si] = filterPower[si] * sumSum;
+    // Check that the spectrum window size N is larger than the number of filters, otherwise we'll be writing to invalid memory indices
+    if (n >= numFilters)
+    {
+        for (si = 0; si < numFilters; si++)
+            spectrum[si] = filterPower[si] * sumSum;
+    }
+    else
+    {
+        for (si = 0; si < n; si++)
+            spectrum[si] = filterPower[si] * sumSum;
+    }
 
     // free local memory
     t_freebytes (filterPower, numFilters * sizeof (t_float));

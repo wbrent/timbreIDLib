@@ -172,7 +172,7 @@ static void barkSpecSlope_analyze (t_barkSpecSlope* x, t_floatarg start, t_float
         if (x->x_specBandAvg)
             tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
         else
-            tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+            tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
         slope = 0.0;
         slope = tIDLib_fitLineSlope (x->x_numFilters, x->x_fftwIn);
@@ -213,7 +213,7 @@ static void barkSpecSlope_chain_fftData (t_barkSpecSlope* x, t_symbol* s, int ar
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (windowHalf + 1, x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     slope = 0.0;
     slope = tIDLib_fitLineSlope (x->x_numFilters, x->x_fftwIn);
@@ -244,7 +244,7 @@ static void barkSpecSlope_chain_magSpec (t_barkSpecSlope* x, t_symbol* s, int ar
     if (x->x_specBandAvg)
         tIDLib_specFilterBands (x->x_windowHalf + 1, x->x_numFilters, x->x_fftwIn, x->x_filterbank, x->x_normalize);
     else
-        tIDLib_filterbankMultiply (x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
+        tIDLib_filterbankMultiply (x->x_windowHalf + 1, x->x_fftwIn, x->x_normalize, x->x_filterAvg, x->x_filterbank, x->x_numFilters);
 
     slope = 0.0;
     slope = tIDLib_fitLineSlope (x->x_numFilters, x->x_fftwIn);
