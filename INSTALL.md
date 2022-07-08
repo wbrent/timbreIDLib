@@ -30,13 +30,13 @@ If timbreIDLib is loaded successfully (using either method), you will see a mess
 
 As of version 0.7, timbreIDLib uses the FFTW library available at http://www.fftw.org.
 
-FFTW is included as a pre-compiled shared library with timbreIDLib's Windows package available through deken. Simply leave libfftw3f-3.dll in the timbreIDLib directory and everything should work fine. For the Linux and Macintosh packages on deken, FFTW is statically linked with timbreIDLib.
+FFTW is included as a pre-compiled shared library with timbreIDLib's Windows package available through deken. Simply leave libfftw3f-3.dll in the timbreIDLib directory and everything should work fine. For the Linux and macOS packages on deken, FFTW is statically linked with timbreIDLib.
 
 If you are compiling timbreIDLib from source (see below), you must link it with a single precision compilation of FFTW. To build FFTW in single precision under Linux, configure it like this:
 
 > ./configure CFLAGS="-fPIC" --enable-float
 
-and like this on a Macintosh:
+and like this on macOS:
 
 > ./configure CFLAGS="-arch arm64 -arch x86_64" --enable-float
 
@@ -50,7 +50,7 @@ Then run:
 >
 > sudo make install
 
-On Linux and Macintosh, the FFTW library files should be installed to /usr/local/lib by default.
+On Linux and macOS, the FFTW library files should be installed to /usr/local/lib by default.
 
 
 
@@ -61,7 +61,15 @@ As of timbreIDLib 0.7.8, pd-lib-builder is used for building:
 
 > https://github.com/pure-data/pd-lib-builder
 
-If you have already compiled and installed FFTW, you can make timbreIDLib by typing "make" in this directory. On Linux and Macintosh, timbreIDLib will statically link to the FFTW library. On Windows, you will either have to set up an environment variable to point to the location of libfftw3f-3.dll, or simply put libfftw3f-3.dll directly in the timbreIDLib directory.
+A (likely outdated) version of pd-lib-builder is already included with the timbreIDLib source, but you can update it via the link above if needed. If you have already compiled and installed FFTW, you can make timbreIDLib from the command line by typing "make" in this directory. On Linux and macOS, timbreIDLib will statically link to the FFTW library.
+
+On Windows, you can use MSYS2 (https://msys2.org) to compile timbreIDLib from the command line. You may need to edit the location and name of the FFTW library in timbreIDLib/Makefile because the libfftw3f-3.dll binary and FFTW header file may not be installed to the expected default locations on your system. Further, Windows expects the FFTW binary name to be "fftw3f-3" rather than the Linux/macOS expectation of "fftw3f." Simply change the ldlibs and cflags lines of timbreIDLib/Makefile to:
+
+> ldlibs = -LC:/my/fftw/library/directory -lfftw3f-3
+
+> cflags = -Iinclude -IC:/my/fftw/library/directory
+
+Finally, after successful compilation, you will either have to set up an environment variable to point to the location of libfftw3f-3.dll, or simply put libfftw3f-3.dll directly in the timbreIDLib directory so that the timbreIDLib.dll binary can access the shared FFTW library.
 
 The FFTW library for Windows is available precompiled at:
 

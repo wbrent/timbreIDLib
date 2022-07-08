@@ -1,14 +1,16 @@
 # Makefile for timbreIDLib
 
 # specify a location for Pd if desired
-# PDDIR = /home/yourname/somedirectory/pd-0.49-0
+# PDDIR = /home/yourname/somedirectory/pd-0.52-2
 
 lib.name = timbreIDLib
 
 # specify the location and name of the FFTW library
+# for Windows, you may need to change the library directory from the default used here, and the library name must be passed as -lfftw3f-3
 ldlibs = -L/usr/local/lib -lfftw3f
 
-# specify the location of FFTW header file
+# specify include directories: timbreIDLib/include, and the location of FFTW header file
+# for Windows, you may need to change the FFTW include directory from the default used here.
 cflags = -Iinclude -I/usr/local/include
 
 lib.setup.sources = src/$(lib.name).c
