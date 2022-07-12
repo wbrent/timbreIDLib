@@ -943,7 +943,6 @@ static void timbreID_normalize (t_timbreID* x, t_floatarg n)
                 if (x->x_attributeData[j].normData.maxVal <= x->x_attributeData[j].normData.minVal)
                 {
                     // this will fix things in the case of 1 instance, where min==max
-                    x->x_attributeData[j].normData.minVal = 0.0;
                     x->x_attributeData[j].normData.normScalar = 1.0;
                 }
                 else
