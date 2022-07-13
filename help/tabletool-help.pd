@@ -82,7 +82,7 @@ the table specified in the message., f 24;
 #X msg 762 54 autocorr;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-autocorr-rho 63 float 0;
-#X coords 0 1 62 -1 200 140 1 0 0;
+#X coords 0 8 62 -8 200 140 1 0 0;
 #X restore 851 429 graph;
 #X obj 897 151 s \$0-autocorr-rho;
 #X text 23 17 These four methods operate between the active table and
@@ -93,8 +93,8 @@ outlet as a list.;
 #X text 760 211 The "autocorr" method calculates cross correlation
 of table contents with itself \, shifted at all possible lags. For
 a table with N points \, this method will return 2N - 1 values. Results
-are normalized so that the correlation value for lag 0 is exactly 1.0.
-Results are sent out as a list from the right outlet., f 42;
+are not normalized \, and are sent out as a list from the right outlet.
+, f 42;
 #X connect 8 0 9 0;
 #X connect 10 1 8 0;
 #X connect 11 0 24 0;

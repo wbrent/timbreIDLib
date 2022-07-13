@@ -19,7 +19,7 @@ things to behave properly;
 #000000 0 1;
 #X msg 94 128 normalize \$1;
 #X text 196 123 Turn normalization on or off. With normalization on
-\, values will fall between 0 and 1 (default: ON);
+\, values will fall between 0 and 1 (default: OFF);
 #X connect 1 0 0 0;
 #X connect 3 0 0 0;
 #X connect 4 0 5 0;
@@ -46,7 +46,7 @@ size is not required to be a power of two.;
 #N canvas 647 219 546 317 plotting 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-harmonic-ratio 32 float 0;
-#X coords 0 1 31 0 200 140 1 0 0;
+#X coords 0 130 31 0 200 140 1 0 0;
 #X restore 260 120 graph;
 #X obj 51 152 t f b;
 #X obj 157 144 f;
@@ -82,7 +82,7 @@ size is not required to be a power of two.;
 #X msg 478 200 0 1;
 #X obj 478 221 unpack f f;
 #X msg 438 200 1 0;
-#X obj 340 40 cnv 15 40 25 empty \$0-input-label piano 0 12 0 14 #ffffff
+#X obj 340 40 cnv 15 40 25 empty \$0-input-label opera 0 12 0 14 #ffffff
 #404040 0;
 #N canvas 1209 597 450 300 set-input-label 0;
 #X obj 41 36 inlet;
@@ -90,30 +90,27 @@ size is not required to be a power of two.;
 #X obj 161 36 inlet;
 #X obj 221 36 inlet;
 #X obj 41 227 f \$0;
-#X msg 41 248 \; \$1-input-label label piano \;;
 #X obj 101 187 f \$0;
 #X obj 161 147 f \$0;
 #X obj 221 107 f \$0;
 #X msg 161 168 \; \$1-input-label label speech \;;
 #X msg 221 128 \; \$1-input-label label live \;;
 #X msg 101 208 \; \$1-input-label label noise \;;
+#X msg 41 248 \; \$1-input-label label opera \;;
 #X connect 0 0 4 0;
-#X connect 1 0 6 0;
-#X connect 2 0 7 0;
-#X connect 3 0 8 0;
-#X connect 4 0 5 0;
-#X connect 6 0 11 0;
+#X connect 1 0 5 0;
+#X connect 2 0 6 0;
+#X connect 3 0 7 0;
+#X connect 4 0 11 0;
+#X connect 5 0 10 0;
+#X connect 6 0 8 0;
 #X connect 7 0 9 0;
-#X connect 8 0 10 0;
 #X restore 310 223 pd set-input-label;
-#X obj 752 85 table \$0-piano 27000;
 #X obj 606 251 loadbang;
 #X obj 606 272 f \$0;
-#X msg 606 373 read -skip 625030 ./audio/satie.wav \$1-piano;
 #X obj 606 404 soundfiler;
-#X obj 574 270 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 586 272 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 70 191 tabplay~ \$0-piano;
 #X obj 606 293 t f f f;
 #X obj 752 115 table \$0-noise 8000;
 #X msg 626 353 read -skip 250000 ./audio/testing.wav \$1-noise;
@@ -123,18 +120,21 @@ size is not required to be a power of two.;
 #X msg 646 333 read -resize ../doc/sound/voice.wav \$1-speech;
 #X obj 245 81 t f b;
 #X obj 286 107 s \$0-restart-plot;
+#X obj 70 191 tabplay~ \$0-opera;
+#X msg 606 373 read -resize ../doc/sound/voice2.wav \$1-opera;
+#X obj 752 85 table \$0-opera;
 #X connect 0 0 1 0;
 #X connect 0 0 1 1;
-#X connect 3 0 27 0;
+#X connect 3 0 24 0;
 #X connect 4 0 10 0;
 #X connect 4 0 12 0;
-#X connect 4 0 19 0;
+#X connect 4 0 26 0;
 #X connect 4 1 10 0;
 #X connect 4 1 12 1;
-#X connect 4 1 23 0;
+#X connect 4 1 20 0;
 #X connect 4 2 10 0;
 #X connect 4 2 12 2;
-#X connect 4 2 24 0;
+#X connect 4 2 21 0;
 #X connect 4 3 8 0;
 #X connect 4 3 12 3;
 #X connect 5 0 6 0;
@@ -145,37 +145,37 @@ size is not required to be a power of two.;
 #X connect 9 0 7 1;
 #X connect 9 1 6 1;
 #X connect 10 0 9 0;
-#X connect 14 0 15 0;
-#X connect 15 0 20 0;
-#X connect 16 0 17 0;
-#X connect 18 0 15 0;
-#X connect 19 0 7 0;
-#X connect 20 0 16 0;
-#X connect 20 1 22 0;
-#X connect 20 2 26 0;
-#X connect 22 0 17 0;
-#X connect 23 0 7 0;
-#X connect 24 0 7 0;
-#X connect 26 0 17 0;
-#X connect 27 0 4 0;
-#X connect 27 1 28 0;
+#X connect 13 0 14 0;
+#X connect 14 0 17 0;
+#X connect 16 0 14 0;
+#X connect 17 0 27 0;
+#X connect 17 1 19 0;
+#X connect 17 2 23 0;
+#X connect 19 0 15 0;
+#X connect 20 0 7 0;
+#X connect 21 0 7 0;
+#X connect 23 0 15 0;
+#X connect 24 0 4 0;
+#X connect 24 1 25 0;
+#X connect 26 0 7 0;
+#X connect 27 0 15 0;
 #X coords 0 -1 1 1 150 40 1 240 30;
 #X restore 70 56 pd input-signal;
-#X text 445 195 Turn on the metro at left to activate constant analysis
-\, then click the radio buttons to play sounds with varying harmonicity.
-Harmonic ratio values for the piano tone are quite high \, and those
-for the noisy percussive sound are very low. The speech signal gives
-mixed results \, where moments of pitched vowels cause peaks in harmonic
-ratio. You can also click the last radio button to activate your live
-microphone and analyze whatever you want.;
-#X text 445 74 Harmonic ratio is an indicator of the periodicity of
+#X text 445 84 Harmonic ratio is an indicator of the periodicity of
 a signal. Pitched/periodic signals will produce higher values than
 noisy/non-periodic ones. This feature can be useful for finding the
 boundary between the onset and steady state of pitched instrumental
 sounds \, or transitions from consonants to vowels in speech. The algorithm
 involves calculating the autocorrelation of the signal and searching
 for the highest value after the central peak associated with lag zero.
-Output is normalized to the 0 - 1 range by default.;
+;
+#X text 445 195 Turn on the metro at left to activate constant analysis
+\, then click the radio buttons to play sounds with varying harmonicity.
+Harmonic ratio values for the operatic vocal sample are quite high
+\, and those for the noisy percussive sound are very low. The speech
+signal gives mixed results \, where moments of pitched vowels cause
+peaks in harmonic ratio. You can also click the last radio button to
+activate your live microphone and analyze whatever you want.;
 #X connect 0 0 18 0;
 #X connect 5 0 18 0;
 #X connect 9 0 18 0;

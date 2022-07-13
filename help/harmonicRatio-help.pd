@@ -21,7 +21,7 @@
 0 1;
 #X msg 94 108 normalize \$1;
 #X text 196 103 Turn normalization on or off. With normalization on
-\, values will fall between 0 and 1 (default: ON);
+\, values will fall between 0 and 1 (default: OFF);
 #X connect 0 0 2 0;
 #X connect 3 0 2 0;
 #X connect 4 0 5 0;
