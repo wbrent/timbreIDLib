@@ -152,7 +152,7 @@ static void* harmonicRatio_tilde_new (t_symbol* s, int argc, t_atom* argv)
     x->x_n = TID_BLOCKSIZEDEFAULT;
     x->x_overlap = 1;
     x->x_lastDspTime = clock_getlogicaltime();
-    x->x_normalize = true;
+    x->x_normalize = false;
 
     x->x_signalBuffer = (t_sample *)t_getbytes ((x->x_window + x->x_n) * sizeof (t_sample));
     x->x_analysisBuffer = (t_float *)t_getbytes (x->x_window * sizeof (t_float));

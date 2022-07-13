@@ -185,7 +185,7 @@ static void* harmonicRatio_new (t_symbol* s, int argc, t_atom* argv)
 
     x->x_sr = TID_SAMPLERATEDEFAULT;
     x->x_window = TID_WINDOWSIZEDEFAULT;
-    x->x_normalize = true;
+    x->x_normalize = false;
 
     x->x_analysisBuffer = (t_sample *)t_getbytes (x->x_window * sizeof (t_sample));
 
