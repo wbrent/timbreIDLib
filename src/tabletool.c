@@ -2547,7 +2547,7 @@ static void tabletool_autoCorr (t_tabletool* x)
         for (i = 0; i < rhoBufferSize; i++)
             rhoBuffer[i] = 0.0;
 
-        tIDLib_autoCorr (x->x_arrayPoints, vecBuffer, rhoBufferSize, rhoBuffer, true);
+        tIDLib_autoCorr (x->x_arrayPoints, vecBuffer, rhoBufferSize, rhoBuffer, false);
 
         // transfer rho values to the output list
         for (i = 0; i < rhoBufferSize; i++)
