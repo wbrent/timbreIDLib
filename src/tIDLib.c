@@ -513,7 +513,7 @@ void tIDLib_autoCorr (t_attributeIdx n, t_float* vec, t_attributeIdx rhoN, t_flo
     maxVal = 0.0;
     slideBuffer = (t_float *)t_getbytes (n * sizeof (t_float));
 
-    for (i = -((t_sLongInt)n) + 1, l = 0; i <= n - 1; i++, l++)
+    for (i = -((t_sLongInt)n) + 1, l = 0; i <= (t_sLongInt)n - 1; i++, l++)
     {
         // fill slideBuffer with lagged contents
         if (i < 0)
