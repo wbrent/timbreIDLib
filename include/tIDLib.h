@@ -21,7 +21,7 @@ You should have received a copy of the GNU General Public License along with thi
 #include <fftw3.h>
 #include "m_pd.h"
 
-#define TID_VERSION "0.9.1" // July 18, 2022
+#define TID_VERSION "0.9.2" // Nov 9, 2022
 
 // choose either FFTW_MEASURE or FFTW_ESTIMATE here.
 #define FFTWPLANNERFLAG FFTW_ESTIMATE

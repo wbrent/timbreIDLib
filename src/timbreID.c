@@ -1602,18 +1602,25 @@ static void timbreID_weights (t_timbreID* x, t_symbol* s, int argc, t_atom* argv
 
     listLength = argc;
 
-    if (listLength > x->x_maxFeatureLength)
+    if (x->x_numInstances > 0)
     {
+      if (listLength > x->x_maxFeatureLength)
+      {
         pd_error (x, "%s: weights list longer than current feature length. ignoring excess weights", x->x_objSymbol->s_name);
         argc = x->x_maxFeatureLength;
-    }
+      }
 
-    for (i = 0; i < listLength; i++)
+      for (i = 0; i < listLength; i++)
         x->x_attributeData[i].weight = atom_getfloat (argv + i);
 
-    // if only the first few of a long feature vector are specified, fill in the rest with 1.0
-    for (; i < x->x_maxFeatureLength; i++)
+      // if only the first few of a long feature vector are specified, fill in the rest with 1.0
+      for (; i < x->x_maxFeatureLength; i++)
         x->x_attributeData[i].weight = 1.0;
+    }
+    else
+    {
+      pd_error (x, "%s: no instances in database. cannot apply weights.", x->x_objSymbol->s_name);
+    }
 }
 
 
