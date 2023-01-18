@@ -957,17 +957,25 @@ static void tabletool_shift (t_tabletool* x, t_float s)
 
         shift = s;
         lenTable = x->x_arrayPoints;
-        shift = shift % lenTable;
 
         for (i = 0; i < lenTable; i++)
             tableVals[i] = x->x_vec[i].w_float;
 
         if (shift > 0)
+        {
+            shift = shift % lenTable;
+
             for (i = shift, j = 0; j < lenTable; i++, j++)
                 x->x_vec[i % lenTable].w_float = tableVals[j];
+        }
         else // shift==0 and shift < 0 handled by this case
+        {
+            // use fmod() since the remainder operator % won't work for negatives here
+            shift = fmod (shift, lenTable);
+
             for (i = 0, j = labs (shift); i < lenTable; i++, j++)
                 x->x_vec[i].w_float = tableVals[j % lenTable];
+        }
 
         garray_redraw (a);
 
