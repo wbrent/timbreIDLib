@@ -2637,6 +2637,121 @@ static void timbreID_write (t_timbreID* x, t_symbol* s)
 }
 
 
+static void timbreID_readAppend (t_timbreID* x, t_symbol* s)
+{
+    FILE* filePtr;
+    t_instanceIdx i, maxLength, minLength, numLocalInstances, numTotalInstances;
+    char fileNameBuf[MAXPDSTRING];
+    int cTest;
+    t_bool txtFlag;
+
+    canvas_makefilename (x->x_canvas, s->s_name, fileNameBuf, MAXPDSTRING);
+
+    filePtr = fopen (fileNameBuf, "rb");
+
+    if ( !filePtr)
+    {
+        pd_error (x, "%s: failed to open %s", x->x_objSymbol->s_name, fileNameBuf);
+        return;
+    }
+
+    // test to see if it's a .timid or .txt file. if any fgetc() results are > 127, it's not a text file.
+    txtFlag = true;
+
+    while ((cTest = fgetc (filePtr)) != EOF)
+    {
+        if (cTest > 127)
+            txtFlag = false;
+    }
+
+    if (txtFlag)
+    {
+        pd_error (x, "%s: data in file %s is plain text (.txt), not binary (.timid). use read_text instead.", x->x_objSymbol->s_name, fileNameBuf);
+        fclose (filePtr);
+        // TODO: shouldn't have an else branch after a return statement
+        return;
+    }
+    else
+    {
+        // if we're safe, close and re-open so we can get the binary data.
+        fclose (filePtr);
+        filePtr = fopen (fileNameBuf, "rb");
+    }
+
+
+
+    // EDIT: initialize these local min/max variables to the existing min/max of the database
+    maxLength = x->x_maxFeatureLength;
+    minLength = x->x_minFeatureLength;
+
+    // EDIT: we won't clear the database
+    // erase old instances & clusters and resize to 0. this also does a sub-call to timbreID_attributeDataResize()
+    // timbreID_clear (x);
+
+    // initialize local variables
+    numLocalInstances = 0;
+    numTotalInstances = 0;
+
+    // first item in the header is the number of instances
+    fread (&numLocalInstances, sizeof (t_instanceIdx), 1, filePtr);
+
+    numTotalInstances = numLocalInstances + x->x_numInstances;
+
+    // resize instances & clusterMembers to numInstances
+    x->x_instances = (t_instance *)t_resizebytes (x->x_instances, x->x_numInstances * sizeof (t_instance), numTotalInstances * sizeof (t_instance));
+
+    x->x_clusters = (t_cluster *)t_resizebytes (x->x_clusters, x->x_numInstances * sizeof (t_cluster), numTotalInstances * sizeof (t_cluster));
+
+    for (i = x->x_numInstances; i < numTotalInstances; i++)
+    {
+        // get the length of each instance
+        fread (&x->x_instances[i].length, sizeof (t_attributeIdx), 1, filePtr);
+
+        if (x->x_instances[i].length > maxLength)
+            maxLength = x->x_instances[i].length;
+
+        if (x->x_instances[i].length < minLength)
+            minLength = x->x_instances[i].length;
+
+        // get the appropriate number of bytes for the data
+        x->x_instances[i].data = (t_float *)t_getbytes (x->x_instances[i].length * sizeof (t_float));
+    }
+
+    x->x_minFeatureLength = minLength;
+    x->x_maxFeatureLength = maxLength;
+    // EDIT: update the neighborhood size and numClusters to the new total instances
+    x->x_neighborhood = numTotalInstances;
+    x->x_numClusters = numTotalInstances;
+
+    // update x_attributeData based on new x_maxFeatureLength. turn postFlag argument TRUE
+    timbreID_attributeDataResize (x, 0, x->x_maxFeatureLength, 1);
+
+    // after loading a database, instances are unclustered
+    for (i = 0; i < numTotalInstances; i++)
+    {
+        x->x_clusters[i].numMembers = 2;
+        x->x_clusters[i].members = (t_instanceIdx *)t_getbytes (x->x_clusters[i].numMembers * sizeof (t_instanceIdx));
+
+        x->x_clusters[i].members[0] = i; // first member of the cluster is the instance index
+        x->x_clusters[i].members[1] = UINT_MAX; // terminate with UINT_MAX
+
+        x->x_instances[i].clusterMembership = i; // init instance's cluster membership to index
+    }
+
+    // START HERE
+    // finally, read in the instance data
+    for (i = x->x_numInstances; i < numTotalInstances; i++)
+        fread (x->x_instances[i].data, sizeof (t_float), x->x_instances[i].length, filePtr);
+
+    // EDIT: now that we've allocated memory, update x->x_numInstances
+    x->x_numInstances = numTotalInstances;
+
+    post ("%s: appended %i instances from %s.", x->x_objSymbol->s_name, numLocalInstances, fileNameBuf);
+
+    fclose (filePtr);
+}
+
+
 static void timbreID_read (t_timbreID* x, t_symbol* s)
 {
     FILE* filePtr;
@@ -3898,6 +4013,14 @@ void timbreID_setup (void)
         timbreID_class,
         (t_method)timbreID_write,
         gensym ("write"),
+        A_SYMBOL,
+        0
+    );
+
+    class_addmethod (
+        timbreID_class,
+        (t_method)timbreID_readAppend,
+        gensym ("readAppend"),
         A_SYMBOL,
         0
     );
